@@ -25,7 +25,7 @@ export class SearchComponent implements OnInit {
   foundResults = true;
   errorMessage: string;
   searchForm: FormGroup;
-  listViewActive = true;
+  itemPath = '/service/'
 
   searchResults: Paging<Object>;
   facetOrder = ['category', 'trl', 'lifeCycleStatus', 'provider'];

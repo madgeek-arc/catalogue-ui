@@ -5,13 +5,13 @@
       <div class="uk-width-1-1">
         <form class="uk-flex uk-flex-center" [formGroup]="searchForm"
               (ngSubmit)="onSubmit(searchForm.controls['query'].value)">
-          <div class="uk-visible@m uk-margin-right">
-            <select *ngIf="showSearchFieldDropDown" class="uk-select menuSearchFields"
-                    (change)="updateSearchField($event)" formControlName="searchFields">
-              <option value="">--Search field--</option>
-              <option *ngFor="let field of searchFields" value="{{field}}">{{field}}</option>
-            </select>
-          </div>
+<!--          <div class="uk-visible@m uk-margin-right">-->
+<!--            <select *ngIf="showSearchFieldDropDown" class="uk-select menuSearchFields"-->
+<!--                    (change)="updateSearchField($event)" formControlName="searchFields">-->
+<!--              <option value="">&#45;&#45;Search field&#45;&#45;</option>-->
+<!--              <option *ngFor="let field of searchFields" value="{{field}}">{{field}}</option>-->
+<!--            </select>-->
+<!--          </div>-->
           <div class="">
             <input type="text" class="uk-input menuSearch" placeholder="Search..." name="keyword" formControlName="query">
           </div>
@@ -73,23 +73,6 @@
 
           <div *ngIf="searchResults.results != null && searchResults.results.length > 0">
 
-            <!--<div class="uk-flex uk-flex-middle uk-flex-between">-->
-              <!--<div>-->
-                <!--<div class="">-->
-                  <!--<label class="" for="pageSize">Results per page </label>-->
-                  <!--<div class="uk-inline uk-margin-left">-->
-                    <!--<select class="uk-input uk-select" id="pageSize" [ngModel]="pageSize" (change)="onPageSizeChange($event)" style="height: 40px !important;">-->
-                      <!--<option value="10" selected>10</option>-->
-                      <!--<option value="25">25</option>-->
-                      <!--<option value="50">50</option>-->
-                      <!--<option value="100">100</option>-->
-                    <!--</select>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
-
-            <!--</div>-->
-
             <div class="uk-grid uk-row-first uk-margin-bottom uk-margin-top">
               <div class="uk-width-1-1">
 
@@ -118,14 +101,14 @@
 
               <ng-container *ngFor="let resourceInfo of searchResults.results; let i = index">
 
-                <a [routerLink]="['/service/' + resourceInfo['id']]" class="serviceDetails">
+                <a [routerLink]="[itemPath + resourceInfo['id']]" class="serviceDetails">
                   <div class="uk-card uk-card-default uk-card-hover uk-margin-bottom">
 
                     <!--LAPTOP & PAD LANDSCAPE-->
                     <div class="service-details-card-content uk-visible@m">
 
-                      <div class="">
-                        <div>
+                      <div>
+                        <div class="uk-grid">
 
                           <div class="uk-width-2-3@m uk-card-body">
                             <div>
@@ -228,15 +211,6 @@
     </div>
 
   </div>
-</div>
-
-<div class="uk-float-right" style="z-index: 100; bottom: 45px; position: fixed; right: 45px;">
-  <a href="#offcanvas-filters" uk-toggle style="padding: 20px;"
-     class="uk-icon-button uk-button-blue">
-    <i class="fa fa-2x fa-filter"></i>
-    <!--<span class="uk-icon" uk-icon="icon: plus; ratio: 1.5">-->
-    <!--</span>-->
-  </a>
 </div>
 
 <div *ngIf="searchResults != null" id="offcanvas-filters" uk-offcanvas="overlay: true">
