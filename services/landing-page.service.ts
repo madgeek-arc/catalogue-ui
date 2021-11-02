@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Injectable()
 export class LandingPageService {
@@ -12,6 +12,15 @@ export class LandingPageService {
 
   getDataset(id: string, resourceType?: string) {
     return this.http.get(this.base + `/items/${id}?resourceType=dataset_type`);
+  }
+
+  searchDatasetInstance(resourceType: string, query: string, ) {
+    let params = new HttpParams();
+    params = params.append('resourceType', resourceType);
+    params = params.append('query', query);
+
+    return this.http.get(this.base + '/items', {params});
+
   }
 
 }

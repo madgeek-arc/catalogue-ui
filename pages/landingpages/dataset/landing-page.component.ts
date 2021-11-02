@@ -12,6 +12,7 @@ import {LandingPageService} from "../../../services/landing-page.service";
 export class LandingPageComponent implements OnInit {
   private sub: Subscription;
   dataset: Object = null;
+  instances: Object[] = null;
 
   constructor(protected route: ActivatedRoute, protected landingPageService: LandingPageService) {}
 
@@ -21,6 +22,12 @@ export class LandingPageComponent implements OnInit {
         res => {
           this.dataset = res;
           console.log(this.dataset);
+          this.landingPageService.searchDatasetInstance('dataset_instance', 'type=' + this.dataset['name']).subscribe(
+            res => {
+              this.instances = res['results'];
+              console.log(this.instances);
+            }
+          )
         }
       );
     });
