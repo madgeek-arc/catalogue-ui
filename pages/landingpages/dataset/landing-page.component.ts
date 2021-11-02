@@ -9,7 +9,7 @@ import {LandingPageService} from "../../../services/landing-page.service";
   providers: [LandingPageService]
 })
 
-export class DatasetLandingPageComponent implements OnInit {
+export class LandingPageComponent implements OnInit {
   private sub: Subscription;
   dataset: Object = null;
 

@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {DatasetLandingPageComponent} from "./pages/landingpages/dataset/dataset-landing-page.component";
+import {LandingPageComponent} from "./pages/landingpages/dataset/landing-page.component";
 import {DynamicFormModule} from "./pages/dynamic-form/dynamic-form.module";
 import {ReusableComponentsModule} from "./shared/reusable-components/reusable-components.module";
 import {CommonModule} from "@angular/common";
@@ -10,7 +10,7 @@ import {RouterModule} from "@angular/router";
 @NgModule({
   declarations: [
     SearchComponent,
-    DatasetLandingPageComponent,
+    LandingPageComponent,
   ],
   imports: [
     CommonModule,
