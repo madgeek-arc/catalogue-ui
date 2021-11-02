@@ -33,9 +33,11 @@
             <ng-template ngFor let-facet [ngForOf]="searchResults.facets">
               <div *ngIf="facet.field === 'publisher' || facet.field === 'languages' || facet.field === 'rights'" class="uk-margin-medium-top">
                 <read-more [maxHeight]="235">
-                  <p class="big-text uk-inline">{{facet.label}}</p><a class="uk-inline uk-link uk-margin-left uk-margin-small-bottom"
-                                                                      (click)="clearSelections($event, facet.field)">Clear</a>
-                  <div class="refineOption" *ngFor="let facetValue of facet.values">
+                  <div class="uk-flex uk-flex-bottom">
+                    <p class="big-text uk-margin-remove">{{facet.label}}</p><a class="uk-margin-left"
+                                                                                         (click)="clearSelections($event, facet.field)">Clear</a>
+                  </div>
+                  <div class="refineOption uk-margin-top" *ngFor="let facetValue of facet.values">
                     <input type="checkbox" class=""
                            (change)="this.onSelection($event, facet.field, facetValue.value)"
                            [checked]="facetValue.isChecked">
@@ -105,12 +107,12 @@
                   <div class="uk-card uk-card-default uk-card-hover uk-margin-bottom">
 
                     <!--LAPTOP & PAD LANDSCAPE-->
-                    <div class="service-details-card-content uk-visible@m">
+                    <div class="uk-card-body uk-visible@m">
 
                       <div>
                         <div class="uk-grid">
 
-                          <div class="uk-width-2-3@m uk-card-body">
+                          <div class="uk-width-2-3@m">
                             <div>
                               <h5 class="uk-margin-remove uk-text-left@m uk-text-center uk-scrollspy-inview uk-animation-fade uk-inline"
                                 uk-scrollspy-class="" style="">
@@ -132,8 +134,10 @@
 
                           </div>
 
-                          <div class="uk-width-1-3@m uk-padding-remove uk-position-bottom-right uk-overlay uk-overlay-default service-image">
-                            <img src="{{resourceInfo['metadata']['logo']}}" >
+                          <div class="uk-width-1-3@m uk-padding-remove">
+                            <div class="uk-flex uk-flex-right">
+                              <img src="{{resourceInfo['metadata']['logo']}}" >
+                            </div>
                           </div>
 
                         </div>
