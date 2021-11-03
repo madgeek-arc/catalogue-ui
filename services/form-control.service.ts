@@ -44,29 +44,6 @@ export class FormControlService {
             } else if (formField.field.type === 'composite') {
               group[formField.field.name] = formField.field.form.mandatory ? new FormArray([], Validators.required)
                 : new FormArray([]);
-              // const subGroup: any = {};
-              // formField.subFieldGroups.forEach(subField => {
-              //   if (subField.field.type === 'email') {
-              //     subGroup[subField.field.name] = subField.field.form.mandatory ?
-              //       new FormControl('', Validators.compose([Validators.required, Validators.email]))
-              //       : new FormControl('', Validators.email);
-              //   } else if (subField.field.type === 'phone') {
-              //     subGroup[subField.field.name] = subField.field.form.mandatory ?
-              //       new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
-              //       : new FormControl('', Validators.pattern('[+]?\\d+$'));
-              //   } else if (subField.field.multiplicity) { // add array inside composite element
-              //     subGroup[subField.field.name] = subField.field.form.mandatory ?
-              //       new FormArray([new FormControl('', Validators.required)])
-              //       : new FormArray([new FormControl('')]);
-              //   } else {
-              //     subGroup[subField.field.name] = subField.field.form.mandatory ?
-              //       new FormControl('', Validators.required)
-              //       : new FormControl('');
-              //   }
-              //   if (subField.field.form.dependsOn !== null) {
-              //     subGroup[subField.field.name].disable();
-              //   }
-              // })
               group[formField.field.name].push(new FormGroup(this.createCompositeField(formField)));
             } else {
               group[formField.field.name] = formField.field.form.mandatory ?
@@ -101,18 +78,16 @@ export class FormControlService {
 
   createCompositeField(formField) {
     const subGroup: any = {};
-    console.log(formField);
+    // console.log(formField);
     formField.subFieldGroups.forEach(subField => {
       if (subField.field.type === 'composite') {
-        // console.log(subField.field.name);
         if (subField.field.multiplicity) {
-          subGroup[formField.field.name] = formField.field.form.mandatory ? new FormArray([], Validators.required)
+          subGroup[subField.field.name] = formField.field.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
-          subGroup[formField.field.name].push(new FormGroup(this.createCompositeField(subField)));
+          subGroup[subField.field.name].push(new FormGroup(this.createCompositeField(subField)));
         } else {
           subGroup[subField.field.name] = new FormGroup(this.createCompositeField(subField));
         }
-        // console.log(subGroup);
       } else if (subField.field.type === 'email') {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormControl('', Validators.compose([Validators.required, Validators.email]))

@@ -1,16 +1,13 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-
-import {Fields, HandleBitSet, UiVocabulary} from '../../domain/dynamic-form-model';
-import {environment} from '../../../environments/environment';
-import {urlAsyncValidator, URLValidator} from '../../shared/validators/generic.validator';
-import {FormControlService} from "../../services/form-control.service";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Fields, HandleBitSet, UiVocabulary} from "../../../domain/dynamic-form-model";
+import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'app-field',
-  templateUrl: './dynamic-form-fields.component.html'
+  selector: 'app-composite-field',
+  templateUrl: './composite-field.component.html'
 })
-export class DynamicFormFieldsComponent implements OnInit {
+
+export class CompositeFieldComponent {
   @Input() fieldData: Fields;
   @Input() form: FormGroup;
   @Input() vocabularies: Map<string, UiVocabulary[]>;
@@ -20,17 +17,7 @@ export class DynamicFormFieldsComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  projectName = environment.projectName;
-  isPortalAdmin = false;
   hasChanges = false;
-  // bitSetData = new BitSetData();
-
-
-  constructor(private formControlService: FormControlService) { }
-
-  ngOnInit() {
-    console.log(this.form.value);
-  }
 
   /** Handle Arrays --> **/
   fieldAsFormArray(field: string) {
@@ -45,25 +32,14 @@ export class DynamicFormFieldsComponent implements OnInit {
     return control.controls[parentIndex].get(name) as FormArray;
   }
 
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray(field).push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
-        break;
-      default:
-        this.fieldAsFormArray(field).push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
+  removeFromArrayInsideComposite(parent: string, parentIndex: number, name: string, index: number) {
+    const control = <FormArray>this.form.get([parent,parentIndex,name]);
+    control.removeAt(index);
   }
 
   pushToArrayInsideComposite(parent: string, parentIndex: number, name: string, required: boolean) {
     const control = <FormArray>this.form.get([parent,parentIndex,name]);
     control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
-  }
-
-  removeFromArrayInsideComposite(parent: string, parentIndex: number, name: string, index: number) {
-    const control = <FormArray>this.form.get([parent,parentIndex,name]);
-    control.removeAt(index);
   }
 
   remove(field: string, i: number) {
@@ -135,8 +111,6 @@ export class DynamicFormFieldsComponent implements OnInit {
 
   /** <--Return Vocabulary items for composite fields **/
 
-  /** Bitsets--> **/
-
   updateBitSet(fieldData: Fields) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
       if (fieldData.field.form.mandatory) {
@@ -154,14 +128,6 @@ export class DynamicFormFieldsComponent implements OnInit {
     }
   }
 
-  handleCompositeBitsetOfChildren(data: HandleBitSet) {
-    this.handleBitSetsOfComposite.emit(data);
-  }
-
-  handleBitsetOfChildren(data: Fields) {
-    this.handleBitSets.emit(data);
-  }
-
   unsavedChangesPrompt() {
     this.hasChanges = true;
   }
@@ -169,9 +135,4 @@ export class DynamicFormFieldsComponent implements OnInit {
   timeOut(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
-  // printToConsole(name: string) {
-  //   console.log(this.form.get(name).valid)
-  // }
-
 }
