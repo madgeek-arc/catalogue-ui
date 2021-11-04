@@ -20,10 +20,7 @@ export class DynamicFormFieldsComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  projectName = environment.projectName;
-  isPortalAdmin = false;
   hasChanges = false;
-  // bitSetData = new BitSetData();
 
 
   constructor(private formControlService: FormControlService) { }

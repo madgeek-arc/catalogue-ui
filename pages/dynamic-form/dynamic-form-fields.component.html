@@ -1,4 +1,4 @@
-<div *ngIf="form" [formGroup]="form">
+<ng-container *ngIf="form" [formGroup]="form">
 
   <div *ngIf="fieldData.field.form.visible">
     <div class="uk-margin-large-bottom">
@@ -8,46 +8,11 @@
       <div class="uk-form-controls uk-margin-medium-top">
 
         <div *ngIf="fieldData.field.type === 'string' || fieldData.field.type === 'url' ||
-         fieldData.field.type === 'email' || fieldData.field.type === 'phone'">
-          <div *ngIf="fieldData.field.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
-            <div *ngFor="let input of fieldAsFormArray(fieldData.field.name).controls; let i=index" class="uk-margin-bottom">
-              <input [id]="fieldData.field.name" [formControlName]="i"
-                     class="uk-input uk-width-9-10 uk-animation-slide-top-small"
-                     [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-                     [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.field.name, i, this.editMode)}"
-                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
-              <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.type === 'url' && this.editMode
-                        && this.isPortalAdmin && fieldAsFormArray(fieldData.field.name).controls[i].value" class="uk-icon">
-                &nbsp;&nbsp;<a href="{{this.form.get(fieldData.field.name).value}}" target="_blank">
-                <i class="fa fa-external-link"></i></a>
-              </div>
-              <a *ngIf="fieldAsFormArray(fieldData.field.name).length > 1"
-                 (click)="remove(fieldData.field.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
-                 class="remove-element uk-padding-small uk-animation-slide-top-small">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </a>
-            </div>
-            <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
-
-            <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">
-              <a class="add-new-element" (click)="push(fieldData.field.name, fieldData.field.form.mandatory, fieldData.field.type)">
-                <i class="fa fa-plus" aria-hidden="true"></i>Add {{fieldData.field.label}}
-              </a>
-            </div>
-          </div>
-
-          <ng-template #noMultiplicity>
-            <input [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-input uk-width-9-10"
-                   [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-                   [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.field.name, this.editMode) }">
-            <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.type === 'url' && this.editMode
-                        && this.isPortalAdmin && this.form.get(fieldData.field.name).value" class="uk-icon">&nbsp;&nbsp;
-              <a href="{{this.form.get(fieldData.field.name).value}}" target="_blank"><i class="fa fa-external-link"></i></a>
-            </div>
-            <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
-          </ng-template>
-
+                    fieldData.field.type === 'email' || fieldData.field.type === 'phone'">
+          <app-string-url-email-field [fieldData]="fieldData"
+                                      (handleBitSets)="handleBitsetOfChildren($event)"
+                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-string-url-email-field>
         </div>
 
         <div *ngIf="fieldData.field.type === 'vocabulary'">
@@ -104,8 +69,7 @@
         </div>
 
         <div *ngIf="fieldData.field.type === 'composite'">
-          <app-composite-field [fieldData]="fieldData" [form]="form"
-                               [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+          <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-composite-field>
@@ -297,4 +261,4 @@
     </div>
   </div>
 
-</div>
+</ng-container>

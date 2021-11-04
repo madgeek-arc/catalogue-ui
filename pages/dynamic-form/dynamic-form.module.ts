@@ -7,9 +7,11 @@ import {DynamicFormEditComponent} from "./dynamic-form-edit.component";
 import {LMarkdownEditorModule} from "ngx-markdown-editor";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {CompositeFieldComponent} from "./fields/composite-field.component";
+import {StringFieldComponent} from "./fields/string-field.component";
 
 @NgModule({
   declarations: [
+    StringFieldComponent,
     CompositeFieldComponent,
     DynamicFormFieldsComponent,
     DynamicFormComponent,

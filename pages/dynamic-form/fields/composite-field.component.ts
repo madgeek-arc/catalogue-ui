@@ -1,15 +1,14 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Fields, HandleBitSet, UiVocabulary} from "../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-composite-field',
   templateUrl: './composite-field.component.html'
 })
 
-export class CompositeFieldComponent {
+export class CompositeFieldComponent implements OnInit {
   @Input() fieldData: Fields;
-  @Input() form: FormGroup;
   @Input() vocabularies: Map<string, UiVocabulary[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
@@ -17,10 +16,22 @@ export class CompositeFieldComponent {
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
+  form: FormGroup;
   hasChanges = false;
 
+  constructor(private rootFormGroup: FormGroupDirective) {
+  }
+
+  ngOnInit() {
+    this.form = this.rootFormGroup.control.get(this.fieldData.field.name) as FormGroup;
+  }
+
   /** Handle Arrays --> **/
-  fieldAsFormArray(field: string) {
+  fieldAsFormArray() {
+    return this.form as unknown as FormArray;
+  }
+
+  oldFieldAsFormArray(field: string) {
     return this.form.get(field) as FormArray;
   }
 
@@ -43,7 +54,7 @@ export class CompositeFieldComponent {
   }
 
   remove(field: string, i: number) {
-    this.fieldAsFormArray(field).removeAt(i);
+    this.oldFieldAsFormArray(field).removeAt(i);
   }
 
   pushComposite(field: string, subFields: Fields[]) {
@@ -62,7 +73,7 @@ export class CompositeFieldComponent {
         group[subField.field.name].disable();
       }
     });
-    this.fieldAsFormArray(field).push(new FormGroup(group));
+    this.fieldAsFormArray().push(new FormGroup(group));
   }
 
   // onCompositeChange(field: string, affects: Dependent[], index?: number) {
@@ -70,8 +81,8 @@ export class CompositeFieldComponent {
     // fieldData.subFieldGroups[j].field.parent, fieldData.subFieldGroups[j].field.form.affects
     if (fieldData.subFieldGroups[j].field.form.affects !== null ) {
       fieldData.subFieldGroups[j].field.form.affects.forEach( f => {
-        this.fieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).reset();
-        this.fieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).enable();
+        this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).reset();
+        this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).enable();
         // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
       });
     }
@@ -89,12 +100,12 @@ export class CompositeFieldComponent {
 
   checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
     if (groupName) {
-      return (!this.fieldAsFormArray(name)?.get([position])?.get(groupName).valid
-        && (edit || this.fieldAsFormArray(name)?.get([position])?.get(groupName).dirty));
+      return (!this.oldFieldAsFormArray(name)?.get([position])?.get(groupName).valid
+        && (edit || this.oldFieldAsFormArray(name)?.get([position])?.get(groupName).dirty));
 
     }
-    return (!this.fieldAsFormArray(name).get([position]).valid
-      && (edit || this.fieldAsFormArray(name).get([position]).dirty));
+    return (!this.oldFieldAsFormArray(name).get([position]).valid
+      && (edit || this.oldFieldAsFormArray(name).get([position]).dirty));
   }
 
   /** <-- check form fields and tabs validity **/
@@ -103,7 +114,7 @@ export class CompositeFieldComponent {
 
   getCompositeVocabularyItems(fieldData: Fields, j: number, i?: number) {
     if (fieldData.subFieldGroups[j].field.form.dependsOn !== null) {
-      return this.subVocabularies[this.fieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(fieldData.subFieldGroups[j].field.form.dependsOn.name).value];
+      return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(fieldData.subFieldGroups[j].field.form.dependsOn.name).value];
     } else {
       return this.vocabularies[fieldData.subFieldGroups[j].field.form.vocabulary];
     }
@@ -126,6 +137,14 @@ export class CompositeFieldComponent {
       tmp.position = position;
       this.handleBitSetsOfComposite.emit(tmp);
     }
+  }
+
+  handleCompositeBitsetOfChildren(data: HandleBitSet) {
+    this.handleBitSetsOfComposite.emit(data);
+  }
+
+  handleBitsetOfChildren(data: Fields) {
+    this.handleBitSets.emit(data);
   }
 
   unsavedChangesPrompt() {

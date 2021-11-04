@@ -107,7 +107,7 @@ export class FormControlService {
           : new FormControl('');
       }
       if (subField.field.form.dependsOn !== null) {
-        console.log(subField.field.name);
+        // console.log(subField.field.name);
         // subGroup[subField.field.name].disable(); // to be fixed
       }
     });
