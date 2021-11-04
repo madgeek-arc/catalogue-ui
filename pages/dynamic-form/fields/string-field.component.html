@@ -33,7 +33,7 @@
     <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-input uk-width-9-10"
            [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-           [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.field.name) }">
+           [ngClass]="{'uk-form-danger': checkFormValidity() }">
     <!--      <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.type === 'url' && this.editMode-->
     <!--                        && this.isPortalAdmin && this.form.get(fieldData.field.name).value" class="uk-icon">&nbsp;&nbsp;-->
     <!--        <a href="{{this.form.get(fieldData.field.name).value}}" target="_blank"><i class="fa fa-external-link"></i></a>-->

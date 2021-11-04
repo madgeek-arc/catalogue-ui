@@ -53,8 +53,8 @@ export class CompositeFieldComponent implements OnInit {
     control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
   }
 
-  remove(field: string, i: number) {
-    this.oldFieldAsFormArray(field).removeAt(i);
+  remove(i: number) {
+    this.fieldAsFormArray().removeAt(i);
   }
 
   pushComposite(field: string, subFields: Fields[]) {

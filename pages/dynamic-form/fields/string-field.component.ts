@@ -25,15 +25,14 @@ export class StringFieldComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.fieldData);
-    this.form = this.rootFormGroup.control;
-    console.log(this.fieldData.field.name);
-    console.log(this.form.controls);
     if (this.position !== null) {
-      this.formControl = this.form.controls[this.position].get(this.fieldData.field.name) as FormControl;
+      this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
     } else {
-      this.formControl = this.form.get(this.fieldData.field.accessPath.split(/\.(?=[^\.]+$)/)[1]) as FormControl;
+      this.form = this.rootFormGroup.control;
     }
+    this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
+    console.log(this.fieldData);
+    console.log(this.form);
     console.log(this.formControl);
   }
 
@@ -60,7 +59,7 @@ export class StringFieldComponent implements OnInit {
 
   /** check fields validity--> **/
 
-  checkFormValidity(name: string): boolean {
+  checkFormValidity(): boolean {
     return (!this.formControl.valid && (this.editMode || this.formControl.dirty));
   }
 
