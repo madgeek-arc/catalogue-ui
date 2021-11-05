@@ -121,15 +121,15 @@
                             </div>
                             <div class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade serviceDescription line-clamp"
                                  uk-scrollspy-class="" style="">
-                              {{resourceInfo['metadata']['descriptions']['descriptions'][0]['content'][0]['value']}}
+                              {{resourceInfo['metadata']['descriptions'][0]['value']}}
                             </div>
 
                             <div *ngIf="resourceInfo['metadata']['publisher']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="">
                               <span class="field-label">Publisher: {{resourceInfo['metadata']['publisher']}}</span>
                             </div>
-                            <div *ngIf="resourceInfo['metadata']['languages']['languages'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+                            <div *ngIf="resourceInfo['metadata']['languages'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
                               <span class="field-label">Language: </span>
-                              <span *ngFor="let language of resourceInfo['metadata']['languages']['languages']" class="field-value uk-margin-small-left">{{language}}</span>
+                              <span *ngFor="let language of resourceInfo['metadata']['languages']" class="field-value uk-margin-small-left">{{language}}</span>
                             </div>
 
                           </div>
@@ -165,27 +165,20 @@
                             </div>
                             <div class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade serviceDescription line-clamp"
                                  uk-scrollspy-class="" style="">
-                              {{resourceInfo['metadata']['descriptions']['descriptions'][0]['content'][0]['value']}}
+                              {{resourceInfo['metadata']['descriptions'][0]['value']}}
                             </div>
 
                             <div *ngIf="resourceInfo['metadata']['publisher']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="">
                               <span class="field-label">Publisher: {{resourceInfo['metadata']['publisher']}}</span>
                             </div>
-                            <div *ngIf="resourceInfo['metadata']['languages']['languages'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+                            <div *ngIf="resourceInfo['metadata']['languages'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
                               <span class="field-label">Language: </span>
-                              <span *ngFor="let language of resourceInfo['metadata']['languages']['languages']" class="field-value uk-margin-small-left">{{language}}</span>
+                              <span *ngFor="let language of resourceInfo['metadata']['languages']" class="field-value uk-margin-small-left">{{language}}</span>
                             </div>
 
                           </div>
 
                         </div>
-                      </div>
-
-                      <div *ngIf="resourceInfo['portfolios']?.length>0" class="portfolioSection">
-                        <ng-container *ngFor="let portfolio of resourceInfo['portfolios']; let i = index">
-                          <ng-container *ngIf="i!=0">, </ng-container>
-                          {{portfolio.name}}
-                        </ng-container>
                       </div>
 
                     </div>
