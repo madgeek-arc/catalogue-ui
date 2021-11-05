@@ -212,7 +212,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
   handleBitSet(data: Fields) {
-    // console.log(data.field.name);
+    console.log(data.field.name);
     if (data.field.multiplicity) {
       this.handleBitSetOfGroup(data);
       return;

@@ -82,7 +82,7 @@ export class FormControlService {
     formField.subFieldGroups.forEach(subField => {
       if (subField.field.type === 'composite') {
         if (subField.field.multiplicity) {
-          subGroup[subField.field.name] = formField.field.form.mandatory ? new FormArray([], Validators.required)
+          subGroup[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
           subGroup[subField.field.name].push(new FormGroup(this.createCompositeField(subField)));
         } else {

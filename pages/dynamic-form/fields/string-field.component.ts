@@ -31,9 +31,9 @@ export class StringFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
-    console.log(this.fieldData);
-    console.log(this.form);
-    console.log(this.formControl);
+    // console.log(this.fieldData);
+    // console.log(this.form);
+    // console.log(this.formControl);
   }
 
   /** Handle Arrays --> **/
@@ -76,11 +76,11 @@ export class StringFieldComponent implements OnInit {
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Fields) {
-    // this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
-    //   if (fieldData.field.form.mandatory) {
-    //     this.handleBitSets.emit(fieldData);
-    //   }
-    // });
+    this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
+      if (fieldData.field.form.mandatory) {
+        this.handleBitSets.emit(fieldData);
+      }
+    });
   }
 
   /** other stuff--> **/

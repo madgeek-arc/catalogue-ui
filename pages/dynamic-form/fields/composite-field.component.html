@@ -10,29 +10,9 @@
           <div class="uk-form-description uk-margin-top uk-width-9-10">
             {{control.field.form.description}}
           </div>
-<!--          <div *ngIf="control.field.multiplicity && control.field.type === 'string'" class="uk-form-controls uk-margin-medium-top" [formArrayName]="control.field.name">-->
-<!--            <div *ngFor="let input of compositeFormArray(control.field.parent, i, control.field.name).controls; let k=index" class="uk-margin-bottom">-->
-<!--              <input [id]="control.field.name" [formControlName]="k"-->
-<!--                     class="uk-input uk-width-9-10 uk-animation-slide-top-small">-->
-
-<!--              <a *ngIf="compositeFormArray(control.field.parent, i, control.field.name).length > 1"-->
-<!--                 (click)="removeFromArrayInsideComposite(control.field.parent, i, control.field.name, k); updateBitSet(fieldData); unsavedChangesPrompt()"-->
-<!--                 class="remove-element uk-padding-small uk-animation-slide-top-small">-->
-<!--                <i class="fa fa-times" aria-hidden="true"></i>-->
-<!--              </a>-->
-<!--            </div>-->
-
-<!--            <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">-->
-<!--              <a class="add-new-element" (click)="pushToArrayInsideComposite(control.field.parent, i, control.field.name, fieldData.field.form.mandatory)">-->
-<!--                <i class="fa fa-plus" aria-hidden="true"></i>Add {{control.field.label}}-->
-<!--              </a>-->
-<!--            </div>-->
-
-<!--          </div>-->
           <div *ngIf="control.field.type === 'composite'">
-<!--            {{control.field.name}}-->
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                 (handleBitSets)="handleBitsetOfChildren($event)"
+                                 [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-composite-field>
           </div>
@@ -90,7 +70,7 @@
     </a>
   </div>
   <div class="uk-width-9-10 uk-text-center uk-margin-top">
-    <a class="add-new-element" (click)="pushComposite(fieldData.field.name, fieldData.subFieldGroups)">
+    <a class="add-new-element" (click)="pushComposite(fieldData.subFieldGroups)">
       <i class="fa fa-plus" aria-hidden="true"></i> Add {{fieldData.field.label}}
     </a>
   </div>

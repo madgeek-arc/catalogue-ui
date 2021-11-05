@@ -12,6 +12,7 @@ export class CompositeFieldComponent implements OnInit {
   @Input() vocabularies: Map<string, UiVocabulary[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
+  @Input() position?: number = null;
 
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
@@ -23,7 +24,15 @@ export class CompositeFieldComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.form = this.rootFormGroup.control.get(this.fieldData.field.name) as FormGroup;
+    // console.log(this.fieldData.field.name);
+    if (this.position !== null) {
+      // console.log(this.rootFormGroup.control.controls[this.position]);
+      // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.field.name));
+      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.field.name) as FormGroup;
+    } else {
+      this.form = this.rootFormGroup.control.get(this.fieldData.field.name) as FormGroup;
+    }
+    // console.log(this.form);
   }
 
   /** Handle Arrays --> **/
@@ -35,45 +44,37 @@ export class CompositeFieldComponent implements OnInit {
     return this.form.get(field) as FormArray;
   }
 
-  compositeFormArray(parent: string, parentIndex: number, name: string) {
-    // console.log(parent+', '+parentIndex+', '+name);
-    // console.log(this.form.get([parent,parentIndex,name]));
-    // return this.form.get([parent,parentIndex,name]) as FormArray;
-    let control = this.form.get(parent) as FormArray;
-    return control.controls[parentIndex].get(name) as FormArray;
-  }
-
-  removeFromArrayInsideComposite(parent: string, parentIndex: number, name: string, index: number) {
-    const control = <FormArray>this.form.get([parent,parentIndex,name]);
-    control.removeAt(index);
-  }
-
-  pushToArrayInsideComposite(parent: string, parentIndex: number, name: string, required: boolean) {
-    const control = <FormArray>this.form.get([parent,parentIndex,name]);
-    control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
-  }
-
   remove(i: number) {
+    console.log(i);
+    console.log(this.form);
+    console.log(this.fieldAsFormArray());
     this.fieldAsFormArray().removeAt(i);
   }
 
-  pushComposite(field: string, subFields: Fields[]) {
+  pushComposite(subFields: Fields[]) {
+    this.fieldAsFormArray().push(new FormGroup(this.createCompositeField(subFields)));
+  }
+
+  createCompositeField(subFields: Fields[]) {
     const group: any = {};
     subFields.forEach(subField => {
-      if (subField.field.multiplicity) {
-        group[subField.field.name] = subField.field.form.mandatory ?
-          new FormArray([new FormControl('', Validators.required)])
-          : new FormArray([new FormControl('')]);
+      if (subField.field.type === 'composite') {
+        if (subField.field.multiplicity) {
+          console.log(subField.field.name);
+          group[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
+            : new FormArray([]);
+          console.log(group);
+          group[subField.field.name].push(new FormGroup(this.createCompositeField(subField.subFieldGroups)));
+          console.log(group);
+        } else {
+          group[subField.field.name] = new FormGroup(this.createCompositeField(subField.subFieldGroups))
+        }
       } else {
         group[subField.field.name] = subField.field.form.mandatory ? new FormControl('', Validators.required)
-          : new FormControl('');
-      }
-
-      if (subField.field.form.dependsOn !== null) {
-        group[subField.field.name].disable();
+            : new FormControl('');
       }
     });
-    this.fieldAsFormArray().push(new FormGroup(group));
+    return group;
   }
 
   // onCompositeChange(field: string, affects: Dependent[], index?: number) {
@@ -93,9 +94,8 @@ export class CompositeFieldComponent implements OnInit {
   /** check form fields and tabs validity--> **/
 
   checkFormValidity(name: string, edit: boolean): boolean {
-    // console.log(name);
-    // return (!this.form.get(name).valid && (edit || this.form.get(name).dirty));
-    return true;
+    console.log(name);
+    return (!this.form.get(name).valid && (edit || this.form.get(name).dirty));
   }
 
   checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
@@ -147,6 +147,7 @@ export class CompositeFieldComponent implements OnInit {
     this.handleBitSets.emit(data);
   }
 
+  /** other stuff--> **/
   unsavedChangesPrompt() {
     this.hasChanges = true;
   }

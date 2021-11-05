@@ -21,7 +21,7 @@
                     *ngIf="(!editMode || pendingService) && (projectName == 'EOSC' || projectName == 'CatRIS')"
                     (click)="this.onSubmit(true)"> Save as draft
             </button>
-            <button *ngIf="loaderPercentage" class="uk-button uk-button-secondary uk-margin-left"
+            <button *ngIf="form.valid" class="uk-button uk-button-secondary uk-margin-left"
                     (click)="onSubmit(false)" type="submit"> Submit
             </button>
           </div>
@@ -33,58 +33,58 @@
             <div class="uk-width-expand@m uk-margin-medium-top">
               <div>
 
-                <div class="requiredFields">Fields with (*) are mandatory and must be completed in order to save this
-                  form. Leaving optional fields blank will remove the relevant heading from the published
-                  resource/provider profile.
-                </div>
+<!--                <div class="requiredFields">Fields with (*) are mandatory and must be completed in order to save this-->
+<!--                  form. Leaving optional fields blank will remove the relevant heading from the published-->
+<!--                  resource/provider profile.-->
+<!--                </div>-->
 
                 <div id="serviceForm">
 
-                  <div class="uk-margin-bottom uk-flex uk-flex-right">
-                    <div>
-                      <button class="uk-button uk-button-link" type="button">Do you need help?</button>
-                      <div uk-drop="pos: bottom-left">
-                        <div class="uk-card uk-card-body uk-card-default">
-                          <ng-container *ngIf="projectName === 'EOSC' || projectName === 'OpenAIRE Catalogue'">
-                            <p class="uk-margin-remove-bottom">For questions related to the information that needs to be
-                              filled in and suggestions on the portal, please contact us in <a
-                                href="mailto:onboarding@eosc-portal.eu">onboarding@eosc-portal.eu</a></p>
-                          </ng-container>
-                          <ng-container *ngIf="projectName === 'CatRIS'">
-                            <p>For questions related to the information that needs to be filled in and suggestions on
-                              the portal, please contact us in <a href="mailto:support@catris.eu">support@catris.eu</a>
-                            </p>
-                            <p>For technical issues and questions, please contact us in
-                              <a href="mailto:tech-support@catris.eu">tech-support@catris.eu</a></p>
-                            <p>For instructions on onboarding Providers and Services, click
-                              <a href="../../../assets/files/CatRIS%20Provider%20and%20Service%20Onboarding%20Guide.pdf"
-                              target="_blank">here</a></p>
-                            <p>For a description of Provider and Service Profiles, click
-                              <a href="../../../assets/files/CatRIS%20Provider%20and%20Service%20Profile%20Guide.pdf"
-                              target="_blank">here</a></p>
-                            <p>For a description of the Provider Dashboards, click
-                              <a href="../../../assets/files/CatRIS%20Provider%20Dashboard%20Guide.pdf"
-                              target="_blank">here</a></p>
-                            <p>For a description of the CatRIS API, click
-                              <a href="../../../assets/files/CatRIS%20Catalogue%20API%20Guide.pdf"
-                              target="_blank">here</a></p>
-                          </ng-container>
+<!--                  <div class="uk-margin-bottom uk-flex uk-flex-right">-->
+<!--                    <div>-->
+<!--                      <button class="uk-button uk-button-link" type="button">Do you need help?</button>-->
+<!--                      <div uk-drop="pos: bottom-left">-->
+<!--                        <div class="uk-card uk-card-body uk-card-default">-->
+<!--                          <ng-container *ngIf="projectName === 'EOSC' || projectName === 'OpenAIRE Catalogue'">-->
+<!--                            <p class="uk-margin-remove-bottom">For questions related to the information that needs to be-->
+<!--                              filled in and suggestions on the portal, please contact us in <a-->
+<!--                                href="mailto:onboarding@eosc-portal.eu">onboarding@eosc-portal.eu</a></p>-->
+<!--                          </ng-container>-->
+<!--                          <ng-container *ngIf="projectName === 'CatRIS'">-->
+<!--                            <p>For questions related to the information that needs to be filled in and suggestions on-->
+<!--                              the portal, please contact us in <a href="mailto:support@catris.eu">support@catris.eu</a>-->
+<!--                            </p>-->
+<!--                            <p>For technical issues and questions, please contact us in-->
+<!--                              <a href="mailto:tech-support@catris.eu">tech-support@catris.eu</a></p>-->
+<!--                            <p>For instructions on onboarding Providers and Services, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Provider%20and%20Service%20Onboarding%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                            <p>For a description of Provider and Service Profiles, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Provider%20and%20Service%20Profile%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                            <p>For a description of the Provider Dashboards, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Provider%20Dashboard%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                            <p>For a description of the CatRIS API, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Catalogue%20API%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                          </ng-container>-->
 
-                        </div>
-                      </div>
-                    </div>
-                    <div class="uk-margin-medium-left">
-                      <a *ngIf="projectName === 'CatRIS'" href="../../../assets/files/Resource-Form.pdf"
-                         target="_blank">
-                        <i class="fa fa-file-pdf-o uk-margin-small-right"></i><span style="color: #292929">Download as PDF</span>
-                      </a>
-                      <a *ngIf="projectName === 'EOSC'"
-                         href="https://eosc-portal.eu/providers-documentation/eosc-provider-portal-resource-profile"
-                         target="_blank">
-                        <i class="fa fa-file-pdf-o uk-margin-small-right"></i><span style="color: #292929">Download as PDF/Excel</span>
-                      </a>
-                    </div>
-                  </div>
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="uk-margin-medium-left">-->
+<!--                      <a *ngIf="projectName === 'CatRIS'" href="../../../assets/files/Resource-Form.pdf"-->
+<!--                         target="_blank">-->
+<!--                        <i class="fa fa-file-pdf-o uk-margin-small-right"></i><span style="color: #292929">Download as PDF</span>-->
+<!--                      </a>-->
+<!--                      <a *ngIf="projectName === 'EOSC'"-->
+<!--                         href="https://eosc-portal.eu/providers-documentation/eosc-provider-portal-resource-profile"-->
+<!--                         target="_blank">-->
+<!--                        <i class="fa fa-file-pdf-o uk-margin-small-right"></i><span style="color: #292929">Download as PDF/Excel</span>-->
+<!--                      </a>-->
+<!--                    </div>-->
+<!--                  </div>-->
 
                   <div *ngIf="errorMessage" data-uk-alert="" class="uk-alert uk-alert-danger">
                     <p>{{errorMessage}}</p>
@@ -106,10 +106,10 @@
                           <a href="#" class="remove-text-decoration uk-flex uk-flex-between"
                              [ngClass]="{'form-error': bitset.tabs.get(tab.group.id).valid}">
                             <span>{{i+1 + '. ' + tab.group.name + (tab.required.topLevel > 0 ? ' *' : '')}}</span>
-                            <span *ngIf=" bitset.tabs.get(tab.group.id).requiredOnTab !== 0" class="circle-number">
-                              <i *ngIf="bitset.tabs.get(tab.group.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>
-                              {{bitset.tabs.get(tab.group.id).remainingOnTab != 0 ? bitset.tabs.get(tab.group.id).remainingOnTab + '*' : ''}}
-                            </span>
+<!--                            <span *ngIf=" bitset.tabs.get(tab.group.id).requiredOnTab !== 0" class="circle-number">-->
+<!--                              <i *ngIf="bitset.tabs.get(tab.group.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>-->
+<!--                              {{bitset.tabs.get(tab.group.id).remainingOnTab != 0 ? bitset.tabs.get(tab.group.id).remainingOnTab + '*' : ''}}-->
+<!--                            </span>-->
                           </a>
                         </li>
                       </ul>
@@ -124,46 +124,37 @@
                         </button>
                       </div>
 
-                      <div class="stepsCompleted uk-margin-top uk-text-center">
-                        {{bitset.completedTabs}} of {{bitset.requiredTabs}}
-                      </div>
-                      <div class="uk-margin-small-top">
-                        <progress id="js-progressbar" class="uk-progress uk-margin-remove-bottom"
-                                  value="{{loaderPercentage}}"
-                                  max="100"></progress>
-                        <div [ngStyle]="{'margin-left.%': (loaderPercentage*0.9).toLocaleString()}"
-                             class="percentageNumber">{{loaderPercentage}}%
-                        </div>
-                      </div>
+<!--                      <div class="stepsCompleted uk-margin-top uk-text-center">-->
+<!--                        {{bitset.completedTabs}} of {{bitset.requiredTabs}}-->
+<!--                      </div>-->
+<!--                      <div class="uk-margin-small-top">-->
+<!--                        <progress id="js-progressbar" class="uk-progress uk-margin-remove-bottom"-->
+<!--                                  value="{{loaderPercentage}}"-->
+<!--                                  max="100"></progress>-->
+<!--                        <div [ngStyle]="{'margin-left.%': (loaderPercentage*0.9).toLocaleString()}"-->
+<!--                             class="percentageNumber">{{loaderPercentage}}%-->
+<!--                        </div>-->
+<!--                      </div>-->
                     </div>
 
                     <div *ngIf="form && ready" class="uk-width-3-4">
                       <form [formGroup]="form">
-
                         <div class="formContainer">
                           <ul id="top-navigation-tabs" class="uk-switcher uk-margin-top uk-margin-bottom">
                             <li *ngFor="let group of fields">
                               <div *ngFor="let fieldsData of group.fields" class="">
-                                <app-field *ngIf="group.group.id !== 'extras'; else elseBlock" [editMode]="editMode"
-                                           [fieldData]="fieldsData" [form]="form"
-                                           [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                           (handleBitSets)="handleBitSet($event)"
-                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">
+                                <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                                           [subVocabularies]="subVocabularies" [vocabularies]="vocabularies">
+<!--                                           (handleBitSets)="handleBitSet($event)"-->
+<!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
                                 </app-field>
-                                <ng-template #elseBlock>
-                                  <app-field [fieldData]="fieldsData" [form]="getAsFormGroup('extras')" [editMode]="editMode"
-                                             [vocabularies]="vocabularies" [subVocabularies]="subVocabularies"
-                                             (handleBitSets)="handleBitSet($event)"
-                                             (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">
-                                  </app-field>
-                                </ng-template>
                               </div>
                             </li>
                           </ul>
                         </div>
 
                       </form>
-                      <pre>{{form.getRawValue() | json}}</pre>
+<!--                      <pre>{{form.getRawValue() | json}}</pre>-->
                     </div>
                   </div>
                 </div>

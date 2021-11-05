@@ -26,7 +26,7 @@ export class DynamicFormFieldsComponent implements OnInit {
   constructor(private formControlService: FormControlService) { }
 
   ngOnInit() {
-    console.log(this.form.value);
+    // console.log(this.form.value);
   }
 
   /** Handle Arrays --> **/
