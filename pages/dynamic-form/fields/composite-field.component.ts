@@ -58,9 +58,8 @@ export class CompositeFieldComponent implements OnInit {
   createCompositeField(subFields: Fields[]) {
     const group: any = {};
     subFields.forEach(subField => {
-      if (subField.field.type === 'composite') {
-        if (subField.field.multiplicity) {
-          console.log(subField.field.name);
+      if (subField.field.typeInfo.type === 'composite') {
+        if (subField.field.typeInfo.multiplicity) {
           group[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
           console.log(group);

@@ -70,7 +70,7 @@ export class DynamicFormFieldsComponent implements OnInit {
   pushComposite(field: string, subFields: Fields[]) {
     const group: any = {};
     subFields.forEach(subField => {
-      if (subField.field.multiplicity) {
+      if (subField.field.typeInfo.multiplicity) {
         group[subField.field.name] = subField.field.form.mandatory ?
           new FormArray([new FormControl('', Validators.required)])
           : new FormArray([new FormControl('')]);

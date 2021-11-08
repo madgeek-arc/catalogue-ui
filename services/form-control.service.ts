@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
-import {FormModel, UiVocabulary} from '../domain/dynamic-form-model';
+import {Field, Fields, FormModel, UiVocabulary} from '../domain/dynamic-form-model';
 import {urlAsyncValidator, URLValidator} from '../shared/validators/generic.validator';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
@@ -14,7 +14,7 @@ export class FormControlService {
   private options = {withCredentials: true};
 
   getFormModel() {
-    return this.http.get<FormModel[]>(this.base + '/form/model');
+    return this.http.get<FormModel[]>(this.base + '/ui/form/model');
   }
 
   getUiVocabularies() {
@@ -36,12 +36,12 @@ export class FormControlService {
       groups.fields.forEach(formField => {
         // console.log(formField.field.name);
         // if (formField.field.form.immutable === checkImmutable) {
-          if (formField.field.multiplicity) {
-            if (formField.field.type === 'url') {
+          if (formField.field.typeInfo.multiplicity) {
+            if (formField.field.typeInfo.type === 'url') {
               group[formField.field.name] = formField.field.form.mandatory ?
                 new FormArray([new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this))])
                 : new FormArray([new FormControl('', URLValidator, urlAsyncValidator(this))]);
-            } else if (formField.field.type === 'composite') {
+            } else if (formField.field.typeInfo.type === 'composite') {
               group[formField.field.name] = formField.field.form.mandatory ? new FormArray([], Validators.required)
                 : new FormArray([]);
               group[formField.field.name].push(new FormGroup(this.createCompositeField(formField)));
@@ -51,17 +51,17 @@ export class FormControlService {
                 : new FormArray([new FormControl('')]);
             }
           } else {
-            if (formField.field.type === 'url') {
+            if (formField.field.typeInfo.type === 'url') {
               group[formField.field.name] = formField.field.form.mandatory ?
                 new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this))
                 : new FormControl('', URLValidator, urlAsyncValidator(this));
-            } else if (formField.field.type === 'composite') {
+            } else if (formField.field.typeInfo.type === 'composite') {
               group[formField.field.name] = new FormGroup(this.createCompositeField(formField));
-            } else if (formField.field.type === 'email') {
+            } else if (formField.field.typeInfo.type === 'email') {
               group[formField.field.name] = formField.field.form.mandatory ?
                 new FormControl('', Validators.compose([Validators.required, Validators.email]))
                 : new FormControl('', Validators.email);
-            } else if (formField.field.type === 'phone') {
+            } else if (formField.field.typeInfo.type === 'phone') {
               group[formField.field.name] = formField.field.form.mandatory ?
                 new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
                 : new FormControl('', Validators.pattern('[+]?\\d+$'));
@@ -76,27 +76,27 @@ export class FormControlService {
     return new FormGroup(group);
   }
 
-  createCompositeField(formField) {
+  createCompositeField(formField: Fields) {
     const subGroup: any = {};
     // console.log(formField);
     formField.subFieldGroups.forEach(subField => {
-      if (subField.field.type === 'composite') {
-        if (subField.field.multiplicity) {
+      if (subField.field.typeInfo.type === 'composite') {
+        if (subField.field.typeInfo.multiplicity) {
           subGroup[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
           subGroup[subField.field.name].push(new FormGroup(this.createCompositeField(subField)));
         } else {
           subGroup[subField.field.name] = new FormGroup(this.createCompositeField(subField));
         }
-      } else if (subField.field.type === 'email') {
+      } else if (subField.field.typeInfo.type === 'email') {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormControl('', Validators.compose([Validators.required, Validators.email]))
           : new FormControl('', Validators.email);
-      } else if (subField.field.type === 'phone') {
+      } else if (subField.field.typeInfo.type === 'phone') {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
           : new FormControl('', Validators.pattern('[+]?\\d+$'));
-      } else if (subField.field.multiplicity) { // add array inside composite element
+      } else if (subField.field.typeInfo.multiplicity) { // add array inside composite element
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormArray([new FormControl('', Validators.required)])
           : new FormArray([new FormControl('')]);

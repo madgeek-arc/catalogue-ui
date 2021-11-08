@@ -157,7 +157,7 @@ export class DynamicFormComponent implements OnInit {
     let pos = data.position;
     // console.log(field.field.name);
 
-    if (field.field.multiplicity) {
+    if (field.field.typeInfo.multiplicity) {
       let formArray = this.form.get(field.field.accessPath) as FormArray;
       let flag = false;
       for (let i = 0; i < formArray.length; i++) {
@@ -213,7 +213,7 @@ export class DynamicFormComponent implements OnInit {
 
   handleBitSet(data: Fields) {
     console.log(data.field.name);
-    if (data.field.multiplicity) {
+    if (data.field.typeInfo.multiplicity) {
       this.handleBitSetOfGroup(data);
       return;
     }

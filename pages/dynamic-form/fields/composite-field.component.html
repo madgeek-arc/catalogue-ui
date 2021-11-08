@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-<div *ngIf="fieldData.field.multiplicity; else noMultiplicity">
+<div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity">
   <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
     <div [formGroupName]="i" class="uk-margin-bottom formGroupElement uk-width-9-10 uk-display-inline-block">
       <div *ngFor="let control of fieldData?.subFieldGroups; let j=index">
@@ -10,13 +10,13 @@
           <div class="uk-form-description uk-margin-top uk-width-9-10">
             {{control.field.form.description}}
           </div>
-          <div *ngIf="control.field.type === 'composite'">
+          <div *ngIf="control.field.typeInfo.type === 'composite'">
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                  [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-composite-field>
           </div>
-          <div *ngIf="control.field.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
+          <div *ngIf="control.field.typeInfo.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
             <ng-select class="uk-width-9-10" [id]="control.field.name"
                        [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name)}"
                        [items]="getCompositeVocabularyItems(fieldData, j, i)"
@@ -30,22 +30,22 @@
               <i><small>{{control.field.form.suggestion}}</small></i>
             </div>
           </div>
-          <div *ngIf="control.field.type === 'string' || control.field.type === 'email'|| control.field.type === 'phone'
-                      || control.field.type === 'url'">
+          <div *ngIf="control.field.typeInfo.type === 'string' || control.field.typeInfo.type === 'email'|| control.field.typeInfo.type === 'phone'
+                      || control.field.typeInfo.type === 'url'">
             <app-string-url-email-field [fieldData]="control" [position]="i"
                                         (handleBitSets)="handleBitsetOfChildren($event)"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-string-url-email-field>
           </div>
-          <div *ngIf="control.field.type === 'largeText'">
+          <div *ngIf="control.field.typeInfo.type === 'largeText'">
             <textarea [id]="control.field.name" class="uk-textarea uk-width-9-10"
                       [formControlName]="control.field.name"
                       (input)="updateBitSetOfComposite(fieldData, j); unsavedChangesPrompt()"
                       [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name)}">
             </textarea>
           </div>
-          <div *ngIf="control.field.type === 'boolean'">
-            <div *ngIf="control.field.multiplicity; else noMultiplicity;" [formArrayName]="control.field.name">
+          <div *ngIf="control.field.typeInfo.type === 'boolean'">
+            <div *ngIf="control.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="control.field.name">
               <!--To add multiplicity if needed-->
             </div>
             <ng-template #noMultiplicity>
@@ -87,14 +87,14 @@
           {{control.field.form.description}}
         </div>
 
-        <div *ngIf="control.field.type === 'composite'">
+        <div *ngIf="control.field.typeInfo.type === 'composite'">
           <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-composite-field>
         </div>
 
-        <div *ngIf="control.field.type === 'vocabulary'"
+        <div *ngIf="control.field.typeInfo.type === 'vocabulary'"
              class="uk-form-controls uk-margin-medium-top">
           <ng-select class="uk-width-9-10" [id]="control.field.name"
                      [ngClass]="{'uk-form-danger': checkFormValidity(control.field.parent + '.' + control.field.name, this.editMode)}"
@@ -110,8 +110,8 @@
           </div>
         </div>
 
-        <div *ngIf="control.field.type === 'string' || control.field.type === 'email' || control.field.type === 'email'
-                    || control.field.type === 'phone'">
+        <div *ngIf="control.field.typeInfo.type === 'string' || control.field.typeInfo.type === 'email' || control.field.typeInfo.type === 'email'
+                    || control.field.typeInfo.type === 'phone'">
           <app-string-url-email-field [fieldData]="control"
                                       (handleBitSets)="handleBitsetOfChildren($event)"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">

@@ -1,13 +1,13 @@
 <form [formGroup]="form">
 
-  <div *ngIf="fieldData.field.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+  <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
       <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
         <input [id]="fieldData.field.name" [formControlName]="i"
                class="uk-input uk-width-9-10 uk-animation-slide-top-small"
                [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
                [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.field.name, i, this.editMode)}"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
-<!--        <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.type === 'url' && this.editMode-->
+<!--        <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.typeInfo.type === 'url' && this.editMode-->
 <!--                        && this.isPortalAdmin && fieldAsFormArray().controls[i].value"-->
 <!--             class="uk-icon">-->
 <!--          &nbsp;&nbsp;<a href="{{this.form.get(fieldData.field.name).value}}" target="_blank">-->
@@ -23,7 +23,7 @@
 
       <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">
         <a class="add-new-element"
-           (click)="push(fieldData.field.name, fieldData.field.form.mandatory, fieldData.field.type)">
+           (click)="push(fieldData.field.name, fieldData.field.form.mandatory, fieldData.field.typeInfo.type)">
           <i class="fa fa-plus" aria-hidden="true"></i>Add {{fieldData.field.label}}
         </a>
       </div>
@@ -34,7 +34,7 @@
            [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
-    <!--      <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.type === 'url' && this.editMode-->
+    <!--      <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.typeInfo.type === 'url' && this.editMode-->
     <!--                        && this.isPortalAdmin && this.form.get(fieldData.field.name).value" class="uk-icon">&nbsp;&nbsp;-->
     <!--        <a href="{{this.form.get(fieldData.field.name).value}}" target="_blank"><i class="fa fa-external-link"></i></a>-->
     <!--      </div>-->

@@ -66,13 +66,13 @@ export class DynamicFormEditComponent extends DynamicFormComponent {
             // console.log(formElementKey);
             let formFieldData = this.getModelData(this.fields, formElementKey);
             let i = 1;
-            if (formFieldData.field.type === 'composite') { // In order for the fields to be enabled
+            if (formFieldData.field.typeInfo.type === 'composite') { // In order for the fields to be enabled
               this.popComposite(key, formElementKey)  // remove it first
               i = 0;  // increase the loops
             }
             let count = 0;
             for (i; i < form[key][formElementKey].length; i++) {
-              if (formFieldData.field.type === 'composite') {
+              if (formFieldData.field.typeInfo.type === 'composite') {
                 this.pushComposite(key, formElementKey, formFieldData.subFieldGroups);
                 // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
                   for (let formSubElementName in form[key][formElementKey][count]) {
@@ -123,7 +123,7 @@ export class DynamicFormEditComponent extends DynamicFormComponent {
         let formFieldData = this.getModelData(this.fields, key);
         if (formFieldData.field.form.mandatory){
           // console.log(key);
-          if (formFieldData.field.type === 'composite') {
+          if (formFieldData.field.typeInfo.type === 'composite') {
             // console.log('composite: ' + key);
             for (let i = 0; i < formFieldData.subFieldGroups.length; i++) {
               if (formFieldData.subFieldGroups[i].field.form.mandatory) {
@@ -153,7 +153,7 @@ export class DynamicFormEditComponent extends DynamicFormComponent {
   pushComposite(group: string, field: string, subFields: Fields[]) {
     const formGroup: any = {};
     subFields.forEach(subField => {
-      if (subField.field.multiplicity) {
+      if (subField.field.typeInfo.multiplicity) {
         formGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormArray([new FormControl('', Validators.required)])
           : new FormArray([new FormControl('')]);

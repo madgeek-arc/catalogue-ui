@@ -17,6 +17,13 @@ export class Dependent {
   name: string;
 }
 
+export class TypeInfo {
+  type: string;
+  values: string[];
+  vocabulary: string;
+  multiplicity: boolean;
+}
+
 export class Form {
   dependsOn: Dependent;
   affects: Dependent[];
@@ -43,8 +50,8 @@ export class Field {
   parent: string;
   label: string;
   accessPath: string;
-  multiplicity: boolean;
-  type: string;
+  typeInfo: TypeInfo;
+  includedInSnippet: boolean;
   form: Form;
   display: Display;
 }

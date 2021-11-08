@@ -7,24 +7,24 @@
       <div class="uk-form-description uk-margin-top uk-width-9-10">{{fieldData.field.form.description}}</div>
       <div class="uk-form-controls uk-margin-medium-top">
 
-        <div *ngIf="fieldData.field.type === 'composite'">
+        <div *ngIf="fieldData.field.typeInfo.type === 'composite'">
           <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-composite-field>
         </div>
 
-        <div *ngIf="fieldData.field.type === 'string' || fieldData.field.type === 'url' ||
-                    fieldData.field.type === 'email' || fieldData.field.type === 'phone'">
+        <div *ngIf="fieldData.field.typeInfo.type === 'string' || fieldData.field.typeInfo.type === 'url' ||
+                    fieldData.field.typeInfo.type === 'email' || fieldData.field.typeInfo.type === 'phone'">
           <app-string-url-email-field [fieldData]="fieldData"
                                       (handleBitSets)="handleBitsetOfChildren($event)"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-string-url-email-field>
         </div>
 
-        <div *ngIf="fieldData.field.type === 'vocabulary'">
+        <div *ngIf="fieldData.field.typeInfo.type === 'vocabulary'">
 
-          <div *ngIf="fieldData.field.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
+          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
             <div *ngFor="let input of fieldAsFormArray(fieldData.field.name).controls; let i=index" class="uk-margin-bottom">
               <ng-select class="uk-width-9-10" [id]="fieldData.field.name" [formControlName]="i"
                          [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.field.name, i, this.editMode)}"
@@ -42,7 +42,7 @@
             </div>
             <div><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
             <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">
-              <a class="add-new-element" (click)="push(fieldData.field.name, fieldData.field.form.mandatory, fieldData.field.type)">
+              <a class="add-new-element" (click)="push(fieldData.field.name, fieldData.field.form.mandatory, fieldData.field.typeInfo.type)">
                 <i class="fa fa-plus" aria-hidden="true"></i>Add {{fieldData.field.label}}
               </a>
             </div>
@@ -61,8 +61,8 @@
           </ng-template>
         </div>
 
-        <div *ngIf="fieldData.field.type === 'largeText'">
-          <div *ngIf="fieldData.field.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
+        <div *ngIf="fieldData.field.typeInfo.type === 'largeText'">
+          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
             <!--To add multiplicity if needed-->
           </div>
           <ng-template #noMultiplicity>
@@ -75,8 +75,8 @@
           </ng-template>
         </div>
 
-        <div *ngIf="fieldData.field.type === 'richText'">
-          <div *ngIf="fieldData.field.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+        <div *ngIf="fieldData.field.typeInfo.type === 'richText'">
+          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
             <!--To add multiplicity if needed-->
           </div>
 
@@ -95,22 +95,22 @@
           </ng-template>
         </div>
 
-        <div *ngIf="fieldData.field.type === 'date'">
-          <div *ngIf="fieldData.field.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+        <div *ngIf="fieldData.field.typeInfo.type === 'date'">
+          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
             <!--To add multiplicity if needed-->
           </div>
 
           <ng-template #noMultiplicity>
             <input [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-input uk-width-9-10"
                    [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [type]="fieldData.field.type"
+                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [type]="fieldData.field.typeInfo.type"
                    [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.field.name, this.editMode) }">
             <div><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
           </ng-template>
         </div>
 
-        <div *ngIf="fieldData.field.type === 'boolean'">
-          <div *ngIf="fieldData.field.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
+        <div *ngIf="fieldData.field.typeInfo.type === 'boolean'">
+          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
             <!--To add multiplicity if needed-->
           </div>
           <ng-template #noMultiplicity>
