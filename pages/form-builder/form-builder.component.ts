@@ -10,10 +10,11 @@ export class FormBuilderComponent implements OnInit {
 
   formBuilder: Fields[] = [];
 
-  fieldTypes = [{id: 'string', name: 'small Text'}, {id: 'largeText', name: 'largeText' }];
-
   ngOnInit() {
     this.formBuilder.push(new Fields());
-    console.log(this.formBuilder);
+  }
+
+  pushField() {
+    this.formBuilder.push(new Fields());
   }
 }

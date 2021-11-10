@@ -5,6 +5,13 @@ export class Group {
   name: string;
   required: boolean;
   order: number;
+
+  constructor() {
+    this.id = '';
+    this.name = 'Untitled Group';
+    this.required = false;
+    this.order = 0;
+  }
 }
 
 export class Required {
