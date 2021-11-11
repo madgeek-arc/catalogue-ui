@@ -19,7 +19,7 @@ declare var UIkit: any;
 export class DynamicFormComponent implements OnInit {
 
   fields: FormModel[] = null;
-  vocabularies: Map<string, UiVocabulary[]>;
+  vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
 
@@ -49,11 +49,11 @@ export class DynamicFormComponent implements OnInit {
   ngOnInit() {
     this.ready = false;
     zip(
-      // this.formControlService.getUiVocabularies(),
+      this.formControlService.getUiVocabularies(),
       this.formControlService.getFormModel()
     ).subscribe(res => {
-        // this.vocabularies = res[0];
-        this.fields = res[0];
+        this.vocabularies = res[0];
+        this.fields = res[1];
       },
       error => {
         this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -66,15 +66,12 @@ export class DynamicFormComponent implements OnInit {
 
 
   onSubmit(tempSave: boolean, pendingService?: boolean) {
-    if (this.form.get('service').valid) {
+    if (this.form.valid) {
       window.scrollTo(0, 0);
       // console.log(this.form.getRawValue());
       this.showLoader = true;
       // this.clearEmptyFields(); // Maybe clear form from empty strings
-      // if (!this.editMode) {
-        this.form.get('extras.EOSCReady').setValue(true);
-      // }
-      this.formControlService.postDynamicService(this.form.getRawValue(), this.editMode).subscribe(
+      this.formControlService.postItem(this.form.getRawValue(), this.editMode).subscribe(
         res => {
           this.router.navigate(['/service', res['service'].id]);
         },

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Fields, HandleBitSet, UiVocabulary} from "../../../domain/dynamic-form-model";
+import {Field, Fields, HandleBitSet, UiVocabulary} from "../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
@@ -9,7 +9,7 @@ import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from 
 
 export class CompositeFieldComponent implements OnInit {
   @Input() fieldData: Fields;
-  @Input() vocabularies: Map<string, UiVocabulary[]>;
+  @Input() vocabularies: Map<string, string[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
@@ -31,6 +31,7 @@ export class CompositeFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.field.name) as FormGroup;
     } else {
       this.form = this.rootFormGroup.control.get(this.fieldData.field.name) as FormGroup;
+      // console.log(this.form);
     }
     // console.log(this.form);
   }
@@ -45,9 +46,6 @@ export class CompositeFieldComponent implements OnInit {
   }
 
   remove(i: number) {
-    console.log(i);
-    console.log(this.form);
-    console.log(this.fieldAsFormArray());
     this.fieldAsFormArray().removeAt(i);
   }
 
@@ -93,7 +91,6 @@ export class CompositeFieldComponent implements OnInit {
   /** check form fields and tabs validity--> **/
 
   checkFormValidity(name: string, edit: boolean): boolean {
-    console.log(name);
     return (!this.form.get(name).valid && (edit || this.form.get(name).dirty));
   }
 
@@ -111,12 +108,15 @@ export class CompositeFieldComponent implements OnInit {
 
   /** Return Vocabulary items for composite fields--> **/
 
-  getCompositeVocabularyItems(fieldData: Fields, j: number, i?: number) {
-    if (fieldData.subFieldGroups[j].field.form.dependsOn !== null) {
-      return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(fieldData.subFieldGroups[j].field.form.dependsOn.name).value];
-    } else {
-      return this.vocabularies[fieldData.subFieldGroups[j].field.form.vocabulary];
-    }
+  getCompositeVocabularyItems(fieldData: Field) {
+    // console.log(fieldData.typeInfo.vocabulary);
+    // console.log(this.vocabularies);
+    // if (fieldData.subFieldGroups[j].field.form.dependsOn !== null) {
+    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(fieldData.subFieldGroups[j].field.form.dependsOn.name).value];
+    // } else {
+    // console.log(this.vocabularies[fieldData.typeInfo.vocabulary]);
+      return this.vocabularies[fieldData.typeInfo.vocabulary];
+    // }
   }
 
   /** <--Return Vocabulary items for composite fields **/

@@ -19,7 +19,7 @@
           <div *ngIf="control.field.typeInfo.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
             <ng-select class="uk-width-9-10" [id]="control.field.name"
                        [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name)}"
-                       [items]="getCompositeVocabularyItems(fieldData, j, i)"
+                       [items]="getCompositeVocabularyItems(control.field)"
                        (change)="onCompositeChange(fieldData, j, i); updateBitSetOfComposite(fieldData, j); unsavedChangesPrompt();"
                        bindLabel="name"
                        bindValue="id"
@@ -94,11 +94,10 @@
           </app-composite-field>
         </div>
 
-        <div *ngIf="control.field.typeInfo.type === 'vocabulary'"
-             class="uk-form-controls uk-margin-medium-top">
-          <ng-select class="uk-width-9-10" [id]="control.field.name"
-                     [ngClass]="{'uk-form-danger': checkFormValidity(control.field.parent + '.' + control.field.name, this.editMode)}"
-                     [items]="getCompositeVocabularyItems(fieldData, j)"
+        <div *ngIf="control.field.typeInfo.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
+          <ng-select class="uk-width-9-10" [id]="control.field.id"
+                     [ngClass]="{'uk-form-danger': checkFormValidity(control.field.name, this.editMode)}"
+                     [items]="getCompositeVocabularyItems(control.field)"
                      (change)="unsavedChangesPrompt(); onCompositeChange(fieldData, j); updateBitSetOfComposite(fieldData, j)"
                      bindLabel="name"
                      bindValue="id"

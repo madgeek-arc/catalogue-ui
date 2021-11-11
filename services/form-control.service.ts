@@ -18,15 +18,15 @@ export class FormControlService {
   }
 
   getUiVocabularies() {
-    return this.http.get<Map<string, UiVocabulary[]>>(this.base + `/ui/vocabularies`);
+    return this.http.get<Map<string, string[]>>(this.base + `/ui/vocabularies/map`);
   }
 
   getDynamicService(id: string) {
     return this.http.get(this.base + `/ui/services/${id}/`, this.options);
   }
 
-  postDynamicService(service: any, edit:boolean) {
-    return this.http[edit ? 'put' : 'post'](this.base + '/ui/services', service, this.options);
+  postItem(item: any, edit:boolean) {
+    return this.http[edit ? 'put' : 'post'](this.base + '/items?resourceType=dataset_type', item, this.options);
   }
 
   toFormGroup(form: FormModel[], checkImmutable: boolean) {
@@ -47,8 +47,8 @@ export class FormControlService {
               group[formField.field.name].push(new FormGroup(this.createCompositeField(formField)));
             } else {
               group[formField.field.name] = formField.field.form.mandatory ?
-                new FormArray([new FormControl('', Validators.required)])
-                : new FormArray([new FormControl('')]);
+                new FormArray([new FormControl(null, Validators.required)])
+                : new FormArray([new FormControl(null)]);
             }
           } else {
             if (formField.field.typeInfo.type === 'url') {
@@ -66,8 +66,8 @@ export class FormControlService {
                 new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
                 : new FormControl('', Validators.pattern('[+]?\\d+$'));
             } else {
-              group[formField.field.name] = formField.field.form.mandatory ? new FormControl('', Validators.required)
-                : new FormControl('');
+              group[formField.field.name] = formField.field.form.mandatory ? new FormControl(null, Validators.required)
+                : new FormControl(null);
             }
           }
         // }
@@ -103,8 +103,8 @@ export class FormControlService {
       }
       else {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
-          new FormControl('', Validators.required)
-          : new FormControl('');
+          new FormControl(null, Validators.required)
+          : new FormControl(null);
       }
       if (subField.field.form.dependsOn !== null) {
         // console.log(subField.field.name);
