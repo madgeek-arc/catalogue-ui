@@ -40,6 +40,52 @@
 
                 <div id="serviceForm">
 
+<!--                  <div class="uk-margin-bottom uk-flex uk-flex-right">-->
+<!--                    <div>-->
+<!--                      <button class="uk-button uk-button-link" type="button">Do you need help?</button>-->
+<!--                      <div uk-drop="pos: bottom-left">-->
+<!--                        <div class="uk-card uk-card-body uk-card-default">-->
+<!--                          <ng-container *ngIf="projectName === 'EOSC' || projectName === 'OpenAIRE Catalogue'">-->
+<!--                            <p class="uk-margin-remove-bottom">For questions related to the information that needs to be-->
+<!--                              filled in and suggestions on the portal, please contact us in <a-->
+<!--                                href="mailto:onboarding@eosc-portal.eu">onboarding@eosc-portal.eu</a></p>-->
+<!--                          </ng-container>-->
+<!--                          <ng-container *ngIf="projectName === 'CatRIS'">-->
+<!--                            <p>For questions related to the information that needs to be filled in and suggestions on-->
+<!--                              the portal, please contact us in <a href="mailto:support@catris.eu">support@catris.eu</a>-->
+<!--                            </p>-->
+<!--                            <p>For technical issues and questions, please contact us in-->
+<!--                              <a href="mailto:tech-support@catris.eu">tech-support@catris.eu</a></p>-->
+<!--                            <p>For instructions on onboarding Providers and Services, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Provider%20and%20Service%20Onboarding%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                            <p>For a description of Provider and Service Profiles, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Provider%20and%20Service%20Profile%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                            <p>For a description of the Provider Dashboards, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Provider%20Dashboard%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                            <p>For a description of the CatRIS API, click-->
+<!--                              <a href="../../../assets/files/CatRIS%20Catalogue%20API%20Guide.pdf"-->
+<!--                              target="_blank">here</a></p>-->
+<!--                          </ng-container>-->
+
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="uk-margin-medium-left">-->
+<!--                      <a *ngIf="projectName === 'CatRIS'" href="../../../assets/files/Resource-Form.pdf"-->
+<!--                         target="_blank">-->
+<!--                        <i class="fa fa-file-pdf-o uk-margin-small-right"></i><span style="color: #292929">Download as PDF</span>-->
+<!--                      </a>-->
+<!--                      <a *ngIf="projectName === 'EOSC'"-->
+<!--                         href="https://eosc-portal.eu/providers-documentation/eosc-provider-portal-resource-profile"-->
+<!--                         target="_blank">-->
+<!--                        <i class="fa fa-file-pdf-o uk-margin-small-right"></i><span style="color: #292929">Download as PDF/Excel</span>-->
+<!--                      </a>-->
+<!--                    </div>-->
+<!--                  </div>-->
+
                   <div *ngIf="errorMessage" data-uk-alert="" class="uk-alert uk-alert-danger">
                     <p>{{errorMessage}}</p>
                   </div>
@@ -52,7 +98,7 @@
                   </div>
 
                   <div class="uk-grid">
-                    <div class="uk-width-1-4" [ngClass]="{'uk-display-none': (fields.length <= 1)}">
+                    <div class="uk-width-1-4">
                       <div class="tabsTitle uk-margin-bottom">{{serviceORresource}} Profile Information Blocks</div>
                       <ul class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
                           uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
@@ -91,7 +137,7 @@
 <!--                      </div>-->
                     </div>
 
-                    <div *ngIf="form && ready" [ngClass]="{'uk-align-center': (fields.length <= 1)}" class="uk-width-3-4">
+                    <div *ngIf="form && ready" class="uk-width-3-4">
                       <form [formGroup]="form">
                         <div class="formContainer">
                           <ul id="top-navigation-tabs" class="uk-switcher uk-margin-top uk-margin-bottom">

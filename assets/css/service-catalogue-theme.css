@@ -310,7 +310,7 @@ ul.uk-pagination {
 }
 
 .uk-textarea {
-  height: 135px;
+  /*height: 135px;*/
   background: #FAFAFA 0% 0% no-repeat padding-box;
   border: 1px solid #D1D1D1;
   border-radius: 4px;

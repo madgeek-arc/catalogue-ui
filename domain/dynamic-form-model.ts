@@ -5,6 +5,13 @@ export class Group {
   name: string;
   required: boolean;
   order: number;
+
+  constructor() {
+    this.id = '';
+    this.name = 'Untitled Group';
+    this.required = false;
+    this.order = 0;
+  }
 }
 
 export class Required {
@@ -21,7 +28,15 @@ export class TypeInfo {
   type: string;
   values: string[];
   vocabulary: string;
-  multiplicity: boolean;
+  multiplicity: boolean
+
+
+  constructor() {
+    this.type = 'string';
+    this.values = [];
+    this.vocabulary = null;
+    this.multiplicity = false;
+  }
 }
 
 export class Form {
@@ -36,6 +51,20 @@ export class Form {
   immutable: boolean;
   order: number;
   visible: boolean;
+
+  constructor() {
+    this.dependsOn = null;
+    this.affects = null;
+    this.vocabulary = null;
+    this.group = '';
+    this.description = '';
+    this.suggestion = '';
+    this.placeholder = '';
+    this.mandatory = false;
+    this.immutable = false;
+    this.order = 0;
+    this.visible = true;
+  }
 }
 
 export class Display {
@@ -54,11 +83,29 @@ export class Field {
   includedInSnippet: boolean;
   form: Form;
   display: Display;
+
+  constructor() {
+    this.id = '';
+    this.name = '';
+    this.parentId = '';
+    this.parent = '';
+    this.label = '';
+    this.accessPath = '';
+    this.typeInfo = new TypeInfo()
+    this.includedInSnippet = false;
+    this.form = new Form();
+    this.display = new Display();
+  }
 }
 
 export class Fields {
   field: Field;
   subFieldGroups: Fields[];
+
+  constructor() {
+    this.field = new Field();
+    this.subFieldGroups = null;
+  }
 }
 
 export class FormModel {

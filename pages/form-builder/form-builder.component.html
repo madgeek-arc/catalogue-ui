@@ -1,0 +1,18 @@
+<div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom">
+  <div class="uk-container uk-container-expand">
+    <div class="uk-grid">
+
+      <app-group-section class="uk-width-1-5"></app-group-section>
+
+      <app-field-section class="uk-width-4-5" [formBuilder]="formBuilder"></app-field-section>
+
+    </div>
+    <button (click)="pushField()" class="uk-float-right"> Add field</button>
+
+  </div>
+</div>
+
+<pre>
+  {{formBuilder | json}}
+</pre>
+
