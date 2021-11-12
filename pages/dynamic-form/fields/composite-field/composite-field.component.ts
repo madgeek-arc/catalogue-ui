@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, Fields, HandleBitSet, UiVocabulary} from "../../../domain/dynamic-form-model";
+import {Field, Fields, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
@@ -109,6 +109,8 @@ export class CompositeFieldComponent implements OnInit {
   /** Return Vocabulary items for composite fields--> **/
 
   getCompositeVocabularyItems(fieldData: Field) {
+    // console.log(fieldData.name);
+    // console.log(fieldData.id);
     // console.log(fieldData.typeInfo.vocabulary);
     // console.log(this.vocabularies);
     // if (fieldData.subFieldGroups[j].field.form.dependsOn !== null) {

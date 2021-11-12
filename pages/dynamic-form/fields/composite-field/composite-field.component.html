@@ -17,21 +17,26 @@
             </app-composite-field>
           </div>
           <div *ngIf="control.field.typeInfo.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
-            <ng-select class="uk-width-9-10" [id]="control.field.name"
-                       [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name)}"
-                       [items]="getCompositeVocabularyItems(control.field)"
-                       (change)="onCompositeChange(fieldData, j, i); updateBitSetOfComposite(fieldData, j); unsavedChangesPrompt();"
-                       bindLabel="name"
-                       bindValue="id"
-                       clearAllText="Clear"
-                       [formControlName]="control.field.name">
-            </ng-select>
-            <div class="uk-margin-small-top">
-              <i><small>{{control.field.form.suggestion}}</small></i>
-            </div>
+            <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                                  [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            </app-vocabulary-field>
+<!--            <ng-select class="uk-width-9-10" [id]="control.field.name"-->
+<!--                       [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name)}"-->
+<!--                       [items]="getCompositeVocabularyItems(control.field)"-->
+<!--                       (change)="onCompositeChange(fieldData, j, i); updateBitSetOfComposite(fieldData, j); unsavedChangesPrompt();"-->
+<!--                       bindLabel="name"-->
+<!--                       bindValue="id"-->
+<!--                       clearAllText="Clear"-->
+<!--                       [formControlName]="control.field.name">-->
+<!--            </ng-select>-->
+<!--            <div class="uk-margin-small-top">-->
+<!--              <i><small>{{control.field.form.suggestion}}</small></i>-->
+<!--            </div>-->
           </div>
-          <div *ngIf="control.field.typeInfo.type === 'string' || control.field.typeInfo.type === 'email'|| control.field.typeInfo.type === 'phone'
-                      || control.field.typeInfo.type === 'url'">
+          <div *ngIf="control.field.typeInfo.type === 'string' || control.field.typeInfo.type === 'email'||
+                      control.field.typeInfo.type === 'phone' || control.field.typeInfo.type === 'url' ||
+                      control.field.typeInfo.type === 'double'">
             <app-string-url-email-field [fieldData]="control" [position]="i"
                                         (handleBitSets)="handleBitsetOfChildren($event)"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -95,22 +100,27 @@
         </div>
 
         <div *ngIf="control.field.typeInfo.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
-          <ng-select class="uk-width-9-10" [id]="control.field.id"
-                     [ngClass]="{'uk-form-danger': checkFormValidity(control.field.name, this.editMode)}"
-                     [items]="getCompositeVocabularyItems(control.field)"
-                     (change)="unsavedChangesPrompt(); onCompositeChange(fieldData, j); updateBitSetOfComposite(fieldData, j)"
-                     bindLabel="name"
-                     bindValue="id"
-                     clearAllText="Clear"
-                     [formControlName]="control.field.name">
-          </ng-select>
-          <div class="uk-margin-small-top">
-            <i><small>{{control.field.form.suggestion}}</small></i>
-          </div>
+          <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-vocabulary-field>
+<!--          <ng-select class="uk-width-9-10" [id]="control.field.id"-->
+<!--                     [ngClass]="{'uk-form-danger': checkFormValidity(control.field.name, this.editMode)}"-->
+<!--                     [items]="getCompositeVocabularyItems(control.field)"-->
+<!--                     (change)="unsavedChangesPrompt(); onCompositeChange(fieldData, j); updateBitSetOfComposite(fieldData, j)"-->
+<!--                     bindLabel="name"-->
+<!--                     bindValue="id"-->
+<!--                     clearAllText="Clear"-->
+<!--                     [formControlName]="control.field.name">-->
+<!--          </ng-select>-->
+<!--          <div class="uk-margin-small-top">-->
+<!--            <i><small>{{control.field.form.suggestion}}</small></i>-->
+<!--          </div>-->
         </div>
 
-        <div *ngIf="control.field.typeInfo.type === 'string' || control.field.typeInfo.type === 'email' || control.field.typeInfo.type === 'email'
-                    || control.field.typeInfo.type === 'phone'">
+        <div *ngIf="control.field.typeInfo.type === 'string' || control.field.typeInfo.type === 'email' ||
+                    control.field.typeInfo.type === 'email' || control.field.typeInfo.type === 'phone' ||
+                    control.field.typeInfo.type === 'double'">
           <app-string-url-email-field [fieldData]="control"
                                       (handleBitSets)="handleBitsetOfChildren($event)"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">

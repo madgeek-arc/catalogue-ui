@@ -73,7 +73,7 @@ export class DynamicFormComponent implements OnInit {
       // this.clearEmptyFields(); // Maybe clear form from empty strings
       this.formControlService.postItem(this.form.getRawValue(), this.editMode).subscribe(
         res => {
-          this.router.navigate(['/service', res['service'].id]);
+          this.router.navigate(['/search']);
         },
         error => {
           this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error.error.error);

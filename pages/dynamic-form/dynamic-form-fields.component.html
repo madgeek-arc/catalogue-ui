@@ -15,7 +15,8 @@
         </div>
 
         <div *ngIf="fieldData.field.typeInfo.type === 'string' || fieldData.field.typeInfo.type === 'url' ||
-                    fieldData.field.typeInfo.type === 'email' || fieldData.field.typeInfo.type === 'phone'">
+                    fieldData.field.typeInfo.type === 'email' || fieldData.field.typeInfo.type === 'phone' ||
+                    fieldData.field.typeInfo.type === 'double'">
           <app-string-url-email-field [fieldData]="fieldData"
                                       (handleBitSets)="handleBitsetOfChildren($event)"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -23,42 +24,10 @@
         </div>
 
         <div *ngIf="fieldData.field.typeInfo.type === 'vocabulary'">
-
-          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
-            <div *ngFor="let input of fieldAsFormArray(fieldData.field.name).controls; let i=index" class="uk-margin-bottom">
-              <ng-select class="uk-width-9-10" [id]="fieldData.field.name" [formControlName]="i"
-                         [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.field.name, i, this.editMode)}"
-                         [items]="vocabularies[fieldData.field.form.vocabulary]"
-                         (change)="updateBitSet(fieldData); unsavedChangesPrompt()"
-                         bindLabel="name"
-                         bindValue="id"
-                         clearAllText="Clear">
-              </ng-select>
-              <a *ngIf="fieldAsFormArray(fieldData.field.name).length > 1"
-                 (click)="remove(fieldData.field.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
-                 class="remove-element uk-padding-small uk-animation-slide-top-small">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </a>
-            </div>
-            <div><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
-            <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">
-              <a class="add-new-element" (click)="push(fieldData.field.name, fieldData.field.form.mandatory, fieldData.field.typeInfo.type)">
-                <i class="fa fa-plus" aria-hidden="true"></i>Add {{fieldData.field.label}}
-              </a>
-            </div>
-          </div>
-
-          <ng-template #noMultiplicity>
-            <ng-select class="uk-width-9-10" [id]="fieldData.field.name" [formControlName]="fieldData.field.name"
-                       (change)="updateBitSet(fieldData); unsavedChangesPrompt()"
-                       [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.field.name, this.editMode)}"
-                       [items]="vocabularies[fieldData.field.form.vocabulary]"
-                       bindLabel="name"
-                       bindValue="id"
-                       clearAllText="Clear">
-            </ng-select>
-            <div><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
-          </ng-template>
+          <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-vocabulary-field>
         </div>
 
         <div *ngIf="fieldData.field.typeInfo.type === 'largeText'">
