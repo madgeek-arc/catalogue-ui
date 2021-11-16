@@ -6,8 +6,9 @@ import {DynamicFormFieldsComponent} from "./dynamic-form-fields.component";
 import {DynamicFormEditComponent} from "./dynamic-form-edit.component";
 import {LMarkdownEditorModule} from "ngx-markdown-editor";
 import {NgSelectModule} from "@ng-select/ng-select";
-import {CompositeFieldComponent} from "./fields/composite-field.component";
-import {StringFieldComponent} from "./fields/string-field.component";
+import {CompositeFieldComponent} from "./fields/composite-field/composite-field.component";
+import {StringFieldComponent} from "./fields/string-field/string-field.component";
+import {VocabularyFieldComponent} from "./fields/dropdown-field/vocabulary-field.component";
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {StringFieldComponent} from "./fields/string-field.component";
     CompositeFieldComponent,
     DynamicFormFieldsComponent,
     DynamicFormComponent,
-    DynamicFormEditComponent
+    DynamicFormEditComponent,
+    VocabularyFieldComponent
   ],
   imports: [
     CommonModule,

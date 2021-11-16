@@ -13,7 +13,7 @@ import {FormControlService} from "../../services/form-control.service";
 export class DynamicFormFieldsComponent implements OnInit {
   @Input() fieldData: Fields;
   @Input() form: FormGroup;
-  @Input() vocabularies: Map<string, UiVocabulary[]>;
+  @Input() vocabularies: Map<string, string[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
 

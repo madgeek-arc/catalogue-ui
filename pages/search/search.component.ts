@@ -68,7 +68,7 @@ export class SearchComponent implements OnInit {
       // this.loading = true; // Uncomment for spinner
       return this.searchService.searchSnippets(this.urlParameters).subscribe(
         searchResults => {
-          console.log(searchResults);
+          // console.log(searchResults);
           this.updateSearchResultsSnippets(searchResults);
         },
         error => {},

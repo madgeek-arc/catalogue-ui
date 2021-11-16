@@ -1,16 +1,18 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Fields, HandleBitSet} from "../../../domain/dynamic-form-model";
+import {Fields, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {urlAsyncValidator, URLValidator} from "../../../shared/validators/generic.validator";
-import {FormControlService} from "../../../services/form-control.service";
+import {FormControlService} from "../../../../services/form-control.service";
+import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
-  selector: 'app-string-url-email-field',
-  templateUrl: './string-field.component.html'
+  selector: 'app-vocabulary-field',
+  templateUrl: './vocabulary-field.component.html'
 })
 
-export class StringFieldComponent implements OnInit {
+export class VocabularyFieldComponent implements OnInit {
   @Input() fieldData: Fields;
+  @Input() vocabularies: Map<string, string[]>;
+  @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
 
@@ -31,8 +33,8 @@ export class StringFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
-    // console.log(this.fieldData);
-    // console.log(this.form);
+    // console.log(this.vocabularies[this.fieldData.field.typeInfo.vocabulary]);
+    // console.log(this.fieldData.field.name);
     // console.log(this.formControl);
   }
 
@@ -72,7 +74,6 @@ export class StringFieldComponent implements OnInit {
     return (!this.fieldAsFormArray().get([position]).valid
       && (edit || this.fieldAsFormArray().get([position]).dirty));
   }
-
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Fields) {
