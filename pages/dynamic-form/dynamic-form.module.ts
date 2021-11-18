@@ -9,6 +9,8 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {CompositeFieldComponent} from "./fields/composite-field/composite-field.component";
 import {StringFieldComponent} from "./fields/string-field/string-field.component";
 import {VocabularyFieldComponent} from "./fields/dropdown-field/vocabulary-field.component";
+import {CheckboxFieldComponent} from "./fields/checkbox-field/checkbox-field.component";
+import {LargeTextComponent} from "./fields/large-text/large-text.component";
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import {VocabularyFieldComponent} from "./fields/dropdown-field/vocabulary-field
     DynamicFormFieldsComponent,
     DynamicFormComponent,
     DynamicFormEditComponent,
-    VocabularyFieldComponent
+    VocabularyFieldComponent,
+    CheckboxFieldComponent,
+    LargeTextComponent
   ],
   imports: [
     CommonModule,

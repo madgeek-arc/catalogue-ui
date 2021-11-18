@@ -1,11 +1,9 @@
 <ng-container *ngIf="form" [formGroup]="form">
 
   <div *ngIf="fieldData.field.form.visible">
-    <div class="uk-margin-large-bottom">
-      <label class="uk-form-label uk-text-right"
-             [attr.for]="fieldData.field.name">{{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}</label>
-      <div class="uk-form-description uk-margin-top uk-width-9-10">{{fieldData.field.form.description}}</div>
-      <div class="uk-form-controls uk-margin-medium-top">
+    <div class="uk-margin-bottom">
+
+      <div class="uk-form-controls">
 
         <div *ngIf="fieldData.field.typeInfo.type === 'composite'">
           <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
@@ -23,7 +21,7 @@
           </app-string-url-email-field>
         </div>
 
-        <div *ngIf="fieldData.field.typeInfo.type === 'vocabulary'">
+        <div *ngIf="fieldData.field.typeInfo.type === 'vocabulary' || fieldData.field.typeInfo.type === 'select'">
           <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                 (handleBitSets)="handleBitsetOfChildren($event)"
                                 (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -31,17 +29,21 @@
         </div>
 
         <div *ngIf="fieldData.field.typeInfo.type === 'largeText'">
-          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">
-            <!--To add multiplicity if needed-->
-          </div>
-          <ng-template #noMultiplicity>
-            <textarea [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-textarea uk-width-9-10"
-                   [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-                   [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.field.name, this.editMode) }">
-            </textarea>
-            <div><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
-          </ng-template>
+          <app-large-text [fieldData]="fieldData"
+                          (handleBitSets)="handleBitsetOfChildren($event)"
+                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-large-text>
+<!--          <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.field.name">-->
+<!--            &lt;!&ndash;To add multiplicity if needed&ndash;&gt;-->
+<!--          </div>-->
+<!--          <ng-template #noMultiplicity>-->
+<!--            <textarea [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-textarea uk-width-9-10"-->
+<!--                   [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"-->
+<!--                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()"-->
+<!--                   [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.field.name, this.editMode) }">-->
+<!--            </textarea>-->
+<!--            <pre><i><small>{{fieldData.field.form.suggestion}}</small></i></pre>-->
+<!--          </ng-template>-->
         </div>
 
         <div *ngIf="fieldData.field.typeInfo.type === 'richText'">

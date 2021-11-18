@@ -6,7 +6,8 @@ import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
   selector: 'app-string-url-email-field',
-  templateUrl: './string-field.component.html'
+  templateUrl: './string-field.component.html',
+  styles: ['.clear-style { height: 0 !important;}']
 })
 
 export class StringFieldComponent implements OnInit {
@@ -31,6 +32,16 @@ export class StringFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
+
+    if(this.fieldData.field.form.dependsOn) {
+      // console.log(this.fieldData.field.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.field.form.dependsOn.name).value);
+
+      this.form.get(this.fieldData.field.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
+
     // console.log(this.fieldData);
     // console.log(this.form);
     // console.log(this.formControl);
@@ -86,6 +97,14 @@ export class StringFieldComponent implements OnInit {
   /** other stuff--> **/
   unsavedChangesPrompt() {
     this.hasChanges = true;
+  }
+
+  enableDisableField(value: boolean) {
+    if (!value) {
+      this.formControl.disable();
+    } else {
+      this.formControl.enable();
+    }
   }
 
   timeOut(ms: number) {

@@ -1,0 +1,42 @@
+<form [formGroup]="form">
+
+  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10"
+       [innerHTML]="fieldData.field.form.description">
+  </div>
+
+  <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
+        <input [id]="fieldData.field.name" [formControlName]="i"
+               class="uk-checkbox uk-width-9-10 uk-animation-slide-top-small" type="checkbox"
+               [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
+               [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.field.name, i, this.editMode)}"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
+        <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-animation-slide-top-small"
+           (click)="remove(fieldData.field.name, i); updateBitSet(fieldData); unsavedChangesPrompt()">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
+
+      <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">
+        <a class="add-new-element"
+           (click)="push(fieldData.field.name, fieldData.field.form.mandatory)">
+          <i class="fa fa-plus" aria-hidden="true"></i>Add {{fieldData.field.label}}
+        </a>
+      </div>
+    </div>
+
+  <ng-template #noMultiplicity>
+    <label *ngIf="fieldData.field.label" class="uk-form-label" [attr.for]="fieldData.field.name">
+    <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-checkbox" type="checkbox"
+           [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
+           (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+           [ngClass]="{'uk-form-danger': checkFormValidity() }">
+
+      {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
+    </label>
+    <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
+  </ng-template>
+
+</form>
+<!--<pre>{{form.value | json}}</pre>-->

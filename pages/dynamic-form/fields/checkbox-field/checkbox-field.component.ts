@@ -1,19 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Fields, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
+import {Fields, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
-  selector: 'app-vocabulary-field',
-  templateUrl: './vocabulary-field.component.html',
-  styleUrls: ['./vocabulary-field.component.scss']
+  selector: 'app-checkbox-field',
+  templateUrl: './checkbox-field.component.html'
 })
 
-export class VocabularyFieldComponent implements OnInit {
+export class CheckboxFieldComponent implements OnInit {
   @Input() fieldData: Fields;
-  @Input() vocabularies: Map<string, string[]>;
-  @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
 
@@ -24,18 +20,19 @@ export class VocabularyFieldComponent implements OnInit {
   form!: FormGroup;
   hasChanges = false;
 
-  constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
+  constructor(private rootFormGroup: FormGroupDirective) {
   }
 
   ngOnInit() {
+    // console.log(this.fieldData);
     if (this.position !== null) {
       this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
     } else {
       this.form = this.rootFormGroup.control;
     }
+    // console.log(this.form);
+
     this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
-    // console.log(this.vocabularies[this.fieldData.field.typeInfo.vocabulary]);
-    // console.log(this.fieldData.field.name);
     // console.log(this.formControl);
   }
 
@@ -45,15 +42,8 @@ export class VocabularyFieldComponent implements OnInit {
     return this.formControl as unknown as FormArray;
   }
 
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
-        break;
-      default:
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
+  push(field: string, required: boolean) {
+    this.fieldAsFormArray().push(required ? new FormControl(null, Validators.required) : new FormControl(null));
   }
 
   remove(field: string, i: number) {
@@ -75,6 +65,7 @@ export class VocabularyFieldComponent implements OnInit {
     return (!this.fieldAsFormArray().get([position]).valid
       && (edit || this.fieldAsFormArray().get([position]).dirty));
   }
+
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Fields) {
