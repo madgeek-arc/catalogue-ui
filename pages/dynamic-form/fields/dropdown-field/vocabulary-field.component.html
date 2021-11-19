@@ -32,7 +32,7 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <ng-select class="uk-select uk-width-9-10" [id]="fieldData.field.name" [formControlName]="fieldData.field.name"
+    <ng-select class="uk-select uk-width-9-10 uk-margin-small" [id]="fieldData.field.name" [formControlName]="fieldData.field.name"
                (change)="updateBitSet(fieldData); unsavedChangesPrompt()"
                [ngClass]="{'uk-form-danger': checkFormValidity()}"
                [items]="fieldData.field.typeInfo.values? fieldData.field.typeInfo.values : vocabularies[fieldData.field.typeInfo.vocabulary]"
@@ -40,7 +40,7 @@
                bindValue="id"
                clearAllText="Clear">
     </ng-select>
-    <i><small><div [innerHTML]="fieldData.field.form.suggestion"></div></small></i>
+    <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
   </ng-template>
 
 </form>

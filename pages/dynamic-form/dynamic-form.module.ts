@@ -11,6 +11,7 @@ import {StringFieldComponent} from "./fields/string-field/string-field.component
 import {VocabularyFieldComponent} from "./fields/dropdown-field/vocabulary-field.component";
 import {CheckboxFieldComponent} from "./fields/checkbox-field/checkbox-field.component";
 import {LargeTextComponent} from "./fields/large-text/large-text.component";
+import {RadioButtonFieldComponent} from "./fields/radio-button-field/radio-button-field.component";
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {LargeTextComponent} from "./fields/large-text/large-text.component";
     DynamicFormEditComponent,
     VocabularyFieldComponent,
     CheckboxFieldComponent,
+    RadioButtonFieldComponent,
     LargeTextComponent
   ],
   imports: [

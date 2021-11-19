@@ -1,0 +1,24 @@
+<form [formGroup]="form" class="uk-margin-small-bottom">
+  <label *ngIf="fieldData.field.label" class="uk-form-label uk-text-right" [attr.for]="fieldData.field.name">
+    {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
+  </label>
+  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10"
+       [innerHTML]="fieldData.field.form.description">
+  </div>
+
+  <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+  <!--Add Multiplicity here if needed-->
+  </div>
+
+  <ng-template #noMultiplicity>
+    <div *ngFor="let value of fieldData.field.typeInfo.values" class="uk-margin-small-top">
+      <label class="uk-form-label">
+        <input class="uk-radio uk-margin-small-right" type="radio"
+               [formControlName]="fieldData.field.name" [name]="fieldData.field.name" [value]="value"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+               [ngClass]="{'uk-form-danger': checkFormValidity() }">
+        <span class="uk-radio-label">{{value}}</span>
+      </label>
+    </div>
+  </ng-template>
+</form>

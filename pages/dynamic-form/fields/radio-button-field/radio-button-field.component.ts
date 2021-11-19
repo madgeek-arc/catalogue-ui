@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Fields, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {FormControl, FormGroup, FormGroupDirective} from "@angular/forms";
 
 @Component({
-  selector: 'app-checkbox-field',
-  templateUrl: './checkbox-field.component.html'
+  selector: 'app-radio-button-field',
+  templateUrl: './radio-button-field.component.html'
 })
 
-export class CheckboxFieldComponent implements OnInit {
+export class RadioButtonFieldComponent implements OnInit {
+
   @Input() fieldData: Fields;
   @Input() editMode: any;
   @Input() position?: number = null;
@@ -35,34 +36,10 @@ export class CheckboxFieldComponent implements OnInit {
     // console.log(this.formControl);
   }
 
-  /** Handle Arrays --> **/
-
-  fieldAsFormArray() {
-    return this.formControl as unknown as FormArray;
-  }
-
-  push(field: string, required: boolean) {
-    this.fieldAsFormArray().push(required ? new FormControl(null, Validators.required) : new FormControl(null));
-  }
-
-  remove(field: string, i: number) {
-    this.fieldAsFormArray().removeAt(i);
-  }
-
   /** check fields validity--> **/
 
   checkFormValidity(): boolean {
     return (!this.formControl.valid && (this.editMode || this.formControl.dirty));
-  }
-
-  checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
-    if (groupName) {
-      return (!this.fieldAsFormArray()?.get([position])?.get(groupName).valid
-        && (edit || this.fieldAsFormArray()?.get([position])?.get(groupName).dirty));
-
-    }
-    return (!this.fieldAsFormArray().get([position]).valid
-      && (edit || this.fieldAsFormArray().get([position]).dirty));
   }
 
   /** Bitsets--> **/

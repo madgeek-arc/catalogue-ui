@@ -1,4 +1,4 @@
-<form [formGroup]="form" [ngClass]="{'uk-hidden clear-style': formControl.disabled}" >
+<form [formGroup]="form" class="uk-margin-small-bottom" [ngClass]="{'uk-hidden clear-style': formControl.disabled}" >
   <label *ngIf="fieldData.field.label" class="uk-form-label uk-text-right" [attr.for]="fieldData.field.name">
     {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </label>
@@ -40,11 +40,7 @@
            [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
-    <!--      <div *ngIf="projectName === 'OpenAIRE Catalogue' && fieldData.field.typeInfo.type === 'url' && this.editMode-->
-    <!--                        && this.isPortalAdmin && this.form.get(fieldData.field.name).value" class="uk-icon">&nbsp;&nbsp;-->
-    <!--        <a href="{{this.form.get(fieldData.field.name).value}}" target="_blank"><i class="fa fa-external-link"></i></a>-->
-    <!--      </div>-->
-    <i><small><div class="uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div></small></i>
+    <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
   </ng-template>
 
 </form>

@@ -1,22 +1,16 @@
 <form [formGroup]="form">
 <!--  {{fieldData.field.name}}-->
-  <label *ngIf="fieldData.field.label" class="uk-form-label uk-text-right" [attr.for]="fieldData.field.name">
+  <label *ngIf="fieldData.field.label" class="uk-form-label uk-text-right uk-margin-small-bottom" [attr.for]="fieldData.field.name">
     {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </label>
-  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10"
+  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-small-top uk-margin-small-bottom uk-width-9-10"
        [innerHTML]="fieldData.field.form.description">
   </div>
   <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity">
     <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
       <div [formGroupName]="i" class="uk-margin-bottom formGroupElement uk-width-9-10 uk-display-inline-block">
         <div *ngFor="let control of fieldData?.subFieldGroups; let j=index">
-          <div class="uk-margin-bottom">
-<!--            <label *ngIf="control.field.label" class="uk-form-label uk-text-right" [attr.for]="control.field.name + ' ' + i">-->
-<!--              {{control.field.label + (control.field.form.mandatory ? ' (*)' : '')}}-->
-<!--            </label>-->
-<!--            <div *ngIf="control.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10">-->
-<!--              {{control.field.form.description}}-->
-<!--            </div>-->
+          <div class="">
             <div *ngIf="control.field.typeInfo.type === 'composite'">
               <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
                                    [vocabularies]="vocabularies"
@@ -40,10 +34,16 @@
               </app-string-url-email-field>
             </div>
             <div *ngIf="control.field.typeInfo.type === 'largeText'">
-            <app-large-text [fieldData]="control" [position]="i"
-                            (handleBitSets)="handleBitsetOfChildren($event)"
-                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-            </app-large-text>
+              <app-large-text [fieldData]="control" [position]="i"
+                              (handleBitSets)="handleBitsetOfChildren($event)"
+                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+              </app-large-text>
+            </div>
+            <div *ngIf="control.field.typeInfo.type === 'radio'" class="uk-form-controls">
+              <app-radio-button-field [fieldData]="control" [position]="i"
+                                      (handleBitSets)="handleBitsetOfChildren($event)"
+                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+              </app-radio-button-field>
             </div>
             <div *ngIf="control.field.typeInfo.type === 'boolean'">
               <div *ngIf="control.field.typeInfo.multiplicity; else noMultiplicity;"
@@ -81,15 +81,9 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <div class="uk-margin-bottom formGroupElement uk-width-9-10 uk-display-inline-block">
+    <div class="uk-width-9-10 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.field.form.hasBorder}">
       <div *ngFor="let control of fieldData?.subFieldGroups; let j=index">
-        <div class="uk-margin-bottom">
-<!--          <label *ngIf="control.field.label" class="uk-form-label uk-text-right" [attr.for]="control.field.name">-->
-<!--            {{control.field.label + (control.field.form.mandatory ? ' (*)' : '')}}-->
-<!--          </label>-->
-<!--          <div *ngIf="control.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10"-->
-<!--               [innerHTML]="control.field.form.description">-->
-<!--          </div>-->
+        <div class="">
 
           <div *ngIf="control.field.typeInfo.type === 'composite'">
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
@@ -121,13 +115,19 @@
                                 (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-checkbox-field>
           </div>
+          <div *ngIf="control.field.typeInfo.type === 'radio'" class="uk-form-controls">
+            <app-radio-button-field [fieldData]="control"
+                                    (handleBitSets)="handleBitsetOfChildren($event)"
+                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            </app-radio-button-field>
+          </div>
         </div>
       </div>
     </div>
   </ng-template>
 
   <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-small-top">
-    <i><small><span [innerHTML]="fieldData.field.form.suggestion" ></span></small></i>
+    <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
   </div>
 
 </form>

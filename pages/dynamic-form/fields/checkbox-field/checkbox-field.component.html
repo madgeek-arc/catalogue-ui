@@ -1,6 +1,6 @@
-<form [formGroup]="form">
+<form [formGroup]="form" class="uk-margin-small-bottom">
 
-  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10"
+  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-margin-small-bottom uk-width-9-10"
        [innerHTML]="fieldData.field.form.description">
   </div>
 
@@ -28,14 +28,13 @@
 
   <ng-template #noMultiplicity>
     <label *ngIf="fieldData.field.label" class="uk-form-label" [attr.for]="fieldData.field.name">
-    <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-checkbox" type="checkbox"
-           [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
+    <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-checkbox " type="checkbox"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
 
-      {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
+      <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}</span>
     </label>
-    <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
+    <div class="uk-suggestion" [innerHTML]="fieldData.field.form.suggestion"></div>
   </ng-template>
 
 </form>

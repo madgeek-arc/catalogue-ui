@@ -49,6 +49,7 @@ export class Form {
   placeholder: string;
   mandatory: boolean;
   immutable: boolean;
+  hasBorder: boolean;
   order: number;
   visible: boolean;
 
@@ -62,6 +63,7 @@ export class Form {
     this.placeholder = '';
     this.mandatory = false;
     this.immutable = false;
+    this.hasBorder = false;
     this.order = 0;
     this.visible = true;
   }

@@ -1020,7 +1020,7 @@ a[class*="wk-"]:hover {
 }
 
 .loader-small {
-  background: url("../../../assets/images/loaders/loader-small.gif") no-repeat center;
+  background: url("../images/loaders/loader-small.gif") no-repeat center;
   z-index: 110;
   width: 100%;
   height: 100%;
@@ -1030,7 +1030,7 @@ a[class*="wk-"]:hover {
 }
 
 .loader-big {
-  background: url("../../../assets/images/loaders/loader-big.gif") no-repeat center;
+  background: url("../images/loaders/loader-big.gif") no-repeat center;
   z-index: 110;
   width: 100%;
   height: 100%;

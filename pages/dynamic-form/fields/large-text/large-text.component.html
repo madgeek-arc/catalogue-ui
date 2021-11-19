@@ -1,5 +1,5 @@
-<form [formGroup]="form">
-  <label *ngIf="fieldData.field.label" class="uk-form-label uk-text-right" [attr.for]="fieldData.field.name">
+<form [formGroup]="form" class="">
+  <label *ngIf="fieldData.field.label" class="uk-form-label uk-width-9-10 uk-margin-small-bottom" [attr.for]="fieldData.field.name">
     {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </label>
   <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-width-9-10"
@@ -15,6 +15,6 @@
               (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
               [ngClass]="{'uk-form-danger': checkFormValidity() }">
     </textarea>
-    <i><small><span [innerHTML]="fieldData.field.form.suggestion"></span></small></i>
+    <div class="uk-suggestion uk-width-9-10 uk-margin-small" [innerHTML]="fieldData.field.form.suggestion"></div>
   </ng-template>
 </form>

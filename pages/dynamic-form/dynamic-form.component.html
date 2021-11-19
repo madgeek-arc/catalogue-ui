@@ -140,7 +140,7 @@
                     <div *ngIf="form && ready" class="uk-width-3-4">
                       <form [formGroup]="form">
                         <div class="formContainer">
-                          <ul id="top-navigation-tabs" class="uk-switcher uk-margin-top uk-margin-bottom">
+                          <ul id="top-navigation-tabs" class="uk-switcher">
                             <li *ngFor="let group of fields">
                               <div *ngFor="let fieldsData of group.fields" class="">
                                 <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
