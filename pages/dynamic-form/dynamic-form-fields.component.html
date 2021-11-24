@@ -35,7 +35,7 @@
           </app-large-text>
         </div>
 
-        <div *ngIf="fieldData.field.typeInfo.type === 'radio'" class="uk-form-controls">
+        <div *ngIf="fieldData.field.typeInfo.type === 'radio'">
           <app-radio-button-field [fieldData]="fieldData"
                                   (handleBitSets)="handleBitsetOfChildren($event)"
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">

@@ -35,6 +35,7 @@ export class DynamicFormComponent implements OnInit {
   hasChanges = false;
   pendingService = false;
 
+  showBitsets = false;
   loaderBitSet = new BitSet;
   loaderPercentage = 0;
   tabIndex= 0;
@@ -284,7 +285,7 @@ export class DynamicFormComponent implements OnInit {
   /** tab prev next buttons **/
   setTabIndex(i: number) {
     this.tabIndex = i;
-    UIkit.switcher('#top-navigation-tabs').show(i);
+    // UIkit.switcher('#top-navigation-tabs').show(i);
   }
 
   goToTab(i: number) {
