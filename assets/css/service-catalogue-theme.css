@@ -273,10 +273,10 @@ ul.uk-pagination {
 }
 
 .formContainer {
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 6px #0000001A;
-  border-radius: 4px;
-  opacity: 1;
+  /*background: #FFFFFF 0% 0% no-repeat padding-box;*/
+  /*box-shadow: 0px 3px 6px #0000001A;*/
+  /*border-radius: 4px;*/
+  /*opacity: 1;*/
   padding: 20px;
 }
 
@@ -387,6 +387,16 @@ a.remove-element i {
   display: flex;
   align-items: center;
   padding-left: 10px;
+}
+
+.uk-radio-label, .uk-checkbox-label {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.uk-suggestion {
+  font-size: 12px;
+  font-style: italic;
 }
 
 /* ========================================================================

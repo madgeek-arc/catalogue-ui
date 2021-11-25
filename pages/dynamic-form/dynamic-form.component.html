@@ -98,12 +98,14 @@
                         <div class="formContainer">
                           <ul id="top-navigation-tabs" class="uk-switcher">
                             <li *ngFor="let group of fields">
-                              <div *ngFor="let fieldsData of group.fields" class="">
-                                <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                              <div *ngFor="let fieldsData of group.fields" [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.field.form.visible}">
+                                <app-field *ngIf="fieldsData.field.name!=='question17'" [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                            [subVocabularies]="subVocabularies" [vocabularies]="vocabularies">
 <!--                                           (handleBitSets)="handleBitSet($event)"-->
 <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
                                 </app-field>
+                                <app-radio-button-field *ngIf="fieldsData.field.name==='question17'" [editMode]="editMode" [fieldData]="fieldsData">
+                                </app-radio-button-field>
                               </div>
                             </li>
                           </ul>

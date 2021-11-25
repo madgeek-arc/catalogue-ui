@@ -1,9 +1,9 @@
 <form [formGroup]="form">
 <!--  {{fieldData.field.name}}-->
-  <label *ngIf="fieldData.field.label" class="uk-form-label uk-text-right uk-margin-small-bottom" [attr.for]="fieldData.field.name">
+  <div *ngIf="fieldData.field.label" class="uk-form-label uk-margin-bottom" [attr.for]="fieldData.field.name">
     {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
-  </label>
-  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-small-top uk-margin-small-bottom uk-width-9-10"
+  </div>
+  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-bottom uk-width-9-10"
        [innerHTML]="fieldData.field.form.description">
   </div>
   <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity">
