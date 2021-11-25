@@ -1,4 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap');*/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap');
 
 :root {
@@ -10,6 +10,8 @@
   --button-secondary-color: #fff;
   --button-secondary-background-color: #26C0E2;
   --button-secondary-hover-background-color: #1E95B0;
+
+  --main-font-family: 'Open Sans';
 }
 
 html {
@@ -17,7 +19,7 @@ html {
 }
 
 body {
-  font: 400 14px/19px 'Roboto', sans-serif;
+  font: 400 14px/19px var(--main-font-family), sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -282,7 +284,7 @@ ul.uk-pagination {
 
 .uk-form-label {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 18px !important;
   /*font: 700 18px Roboto;*/
   letter-spacing: 0px;
   color: #212121;
@@ -291,7 +293,7 @@ ul.uk-pagination {
 }
 
 .uk-form-description {
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0px;
   color: #212121;
   opacity: 0.81;
@@ -391,7 +393,7 @@ a.remove-element i {
 
 .uk-radio-label, .uk-checkbox-label {
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .uk-suggestion {
