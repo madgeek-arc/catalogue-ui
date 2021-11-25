@@ -45,25 +45,11 @@
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
               </app-radio-button-field>
             </div>
-            <div *ngIf="control.field.typeInfo.type === 'boolean'">
-              <div *ngIf="control.field.typeInfo.multiplicity; else noMultiplicity;"
-                   [formArrayName]="control.field.name">
-                <!--To add multiplicity if needed-->
-              </div>
-              <ng-template #noMultiplicity>
-                <label>
-                  <input class="uk-radio" type="radio" [formControlName]="control.field.name" [value]="true"
-                         (input)="updateBitSetOfComposite(fieldData, j); unsavedChangesPrompt()"
-                         [name]="control.field.name"
-                         [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name) }"/>&nbsp;Yes&nbsp;
-                </label>
-                <label>
-                  <input class="uk-radio" type="radio" [formControlName]="control.field.name" [value]="false"
-                         (input)="updateBitSetOfComposite(fieldData, j); unsavedChangesPrompt()"
-                         [name]="control.field.name"
-                         [ngClass]="{'uk-form-danger': checkFormArrayValidity(control.field.parent, i, this.editMode, control.field.name) }"/>&nbsp;&nbsp;No&nbsp;
-                </label>
-              </ng-template>
+            <div *ngIf="control.field.typeInfo.type === 'date'">
+              <app-date-field [fieldData]="control" [position]="i"
+                              (handleBitSets)="handleBitsetOfChildren($event)"
+                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+              </app-date-field>
             </div>
           </div>
         </div>
@@ -120,6 +106,12 @@
                                     (handleBitSets)="handleBitsetOfChildren($event)"
                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-radio-button-field>
+          </div>
+          <div *ngIf="control.field.typeInfo.type === 'date'">
+            <app-date-field [fieldData]="control"
+                            (handleBitSets)="handleBitsetOfChildren($event)"
+                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            </app-date-field>
           </div>
         </div>
       </div>

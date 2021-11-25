@@ -1,16 +1,16 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Fields, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 import {FormControlService} from "../../../../services/form-control.service";
+import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
-  selector: 'app-string-url-email-field',
-  templateUrl: './string-field.component.html',
-  styles: ['.clear-style { height: 0 !important;}']
+  selector: 'app-date-field',
+  templateUrl: 'date-field.component.html'
 })
 
-export class StringFieldComponent implements OnInit {
+export class DateFieldComponent implements OnInit {
+
   @Input() fieldData: Fields;
   @Input() editMode: any;
   @Input() position?: number = null;
@@ -22,7 +22,7 @@ export class StringFieldComponent implements OnInit {
   form!: FormGroup;
   hasChanges = false;
 
-  constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
+  constructor(private rootFormGroup: FormGroupDirective) {
   }
 
   ngOnInit() {
@@ -53,15 +53,8 @@ export class StringFieldComponent implements OnInit {
     return this.formControl as unknown as FormArray;
   }
 
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
-        break;
-      default:
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
+  push(field: string, required: boolean, type?: string) {
+    this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
   }
 
   remove(field: string, i: number) {
@@ -74,16 +67,6 @@ export class StringFieldComponent implements OnInit {
     return (!this.formControl.valid && (this.editMode || this.formControl.dirty));
   }
 
-  checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
-    if (groupName) {
-      return (!this.fieldAsFormArray()?.get([position])?.get(groupName).valid
-        && (edit || this.fieldAsFormArray()?.get([position])?.get(groupName).dirty));
-
-    }
-    return (!this.fieldAsFormArray().get([position]).valid
-      && (edit || this.fieldAsFormArray().get([position]).dirty));
-  }
-
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Fields) {
@@ -94,6 +77,7 @@ export class StringFieldComponent implements OnInit {
     });
   }
 
+
   /** other stuff--> **/
   unsavedChangesPrompt() {
     this.hasChanges = true;
@@ -103,9 +87,6 @@ export class StringFieldComponent implements OnInit {
     if (!value) {
       this.formControl.disable();
       this.formControl.reset();
-      // maybe add this if the remaining empty fields are a problem
-      // (this.formControl as unknown as FormArray).clear();
-
     } else {
       this.formControl.enable();
     }

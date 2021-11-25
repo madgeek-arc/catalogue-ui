@@ -1,0 +1,19 @@
+<div [formGroup]="form" class="uk-margin-small-bottom" [ngClass]="{'uk-hidden clear-style': formControl.disabled}">
+  <div *ngIf="fieldData.field.label" class="uk-form-label uk-margin-bottom" [attr.for]="fieldData.field.name">
+    {{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}
+  </div>
+  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-bottom uk-width-9-10"
+       [innerHTML]="fieldData.field.form.description">
+  </div>
+  <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+    <!--To add multiplicity if needed-->
+  </div>
+
+  <ng-template #noMultiplicity>
+    <input [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-input uk-width-9-10"
+           [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
+           (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [type]="fieldData.field.typeInfo.type"
+           [ngClass]="{'uk-form-danger': checkFormValidity() }">
+    <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
+  </ng-template>
+</div>
