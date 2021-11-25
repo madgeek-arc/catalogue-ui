@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 import {FormControlService} from '../../services/form-control.service';
@@ -17,6 +17,8 @@ declare var UIkit: any;
   providers: [FormControlService]
 })
 export class DynamicFormComponent implements OnInit {
+
+  @Input() tabsHeader: string;
 
   fields: FormModel[] = null;
   vocabularies: Map<string, string[]>;

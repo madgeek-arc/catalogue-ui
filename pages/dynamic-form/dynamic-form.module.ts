@@ -14,24 +14,27 @@ import {LargeTextComponent} from "./fields/large-text/large-text.component";
 import {RadioButtonFieldComponent} from "./fields/radio-button-field/radio-button-field.component";
 
 @NgModule({
-  declarations: [
-    StringFieldComponent,
-    CompositeFieldComponent,
-    DynamicFormFieldsComponent,
-    DynamicFormComponent,
-    DynamicFormEditComponent,
-    VocabularyFieldComponent,
-    CheckboxFieldComponent,
-    RadioButtonFieldComponent,
-    LargeTextComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    LMarkdownEditorModule,
-    NgSelectModule,
-  ],
+    declarations: [
+        StringFieldComponent,
+        CompositeFieldComponent,
+        DynamicFormFieldsComponent,
+        DynamicFormComponent,
+        DynamicFormEditComponent,
+        VocabularyFieldComponent,
+        CheckboxFieldComponent,
+        RadioButtonFieldComponent,
+        LargeTextComponent
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        LMarkdownEditorModule,
+        NgSelectModule,
+    ],
+    exports: [
+        DynamicFormComponent
+    ]
 })
 
 export class DynamicFormModule { }
