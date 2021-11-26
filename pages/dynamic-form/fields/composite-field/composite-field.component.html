@@ -56,12 +56,12 @@
       </div>
       <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-display-inline-block"
          (click)="remove(i); updateBitSetOfComposite(fieldData, i); unsavedChangesPrompt();">
-        <i class="fa fa-times" aria-hidden="true"></i>
+        <span class="material-icons">clear</span>
       </a>
     </div>
     <div class="uk-width-9-10 uk-text-center uk-margin-top">
-      <a class="add-new-element" (click)="pushComposite(fieldData.subFieldGroups)">
-        <i class="fa fa-plus" aria-hidden="true"></i> Add {{fieldData.field.label}}
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData.subFieldGroups)">
+        <span class="material-icons">add</span> Add {{fieldData.field.label}}
       </a>
     </div>
   </div>
@@ -118,7 +118,7 @@
     </div>
   </ng-template>
 
-  <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-small-top">
+  <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-top">
     <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
   </div>
 

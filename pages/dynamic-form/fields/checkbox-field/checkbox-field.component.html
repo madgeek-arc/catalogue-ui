@@ -13,15 +13,15 @@
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
         <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-animation-slide-top-small"
            (click)="remove(fieldData.field.name, i); updateBitSet(fieldData); unsavedChangesPrompt()">
-          <i class="fa fa-times" aria-hidden="true"></i>
+          <span class="material-icons">clear</span>
         </a>
       </div>
       <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
 
-      <div class="uk-width-9-10 uk-text-center uk-margin-medium-top">
-        <a class="add-new-element"
+      <div class="uk-width-9-10 uk-text-center uk-margin-top">
+        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
            (click)="push(fieldData.field.name, fieldData.field.form.mandatory)">
-          <i class="fa fa-plus" aria-hidden="true"></i>Add {{fieldData.field.label}}
+          <span class="material-icons">add</span>Add {{fieldData.field.label}}
         </a>
       </div>
     </div>
@@ -34,7 +34,9 @@
 
       <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}</span>
     </label>
-    <div class="uk-suggestion" [innerHTML]="fieldData.field.form.suggestion"></div>
+    <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
+    </div>
   </ng-template>
 
 </form>

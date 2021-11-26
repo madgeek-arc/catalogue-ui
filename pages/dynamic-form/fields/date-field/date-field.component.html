@@ -15,6 +15,8 @@
            [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [type]="fieldData.field.typeInfo.type"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
-    <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
+    <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion" ></div>
+    </div>
   </ng-template>
 </div>
