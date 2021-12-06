@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {FormControlService} from '../../services/form-control.service';
 import {DynamicFormComponent} from './dynamic-form.component';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -12,49 +12,56 @@ import {zip} from 'rxjs/internal/observable/zip';
   templateUrl: './dynamic-form.component.html',
   providers: [FormControlService]
 })
-export class DynamicFormEditComponent extends DynamicFormComponent {
+export class DynamicFormEditComponent extends DynamicFormComponent implements OnChanges{
 
-  private sub: Subscription;
-  serviceID: string;
+  @Input() answerValue: Object = null;
+
+  sub: Subscription;
+  answerId: string;
 
   constructor(public route: ActivatedRoute,
               protected formControlService: FormControlService,
               protected fb: FormBuilder,
               protected router: Router,) {
     super(formControlService, fb, router);
-    // super.ngOnInit();
   }
 
-  ngOnInit() {
-    this.editMode = true;
-    // super.ngOnInit();
-    this.ready = false;
-    zip(
-      this.formControlService.getUiVocabularies(),
-      this.formControlService.getFormModel()
-    ).subscribe(res => {
-        this.vocabularies = res[0];
-        this.fields = res[1];
-      },
-      error => {
-        this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
-      },
-      () => {
-        this.initializations();
-        this.sub = this.route.params.subscribe(params => {
-          this.serviceID = params['id'];
-          this.formControlService.getDynamicService(this.serviceID).subscribe(
-            res => {
-              FormControlService.removeNulls(res['service']);
-              FormControlService.removeNulls(res['extras']);
-              this.prepareForm(res);
-              this.form.patchValue(res)
-              this.validateForm();
-            }, error => console.log(error),
-          );
+  ngOnChanges(changes:SimpleChanges) {
+    console.log(this.answerValue);
+    if (this.answerValue !== null) {
+      this.editMode = true;
+      this.ready = false;
+      zip(
+        this.formControlService.getUiVocabularies(),
+        this.formControlService.getFormModel()
+      ).subscribe(res => {
+          this.vocabularies = res[0];
+          this.fields = res[1];
+        },
+        error => {
+          this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
+        },
+        () => {
+          this.initializations();
+          this.prepareForm(this.answerValue);
+          this.form.patchValue(this.answerValue);
+          this.validateForm();
+          // this.sub = this.route.params.subscribe(params => {
+          //   this.answerId = params['id'];
+          //   console.log(this.answerId);
+          // this.formControlService.getDynamicService(this.answerId).subscribe(
+          //   res => {
+          //     FormControlService.removeNulls(res['service']);
+          //     FormControlService.removeNulls(res['extras']);
+          //     this.prepareForm(this.answer);
+          //     this.form.patchValue(this.answer);
+          //     this.validateForm();
+          //   }, error => console.log(error),
+          // );
+          // });
+          this.ready = true;
         });
-        this.ready = true;
-      });
+    }
   }
 
   prepareForm(form: Object) {
@@ -109,11 +116,6 @@ export class DynamicFormEditComponent extends DynamicFormComponent {
     const control = <FormArray>this.form.get([parent,parentIndex,name]);
     control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
   }
-  //
-  // removeFromArrayInsideComposite(parent: string, parentIndex: number, name: string, index: number) {
-  //   const control = <FormArray>this.form.get([parent,parentIndex,name]);
-  //   control.removeAt(index);
-  // }
 
   validateForm() {
     for (let control in this.form.controls) {
@@ -121,7 +123,7 @@ export class DynamicFormEditComponent extends DynamicFormComponent {
       let tmp = this.form.controls[control] as FormGroup;
       for (let key in tmp.controls) {
         let formFieldData = this.getModelData(this.fields, key);
-        if (formFieldData.field.form.mandatory){
+        if (formFieldData?.field.form.mandatory){
           // console.log(key);
           if (formFieldData.field.typeInfo.type === 'composite') {
             // console.log('composite: ' + key);

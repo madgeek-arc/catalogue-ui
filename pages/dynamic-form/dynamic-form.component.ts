@@ -99,16 +99,6 @@ export class DynamicFormComponent implements OnInit {
     }
   }
 
-  clearEmptyFields() {
-    Object.keys(this.form.controls).forEach(key => {
-      console.log(key);
-      Object.keys(this.form['controls'][key]['controls']).forEach(key2 => {
-        console.log(key2);
-        console.log(this.form['controls'][key]['controls'][key2].value);
-      })
-    });
-  }
-
   initializations() {
     /** Create form **/
     let tmpForm: any = {};
@@ -310,10 +300,6 @@ export class DynamicFormComponent implements OnInit {
       }
       return Object.assign(hash, {[obj[key]]: (hash[obj[key]] || []).concat(obj)});
     }, {});
-  }
-
-  getAsFormGroup(name: string) {
-    return this.form.get(name) as FormGroup;
   }
 
 }

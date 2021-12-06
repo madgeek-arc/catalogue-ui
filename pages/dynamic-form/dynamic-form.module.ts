@@ -34,9 +34,10 @@ import {DateFieldComponent} from "./fields/date-field/date-field.component";
         LMarkdownEditorModule,
         NgSelectModule,
     ],
-    exports: [
-        DynamicFormComponent
-    ]
+  exports: [
+    DynamicFormComponent,
+    DynamicFormEditComponent
+  ]
 })
 
 export class DynamicFormModule { }
