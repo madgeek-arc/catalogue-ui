@@ -26,7 +26,8 @@ export class FormControlService {
   }
 
   postItem(item: any, edit:boolean) {
-    return this.http[edit ? 'put' : 'post'](this.base + '/items?resourceType=dataset_type', item, this.options);
+    // return this.http[edit ? 'put' : 'post'](this.base + '/items?resourceType=dataset_type', item, this.options);
+    return this.http[edit ? 'put' : 'post'](this.base + `/answers/${item.id}`, item, this.options);
   }
 
   toFormGroup(form: FormModel[], checkImmutable: boolean) {
@@ -79,6 +80,7 @@ export class FormControlService {
   createCompositeField(formField: Fields) {
     const subGroup: any = {};
     // console.log(formField);
+    formField.subFieldGroups.sort((a, b) => a.field.form.order - b.field.form.order)
     formField.subFieldGroups.forEach(subField => {
       if (subField.field.typeInfo.type === 'composite') {
         if (subField.field.typeInfo.multiplicity) {
