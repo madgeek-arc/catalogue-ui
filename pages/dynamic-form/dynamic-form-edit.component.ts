@@ -17,7 +17,6 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
   @Input() answerValue: Object = null;
 
   sub: Subscription;
-  answerId: string;
 
   constructor(public route: ActivatedRoute,
               protected formControlService: FormControlService,
@@ -26,17 +25,20 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
     super(formControlService, fb, router);
   }
 
+  ngOnInit() {
+    // super.ngOnInit();
+  }
+
   ngOnChanges(changes:SimpleChanges) {
-    console.log(this.answerValue);
-    if (this.answerValue !== null) {
+    if (this.answerValue !== null && this.surveyId !== null) {
       this.editMode = true;
       this.ready = false;
       zip(
         this.formControlService.getUiVocabularies(),
-        this.formControlService.getFormModel()
+        this.formControlService.getFormModel(this.surveyId)
       ).subscribe(res => {
           this.vocabularies = res[0];
-          this.fields = res[1];
+          this.fields = res[1][Object.keys(res[1])[0]];
         },
         error => {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -46,19 +48,6 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
           this.prepareForm(this.answerValue);
           this.form.patchValue(this.answerValue);
           this.validateForm();
-          // this.sub = this.route.params.subscribe(params => {
-          //   this.answerId = params['id'];
-          //   console.log(this.answerId);
-          // this.formControlService.getDynamicService(this.answerId).subscribe(
-          //   res => {
-          //     FormControlService.removeNulls(res['service']);
-          //     FormControlService.removeNulls(res['extras']);
-          //     this.prepareForm(this.answer);
-          //     this.form.patchValue(this.answer);
-          //     this.validateForm();
-          //   }, error => console.log(error),
-          // );
-          // });
           this.ready = true;
         });
     }

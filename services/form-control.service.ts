@@ -13,8 +13,8 @@ export class FormControlService {
   base = environment.API_ENDPOINT;
   private options = {withCredentials: true};
 
-  getFormModel() {
-    return this.http.get<FormModel[]>(this.base + '/ui/form/model');
+  getFormModel(surveyId: string) {
+    return this.http.get<Map<string, FormModel[]>>(this.base + `/ui/form/model/${surveyId}`);
   }
 
   getUiVocabularies() {
@@ -26,7 +26,6 @@ export class FormControlService {
   }
 
   postItem(item: any, edit:boolean) {
-    // return this.http[edit ? 'put' : 'post'](this.base + '/items?resourceType=dataset_type', item, this.options);
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${item.id}`, item, this.options);
   }
 

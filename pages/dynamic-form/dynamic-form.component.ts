@@ -19,6 +19,7 @@ declare var UIkit: any;
 export class DynamicFormComponent implements OnInit {
 
   @Input() tabsHeader: string;
+  @Input() surveyId: string = null;
 
   fields: FormModel[] = null;
   vocabularies: Map<string, string[]>;
@@ -50,13 +51,14 @@ export class DynamicFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('test');
     this.ready = false;
     zip(
       this.formControlService.getUiVocabularies(),
-      this.formControlService.getFormModel()
+      this.formControlService.getFormModel(this.surveyId)
     ).subscribe(res => {
         this.vocabularies = res[0];
-        this.fields = res[1];
+        this.fields = res[1][0];
       },
       error => {
         this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
