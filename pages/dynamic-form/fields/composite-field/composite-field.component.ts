@@ -60,9 +60,7 @@ export class CompositeFieldComponent implements OnInit {
         if (subField.field.typeInfo.multiplicity) {
           group[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
-          console.log(group);
           group[subField.field.name].push(new FormGroup(this.createCompositeField(subField.subFieldGroups)));
-          console.log(group);
         } else {
           group[subField.field.name] = new FormGroup(this.createCompositeField(subField.subFieldGroups))
         }
