@@ -51,14 +51,14 @@ export class DynamicFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('test');
     this.ready = false;
     zip(
       this.formControlService.getUiVocabularies(),
       this.formControlService.getFormModel(this.surveyId)
     ).subscribe(res => {
         this.vocabularies = res[0];
-        this.fields = res[1][0];
+        // TODO handle it properly
+        this.fields = res[1][Object.keys(res[1])[0]];
       },
       error => {
         this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -75,10 +75,9 @@ export class DynamicFormComponent implements OnInit {
       window.scrollTo(0, 0);
       // console.log(this.form.getRawValue());
       this.showLoader = true;
-      // this.clearEmptyFields(); // Maybe clear form from empty strings
       this.formControlService.postItem(this.form.getRawValue(), this.editMode).subscribe(
         res => {
-          this.router.navigate(['/search']);
+          this.router.navigate(['/contributions/surveys']);
         },
         error => {
           this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error.error.error);
