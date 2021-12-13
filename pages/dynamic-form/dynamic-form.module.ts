@@ -13,6 +13,7 @@ import {CheckboxFieldComponent} from "./fields/checkbox-field/checkbox-field.com
 import {LargeTextComponent} from "./fields/large-text/large-text.component";
 import {RadioButtonFieldComponent} from "./fields/radio-button-field/radio-button-field.component";
 import {DateFieldComponent} from "./fields/date-field/date-field.component";
+import {DpDatePickerModule} from "ng2-date-picker";
 
 @NgModule({
     declarations: [
@@ -27,13 +28,14 @@ import {DateFieldComponent} from "./fields/date-field/date-field.component";
         DateFieldComponent,
         LargeTextComponent
     ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        LMarkdownEditorModule,
-        NgSelectModule,
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    LMarkdownEditorModule,
+    NgSelectModule,
+    DpDatePickerModule,
+  ],
   exports: [
     DynamicFormComponent,
     DynamicFormEditComponent

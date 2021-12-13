@@ -11,10 +11,10 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <input [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-input uk-width-9-10"
-           [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-           (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [type]="fieldData.field.typeInfo.type"
-           [ngClass]="{'uk-form-danger': checkFormValidity() }">
+    <dp-date-picker [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-width-9-10"
+                    [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
+                    (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+                    [ngClass]="{'uk-form-danger': checkFormValidity() }"></dp-date-picker>
     <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-top">
       <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion" ></div>
     </div>
