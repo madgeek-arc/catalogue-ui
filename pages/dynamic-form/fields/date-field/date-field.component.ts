@@ -21,6 +21,7 @@ export class DateFieldComponent implements OnInit {
   formControl!: FormControl;
   form!: FormGroup;
   hasChanges = false;
+  hideFields: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -87,8 +88,10 @@ export class DateFieldComponent implements OnInit {
     if (!value) {
       this.formControl.disable();
       this.formControl.reset();
+      this.hideFields = true;
     } else {
       this.formControl.enable();
+      this.hideFields = false;
     }
   }
 

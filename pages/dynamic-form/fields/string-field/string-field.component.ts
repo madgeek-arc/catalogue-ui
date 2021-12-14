@@ -21,6 +21,7 @@ export class StringFieldComponent implements OnInit {
   formControl!: FormControl;
   form!: FormGroup;
   hasChanges = false;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
   }
@@ -103,11 +104,13 @@ export class StringFieldComponent implements OnInit {
     if (!value) {
       this.formControl.disable();
       this.formControl.reset();
+      this.hideField = true;
       // maybe add this if the remaining empty fields are a problem
       // (this.formControl as unknown as FormArray).clear();
 
     } else {
       this.formControl.enable();
+      this.hideField = false;
     }
   }
 

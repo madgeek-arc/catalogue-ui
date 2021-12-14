@@ -15,13 +15,14 @@ import {zip} from 'rxjs/internal/observable/zip';
 export class DynamicFormEditComponent extends DynamicFormComponent implements OnChanges{
 
   @Input() answerValue: Object = null;
+  @Input() readonly : boolean = null;
 
   sub: Subscription;
 
   constructor(public route: ActivatedRoute,
               protected formControlService: FormControlService,
               protected fb: FormBuilder,
-              protected router: Router,) {
+              protected router: Router) {
     super(formControlService, fb, router);
   }
 
@@ -48,6 +49,11 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
           this.prepareForm(this.answerValue);
           this.form.patchValue(this.answerValue);
           this.validateForm();
+          setTimeout(() => {
+            if (this.readonly) {
+              this.form.disable();
+            }
+          }, 0);
           this.ready = true;
         });
     }
@@ -99,11 +105,6 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
         }
       }
     }
-  }
-
-  pushToArrayInsideComposite(parent: string, parentIndex: number, name: string, required: boolean) {
-    const control = <FormArray>this.form.get([parent,parentIndex,name]);
-    control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
   }
 
   validateForm() {
