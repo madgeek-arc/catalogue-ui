@@ -15,7 +15,6 @@ import {zip} from 'rxjs/internal/observable/zip';
 export class DynamicFormEditComponent extends DynamicFormComponent implements OnChanges{
 
   @Input() answerValue: Object = null;
-  @Input() readonly : boolean = null;
 
   sub: Subscription;
 

@@ -3,7 +3,7 @@
     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
       <div class="uk-width-1-1@m uk-first-column">
 
-        <div class="titleAndActionsBar">
+        <div *ngIf="!readonly" class="titleAndActionsBar">
 <!--          <div class="">-->
             <div class="pageTitle">
 <!--              {{editMode ? "Update" : "Add New"}} {{serviceORresource}}-->
@@ -21,7 +21,7 @@
 <!--                    *ngIf="(!editMode || pendingService) && (projectName == 'EOSC' || projectName == 'CatRIS')"-->
 <!--                    (click)="this.onSubmit(true)"> Save as draft-->
 <!--            </button>-->
-            <button  class="uk-button uk-button-secondary uk-margin-left"
+            <button class="uk-button uk-button-secondary uk-margin-left"
                     (click)="onSubmit(false)" type="submit"> Submit
             </button>
           </div>

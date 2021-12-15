@@ -20,14 +20,12 @@ export class DynamicFormComponent implements OnInit {
 
   @Input() tabsHeader: string;
   @Input() surveyId: string = null;
+  @Input() readonly : boolean = null;
 
   fields: FormModel[] = null;
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
-
-  serviceORresource = environment.serviceORresource;
-  projectName = environment.projectName;
 
   form: FormGroup;
   bitset: Tabs = new Tabs;
