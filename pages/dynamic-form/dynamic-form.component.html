@@ -3,7 +3,7 @@
     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
       <div class="uk-width-1-1@m uk-first-column">
 
-        <div *ngIf="!readonly" class="titleAndActionsBar">
+        <div class="titleAndActionsBar" style="min-height: 40px">
 <!--          <div class="">-->
             <div class="pageTitle">
 <!--              {{editMode ? "Update" : "Add New"}} {{serviceORresource}}-->
@@ -13,15 +13,7 @@
 <!--            </div>-->
 <!--          </div>-->
           <div class="">
-<!--            <button class="uk-button uk-button-primary">Discard</button>-->
-<!--            <button *ngIf="projectName=='EOSC'" class="uk-button uk-button-primary uk-margin-left"-->
-<!--                    (click)="openPreviewModal()">Preview-->
-<!--            </button>-->
-<!--            <button class="uk-button uk-button-primary uk-margin-left"-->
-<!--                    *ngIf="(!editMode || pendingService) && (projectName == 'EOSC' || projectName == 'CatRIS')"-->
-<!--                    (click)="this.onSubmit(true)"> Save as draft-->
-<!--            </button>-->
-            <button class="uk-button uk-button-secondary uk-margin-left"
+            <button *ngIf="!readonly" class="uk-button uk-button-secondary uk-margin-left"
                     (click)="onSubmit(false)" type="submit"> Submit
             </button>
           </div>

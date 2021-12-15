@@ -401,6 +401,14 @@ a.remove-element i {
   font-style: italic;
 }
 
+.dp-picker-input {
+  background-color: #fff;
+  border: 1px solid var(--default-element-bg);
+  border-radius: 4px;
+  height: 34px;
+  padding: 0px 10px;
+}
+
 /* ========================================================================
    Dashboard sidebar
  ========================================================================== */
