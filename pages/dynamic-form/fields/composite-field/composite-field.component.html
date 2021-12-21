@@ -113,6 +113,10 @@
                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-date-field>
           </div>
+          <div *ngIf="control.field.typeInfo.type === 'radioGrid'">
+            <app-radio-grid [fieldData]="control">
+            </app-radio-grid>
+          </div>
         </div>
       </div>
     </div>

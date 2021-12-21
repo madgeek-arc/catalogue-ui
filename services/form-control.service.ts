@@ -14,7 +14,8 @@ export class FormControlService {
   private options = {withCredentials: true};
 
   getFormModel(surveyId: string) {
-    return this.http.get<Map<string, FormModel[]>>(this.base + `/ui/form/model/${surveyId}`);
+    // return this.http.get<Map<string, FormModel[]>>(this.base + `/ui/form/model/${surveyId}`);
+    return this.http.get<FormModel[]>(this.base + `/ui/form/model`);
   }
 
   getUiVocabularies() {
@@ -79,9 +80,9 @@ export class FormControlService {
   createCompositeField(formField: Fields) {
     const subGroup: any = {};
     // console.log(formField);
-    formField.subFieldGroups.sort((a, b) => a.field.form.order - b.field.form.order)
-    formField.subFieldGroups.forEach(subField => {
-      if (subField.field.typeInfo.type === 'composite') {
+    formField.subFieldGroups?.sort((a, b) => a.field.form.order - b.field.form.order)
+    formField.subFieldGroups?.forEach(subField => {
+      if (subField.field.typeInfo.type === 'composite' || subField.field.typeInfo.type === 'radioGrid') {
         if (subField.field.typeInfo.multiplicity) {
           subGroup[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);

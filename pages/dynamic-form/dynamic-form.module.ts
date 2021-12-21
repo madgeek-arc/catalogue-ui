@@ -14,19 +14,21 @@ import {LargeTextComponent} from "./fields/large-text/large-text.component";
 import {RadioButtonFieldComponent} from "./fields/radio-button-field/radio-button-field.component";
 import {DateFieldComponent} from "./fields/date-field/date-field.component";
 import {DpDatePickerModule} from "ng2-date-picker";
+import {RadioGridFieldComponent} from "./fields/radio-grid-field/radio-grid-field.component";
 
 @NgModule({
     declarations: [
-        StringFieldComponent,
-        CompositeFieldComponent,
-        DynamicFormFieldsComponent,
-        DynamicFormComponent,
-        DynamicFormEditComponent,
-        VocabularyFieldComponent,
-        CheckboxFieldComponent,
-        RadioButtonFieldComponent,
-        DateFieldComponent,
-        LargeTextComponent
+      StringFieldComponent,
+      CompositeFieldComponent,
+      DynamicFormFieldsComponent,
+      DynamicFormComponent,
+      DynamicFormEditComponent,
+      VocabularyFieldComponent,
+      CheckboxFieldComponent,
+      RadioButtonFieldComponent,
+      DateFieldComponent,
+      LargeTextComponent,
+      RadioGridFieldComponent
     ],
   imports: [
     CommonModule,
