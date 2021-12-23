@@ -44,7 +44,7 @@
                   </div>
 
                   <div class="uk-grid">
-                    <div class="uk-width-1-4">
+                    <div class="uk-width-1-4" [ngStyle]="{'display': fields.length === 1 ? 'none' : 'block'}">
                       <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
                       <ul class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
                           uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
@@ -85,26 +85,24 @@
                       </div>
                     </div>
 
-                    <div *ngIf="form && ready" class="uk-width-3-4">
+                    <div *ngIf="form && ready" [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-3-4'">
                       <form [formGroup]="form">
                         <div class="formContainer">
                           <ul id="top-navigation-tabs" class="uk-switcher">
                             <li *ngFor="let group of fields">
                               <div *ngFor="let fieldsData of group.fields" [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.field.form.visible}">
-                                <app-field *ngIf="fieldsData.field.name!=='question17'" [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                                <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                            [subVocabularies]="subVocabularies" [vocabularies]="vocabularies">
 <!--                                           (handleBitSets)="handleBitSet($event)"-->
 <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
                                 </app-field>
-                                <app-radio-button-field *ngIf="fieldsData.field.name==='question17'" [editMode]="editMode" [fieldData]="fieldsData">
-                                </app-radio-button-field>
                               </div>
                             </li>
                           </ul>
                         </div>
 
                       </form>
-                      <pre>{{form.getRawValue() | json}}</pre>
+<!--                      <pre>{{form.getRawValue() | json}}</pre>-->
                     </div>
                   </div>
                 </div>

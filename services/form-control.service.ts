@@ -14,8 +14,7 @@ export class FormControlService {
   private options = {withCredentials: true};
 
   getFormModel(surveyId: string) {
-    // return this.http.get<Map<string, FormModel[]>>(this.base + `/ui/form/model/${surveyId}`);
-    return this.http.get<FormModel[]>(this.base + `/ui/form/model`);
+    return this.http.get<Map<string, FormModel[]>>(this.base + `/ui/form/model/${surveyId}`);
   }
 
   getUiVocabularies() {
