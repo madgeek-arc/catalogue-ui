@@ -19,6 +19,6 @@ export class RadioGridFieldComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.rootFormGroup.control;
-    console.log(this.form)
+    // console.log(this.form)
   }
 }
