@@ -23,6 +23,7 @@ export class LargeTextComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.fieldData);
     if (this.position !== null) {
       this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
     } else {
