@@ -1,7 +1,7 @@
 <form [formGroup]="form" class="uk-margin-small-bottom">
 
-  <div *ngIf="fieldData.field.form.description" class="uk-form-description uk-margin-top uk-margin-bottom uk-width-9-10"
-       [innerHTML]="fieldData.field.form.description">
+  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-top uk-margin-bottom uk-width-9-10"
+       [innerHTML]="fieldData.field.form.description.text">
   </div>
 
   <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
@@ -16,26 +16,26 @@
           <span class="material-icons">clear</span>
         </a>
       </div>
-      <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion}}</small></i></div>
+      <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion.text}}</small></i></div>
 
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
         <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
            (click)="push(fieldData.field.name, fieldData.field.form.mandatory)">
-          <span class="material-icons">add</span>Add {{fieldData.field.label}}
+          <span class="material-icons">add</span>Add {{fieldData.field.label.text}}
         </a>
       </div>
     </div>
 
   <ng-template #noMultiplicity>
-    <label *ngIf="fieldData.field.label" class="uk-form-label" [attr.for]="fieldData.field.name">
+    <label *ngIf="fieldData.field.label.text" class="uk-form-label" [attr.for]="fieldData.field.name">
     <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-checkbox " type="checkbox"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
 
-      <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.field.label + (fieldData.field.form.mandatory ? ' (*)' : '')}}</span>
+      <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}</span>
     </label>
-    <div *ngIf="fieldData.field.form.suggestion" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion"></div>
+    <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10" [innerHTML]="fieldData.field.form.suggestion.text"></div>
     </div>
   </ng-template>
 
