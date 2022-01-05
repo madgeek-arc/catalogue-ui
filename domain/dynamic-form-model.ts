@@ -44,34 +44,51 @@ export class Form {
   affects: Dependent[];
   vocabulary: string;
   group: string;
-  description: string;
-  suggestion: string;
+  description: StyledText;
+  suggestion: StyledText;
   placeholder: string;
   mandatory: boolean;
   immutable: boolean;
-  hasBorder: boolean;
-  order: number;
-  visible: boolean;
+  display: Display;
 
   constructor() {
     this.dependsOn = null;
     this.affects = null;
     this.vocabulary = null;
     this.group = '';
-    this.description = '';
-    this.suggestion = '';
+    this.description = new StyledText();
+    this.suggestion = new StyledText();
     this.placeholder = '';
     this.mandatory = false;
     this.immutable = false;
-    this.hasBorder = false;
-    this.order = 0;
-    this.visible = true;
+    this.display = new Display();
   }
 }
 
 export class Display {
-  placement: string;
+  hasBorder: boolean;
   order: number;
+  placement: string;
+  visible: boolean;
+
+  constructor() {
+    this.hasBorder = false;
+    this.order = 0;
+    this.placement = '';
+    this.visible = true;
+  }
+}
+
+export class StyledText {
+  cssClasses: string;
+  style: string;
+  text: string;
+
+  constructor() {
+    this.cssClasses = '';
+    this.style = '';
+    this.text = '';
+  }
 }
 
 export class Field {
@@ -79,7 +96,7 @@ export class Field {
   name: string;
   parentId: string;
   parent: string;
-  label: string;
+  label: StyledText;
   accessPath: string;
   typeInfo: TypeInfo;
   includedInSnippet: boolean;
@@ -91,7 +108,7 @@ export class Field {
     this.name = '';
     this.parentId = '';
     this.parent = '';
-    this.label = '';
+    this.label = new StyledText();
     this.accessPath = '';
     this.typeInfo = new TypeInfo()
     this.includedInSnippet = false;

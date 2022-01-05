@@ -90,7 +90,7 @@
                         <div class="formContainer">
                           <ul id="top-navigation-tabs" class="uk-switcher">
                             <li *ngFor="let group of fields">
-                              <div *ngFor="let fieldsData of group.fields" [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.field.form.visible}">
+                              <div *ngFor="let fieldsData of group.fields" [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.field.form.display.visible}">
                                 <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                            [subVocabularies]="subVocabularies" [vocabularies]="vocabularies">
 <!--                                           (handleBitSets)="handleBitSet($event)"-->

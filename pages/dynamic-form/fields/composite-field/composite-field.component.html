@@ -67,7 +67,7 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.field.form.hasBorder}">
+    <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.field.form.display.hasBorder}">
       <div *ngFor="let control of fieldData?.subFieldGroups; let j=index">
         <div class="">
           <div *ngIf="control.field.typeInfo.type === 'composite'">

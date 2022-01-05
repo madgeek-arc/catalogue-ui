@@ -157,7 +157,7 @@ export class DynamicFormComponent implements OnInit {
             if (f.field.form.mandatory)
               this.loaderBitSet.set(parseInt(f.field.id), 1);
           });
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
           break;
         }
       }
@@ -179,22 +179,22 @@ export class DynamicFormComponent implements OnInit {
             this.loaderBitSet.set(parseInt(field.subFieldGroups[i].field.id), 1);
           }
         }
-        this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+        this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
       }
     } else if (field.subFieldGroups[pos].field.form.mandatory) {
       if (this.form.get(field.subFieldGroups[pos].field.accessPath).valid) {
         this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].field.id), 1);
         if (this.form.get(field.field.accessPath).valid) {
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
         } else {
-          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
         }
       } else {
         this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].field.id), 0);
         if (this.form.get(field.field.accessPath).valid) {
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
         } else {
-          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
         }
       }
     }
@@ -209,10 +209,10 @@ export class DynamicFormComponent implements OnInit {
     }
     // console.log(this.form.get(data.field.accessPath).valid);
     if (this.form.get(data.field.accessPath).valid) {
-      this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
+      this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
       this.loaderBitSet.set(parseInt(data.field.id), 1);
     } else if (this.form.get(data.field.accessPath).invalid) {
-      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
+      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
       this.loaderBitSet.set(parseInt(data.field.id), 0);
     } else if (this.form.get(data.field.accessPath).pending) {
       this.timeOut(300).then(() => this.handleBitSet(data));
@@ -227,7 +227,7 @@ export class DynamicFormComponent implements OnInit {
     for (let i = 0; i < formArray.length; i++) {
       if (formArray.controls[i].valid) {
         flag = true;
-        this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
+        this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
         this.loaderBitSet.set(parseInt(data.field.id), 1);
         break;
       } else if (formArray.controls[i].pending) {
@@ -236,7 +236,7 @@ export class DynamicFormComponent implements OnInit {
       }
     }
     if (!flag) {
-      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
+      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
       this.loaderBitSet.set(parseInt(data.field.id), 0);
     }
     this.updateLoaderPercentage();

@@ -32,7 +32,7 @@ export class FormControlService {
   toFormGroup(form: FormModel[], checkImmutable: boolean) {
     const group: any = {};
     form.forEach(groups => {
-      groups.fields.sort((a, b) => a.field.form.order - b.field.form.order)
+      groups.fields.sort((a, b) => a.field.form.display.order - b.field.form.display.order)
       groups.fields.forEach(formField => {
         // console.log(formField.field.name);
         // if (formField.field.form.immutable === checkImmutable) {
@@ -79,7 +79,7 @@ export class FormControlService {
   createCompositeField(formField: Fields) {
     const subGroup: any = {};
     // console.log(formField);
-    formField.subFieldGroups?.sort((a, b) => a.field.form.order - b.field.form.order)
+    formField.subFieldGroups?.sort((a, b) => a.field.form.display.order - b.field.form.display.order)
     formField.subFieldGroups?.forEach(subField => {
       if (subField.field.typeInfo.type === 'composite' || subField.field.typeInfo.type === 'radioGrid') {
         if (subField.field.typeInfo.multiplicity) {
