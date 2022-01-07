@@ -4,10 +4,9 @@
       <div class="uk-width-1-1@m uk-first-column">
 
         <!--Chapter Selection-->
-<!--        {{chapters}}-->
         <div *ngIf="chapters.size > 1">
-          <ul>
-            <li *ngFor="let chapter of chapters | keyvalue"><a (click)="selectChapter(chapter.value)"> {{chapter.key}}</a></li>
+          <ul uk-tab class="chapter-tabs">
+            <li class="" *ngFor="let chapter of chapters | keyvalue"><a (click)="selectChapter(chapter.value)"> {{chapter.key}}</a></li>
           </ul>
         </div>
 
