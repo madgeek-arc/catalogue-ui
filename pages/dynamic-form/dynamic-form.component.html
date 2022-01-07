@@ -3,6 +3,14 @@
     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
       <div class="uk-width-1-1@m uk-first-column">
 
+        <!--Chapter Selection-->
+<!--        {{chapters}}-->
+        <div *ngIf="chapters.size > 1">
+          <ul>
+            <li *ngFor="let chapter of chapters | keyvalue"><a (click)="selectChapter(chapter.value)"> {{chapter.key}}</a></li>
+          </ul>
+        </div>
+
         <div class="titleAndActionsBar" style="min-height: 40px">
 <!--          <div class="">-->
             <div class="pageTitle">

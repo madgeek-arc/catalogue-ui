@@ -1,9 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 import {FormControlService} from '../../services/form-control.service';
 import {Fields, FormModel, HandleBitSet, Tab, Tabs, UiVocabulary} from '../../domain/dynamic-form-model';
-import {environment} from '../../../environments/environment';
 import BitSet from 'bitset/bitset';
 import {PremiumSortPipe} from '../../shared/pipes/premium-sort.pipe';
 import {zip} from 'rxjs/internal/observable/zip';
@@ -23,6 +22,7 @@ export class DynamicFormComponent implements OnInit {
   @Input() readonly : boolean = null;
 
   fields: FormModel[] = null;
+  chapters: Map<string, FormModel[]> = new Map<string, FormModel[]>();
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
@@ -293,6 +293,11 @@ export class DynamicFormComponent implements OnInit {
   }
 
   /** Other stuff **/
+  selectChapter(fields: FormModel[]) {
+    this.fields = fields;
+    this.initializations();
+  }
+
   groupByKey(array: any, key: any) {
     return array.reduce((hash: any, obj: any) => {
       if (obj[key] === undefined) {
