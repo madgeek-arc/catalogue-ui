@@ -127,10 +127,28 @@ export class Fields {
   }
 }
 
-export class FormModel {
+export class Chapter {
+  id: string;
+  name: string;
+  description: string;
+  sections: string[];
+  order: number;
+}
+
+export class GroupedField {
   group: Group;
   fields: Fields[];
   required: Required;
+}
+
+export class ChapterModel {
+  chapter: Chapter;
+  groupedFieldsList: GroupedField[];
+}
+
+export class SurveyModel {
+  surveyId: string;
+  chapterModels: ChapterModel[];
 }
 
 export class UiVocabulary {

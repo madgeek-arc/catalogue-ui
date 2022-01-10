@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-
-import {Field, Fields, FormModel, UiVocabulary} from '../domain/dynamic-form-model';
+import {Fields, GroupedField, SurveyModel} from '../domain/dynamic-form-model';
 import {urlAsyncValidator, URLValidator} from '../shared/validators/generic.validator';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
@@ -14,7 +13,7 @@ export class FormControlService {
   private options = {withCredentials: true};
 
   getFormModel(surveyId: string) {
-    return this.http.get<Map<string, FormModel[]>>(this.base + `/ui/form/model/${surveyId}`);
+    return this.http.get<SurveyModel>(this.base + `/ui/form/model/${surveyId}`);
   }
 
   getUiVocabularies() {
@@ -29,7 +28,7 @@ export class FormControlService {
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${item.id}`, item, this.options);
   }
 
-  toFormGroup(form: FormModel[], checkImmutable: boolean) {
+  toFormGroup(form: GroupedField[], checkImmutable: boolean) {
     const group: any = {};
     form.forEach(groups => {
       groups.fields.sort((a, b) => a.field.form.display.order - b.field.form.display.order)

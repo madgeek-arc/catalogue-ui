@@ -2,7 +2,16 @@ import {Component, Input, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 import {FormControlService} from '../../services/form-control.service';
-import {Fields, FormModel, HandleBitSet, Tab, Tabs, UiVocabulary} from '../../domain/dynamic-form-model';
+import {
+  ChapterModel,
+  Fields,
+  GroupedField,
+  HandleBitSet,
+  SurveyModel,
+  Tab,
+  Tabs,
+  UiVocabulary
+} from '../../domain/dynamic-form-model';
 import BitSet from 'bitset/bitset';
 import {PremiumSortPipe} from '../../shared/pipes/premium-sort.pipe';
 import {zip} from 'rxjs/internal/observable/zip';
@@ -21,8 +30,10 @@ export class DynamicFormComponent implements OnInit {
   @Input() surveyId: string = null;
   @Input() readonly : boolean = null;
 
-  fields: FormModel[] = null;
-  chapters: Map<string, FormModel[]> = new Map<string, FormModel[]>();
+  surveyModel: SurveyModel;
+  chapters: ChapterModel[] = [];
+  currentChapter: ChapterModel = null;
+  fields: GroupedField[] = null;
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
@@ -293,8 +304,9 @@ export class DynamicFormComponent implements OnInit {
   }
 
   /** Other stuff **/
-  selectChapter(fields: FormModel[]) {
-    this.fields = fields;
+  selectChapter(chapter: ChapterModel) {
+    this.currentChapter = chapter;
+    this.fields = chapter.groupedFieldsList;
     this.initializations();
   }
 

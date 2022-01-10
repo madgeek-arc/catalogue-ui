@@ -4,7 +4,7 @@ import {DynamicFormComponent} from './dynamic-form.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Fields, FormModel, HandleBitSet} from '../../domain/dynamic-form-model';
+import {Fields, GroupedField, HandleBitSet} from '../../domain/dynamic-form-model';
 import {zip} from 'rxjs/internal/observable/zip';
 
 @Component({
@@ -38,10 +38,13 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
         this.formControlService.getFormModel(this.surveyId)
       ).subscribe(res => {
           this.vocabularies = res[0];
-          this.fields = res[1][Object.keys(res[1])[0]];
-          for (const [key, value] of Object.entries(res[1])) {
-            this.chapters.set(key, value);
+          this.surveyModel = res[1];
+          // this.fields = res[1][Object.keys(res[1])[0]];
+          for (const model of res[1].chapterModels) {
+            this.chapters.push(model);
           }
+          this.fields = this.chapters[0].groupedFieldsList
+          this.currentChapter = this.chapters[0];
         },
         error => {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -169,7 +172,7 @@ export class DynamicFormEditComponent extends DynamicFormComponent implements On
     tmpArr.removeAt(0);
   }
 
-  getModelData(model: FormModel[], name: string): Fields {
+  getModelData(model: GroupedField[], name: string): Fields {
     for (let i = 0; i < model.length; i++) {
       for (let j = 0; j < model[i].fields.length; j++) {
         if(model[i].fields[j].field.name === name) {

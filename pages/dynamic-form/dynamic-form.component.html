@@ -4,9 +4,9 @@
       <div class="uk-width-1-1@m uk-first-column">
 
         <!--Chapter Selection-->
-        <div *ngIf="chapters.size > 1">
+        <div *ngIf="chapters.length > 1">
           <ul uk-tab class="chapter-tabs">
-            <li class="" *ngFor="let chapter of chapters | keyvalue"><a (click)="selectChapter(chapter.value)"> {{chapter.key}}</a></li>
+            <li class="" *ngFor="let chapter of chapters"><a (click)="selectChapter(chapter)"> {{chapter.chapter.name}}</a></li>
           </ul>
         </div>
 
@@ -26,10 +26,14 @@
           </div>
         </div>
 
+        <div *ngIf="currentChapter" class="uk-margin-top chapter-description">
+          <p [innerHtml]="currentChapter.chapter.description"></p>
+        </div>
+
         <div class="uk-margin-medium-bottom">
           <div class="uk-grid">
             <!-- MIDDLE -->
-            <div class="uk-width-expand@m uk-margin-medium-top">
+            <div class="uk-width-expand@m uk-margin-top">
               <div>
 
                 <div *ngIf="bitset.requiredTotal !== 0" class="requiredFields">
@@ -58,7 +62,7 @@
                         <li *ngFor="let tab of fields; let i=index"  (click)="setTabIndex(i)">
                           <a href="#" class="remove-text-decoration uk-flex uk-flex-between"
                              [ngClass]="{'form-error': bitset.tabs.get(tab.group.id).valid}">
-                            <span>{{i+1 + '. ' + tab.group.name + (tab.required.topLevel > 0 ? ' *' : '')}}</span>
+                            <span>{{tab.group.name + (tab.required.topLevel > 0 ? ' *' : '')}}</span>
                             <span *ngIf="bitset.tabs.get(tab.group.id).requiredOnTab !== 0 && showBitsets" class="circle-number">
                               <i *ngIf="bitset.tabs.get(tab.group.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>
                               {{bitset.tabs.get(tab.group.id).remainingOnTab != 0 ? bitset.tabs.get(tab.group.id).remainingOnTab + '*' : ''}}
@@ -123,4 +127,7 @@
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="!ready" class="whiteFilm">
+  <i class="loader-big" aria-hidden="true"></i>
 </div>
