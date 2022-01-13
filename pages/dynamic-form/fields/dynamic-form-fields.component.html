@@ -21,6 +21,13 @@
           </app-string-url-email-field>
         </div>
 
+        <div *ngIf="fieldData.field.typeInfo.type === 'number'">
+          <app-number-field [fieldData]="fieldData"
+                            (handleBitSets)="handleBitsetOfChildren($event)"
+                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-number-field>
+        </div>
+
         <div *ngIf="fieldData.field.typeInfo.type === 'vocabulary' || fieldData.field.typeInfo.type === 'select'">
           <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                 (handleBitSets)="handleBitsetOfChildren($event)"
