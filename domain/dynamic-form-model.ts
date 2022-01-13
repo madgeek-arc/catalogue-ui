@@ -70,11 +70,15 @@ export class Display {
   order: number;
   placement: string;
   visible: boolean;
+  cssClasses: string;
+  style: string;
 
   constructor() {
     this.hasBorder = false;
     this.order = 0;
     this.placement = '';
+    this.cssClasses = '';
+    this.style = '';
     this.visible = true;
   }
 }

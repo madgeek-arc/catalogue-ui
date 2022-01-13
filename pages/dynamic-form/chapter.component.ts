@@ -30,9 +30,9 @@ export class ChapterComponent implements OnInit {
   @Input() surveyId: string = null;
   @Input() readonly : boolean = null;
   @Input() chapter: ChapterModel = null;
+  @Input() fields: GroupedField[] = null;
 
   chapters: ChapterModel[] = [];
-  fields: GroupedField[] = null;
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
@@ -40,7 +40,7 @@ export class ChapterComponent implements OnInit {
   form: FormGroup;
   bitset: Tabs = new Tabs;
   errorMessage = '';
-  successMessage = '';
+  successMessage = null;
   ready = false;
   showLoader = false;
   hasChanges = false;

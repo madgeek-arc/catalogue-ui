@@ -13,6 +13,7 @@ import {
 import BitSet from "bitset";
 import {PremiumSortPipe} from "../../shared/pipes/premium-sort.pipe";
 
+import UIkit from 'uikit';
 
 @Component({
   selector: 'app-chapter-edit',
@@ -82,6 +83,10 @@ export class ChapterEditComponent implements OnChanges{
         console.log(error);
       },
       () => {
+        this.successMessage = 'Updated successfully!';
+        setTimeout( () => {
+          UIkit.alert('#successMessage').close();
+        }, 4000);
         this.showLoader = false;
       }
     );
