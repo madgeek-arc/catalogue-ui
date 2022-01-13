@@ -1,6 +1,7 @@
 <form [formGroup]="form" class="uk-margin-small-bottom" [ngClass]="{'uk-hidden clear-style': hideField}" >
-  <div *ngIf="fieldData.field.label.text" class="uk-form-label uk-margin-bottom {{fieldData.field.label.cssClasses}}" [attr.for]="fieldData.field.name"
-       [ngClass]="{'uk-subLabel': fieldData.field.form.dependsOn !== null}" style="{{fieldData.field.label.style}}">
+  <div *ngIf="fieldData.field.label.text" class="uk-form-label uk-margin-bottom {{fieldData.field.label.cssClasses}}"
+       [attr.for]="fieldData.field.name" [ngClass]="{'uk-subLabel': fieldData.field.form.dependsOn !== null}"
+       style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </div>
   <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
@@ -20,8 +21,8 @@
           <span class="material-icons">clear</span>
         </a>
       </div>
-    <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}"
-         [innerHTML]="fieldData.field.form.suggestion.text" style="{{fieldData.field.form.suggestion.style}}">
+    <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}" style="{{fieldData.field.form.suggestion.style}}"
+         [innerHTML]="fieldData.field.form.suggestion.text">
     </div>
 
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
@@ -38,8 +39,8 @@
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
     <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}"
-           [innerHTML]="fieldData.field.form.suggestion.text" style="{{fieldData.field.form.suggestion.style}}">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}" style="{{fieldData.field.form.suggestion.style}}"
+           [innerHTML]="fieldData.field.form.suggestion.text" >
       </div>
     </div>
   </ng-template>

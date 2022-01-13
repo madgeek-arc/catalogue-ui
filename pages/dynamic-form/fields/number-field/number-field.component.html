@@ -3,7 +3,7 @@
        [ngClass]="{'uk-subLabel': fieldData.field.form.dependsOn !== null}" style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </div>
-  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
+  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}} "
        [innerHTML]="fieldData.field.form.description.text" style="{{fieldData.field.form.description.style}}">
   </div>
 
@@ -17,8 +17,8 @@
            [ngClass]="{'uk-form-danger': checkFormValidity()}" type="number">
 
     <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}"
-           [innerHTML]="fieldData.field.form.suggestion.text" style="{{fieldData.field.form.suggestion.style}}">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}" style="{{fieldData.field.form.suggestion.style}}"
+           [innerHTML]="fieldData.field.form.suggestion.text">
       </div>
     </div>
   </ng-template>

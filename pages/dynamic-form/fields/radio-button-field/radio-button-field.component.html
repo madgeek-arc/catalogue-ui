@@ -1,9 +1,10 @@
 <form [formGroup]="form" class="uk-margin-small-bottom">
-  <div *ngIf="fieldData.field.label.text" class="uk-form-label uk-margin-bottom" [attr.for]="fieldData.field.name">
+  <div *ngIf="fieldData.field.label.text" class="uk-form-label uk-margin-bottom {{fieldData.field.label.cssClasses}}"
+       [attr.for]="fieldData.field.name" style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </div>
-  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10"
-       [innerHTML]="fieldData.field.form.description.text">
+  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
+       [innerHTML]="fieldData.field.form.description.text" style="{{fieldData.field.form.description.style}}">
   </div>
 
   <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
