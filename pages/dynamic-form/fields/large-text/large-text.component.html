@@ -10,7 +10,7 @@
     <!--To add multiplicity if needed-->
   </div>
   <ng-template #noMultiplicity>
-    <textarea [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-textarea uk-width-9-10"
+    <textarea [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
               [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
               (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
               [ngClass]="{'uk-form-danger': checkFormValidity() }">

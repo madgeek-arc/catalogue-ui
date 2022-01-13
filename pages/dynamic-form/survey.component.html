@@ -1,0 +1,18 @@
+<!--Chapter Selection-->
+<div *ngIf="chapters.length > 1">
+  <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
+    <li class="" *ngFor="let chapter of chapters"><a> {{chapter.chapter.name}}</a></li>
+  </ul>
+</div>
+
+<div *ngIf="surveyAnswers && ready">
+  <ul id="top-navigation-tabs" class="uk-switcher">
+    <li *ngFor="let answer of sortedSurveyAnswers; let i = index">
+      <app-chapter-edit [answerValue]="answer.answer" [form]="getFormGroup(i)" [readonly] = readonly
+                        [tabsHeader]="tabsHeader" [chapter]="chapters[i]" [fields]="chapters[i].groupedFieldsList"
+      ></app-chapter-edit>
+    </li>
+  </ul>
+</div>
+
+<!--<pre *ngIf="form">{{form.getRawValue() | json}}</pre>-->

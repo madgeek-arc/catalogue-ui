@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Fields, GroupedField, SurveyModel} from '../domain/dynamic-form-model';
+import {ChapterModel, Fields, GroupedField, SurveyModel} from '../domain/dynamic-form-model';
 import {urlAsyncValidator, URLValidator} from '../shared/validators/generic.validator';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';

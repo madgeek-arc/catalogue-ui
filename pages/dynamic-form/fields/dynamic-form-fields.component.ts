@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
-import {Fields, HandleBitSet, UiVocabulary} from '../../domain/dynamic-form-model';
-import {environment} from '../../../environments/environment';
-import {urlAsyncValidator, URLValidator} from '../../shared/validators/generic.validator';
-import {FormControlService} from "../../services/form-control.service";
+import {Fields, HandleBitSet, UiVocabulary} from '../../../domain/dynamic-form-model';
+import {environment} from '../../../../environments/environment';
+import {urlAsyncValidator, URLValidator} from '../../../shared/validators/generic.validator';
+import {FormControlService} from "../../../services/form-control.service";
 
 @Component({
   selector: 'app-field',
