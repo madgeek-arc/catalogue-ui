@@ -1,5 +1,5 @@
 <!--Chapter Selection-->
-<div *ngIf="chapters.length > 1">
+<div *ngIf="chapters.length > 0">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
     <li class="" *ngFor="let chapter of chapters"><a> {{chapter.chapter.name}}</a></li>
   </ul>
