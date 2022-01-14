@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {FormControlService} from '../../services/form-control.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -30,6 +30,8 @@ export class ChapterEditComponent implements OnChanges{
   @Input() chapter: ChapterModel = null;
   @Input() fields: GroupedField[] = null;
 
+  @Output() chapterHasChanges = new EventEmitter<string>();
+
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = true;
@@ -60,11 +62,12 @@ export class ChapterEditComponent implements OnChanges{
   }
 
   ngOnChanges(changes:SimpleChanges) {
-    this.ready=true
+    this.ready=false
     if (this.answerValue) {
       this.initializations();
       this.prepareForm(this.answerValue);
       this.form.patchValue(this.answerValue);
+      this.ready = true
     }
   }
 
@@ -388,6 +391,14 @@ export class ChapterEditComponent implements OnChanges{
   }
 
   /** <--Bitsets**/
+
+  /** emit changes-->**/
+  unsavedChangesPrompt(e: boolean){
+    if (e) {
+      this.chapterHasChanges.emit(this.chapter.chapter.id);
+    }
+  }
+  /** <--emit changes**/
 
   /** Other stuff **/
 

@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
 import {Fields, HandleBitSet, UiVocabulary} from '../../../domain/dynamic-form-model';
-import {environment} from '../../../../environments/environment';
 import {urlAsyncValidator, URLValidator} from '../../../shared/validators/generic.validator';
 import {FormControlService} from "../../../services/form-control.service";
 
@@ -17,10 +16,9 @@ export class DynamicFormFieldsComponent implements OnInit {
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
 
+  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
-
-  hasChanges = false;
 
 
   constructor(private formControlService: FormControlService) { }
@@ -160,7 +158,7 @@ export class DynamicFormFieldsComponent implements OnInit {
   }
 
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    this.hasChanges.emit(true);
   }
 
   timeOut(ms: number) {

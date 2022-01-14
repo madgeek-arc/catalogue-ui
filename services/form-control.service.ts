@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ChapterModel, Fields, GroupedField, SurveyModel} from '../domain/dynamic-form-model';
-import {urlAsyncValidator, URLValidator} from '../shared/validators/generic.validator';
+import {Fields, GroupedField, SurveyModel} from '../domain/dynamic-form-model';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 
@@ -11,6 +10,8 @@ export class FormControlService {
 
   base = environment.API_ENDPOINT;
   private options = {withCredentials: true};
+  // urlRegEx = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+   public urlRegEx = /^(https?:\/\/.+){0,1}$/;
 
   getFormModel(surveyId: string) {
     return this.http.get<SurveyModel>(this.base + `/ui/form/model/${surveyId}`);
@@ -20,12 +21,13 @@ export class FormControlService {
     return this.http.get<Map<string, string[]>>(this.base + `/ui/vocabularies/map`);
   }
 
-  getDynamicService(id: string) {
-    return this.http.get(this.base + `/ui/services/${id}/`, this.options);
-  }
-
   postItem(item: any, edit:boolean) {
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${item.id}`, item, this.options);
+  }
+
+  validateUrl(url: string) {
+    // console.log(`knocking on: ${this.base}/provider/validateUrl?urlForValidation=${url}`);
+    return this.http.get<boolean>(this.base + `/provider/validateUrl?urlForValidation=${url}`);
   }
 
   toFormGroup(form: GroupedField[], checkImmutable: boolean) {
@@ -38,8 +40,8 @@ export class FormControlService {
           if (formField.field.typeInfo.multiplicity) {
             if (formField.field.typeInfo.type === 'url') {
               group[formField.field.name] = formField.field.form.mandatory ?
-                new FormArray([new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this))])
-                : new FormArray([new FormControl('', URLValidator, urlAsyncValidator(this))]);
+                new FormArray([new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.urlRegEx)]))])
+                : new FormArray([new FormControl('', Validators.pattern(this.urlRegEx))]);
             } else if (formField.field.typeInfo.type === 'composite') {
               group[formField.field.name] = formField.field.form.mandatory ? new FormArray([], Validators.required)
                 : new FormArray([]);
@@ -52,8 +54,8 @@ export class FormControlService {
           } else {
             if (formField.field.typeInfo.type === 'url') {
               group[formField.field.name] = formField.field.form.mandatory ?
-                new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this))
-                : new FormControl('', URLValidator, urlAsyncValidator(this));
+              new FormControl('', [Validators.required, Validators.pattern(this.urlRegEx)])
+                : new FormControl('', Validators.pattern(this.urlRegEx));
             } else if (formField.field.typeInfo.type === 'composite') {
               group[formField.field.name] = new FormGroup(this.createCompositeField(formField));
             } else if (formField.field.typeInfo.type === 'email') {
@@ -100,23 +102,17 @@ export class FormControlService {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormArray([new FormControl('', Validators.required)])
           : new FormArray([new FormControl('')]);
-      }
-      else {
+      } else if (subField.field.typeInfo.type === 'url') {
+        subGroup[subField.field.name] = subField.field.form.mandatory ?
+        new FormControl('', [Validators.required, Validators.pattern(this.urlRegEx)])
+            : new FormControl('', Validators.pattern(this.urlRegEx));
+      } else {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormControl(null, Validators.required)
           : new FormControl(null);
       }
-      if (subField.field.form.dependsOn !== null) {
-        // console.log(subField.field.name);
-        // subGroup[subField.field.name].disable(); // to be fixed
-      }
     });
     return  subGroup;
-  }
-
-  validateUrl(url: string) {
-    // console.log(`knocking on: ${this.base}/provider/validateUrl?urlForValidation=${url}`);
-    return this.http.get<boolean>(this.base + `/provider/validateUrl?urlForValidation=${url}`);
   }
 
   static removeNulls(obj: any) {

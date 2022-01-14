@@ -14,11 +14,11 @@ export class CompositeFieldComponent implements OnInit {
   @Input() editMode: any;
   @Input() position?: number = null;
 
+  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   form: FormGroup;
-  hasChanges = false;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -148,7 +148,7 @@ export class CompositeFieldComponent implements OnInit {
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    this.hasChanges.emit(true);
   }
 
   timeOut(ms: number) {

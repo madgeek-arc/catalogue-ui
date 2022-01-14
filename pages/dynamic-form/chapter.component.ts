@@ -315,4 +315,7 @@ export class ChapterComponent implements OnInit {
     }, {});
   }
 
+  unsavedChangesPrompt(e: boolean) {
+
+  }
 }

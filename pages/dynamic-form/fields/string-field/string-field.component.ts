@@ -15,12 +15,12 @@ export class StringFieldComponent implements OnInit {
   @Input() editMode: any;
   @Input() position?: number = null;
 
+  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   formControl!: FormControl;
   form!: FormGroup;
-  hasChanges = false;
   hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
@@ -79,7 +79,6 @@ export class StringFieldComponent implements OnInit {
     if (groupName) {
       return (!this.fieldAsFormArray()?.get([position])?.get(groupName).valid
         && (edit || this.fieldAsFormArray()?.get([position])?.get(groupName).dirty));
-
     }
     return (!this.fieldAsFormArray().get([position]).valid
       && (edit || this.fieldAsFormArray().get([position]).dirty));
@@ -97,7 +96,8 @@ export class StringFieldComponent implements OnInit {
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    console.log('string-field.component emitting to parent->');
+    this.hasChanges.emit(true);
   }
 
   enableDisableField(value) {

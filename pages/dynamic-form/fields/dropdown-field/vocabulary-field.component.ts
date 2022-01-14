@@ -17,12 +17,12 @@ export class VocabularyFieldComponent implements OnInit {
   @Input() editMode: any;
   @Input() position?: number = null;
 
+  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   formControl!: FormControl;
   form!: FormGroup;
-  hasChanges = false;
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
   }
@@ -48,8 +48,8 @@ export class VocabularyFieldComponent implements OnInit {
   push(field: string, required: boolean, type: string) {
     switch (type) {
       case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
+        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]))
+          : new FormControl('', URLValidator));
         break;
       default:
         this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
@@ -87,7 +87,7 @@ export class VocabularyFieldComponent implements OnInit {
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    this.hasChanges.emit(true);
   }
 
   timeOut(ms: number) {

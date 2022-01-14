@@ -1,7 +1,10 @@
 <!--Chapter Selection-->
 <div *ngIf="chapters.length > 0" [ngClass]="{'uk-display-none': chapters.length === 1}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
-    <li class="" *ngFor="let chapter of chapters"><a> {{chapter.chapter.name}}</a></li>
+    <li class="" *ngFor="let chapter of chapters">
+      <a>{{chapter.chapter.name}}
+        <span *ngIf="chapterChangeMap.get(chapter.chapter.id)" class="material-icons">circle</span></a>
+    </li>
   </ul>
 </div>
 
@@ -10,7 +13,8 @@
     <li *ngFor="let answer of sortedSurveyAnswers; let i = index">
       <app-chapter-edit [answerValue]="answer.answer" [form]="getFormGroup(i)" [readonly] = readonly
                         [tabsHeader]="tabsHeader" [chapter]="chapters[i]" [fields]="chapters[i].groupedFieldsList"
-      ></app-chapter-edit>
+                        (chapterHasChanges)="setChapterChangesMap($event)">
+      </app-chapter-edit>
     </li>
   </ul>
 </div>

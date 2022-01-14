@@ -38,6 +38,7 @@
            [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
+<!--      {{form.controls[fieldData.field.name].errors | json}}-->
     <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
       <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}" style="{{fieldData.field.form.suggestion.style}}"
            [innerHTML]="fieldData.field.form.suggestion.text" >

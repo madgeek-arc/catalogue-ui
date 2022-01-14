@@ -1,8 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Fields, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {FormControlService} from "../../../../services/form-control.service";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
   selector: 'app-date-field',
@@ -15,12 +13,12 @@ export class DateFieldComponent implements OnInit {
   @Input() editMode: any;
   @Input() position?: number = null;
 
+  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Fields>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   formControl!: FormControl;
   form!: FormGroup;
-  hasChanges = false;
   hideFields: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
@@ -81,7 +79,7 @@ export class DateFieldComponent implements OnInit {
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    this.hasChanges.emit(true);
   }
 
   enableDisableField(value: boolean) {

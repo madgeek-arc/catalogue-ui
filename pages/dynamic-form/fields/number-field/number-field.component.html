@@ -14,6 +14,7 @@
   <ng-template #noMultiplicity>
     <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-input uk-width-9-10 uk-animation-scale-up"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [step]='fieldData.field.typeInfo.values[0]'
+           placeholder="{{fieldData.field.form.placeholder}}"
            [ngClass]="{'uk-form-danger': checkFormValidity()}" type="number">
 
     <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
