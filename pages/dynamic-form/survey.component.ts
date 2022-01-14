@@ -5,7 +5,6 @@ import {FormControlService} from "../../services/form-control.service";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {
-  Chapter,
   ChapterModel,
   Fields,
   GroupedField,

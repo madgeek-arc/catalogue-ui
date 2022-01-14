@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="uk-margin-small-bottom">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.field.display.cssClasses}}">
   <div *ngIf="fieldData.field.label.text" class="uk-form-label uk-width-9-10 uk-margin-bottom {{fieldData.field.label.cssClasses}}" [attr.for]="fieldData.field.name" style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </div>
@@ -12,9 +12,15 @@
   <ng-template #noMultiplicity>
     <textarea [formControlName]="fieldData.field.name" [id]="fieldData.field.name" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
               [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-              (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-              [ngClass]="{'uk-form-danger': checkFormValidity() }">
+              [maxlength]="fieldData.field.typeInfo.values ? fieldData.field.typeInfo.values[0] : null"
+              (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [ngClass]="{'uk-form-danger': checkFormValidity()}">
     </textarea>
+    <div class="uk-width-9-10">
+      <div class="uk-animation-scale-up" *ngIf="fieldData.field.typeInfo.values" style="float: right;">
+        <span> {{form.get(fieldData.field.name).value ? form.get(fieldData.field.name).value.length : 0}}</span>
+        <span>/ {{fieldData.field.typeInfo.values[0]}}</span>
+      </div>
+    </div>
     <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
       <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}" style="{{fieldData.field.form.suggestion.style}}" [innerHTML]="fieldData.field.form.suggestion.text"></div>
     </div>

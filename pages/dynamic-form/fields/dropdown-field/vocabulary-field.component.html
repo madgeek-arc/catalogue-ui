@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form [formGroup]="form" class="{{fieldData.field.display.cssClasses}}">
   <div *ngIf="fieldData.field.label.text" class="uk-form-label uk-margin-bottom {{fieldData.field.label.cssClasses}}"
        [attr.for]="fieldData.field.name" style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}

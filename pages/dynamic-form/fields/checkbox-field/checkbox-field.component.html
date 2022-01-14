@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="uk-margin-small-bottom">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.field.display.cssClasses}}">
 
   <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-top uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
        [innerHTML]="fieldData.field.form.description.text" style="{{fieldData.field.form.description.style}}">
