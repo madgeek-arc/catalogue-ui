@@ -10,7 +10,7 @@ export class FormControlService {
 
   base = environment.API_ENDPOINT;
   private options = {withCredentials: true};
-  // urlRegEx = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+  // urlRegEx = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
    public urlRegEx = /^(https?:\/\/.+){0,1}$/;
 
   getFormModel(surveyId: string) {
@@ -21,8 +21,8 @@ export class FormControlService {
     return this.http.get<Map<string, string[]>>(this.base + `/ui/vocabularies/map`);
   }
 
-  postItem(item: any, edit:boolean) {
-    return this.http[edit ? 'put' : 'post'](this.base + `/answers/${item.id}`, item, this.options);
+  postItem(surveyId: string, item: any, edit:boolean) {
+    return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}?chapterAnswerId=${item.id}`, item, this.options);
   }
 
   validateUrl(url: string) {

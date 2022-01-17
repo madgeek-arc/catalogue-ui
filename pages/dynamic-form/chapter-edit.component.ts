@@ -25,7 +25,7 @@ export class ChapterEditComponent implements OnChanges{
   @Input() answerValue: Object = null;
   @Input() form: FormGroup = null;
   @Input() tabsHeader: string;
-  @Input() surveyId: string = null;
+  @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
   @Input() chapter: ChapterModel = null;
   @Input() fields: GroupedField[] = null;
@@ -74,9 +74,8 @@ export class ChapterEditComponent implements OnChanges{
   onSubmit(tempSave: boolean, pendingService?: boolean) {
     // if (this.form.valid) {
     window.scrollTo(0, 0);
-    // console.log(this.form.getRawValue());
     this.showLoader = true;
-    this.formControlService.postItem(this.form.getRawValue(), this.editMode).subscribe(
+    this.formControlService.postItem(this.surveyAnswerId, this.form.getRawValue(), this.editMode).subscribe(
       res => {
         // this.router.navigate(['/contributions/mySurveys']);
       },

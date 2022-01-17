@@ -21,13 +21,13 @@ import BitSet from "bitset";
 
 export class SurveyComponent implements OnInit, OnChanges {
 
-  @Input() surveyAnswers: SurveyAnswer[] = [];
+  @Input() surveyAnswers: SurveyAnswer = null;
   @Input() tabsHeader : string = null;
 
   surveyModel: SurveyModel;
   chapters: ChapterModel[] = [];
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
-  sortedSurveyAnswers: SurveyAnswer[] = [];
+  sortedSurveyAnswers: Object = {};
   currentChapter: ChapterModel = null;
   fields: GroupedField[] = null;
   vocabularies: Map<string, string[]>;
@@ -59,30 +59,27 @@ export class SurveyComponent implements OnInit, OnChanges {
       this.ready = false;
       zip(
         this.formControlService.getUiVocabularies(),
-        this.formControlService.getFormModel(this.surveyAnswers[0].surveyId)
+        this.formControlService.getFormModel(this.surveyAnswers.surveyId)
       ).subscribe(res => {
           this.vocabularies = res[0];
           this.surveyModel = res[1];
           // this.fields = res[1][Object.keys(res[1])[0]];
           res[1].chapterModels.sort((a, b) => a.chapter.order - b.chapter.order);
           for (const model of res[1].chapterModels) {
-            this.chapters.push(model);
-            this.chapterChangeMap.set(model.chapter.id, false);
+            for (const surveyAnswer in this.surveyAnswers.chapterAnswers) {
+              if (model.chapter.id === this.surveyAnswers.chapterAnswers[surveyAnswer].chapterId) {
+                this.chapters.push(model);
+                this.chapterChangeMap.set(model.chapter.id, false);
+                this.sortedSurveyAnswers[model.chapter.id] = this.surveyAnswers.chapterAnswers[surveyAnswer].answer;
+                break;
+              }
+            }
           }
         },
         error => {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
         },
         () => {
-          // this.chapters.sort((a, b) => a.chapter.order - b.chapter.order);
-          for (const chapter of this.chapters) {
-            for (const surveyAnswer of this.surveyAnswers) {
-              if (chapter.chapter.id === surveyAnswer.chapterId) {
-                this.sortedSurveyAnswers.push(surveyAnswer);
-                break;
-              }
-            }
-          }
           for (let i  = 0; i < this.chapters.length; i++) {
             this.form.addControl(this.chapters[i].chapter.name, this.formControlService.toFormGroup(this.chapters[i].groupedFieldsList, true)) ;
           }

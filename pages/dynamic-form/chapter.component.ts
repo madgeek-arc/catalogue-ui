@@ -84,7 +84,7 @@ export class ChapterComponent implements OnInit {
       window.scrollTo(0, 0);
       // console.log(this.form.getRawValue());
       this.showLoader = true;
-      this.formControlService.postItem(this.form.getRawValue(), this.editMode).subscribe(
+      this.formControlService.postItem(this.surveyId, this.form.getRawValue(), this.editMode).subscribe(
         res => {
           this.router.navigate(['/contributions/surveys']);
         },
