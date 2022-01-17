@@ -27,10 +27,11 @@ export class ChapterEditComponent implements OnChanges{
   @Input() tabsHeader: string;
   @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
+  @Input() validate : boolean = null;
   @Input() chapter: ChapterModel = null;
   @Input() fields: GroupedField[] = null;
 
-  @Output() chapterHasChanges = new EventEmitter<string>();
+  @Output() chapterHasChanges = new EventEmitter<string[]>();
 
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
@@ -90,6 +91,7 @@ export class ChapterEditComponent implements OnChanges{
           UIkit.alert('#successMessage').close();
         }, 4000);
         this.showLoader = false;
+        this.unsavedChangesPrompt(true, 'notNull');
       }
     );
     // } else {
@@ -392,9 +394,9 @@ export class ChapterEditComponent implements OnChanges{
   /** <--Bitsets**/
 
   /** emit changes-->**/
-  unsavedChangesPrompt(e: boolean){
+  unsavedChangesPrompt(e: boolean, removeChanges: string = null){
     if (e) {
-      this.chapterHasChanges.emit(this.chapter.chapter.id);
+      this.chapterHasChanges.emit([this.chapter.chapter.id, removeChanges]);
     }
   }
   /** <--emit changes**/

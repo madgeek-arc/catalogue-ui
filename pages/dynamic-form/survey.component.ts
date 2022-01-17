@@ -97,8 +97,12 @@ export class SurveyComponent implements OnInit, OnChanges {
     return this.form.get(this.chapters[index].chapter.name) as FormGroup;
   }
 
-  setChapterChangesMap(chapterId: string) {
-    this.chapterChangeMap.set(chapterId, true);
+  setChapterChangesMap(chapterId: string[]) {
+    if (chapterId[1] === null) {
+      this.chapterChangeMap.set(chapterId[0], true);
+    } else {
+      this.chapterChangeMap.set(chapterId[0], false);
+    }
   }
 
 }
