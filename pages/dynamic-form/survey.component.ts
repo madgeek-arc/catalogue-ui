@@ -37,6 +37,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ready = false;
   readonly : boolean = false;
+  validate : boolean = false;
   errorMessage = '';
 
   form: FormGroup;
@@ -50,6 +51,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   ngOnInit() {
     if (this.router.url.includes('/view')) {
       this.readonly = true;
+    } else if (this.router.url.includes('/validate')) {
+      this.validate = true;
     }
   }
 

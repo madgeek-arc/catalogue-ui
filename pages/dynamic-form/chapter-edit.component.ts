@@ -69,6 +69,7 @@ export class ChapterEditComponent implements OnChanges{
       this.prepareForm(this.answerValue);
       this.form.patchValue(this.answerValue);
       this.ready = true
+
     }
   }
 
