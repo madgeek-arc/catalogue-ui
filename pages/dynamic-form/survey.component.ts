@@ -2,16 +2,18 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core"
 import {SurveyAnswer} from "../../../app/domain/survey";
 import {zip} from "rxjs/internal/observable/zip";
 import {FormControlService} from "../../services/form-control.service";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {
-  ChapterModel,
+  ChapterModel, Fields,
   GroupedField,
   SurveyModel,
   Tabs,
   UiVocabulary
 } from "../../domain/dynamic-form-model";
 import BitSet from "bitset";
+import UIkit from "uikit";
+import {SurveyService} from "../../../app/services/survey.service";
 
 @Component({
   selector: 'app-survey',
@@ -28,8 +30,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   chapters: ChapterModel[] = [];
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
   sortedSurveyAnswers: Object = {};
-  currentChapter: ChapterModel = null;
-  fields: GroupedField[] = null;
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
@@ -42,9 +42,8 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   form: FormGroup;
 
-  constructor(private formControlService: FormControlService,
-              private fb: FormBuilder,
-              private router: Router) {
+  constructor(private formControlService: FormControlService, private fb: FormBuilder,
+              private router: Router, private surveyService: SurveyService) {
     this.form = this.fb.group({});
   }
 
@@ -57,16 +56,22 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.ready = false;
     if (this.surveyAnswers) {
       this.editMode = true;
-      this.ready = false;
+      if (this.surveyAnswers.validated) {
+        this.readonly = true;
+        this.validate = false;
+      } else if (this.validate){
+        UIkit.modal('#validation-modal').show();
+      }
+
       zip(
         this.formControlService.getUiVocabularies(),
         this.formControlService.getFormModel(this.surveyAnswers.surveyId)
       ).subscribe(res => {
           this.vocabularies = res[0];
           this.surveyModel = res[1];
-          // this.fields = res[1][Object.keys(res[1])[0]];
           res[1].chapterModels.sort((a, b) => a.chapter.order - b.chapter.order);
           for (const model of res[1].chapterModels) {
             for (const surveyAnswer in this.surveyAnswers.chapterAnswers) {
@@ -84,7 +89,9 @@ export class SurveyComponent implements OnInit, OnChanges {
         },
         () => {
           for (let i  = 0; i < this.chapters.length; i++) {
-            this.form.addControl(this.chapters[i].chapter.name, this.formControlService.toFormGroup(this.chapters[i].groupedFieldsList, true)) ;
+            this.form.addControl(this.chapters[i].chapter.name, this.formControlService.toFormGroup(this.chapters[i].groupedFieldsList, true));
+            this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.chapters[i].groupedFieldsList)
+            this.form.get(this.chapters[i].chapter.name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
           setTimeout(() => {
             if (this.readonly) {
@@ -93,6 +100,20 @@ export class SurveyComponent implements OnInit, OnChanges {
           }, 0);
           this.ready = true;
         });
+    }
+  }
+
+  validateSurvey() {
+    if (this.form.valid) {
+      this.surveyService.changeAnswerValidStatus(this.surveyAnswers.id, !this.surveyAnswers.validated).subscribe(
+        next => {
+          UIkit.modal('#validation-modal').hide();
+          this.router.navigate(['/contributions/mySurveys'])
+        },
+        error => {
+          console.error(error)
+        },
+        () => {});
     }
   }
 
@@ -108,4 +129,89 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
+  /** create additional fields for arrays if needed --> **/
+  prepareForm(form: Object, fields: GroupedField[]) {
+    for (let key in form) {
+      for (let formElementKey in form[key]) {
+        if(form[key].hasOwnProperty(formElementKey)) {
+          if(Array.isArray(form[key][formElementKey])) {
+            // console.log(form[key][formElementKey]);
+            // console.log(formElementKey);
+            let formFieldData = this.getModelData(fields, formElementKey);
+            let i = 1;
+            if (formFieldData.field.typeInfo.type === 'composite') { // In order for the fields to be enabled
+              this.popComposite(key, formElementKey)  // remove it first
+              i = 0;  // increase the loops
+            }
+            let count = 0;
+            for (i; i < form[key][formElementKey].length; i++) {
+              if (formFieldData.field.typeInfo.type === 'composite') {
+                this.pushComposite(key, formElementKey, formFieldData.subFieldGroups);
+                // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
+                for (let formSubElementName in form[key][formElementKey][count]) {
+                  if(form[key][formElementKey][count].hasOwnProperty(formSubElementName)) {
+                    if(Array.isArray(form[key][formElementKey][count][formSubElementName])) {
+                      // console.log('Key: ' + key + ' formElementKey: ' + formElementKey + ' count: ' + count + ' formSubElementName: ' + formSubElementName);
+                      const control = <FormArray>this.form.get([key,formElementKey,count,formSubElementName]);
+                      // console.log(control);
+                      let required = false;
+                      for (let j = 0; j < formFieldData.subFieldGroups.length; j++) {
+                        if (formFieldData.subFieldGroups[j].field.name === formSubElementName) {
+                          required = formFieldData.subFieldGroups[j].field.form.mandatory;
+                        }
+                      }
+                      for (let j = 0; j < form[key][formElementKey][count][formSubElementName].length - 1; j++) {
+                        control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
+                      }
+                    }
+                  }
+                }
+                // }
+                count++;
+              } else {
+                this.push(key, formElementKey, formFieldData.field.form.mandatory);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  getModelData(model: GroupedField[], name: string): Fields {
+    for (let i = 0; i < model.length; i++) {
+      for (let j = 0; j < model[i].fields.length; j++) {
+        if(model[i].fields[j].field.name === name) {
+          return model[i].fields[j];
+        }
+      }
+    }
+    return null;
+  }
+
+  popComposite(group: string, field: string) {
+    let tmpArr = this.form.get(group).get(field) as FormArray;
+    tmpArr.removeAt(0);
+  }
+
+  push(group: string, field: string, required: boolean) {
+    let tmpArr = this.form.get(group).get(field) as FormArray;
+    tmpArr.push(required ? new FormControl('', Validators.required) : new FormControl(''));
+  }
+
+  pushComposite(group: string, field: string, subFields: Fields[]) {
+    const formGroup: any = {};
+    subFields.forEach(subField => {
+      if (subField.field.typeInfo.multiplicity) {
+        formGroup[subField.field.name] = subField.field.form.mandatory ?
+          new FormArray([new FormControl('', Validators.required)])
+          : new FormArray([new FormControl('')]);
+      } else {
+        formGroup[subField.field.name] = subField.field.form.mandatory ? new FormControl('', Validators.required)
+          : new FormControl('');
+      }
+    });
+    let tmpArr = this.form.get(group).get(field) as FormArray;
+    tmpArr.push(new FormGroup(formGroup));
+  }
 }

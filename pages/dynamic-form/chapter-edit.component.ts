@@ -14,6 +14,7 @@ import BitSet from "bitset";
 import {PremiumSortPipe} from "../../shared/pipes/premium-sort.pipe";
 
 import UIkit from 'uikit';
+import {SurveyService} from "../../../app/services/survey.service";
 
 @Component({
   selector: 'app-chapter-edit',
@@ -52,7 +53,7 @@ export class ChapterEditComponent implements OnChanges{
 
   premiumSort = new PremiumSortPipe();
 
-  constructor(public route: ActivatedRoute,
+  constructor(public route: ActivatedRoute, private surveyService: SurveyService,
               protected formControlService: FormControlService,
               protected fb: FormBuilder,
               protected router: Router) {
@@ -66,10 +67,14 @@ export class ChapterEditComponent implements OnChanges{
     this.ready=false
     if (this.answerValue) {
       this.initializations();
-      this.prepareForm(this.answerValue);
-      this.form.patchValue(this.answerValue);
       this.ready = true
-
+      if (this.validate) {
+        // console.log('validating');
+        // for (let key in this.form.value) {
+          // console.log(this.form.get(key));
+          // console.log(key + ': '+ this.form.get(key).valid);
+        // }
+      }
     }
   }
 
@@ -107,6 +112,20 @@ export class ChapterEditComponent implements OnChanges{
     // }
   }
 
+  validateSurvey() {
+    if (this.form.valid) {
+      this.surveyService.changeAnswerValidStatus(this.surveyAnswerId, this.validate).subscribe(
+        next => {
+          UIkit.modal('#validation-modal').hide();
+          this.router.navigate(['/contributions/mySurveys'])
+        },
+        error => {
+          console.error(error)
+        },
+        () => {});
+    }
+  }
+
   initializations() {
     /** Initialize tab bitsets **/
     let requiredTabs = 0, requiredTotal = 0;
@@ -138,54 +157,6 @@ export class ChapterEditComponent implements OnChanges{
     // }
   }
 
-  prepareForm(form: Object) {
-    for (let key in form) {
-      for (let formElementKey in form[key]) {
-        if(form[key].hasOwnProperty(formElementKey)) {
-          if(Array.isArray(form[key][formElementKey])) {
-            // console.log(form[key][formElementKey]);
-            // console.log(formElementKey);
-            let formFieldData = this.getModelData(this.fields, formElementKey);
-            let i = 1;
-            if (formFieldData.field.typeInfo.type === 'composite') { // In order for the fields to be enabled
-              this.popComposite(key, formElementKey)  // remove it first
-              i = 0;  // increase the loops
-            }
-            let count = 0;
-            for (i; i < form[key][formElementKey].length; i++) {
-              if (formFieldData.field.typeInfo.type === 'composite') {
-                this.pushComposite(key, formElementKey, formFieldData.subFieldGroups);
-                // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
-                  for (let formSubElementName in form[key][formElementKey][count]) {
-                    if(form[key][formElementKey][count].hasOwnProperty(formSubElementName)) {
-                      if(Array.isArray(form[key][formElementKey][count][formSubElementName])) {
-                        // console.log('Key: ' + key + ' formElementKey: ' + formElementKey + ' count: ' + count + ' formSubElementName: ' + formSubElementName);
-                        const control = <FormArray>this.form.get([key,formElementKey,count,formSubElementName]);
-                        // console.log(control);
-                        let required = false;
-                        for (let j = 0; j < formFieldData.subFieldGroups.length; j++) {
-                          if (formFieldData.subFieldGroups[j].field.name === formSubElementName) {
-                            required = formFieldData.subFieldGroups[j].field.form.mandatory;
-                          }
-                        }
-                        for (let j = 0; j < form[key][formElementKey][count][formSubElementName].length - 1; j++) {
-                          control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
-                        }
-                      }
-                    }
-                  }
-                // }
-                count++;
-              } else {
-                this.push(key, formElementKey, formFieldData.field.form.mandatory);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   validateForm() {
     for (let control in this.form.controls) {
       // console.log(control);
@@ -214,36 +185,6 @@ export class ChapterEditComponent implements OnChanges{
         }
       }
     }
-  }
-
-  push(group: string, field: string, required: boolean) {
-    let tmpArr = this.form.get(group).get(field) as FormArray;
-    tmpArr.push(required ? new FormControl('', Validators.required) : new FormControl(''));
-  }
-
-  pushComposite(group: string, field: string, subFields: Fields[]) {
-    const formGroup: any = {};
-    subFields.forEach(subField => {
-      if (subField.field.typeInfo.multiplicity) {
-        formGroup[subField.field.name] = subField.field.form.mandatory ?
-          new FormArray([new FormControl('', Validators.required)])
-          : new FormArray([new FormControl('')]);
-      } else {
-        formGroup[subField.field.name] = subField.field.form.mandatory ? new FormControl('', Validators.required)
-          : new FormControl('');
-      }
-      // In this case fields must be enabled
-      // if (subField.field.form.dependsOn !== null) {
-      //   formGroup[subField.field.name].disable();
-      // }
-    });
-    let tmpArr = this.form.get(group).get(field) as FormArray;
-    tmpArr.push(new FormGroup(formGroup));
-  }
-
-  popComposite(group: string, field: string) {
-    let tmpArr = this.form.get(group).get(field) as FormArray;
-    tmpArr.removeAt(0);
   }
 
   getModelData(model: GroupedField[], name: string): Fields {

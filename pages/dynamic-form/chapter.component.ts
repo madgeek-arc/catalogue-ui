@@ -16,6 +16,7 @@ import BitSet from 'bitset/bitset';
 import {PremiumSortPipe} from '../../shared/pipes/premium-sort.pipe';
 import {zip} from 'rxjs/internal/observable/zip';
 import {Router} from "@angular/router";
+import {SurveyService} from "../../../app/services/survey.service";
 
 declare var UIkit: any;
 
@@ -29,6 +30,7 @@ export class ChapterComponent implements OnInit {
   @Input() tabsHeader: string;
   @Input() surveyId: string = null;
   @Input() readonly : boolean = null;
+  @Input() validate : boolean = null;
   @Input() chapter: ChapterModel = null;
   @Input() fields: GroupedField[] = null;
 
@@ -53,7 +55,7 @@ export class ChapterComponent implements OnInit {
 
   premiumSort = new PremiumSortPipe();
 
-  constructor(protected formControlService: FormControlService,
+  constructor(protected formControlService: FormControlService, private surveyService: SurveyService,
               protected fb: FormBuilder,
               protected router: Router) {
   }
@@ -107,6 +109,20 @@ export class ChapterComponent implements OnInit {
       //   console.log(extrasKey + ': '+ this.form.get('extras.'+extrasKey).valid);
       // }
     // }
+  }
+
+  validateSurvey() {
+    if (this.form.valid) {
+      this.surveyService.changeAnswerValidStatus(this.surveyId, this.validate).subscribe(
+        next => {
+          UIkit.modal('#validation-modal').hide();
+          this.router.navigate(['/contributions/mySurveys'])
+        },
+        error => {
+          console.error(error)
+        },
+        () => {});
+    }
   }
 
   initializations() {
