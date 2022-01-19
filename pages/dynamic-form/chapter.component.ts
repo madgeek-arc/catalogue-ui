@@ -7,7 +7,6 @@ import {
   Fields,
   GroupedField,
   HandleBitSet,
-  SurveyModel,
   Tab,
   Tabs,
   UiVocabulary
@@ -121,7 +120,9 @@ export class ChapterComponent implements OnInit {
         error => {
           console.error(error)
         },
-        () => {});
+        () => {
+        }
+      );
     }
   }
 

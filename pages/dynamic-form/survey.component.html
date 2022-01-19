@@ -1,11 +1,26 @@
+<div *ngIf="survey" class="uk-grid">
+  <h5 class="uk-width-1-2 uk-margin-bottom">{{survey.name}}</h5>
+  <div class="uk-width-1-2">
+    <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateSurvey()">Validate</button>
+  </div>
+  <p class="uk-margin-bottom">{{survey.notice}}</p>
+</div>
+
 <!--Chapter Selection-->
 <div *ngIf="chapters.length > 0" [ngClass]="{'uk-display-none': chapters.length === 1}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
     <li class="" *ngFor="let chapter of chapters">
-      <a>{{chapter.chapter.name}}
+      <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.chapter.name}}
         <span *ngIf="chapterChangeMap.get(chapter.chapter.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
     </li>
   </ul>
+</div>
+
+<div *ngIf="errorMessage" class="uk-alert uk-alert-danger">
+  <p>{{errorMessage}}</p>
+</div>
+<div *ngIf="successMessage" class="uk-alert uk-alert-success" id="successMessage">
+  <pre>{{successMessage}}</pre>
 </div>
 
 <div *ngIf="surveyAnswers && ready">
@@ -28,8 +43,20 @@
     <p>The survey fields will be validated and if all required fields are present it will be locked and it will not be
     editable until unlocked.</p>
     <p class="uk-text-right">
-      <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+      <button class="uk-button uk-button-secondary uk-modal-close" type="button">Close</button>
       <button class="uk-button uk-button-primary" type="button" (click)="validateSurvey()">I agree</button>
+    </p>
+  </div>
+</div>
+
+<!-- Unsaved changes modal -->
+<div id="unsaved-changes-modal" uk-modal="esc-close: false; bg-close: false">
+  <div class="uk-modal-dialog uk-modal-body">
+<!--    <h2 class="uk-modal-title"></h2>-->
+    <p>There are unsaved changes at the current form!</p>
+    <p class="uk-text-right">
+      <button class="uk-button uk-button-secondary uk-modal-close" type="button">I will do it later</button>
+      <button class="uk-button uk-button-primary" type="button" (click)="onSubmit()">Submit now!</button>
     </p>
   </div>
 </div>

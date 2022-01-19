@@ -1,8 +1,9 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {SurveyAnswer} from "../../../app/domain/survey";
+import {Survey, SurveyAnswer} from "../../../app/domain/survey";
 import {zip} from "rxjs/internal/observable/zip";
 import {FormControlService} from "../../services/form-control.service";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {SurveyService} from "../../../app/services/survey.service";
 import {Router} from "@angular/router";
 import {
   ChapterModel, Fields,
@@ -12,8 +13,8 @@ import {
   UiVocabulary
 } from "../../domain/dynamic-form-model";
 import BitSet from "bitset";
+
 import UIkit from "uikit";
-import {SurveyService} from "../../../app/services/survey.service";
 
 @Component({
   selector: 'app-survey',
@@ -24,11 +25,14 @@ import {SurveyService} from "../../../app/services/survey.service";
 export class SurveyComponent implements OnInit, OnChanges {
 
   @Input() surveyAnswers: SurveyAnswer = null;
+  @Input() survey: Survey = null;
   @Input() tabsHeader : string = null;
 
   surveyModel: SurveyModel;
   chapters: ChapterModel[] = [];
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
+  currentChapter: ChapterModel = null;
+  chapterForSubmission: ChapterModel = null;
   sortedSurveyAnswers: Object = {};
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
@@ -39,6 +43,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   readonly : boolean = false;
   validate : boolean = false;
   errorMessage = '';
+  successMessage = '';
 
   form: FormGroup;
 
@@ -59,12 +64,6 @@ export class SurveyComponent implements OnInit, OnChanges {
     this.ready = false;
     if (this.surveyAnswers) {
       this.editMode = true;
-      if (this.surveyAnswers.validated) {
-        this.readonly = true;
-        this.validate = false;
-      } else if (this.validate){
-        UIkit.modal('#validation-modal').show();
-      }
 
       zip(
         this.formControlService.getUiVocabularies(),
@@ -83,6 +82,7 @@ export class SurveyComponent implements OnInit, OnChanges {
               }
             }
           }
+          this.currentChapter = this.chapters[0];
         },
         error => {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -93,6 +93,13 @@ export class SurveyComponent implements OnInit, OnChanges {
             this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.chapters[i].groupedFieldsList)
             this.form.get(this.chapters[i].chapter.name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
+          if (this.surveyAnswers.validated) {
+            this.readonly = true;
+            this.validate = false;
+          } else if (this.validate){
+            UIkit.modal('#validation-modal').show();
+          }
+
           setTimeout(() => {
             if (this.readonly) {
               this.form.disable();
@@ -104,17 +111,74 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   validateSurvey() {
+    for (const chapterChangeMapElement of this.chapterChangeMap) {
+      if (chapterChangeMapElement[1]) {
+        UIkit.modal('#validation-modal').hide();
+        this.errorMessage = 'There are unsaved changes, please submit all changes first and then validate.';
+        return;
+      }
+    }
     if (this.form.valid) {
       this.surveyService.changeAnswerValidStatus(this.surveyAnswers.id, !this.surveyAnswers.validated).subscribe(
         next => {
           UIkit.modal('#validation-modal').hide();
-          this.router.navigate(['/contributions/mySurveys'])
+          this.router.navigate(['/contributions/mySurveys']);
         },
         error => {
-          console.error(error)
+          console.error(error);
         },
         () => {});
+    } else {
+      UIkit.modal('#validation-modal').hide();
+      console.log('Invalid form');
+      this.form.markAllAsTouched();
+      let str = '';
+      for (let key in this.form.value) {
+        // console.log(this.form.get('extras.'+key));
+        console.log(key + ': '+ this.form.get(key).valid);
+        if (!this.form.get(key).valid) {
+          str = str + '-> ' + key + ' ';
+        }
+        for (const keyElement in this.form.get(key).value) {
+          console.log(keyElement + ': '+ this.form.get(key+'.'+keyElement).valid);
+        }
+      }
+      console.log(str);
+      this.errorMessage = 'There are missing fields at chapters ' + str;
     }
+  }
+
+  onSubmit() {
+    window.scrollTo(0, 0);
+    // this.showLoader = true;
+    this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.chapter.name).value, this.editMode).subscribe(
+      res => {
+        this.successMessage = 'Updated successfully!';
+        this.chapterChangeMap.set(this.chapterForSubmission.chapter.id, false);
+        UIkit.modal('#unsaved-changes-modal').hide();
+      },
+      error => {
+        this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.error);
+        // this.showLoader = false;
+        UIkit.modal('#unsaved-changes-modal').hide();
+        console.log(error);
+      },
+      () => {
+        setTimeout(() => {
+          UIkit.alert('#successMessage').close();
+        }, 4000);
+        // this.showLoader = false;
+      }
+    );
+  }
+
+  showUnsavedChangesPrompt(chapter: ChapterModel) {
+    console.log(chapter.chapter.name);
+    if (this.chapterChangeMap.get(this.currentChapter.chapter.id)) {
+      this.chapterForSubmission = this.currentChapter;
+      UIkit.modal('#unsaved-changes-modal').show();
+    }
+    this.currentChapter = chapter;
   }
 
   getFormGroup(index: number): FormGroup {
@@ -214,4 +278,6 @@ export class SurveyComponent implements OnInit, OnChanges {
     let tmpArr = this.form.get(group).get(field) as FormArray;
     tmpArr.push(new FormGroup(formGroup));
   }
+  /** <-- create additional fields for arrays if needed **/
+
 }

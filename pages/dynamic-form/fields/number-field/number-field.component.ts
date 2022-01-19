@@ -69,7 +69,7 @@ export class NumberFieldComponent implements OnInit {
   /** check fields validity--> **/
 
   checkFormValidity(): boolean {
-    return (!this.formControl.valid && (this.editMode || this.formControl.dirty));
+    return (!this.formControl.valid && this.formControl.touched);
   }
 
   checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {

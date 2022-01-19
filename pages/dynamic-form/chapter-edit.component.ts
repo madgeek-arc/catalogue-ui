@@ -53,7 +53,7 @@ export class ChapterEditComponent implements OnChanges{
 
   premiumSort = new PremiumSortPipe();
 
-  constructor(public route: ActivatedRoute, private surveyService: SurveyService,
+  constructor(public route: ActivatedRoute,
               protected formControlService: FormControlService,
               protected fb: FormBuilder,
               protected router: Router) {
@@ -68,13 +68,6 @@ export class ChapterEditComponent implements OnChanges{
     if (this.answerValue) {
       this.initializations();
       this.ready = true
-      if (this.validate) {
-        // console.log('validating');
-        // for (let key in this.form.value) {
-          // console.log(this.form.get(key));
-          // console.log(key + ': '+ this.form.get(key).valid);
-        // }
-      }
     }
   }
 
@@ -110,20 +103,6 @@ export class ChapterEditComponent implements OnChanges{
     //   console.log(extrasKey + ': '+ this.form.get('extras.'+extrasKey).valid);
     // }
     // }
-  }
-
-  validateSurvey() {
-    if (this.form.valid) {
-      this.surveyService.changeAnswerValidStatus(this.surveyAnswerId, this.validate).subscribe(
-        next => {
-          UIkit.modal('#validation-modal').hide();
-          this.router.navigate(['/contributions/mySurveys'])
-        },
-        error => {
-          console.error(error)
-        },
-        () => {});
-    }
   }
 
   initializations() {

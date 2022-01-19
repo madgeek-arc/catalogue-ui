@@ -8,11 +8,8 @@
 <!--        {{editMode ? "Update" : "Add New"}} {{serviceORresource}}-->
           </div>
           <div class="">
-            <button *ngIf="!readonly && !validate" class="uk-button uk-button-secondary uk-margin-left"
+            <button *ngIf="!readonly" class="uk-button uk-button-secondary uk-margin-left"
                     (click)="onSubmit(false)" type="submit"> Submit
-            </button>
-            <button *ngIf="validate" class="uk-button uk-button-secondary uk-margin-left"
-                    (click)="validateSurvey()" type="submit"> Validate
             </button>
           </div>
         </div>
