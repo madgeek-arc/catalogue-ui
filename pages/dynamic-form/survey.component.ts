@@ -137,13 +137,12 @@ export class SurveyComponent implements OnInit, OnChanges {
         // console.log(this.form.get('extras.'+key));
         console.log(key + ': '+ this.form.get(key).valid);
         if (!this.form.get(key).valid) {
-          str = str + '-> ' + key + ' ';
+          str =  str + '\n\t-> ' + key;
         }
         for (const keyElement in this.form.get(key).value) {
           console.log(keyElement + ': '+ this.form.get(key+'.'+keyElement).valid);
         }
       }
-      console.log(str);
       this.errorMessage = 'There are missing fields at chapters ' + str;
     }
   }
@@ -173,7 +172,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesPrompt(chapter: ChapterModel) {
-    console.log(chapter.chapter.name);
     if (this.chapterChangeMap.get(this.currentChapter.chapter.id)) {
       this.chapterForSubmission = this.currentChapter;
       UIkit.modal('#unsaved-changes-modal').show();
@@ -280,4 +278,9 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
   /** <-- create additional fields for arrays if needed **/
 
+  /** other stuff --> **/
+  closeAlert() {
+    this.errorMessage = '';
+    UIkit.alert('#errorAlert').close();
+  }
 }

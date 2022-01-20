@@ -17,6 +17,7 @@ import {DpDatePickerModule} from "ng2-date-picker";
 import {RadioGridFieldComponent} from "./fields/radio-grid-field/radio-grid-field.component";
 import {SurveyComponent} from "./survey.component";
 import {NumberFieldComponent} from "./fields/number-field/number-field.component";
+import {ReusableComponentsModule} from "../../shared/reusable-components/reusable-components.module";
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import {NumberFieldComponent} from "./fields/number-field/number-field.component
     LMarkdownEditorModule,
     NgSelectModule,
     DpDatePickerModule,
+    ReusableComponentsModule,
   ],
   exports: [
     ChapterComponent,

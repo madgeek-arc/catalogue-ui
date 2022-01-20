@@ -87,11 +87,13 @@ export class StyledText {
   cssClasses: string;
   style: string;
   text: string;
+  showLess: boolean;
 
   constructor() {
     this.cssClasses = '';
     this.style = '';
     this.text = '';
+    this.showLess = false;
   }
 }
 

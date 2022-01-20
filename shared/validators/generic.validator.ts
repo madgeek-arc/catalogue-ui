@@ -3,11 +3,13 @@ import {Observable, timer} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {FormControlService} from '../../services/form-control.service';
 
+export const urlRegEx = /^(https?:\/\/.+){0,1}$/;       //http// or https//
+export const oneDecimal = /^(\d)*(\.)?([0-9]{1})?$/;    //Only digits and one decimal
+
 export function URLValidator(): ValidatorFn { //TODO Please validate me
   return (control: AbstractControl): ValidationErrors | null => {
     let pattern = /^(https?:\/\/.+){0,1}$/;
     const url = pattern.test(control.value);
-    console.log(url);
     return url ? {url: {value: control.value}} : null;
   };
 }

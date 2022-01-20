@@ -16,14 +16,16 @@
   </ul>
 </div>
 
-<div *ngIf="errorMessage" class="uk-alert uk-alert-danger">
-  <p>{{errorMessage}}</p>
-</div>
+
+<pre *ngIf="errorMessage" id="errorAlert" class="uk-alert uk-alert-danger" style="border-width: 0">
+  <a (click)="closeAlert()" class="uk-alert-close" uk-close></a>
+  {{errorMessage}}
+</pre>
 <div *ngIf="successMessage" class="uk-alert uk-alert-success" id="successMessage">
-  <pre>{{successMessage}}</pre>
+  <p>{{successMessage}}</p>
 </div>
 
-<div *ngIf="surveyAnswers && ready">
+<div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">
       <app-chapter-edit [answerValue]="answer.value" [form]="getFormGroup(i)" [readonly] = readonly [validate] = validate
@@ -33,6 +35,10 @@
     </li>
   </ul>
 </div>
+
+<ng-template #showLoader class="whiteFilm">
+  <i class="loader-big" aria-hidden="true"></i>
+</ng-template>
 
 <!--<pre *ngIf="form">{{form.getRawValue() | json}}</pre>-->
 

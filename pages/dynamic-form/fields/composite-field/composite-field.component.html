@@ -4,10 +4,20 @@
        [attr.for]="fieldData.field.name" style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </div>
-  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
-    [innerHTML]="fieldData.field.form.description.text" style="{{fieldData.field.form.description.style}}">
-<!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
-  </div>
+  <ng-container *ngIf="fieldData.field.form.description.showLess; else noReadMore">
+    <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
+         style="{{fieldData.field.form.description.style}}">
+    <read-more-text [maxHeight]="69" [text]="fieldData.field.form.description.text"></read-more-text>
+    </div>
+  </ng-container>
+  <ng-template #noReadMore>
+    <div *ngIf="fieldData.field.form.description.text"
+         class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
+         [innerHTML]="fieldData.field.form.description.text" style="{{fieldData.field.form.description.style}}">
+      <!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
+    </div>
+  </ng-template>
+
   <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity">
     <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
       <div [formGroupName]="i" class="uk-margin-bottom formGroupElement uk-width-1-1 uk-display-inline-block">

@@ -1,17 +1,22 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Fields, GroupedField, SurveyModel} from '../domain/dynamic-form-model';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
+import {urlRegEx} from "../shared/validators/generic.validator";
 
 @Injectable()
-export class FormControlService {
+export class FormControlService implements OnInit{
   constructor(public http: HttpClient) { }
 
   base = environment.API_ENDPOINT;
   private options = {withCredentials: true};
-  // urlRegEx = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
-   public urlRegEx = /^(https?:\/\/.+){0,1}$/;
+  urlRegEx = urlRegEx;
+  numbersOfDecimals = '1';
+  numberRegEx = `^(\\d)*(\\.)?([0-9]{${this.numbersOfDecimals}})?$`;
+
+  ngOnInit() {
+  }
 
   getFormModel(surveyId: string) {
     return this.http.get<SurveyModel>(this.base + `/ui/form/model/${surveyId}`);
@@ -66,6 +71,11 @@ export class FormControlService {
               group[formField.field.name] = formField.field.form.mandatory ?
                 new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
                 : new FormControl('', Validators.pattern('[+]?\\d+$'));
+            } else if (formField.field.typeInfo.type === 'number') {
+              this.numbersOfDecimals = this.calculateNumberOfDecimals(formField.field.typeInfo.values);
+              group[formField.field.name] = formField.field.form.mandatory ?
+                new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
+                : new FormControl('', Validators.pattern(this.numberRegEx));
             } else {
               group[formField.field.name] = formField.field.form.mandatory ? new FormControl(null, Validators.required)
                 : new FormControl(null);
@@ -106,6 +116,10 @@ export class FormControlService {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
         new FormControl('', [Validators.required, Validators.pattern(this.urlRegEx)])
             : new FormControl('', Validators.pattern(this.urlRegEx));
+      } else if (subField.field.typeInfo.type === 'number') {
+        subGroup[subField.field.name] = subField.field.form.mandatory ?
+          new FormControl('', [Validators.required, Validators.pattern(this.calculateNumberOfDecimals(subField.field.typeInfo.values))])
+          : new FormControl('', Validators.pattern(this.calculateNumberOfDecimals(subField.field.typeInfo.values)));
       } else {
         subGroup[subField.field.name] = subField.field.form.mandatory ?
           new FormControl(null, Validators.required)
@@ -113,6 +127,21 @@ export class FormControlService {
       }
     });
     return  subGroup;
+  }
+
+  calculateNumberOfDecimals(values: string[]): string {
+    let str = values[0].split('.');
+    let decimals: string;
+
+    if (str.length > 0){
+        if (str[1].length === 1) {
+          decimals = '1';
+        } else if (str[1].length === 2) {
+          decimals = '0,2';
+        }
+    } else
+      decimals = '0';
+    return `^(\\d)*(\\.)?([0-9]{${decimals}})?$`;
   }
 
   static removeNulls(obj: any) {
