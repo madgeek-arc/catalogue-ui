@@ -4,10 +4,10 @@
        [attr.for]="fieldData.field.name" style="{{fieldData.field.label.style}}">
     {{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}
   </div>
-  <ng-container *ngIf="fieldData.field.form.description.showLess; else noReadMore">
+  <ng-container *ngIf="fieldData.field.form.description?.showLess; else noReadMore">
     <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
          style="{{fieldData.field.form.description.style}}">
-    <read-more-text [maxHeight]="69" [text]="fieldData.field.form.description.text"></read-more-text>
+    <read-more-text [maxHeight]="46" [text]="fieldData.field.form.description.text"></read-more-text>
     </div>
   </ng-container>
   <ng-template #noReadMore>
