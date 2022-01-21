@@ -148,7 +148,8 @@ export class FormControlService implements OnInit{
     const isArray = obj instanceof Array;
     for (const k in obj) {
       if (obj[k] === null || obj[k] === '') {
-        isArray ? obj.splice(k, 1) : delete obj[k];
+        // TODO: check 'obj.splice(k, 1)', is k supposed to be a number? if not then fix this method
+        isArray ? obj.splice(+k, 1) : delete obj[k];
       } else if (typeof obj[k] === 'object') {
         if (typeof obj[k].value !== 'undefined' && typeof obj[k].lang !== 'undefined') {
           if (obj[k].value === '' && obj[k].lang === 'en') {
