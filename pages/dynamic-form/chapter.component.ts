@@ -21,7 +21,7 @@ declare var UIkit: any;
 
 @Component({
   selector: 'app-dynamic-form',
-  templateUrl: './chapter.component.html',
+  template: '',
   providers: [FormControlService]
 })
 export class ChapterComponent implements OnInit {

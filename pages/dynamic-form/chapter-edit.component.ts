@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {FormControlService} from '../../services/form-control.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -33,6 +33,8 @@ export class ChapterEditComponent implements OnChanges{
   @Input() fields: GroupedField[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
+
+  @ViewChild('sections') sections: ElementRef<HTMLElement>;
 
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
@@ -313,6 +315,21 @@ export class ChapterEditComponent implements OnChanges{
   }
 
   /** <--Bitsets**/
+
+  /** tab prev next buttons **/
+  setTabIndex(i: number) {
+    this.tabIndex = i;
+  }
+
+  goToTab(i: number) {
+    if (i === -1 || i === this.bitset.tabs.size) {
+      return;
+    }
+    this.tabIndex = i;
+    let element: HTMLElement = document.getElementById(this.chapter.chapter.id + '-tab' + i) as HTMLElement
+    element.click();
+    console.log(element)
+  }
 
   /** emit changes-->**/
   unsavedChangesPrompt(e: boolean, removeChanges: string = null){
