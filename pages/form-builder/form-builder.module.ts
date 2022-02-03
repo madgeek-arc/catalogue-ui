@@ -4,13 +4,13 @@ import {FormBuilderComponent} from "./form-builder.component";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {FormsModule} from "@angular/forms";
 import {GroupSectionComponent} from "./group-section/group-section.component";
-import {FieldSectionComponent} from "./field-section/field-section.component";
+import {FieldBuilderComponent} from "./field-builder/field-builder.component";
 
 @NgModule({
   declarations: [
     FormBuilderComponent,
     GroupSectionComponent,
-    FieldSectionComponent
+    FieldBuilderComponent
   ],
   imports: [
     CommonModule,

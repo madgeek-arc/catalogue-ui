@@ -117,7 +117,7 @@ export class Field {
 
   constructor() {
     this.id = '';
-    this.name = '';
+    this.name = 'Untitled question';
     this.parentId = '';
     this.parent = '';
     this.label = new StyledText();
@@ -135,7 +135,7 @@ export class Fields {
 
   constructor() {
     this.field = new Field();
-    this.subFieldGroups = null;
+    this.subFieldGroups = [];
   }
 }
 

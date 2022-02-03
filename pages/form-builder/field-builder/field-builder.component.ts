@@ -2,11 +2,11 @@ import {Component, Input, OnInit} from "@angular/core";
 import {ChapterModel, GroupedField} from "../../../domain/dynamic-form-model";
 
 @Component({
-  selector: 'app-field-section',
-  templateUrl: './field-section.component.html'
+  selector: 'app-field-builder',
+  templateUrl: './field-builder.component.html'
 })
 
-export class FieldSectionComponent implements OnInit {
+export class FieldBuilderComponent implements OnInit {
   @Input() groupedFields: GroupedField;
 
   fieldTypes = [{id: 'string', name: 'small Text'}, {id: 'largeText', name: 'largeText'}];

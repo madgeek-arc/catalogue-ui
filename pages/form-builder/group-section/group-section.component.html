@@ -1,16 +1,35 @@
+<div>
+  <ul uk-tab="connect: #chapter-tabs; animation: uk-animation-fade" class="uk-grid">
+    <li *ngFor="let chapter of chapterModel; let i=index" class="uk-width-1-1">
+      <div class="uk-flex uk-flex-middle   uk-width-1-1">
+        <div class="uk-width-3-5">
+          <span class="">{{(i + 1) + ' ' + chapter.chapter.name}}</span>
+        </div>
+        <div class="uk-width-1-5">
+          <a class="" (click)="deleteChapter(i)">
+            <span class="material-icons">delete</span>
+          </a>
+        </div>
+      </div>
+      <div *ngFor="let section of chapter.groupedFieldsList; let j=index" class="uk-margin-small uk-margin-small-left  uk-width-1-1">
+        <span class="">{{(i + 1) + '.' + (j + 1) + ' ' + section.group?.name}}</span>
+        <div *ngFor="let field of section.fields; let k=index" class="uk-margin-small">
+          <span class="uk-margin-small-left">{{(i + 1) + '.' + (j + 1) + '.' + (k + 1) + ' ' + field.field.name}}</span>
+        </div>
+        <div class="uk-margin-small">
+          <a class="uk-flex uk-flex-middle" (click)="addField(i, j)">
+            <span class="material-icons">add</span> Question
+          </a>
+        </div>
 
-<ul uk-tab="connect: #chapter-tabs; animation: uk-animation-fade" class="chapter-tabs">
-<li *ngFor="let chapter of chapterModel; let i=index">
-<!--  <pre>{{chapter | json}}</pre>-->
-  <div *ngFor="let section of chapter.groupedFieldsList; let j=index" class="uk-margin-small">
-    <span>{{(i+1)+'.'+(j+1)+' '+section.group?.name}}</span>
-  </div>
+      </div>
 
-  <div class="uk-margin-small">
-    <a class="uk-flex uk-flex-middle" (click)="addSection(i)">
-      <span class="material-icons">add</span> Section
-    </a>
-  </div>
+      <div class="uk-margin-small">
+        <a class="uk-flex uk-flex-middle" (click)="addSection(i)">
+          <span class="material-icons">add</span> Section
+        </a>
+      </div>
 
-</li>
-</ul>
+    </li>
+  </ul>
+</div>

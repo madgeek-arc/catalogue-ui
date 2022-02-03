@@ -3,13 +3,18 @@
     <div class="uk-grid">
 
       <app-group-section class="uk-width-1-5" [chapterModel]="formBuilder"></app-group-section>
-<!--      <div>-->
-<!--        <ul id="chapter-tabs" class="uk-switcher">-->
-<!--          <li *ngFor="let chapter of formBuilder">-->
-<!--            <app-field-section class="uk-width-3-5" [groupedFields]="chapter.groupedFieldsList"></app-field-section>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </div>-->
+      <div class="uk-width-3-5">
+        <ul id="chapter-tabs" class="uk-switcher">
+          <li *ngFor="let chapter of formBuilder">
+            {{chapter.chapter.name}}
+            <ul>
+              <li *ngFor="let fields of chapter.groupedFieldsList">
+                <app-field-builder [groupedFields]="fields"></app-field-builder>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
 
     </div>
     <div class="uk-width-1-5">
