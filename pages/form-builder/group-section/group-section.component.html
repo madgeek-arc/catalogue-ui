@@ -1,3 +1,16 @@
-<div *ngFor="let group of groups">
-  {{group.name}}
-</div>
+
+<ul uk-tab="connect: #chapter-tabs; animation: uk-animation-fade" class="chapter-tabs">
+<li *ngFor="let chapter of chapterModel; let i=index">
+<!--  <pre>{{chapter | json}}</pre>-->
+  <div *ngFor="let section of chapter.groupedFieldsList; let j=index" class="uk-margin-small">
+    <span>{{(i+1)+'.'+(j+1)+' '+section.group?.name}}</span>
+  </div>
+
+  <div class="uk-margin-small">
+    <a class="uk-flex uk-flex-middle" (click)="addSection(i)">
+      <span class="material-icons">add</span> Section
+    </a>
+  </div>
+
+</li>
+</ul>

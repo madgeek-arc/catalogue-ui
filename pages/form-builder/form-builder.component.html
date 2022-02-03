@@ -2,12 +2,21 @@
   <div class="uk-container uk-container-expand">
     <div class="uk-grid">
 
-      <app-group-section class="uk-width-1-5"></app-group-section>
-
-      <app-field-section class="uk-width-4-5" [formBuilder]="formBuilder"></app-field-section>
+      <app-group-section class="uk-width-1-5" [chapterModel]="formBuilder"></app-group-section>
+<!--      <div>-->
+<!--        <ul id="chapter-tabs" class="uk-switcher">-->
+<!--          <li *ngFor="let chapter of formBuilder">-->
+<!--            <app-field-section class="uk-width-3-5" [groupedFields]="chapter.groupedFieldsList"></app-field-section>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </div>-->
 
     </div>
-    <button (click)="pushField()" class="uk-float-right"> Add field</button>
+    <div class="uk-width-1-5">
+      <a class="uk-flex uk-flex-middle" (click)="pushChapter()">
+        <span class="material-icons">add</span> {{formBuilder.length === 0 ? 'Create the first chapter': 'Chapter'}}
+      </a>
+    </div>
 
   </div>
 </div>
@@ -15,4 +24,3 @@
 <pre>
   {{formBuilder | json}}
 </pre>
-

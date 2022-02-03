@@ -1,5 +1,5 @@
-import {Component, OnInit} from "@angular/core";
-import {Group} from "../../../domain/dynamic-form-model";
+import {Component, Input, OnInit} from "@angular/core";
+import {ChapterModel, Group, GroupedField} from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-group-section',
@@ -8,10 +8,15 @@ import {Group} from "../../../domain/dynamic-form-model";
 
 export class GroupSectionComponent implements OnInit {
 
-  groups: Group[] = []
+  @Input() chapterModel: ChapterModel[];
+  // groups: Group[] = []
 
   ngOnInit() {
-    this.groups.push(new Group());
+    // this.groups.push(new Group());
+  }
+
+  addSection(position) {
+    this.chapterModel[position].groupedFieldsList.push(new GroupedField());
   }
 
 }

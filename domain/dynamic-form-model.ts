@@ -8,7 +8,7 @@ export class Group {
 
   constructor() {
     this.id = '';
-    this.name = 'Untitled Group';
+    this.name = 'Untitled Section';
     this.required = false;
     this.order = 0;
   }
@@ -17,6 +17,12 @@ export class Group {
 export class Required {
   topLevel: number;
   total: number;
+
+
+  constructor() {
+    this.topLevel = 0;
+    this.total = 0;
+  }
 }
 
 export class Dependent {
@@ -139,17 +145,39 @@ export class Chapter {
   description: string;
   sections: string[];
   order: number;
+
+
+  constructor() {
+    this.id = null;
+    this.name = 'Untitled Chapter';
+    this.description = null;
+    this.sections = [];
+    this.order = 0;
+  }
 }
 
 export class GroupedField {
   group: Group;
   fields: Fields[];
   required: Required;
+
+
+  constructor() {
+    this.group = new Group();
+    this.fields = [];
+    this.required = new Required();
+  }
 }
 
 export class ChapterModel {
   chapter: Chapter;
   groupedFieldsList: GroupedField[];
+
+
+  constructor() {
+    this.chapter = new Chapter();
+    this.groupedFieldsList = [];
+  }
 }
 
 export class SurveyModel {

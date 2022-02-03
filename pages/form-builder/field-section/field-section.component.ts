@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Fields} from "../../../domain/dynamic-form-model";
+import {ChapterModel, GroupedField} from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-field-section',
@@ -7,10 +7,9 @@ import {Fields} from "../../../domain/dynamic-form-model";
 })
 
 export class FieldSectionComponent implements OnInit {
-  @Input() formBuilder: Fields[];
+  @Input() groupedFields: GroupedField;
 
-
-  fieldTypes = [{id: 'string', name: 'small Text'}, {id: 'largeText', name: 'largeText' }];
+  fieldTypes = [{id: 'string', name: 'small Text'}, {id: 'largeText', name: 'largeText'}];
 
   ngOnInit() {
   }
