@@ -4,11 +4,13 @@ export class Group {
   id: string;
   name: string;
   required: boolean;
+  description: string;
   order: number;
 
   constructor() {
     this.id = '';
-    this.name = 'Untitled Section';
+    this.name = '';
+    this.description = '';
     this.required = false;
     this.order = 0;
   }
@@ -117,7 +119,7 @@ export class Field {
 
   constructor() {
     this.id = '';
-    this.name = 'Untitled question';
+    this.name = '';
     this.parentId = '';
     this.parent = '';
     this.label = new StyledText();
@@ -149,7 +151,7 @@ export class Chapter {
 
   constructor() {
     this.id = null;
-    this.name = 'Untitled Chapter';
+    this.name = '';
     this.description = null;
     this.sections = [];
     this.order = 0;

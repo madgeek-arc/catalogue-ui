@@ -6,9 +6,16 @@
       <div class="uk-width-3-5">
         <ul id="chapter-tabs" class="uk-switcher">
           <li *ngFor="let chapter of formBuilder">
-            {{chapter.chapter.name}}
-            <ul>
+            <div class="uk-width-3-5 uk-margin">
+              <label for="chapterName" class="uk-form-label uk-margin-small-bottom">Chapter Name*</label>
+              <div class="uk-form-controls">
+                <input id="chapterName" class="uk-input" [(ngModel)]="chapter.chapter.name" placeholder="Untitled Chapter">
+              </div>
+            </div>
+
+            <ul id="section-tabs" class="uk-switcher">
               <li *ngFor="let fields of chapter.groupedFieldsList">
+                <app-section-builder [section]="fields.group"></app-section-builder>
                 <app-field-builder [groupedFields]="fields"></app-field-builder>
               </li>
             </ul>
@@ -16,11 +23,6 @@
         </ul>
       </div>
 
-    </div>
-    <div class="uk-width-1-5">
-      <a class="uk-flex uk-flex-middle" (click)="pushChapter()">
-        <span class="material-icons">add</span> {{formBuilder.length === 0 ? 'Create the first chapter': 'Chapter'}}
-      </a>
     </div>
 
   </div>

@@ -23,6 +23,10 @@ export class GroupSectionComponent implements OnInit {
     this.chapterModel[positionI].groupedFieldsList[positionJ].fields.push(new Fields());
   }
 
+  pushChapter() {
+    this.chapterModel.push(new ChapterModel());
+  }
+
   deleteChapter(position: number) {
     this.chapterModel.splice(position, 1);
   }

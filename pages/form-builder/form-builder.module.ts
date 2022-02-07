@@ -5,12 +5,14 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {FormsModule} from "@angular/forms";
 import {GroupSectionComponent} from "./group-section/group-section.component";
 import {FieldBuilderComponent} from "./field-builder/field-builder.component";
+import {SectionBuilderComponent} from "./group-builder/section-builder.component";
 
 @NgModule({
   declarations: [
     FormBuilderComponent,
     GroupSectionComponent,
-    FieldBuilderComponent
+    FieldBuilderComponent,
+    SectionBuilderComponent
   ],
   imports: [
     CommonModule,
