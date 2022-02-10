@@ -3,21 +3,25 @@ import {CommonModule} from "@angular/common";
 import {FormBuilderComponent} from "./form-builder.component";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {FormsModule} from "@angular/forms";
-import {GroupSectionComponent} from "./group-section/group-section.component";
+import {SideMenuComponent} from "./side-menu/side-menu.component";
 import {FieldBuilderComponent} from "./field-builder/field-builder.component";
 import {SectionBuilderComponent} from "./group-builder/section-builder.component";
+import {ChapterBuilderComponent} from "./chapter-builder/chapter-builder.component";
+import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 
 @NgModule({
   declarations: [
     FormBuilderComponent,
-    GroupSectionComponent,
+    SideMenuComponent,
     FieldBuilderComponent,
-    SectionBuilderComponent
+    SectionBuilderComponent,
+    ChapterBuilderComponent
   ],
   imports: [
     CommonModule,
     NgSelectModule,
     FormsModule,
+    CKEditorModule
   ],
 })
 

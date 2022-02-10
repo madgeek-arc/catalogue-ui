@@ -2,11 +2,11 @@ import {Component, Input, OnInit} from "@angular/core";
 import {ChapterModel, Fields, GroupedField} from "../../../domain/dynamic-form-model";
 
 @Component({
-  selector: 'app-group-section',
-  templateUrl: './group-section.component.html'
+  selector: 'app-side-menu',
+  templateUrl: './side-menu.component.html'
 })
 
-export class GroupSectionComponent implements OnInit {
+export class SideMenuComponent implements OnInit {
 
   @Input() chapterModel: ChapterModel[];
   // groups: Group[] = []

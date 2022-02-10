@@ -1,13 +1,15 @@
-
-<div class="uk-width-3-5 uk-margin">
-  <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Section Name *</label>
-  <div class="uk-form-controls">
-    <input id="sectionName" class="uk-input" [(ngModel)]="section.name" placeholder="Untitled Section">
+<div class="uk-card uk-card-body uk-card-default uk-margin-medium-bottom">
+  <div class="uk-margin">
+    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Section Name *</label>
+    <div class="uk-form-controls">
+      <input id="sectionName" class="uk-input" [(ngModel)]="section.name" placeholder="Untitled Section">
+    </div>
   </div>
-</div>
-<div class="uk-width-3-5 uk-margin">
-  <label for="sectionDescription" class="uk-form-label uk-margin-small-bottom">Description *</label>
-  <div class="uk-form-controls">
-    <textarea id="sectionDescription" class="uk-textarea" [(ngModel)]="section.description" placeholder="Description"></textarea>
+  <div class="uk-margin">
+    <label for="sectionDescription" class="uk-form-label uk-margin-small-bottom">Description *</label>
+    <div class="uk-form-controls">
+      <textarea id="sectionDescription" class="uk-textarea" [(ngModel)]="section.description"
+                placeholder="Description"></textarea>
+    </div>
   </div>
 </div>
