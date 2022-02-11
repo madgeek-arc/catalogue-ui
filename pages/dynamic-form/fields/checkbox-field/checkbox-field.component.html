@@ -1,41 +1,41 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.field.display.cssClasses}}">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.display.cssClasses}}">
 
-  <div *ngIf="fieldData.field.form.description.text" class="uk-form-description uk-margin-top uk-margin-bottom uk-width-9-10 {{fieldData.field.form.description.cssClasses}}"
-       [innerHTML]="fieldData.field.form.description.text" style="{{fieldData.field.form.description.style}}">
+  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-top uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
   </div>
 
-  <div *ngIf="fieldData.field.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.field.name">
+  <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
       <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
-        <input [id]="fieldData.field.name" [formControlName]="i"
+        <input [id]="fieldData.name" [formControlName]="i"
                class="uk-checkbox uk-width-9-10 uk-animation-slide-top-small" type="checkbox"
-               [placeholder]="fieldData.field.form.placeholder ? fieldData.field.form.placeholder : ''"
-               [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.field.name, i, this.editMode)}"
+               [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
+               [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.name, i, this.editMode)}"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
         <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-animation-slide-top-small"
-           (click)="remove(fieldData.field.name, i); updateBitSet(fieldData); unsavedChangesPrompt()">
+           (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()">
           <span class="material-icons">clear</span>
         </a>
       </div>
-      <div class="uk-width-9-10"><i><small>{{fieldData.field.form.suggestion.text}}</small></i></div>
+      <div class="uk-width-9-10"><i><small>{{fieldData.form.suggestion.text}}</small></i></div>
 
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
         <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
-           (click)="push(fieldData.field.name, fieldData.field.form.mandatory)">
-          <span class="material-icons">add</span>Add {{fieldData.field.label.text}}
+           (click)="push(fieldData.name, fieldData.form.mandatory)">
+          <span class="material-icons">add</span>Add {{fieldData.label.text}}
         </a>
       </div>
     </div>
 
   <ng-template #noMultiplicity>
-    <label *ngIf="fieldData.field.label.text" class="uk-form-label {{fieldData.field.label.cssClasses}}" style="{{fieldData.field.label.style}}">
-    <input [formControlName]="fieldData.field.name" [id]="fieldData.field.id" class="uk-checkbox" type="checkbox"
+    <label *ngIf="fieldData.label.text" class="uk-form-label {{fieldData.label.cssClasses}}" style="{{fieldData.label.style}}">
+    <input [formControlName]="fieldData.name" [id]="fieldData.id" class="uk-checkbox" type="checkbox"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
 
-      <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.field.label.text + (fieldData.field.form.mandatory ? ' (*)' : '')}}</span>
+      <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}</span>
     </label>
-    <div *ngIf="fieldData.field.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.field.form.suggestion.cssClasses}}" style="{{fieldData.field.form.suggestion.style}}" [innerHTML]="fieldData.field.form.suggestion.text"></div>
+    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
     </div>
   </ng-template>
 

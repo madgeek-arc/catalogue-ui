@@ -3,9 +3,9 @@ import {FormControlService} from '../../services/form-control.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
-  ChapterModel,
-  Fields,
-  GroupedField,
+  Chapter,
+  Field,
+  GroupedFields,
   HandleBitSet,
   Tab, Tabs,
   UiVocabulary
@@ -14,7 +14,6 @@ import BitSet from "bitset";
 import {PremiumSortPipe} from "../../shared/pipes/premium-sort.pipe";
 
 import UIkit from 'uikit';
-import {SurveyService} from "../../../app/services/survey.service";
 
 @Component({
   selector: 'app-chapter-edit',
@@ -29,8 +28,8 @@ export class ChapterEditComponent implements OnChanges{
   @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
-  @Input() chapter: ChapterModel = null;
-  @Input() fields: GroupedField[] = null;
+  @Input() chapter: Chapter = null;
+  @Input() fields: GroupedFields[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
 
@@ -115,10 +114,10 @@ export class ChapterEditComponent implements OnChanges{
       let tab = new Tab();
       tab.requiredOnTab = tab.remainingOnTab = group.required.topLevel;
       tab.valid = false;
-      tab.order = group.group.order;
+      tab.order = group.order;
       tab.bitSet = new BitSet;
       // obj[group.group.id] = tab;
-      obj.set(group.group.id, tab);
+      obj.set(group.id, tab);
       if (group.required.topLevel > 0) {
         requiredTabs++;
       }
@@ -144,12 +143,12 @@ export class ChapterEditComponent implements OnChanges{
       let tmp = this.form.controls[control] as FormGroup;
       for (let key in tmp.controls) {
         let formFieldData = this.getModelData(this.fields, key);
-        if (formFieldData?.field.form.mandatory){
+        if (formFieldData?.form.mandatory){
           // console.log(key);
-          if (formFieldData.field.typeInfo.type === 'composite') {
+          if (formFieldData.typeInfo.type === 'composite') {
             // console.log('composite: ' + key);
             for (let i = 0; i < formFieldData.subFieldGroups.length; i++) {
-              if (formFieldData.subFieldGroups[i].field.form.mandatory) {
+              if (formFieldData.subFieldGroups[i].form.mandatory) {
                 let data = new HandleBitSet();
                 data.field = formFieldData;
                 data.position = i;
@@ -168,10 +167,10 @@ export class ChapterEditComponent implements OnChanges{
     }
   }
 
-  getModelData(model: GroupedField[], name: string): Fields {
+  getModelData(model: GroupedFields[], name: string): Field {
     for (let i = 0; i < model.length; i++) {
       for (let j = 0; j < model[i].fields.length; j++) {
-        if(model[i].fields[j].field.name === name) {
+        if(model[i].fields[j].name === name) {
           return model[i].fields[j];
         }
       }
@@ -187,19 +186,19 @@ export class ChapterEditComponent implements OnChanges{
   handleBitSetOfComposite(data: HandleBitSet) {
     let field = data.field;
     let pos = data.position;
-    // console.log(field.field.name);
+    // console.log(field.name);
 
-    if (field.field.typeInfo.multiplicity) {
-      let formArray = this.form.get(field.field.accessPath) as FormArray;
+    if (field.typeInfo.multiplicity) {
+      let formArray = this.form.get(field.accessPath) as FormArray;
       let flag = false;
       for (let i = 0; i < formArray.length; i++) {
         if (formArray.controls[i].valid) {
           flag = true;
           field.subFieldGroups.forEach(f => {
-            if (f.field.form.mandatory)
-              this.loaderBitSet.set(parseInt(f.field.id), 1);
+            if (f.form.mandatory)
+              this.loaderBitSet.set(parseInt(f.id), 1);
           });
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
+          this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
           break;
         }
       }
@@ -208,7 +207,7 @@ export class ChapterEditComponent implements OnChanges{
         let found = new Array(field.subFieldGroups.length);
         for (let j = 0; j < field.subFieldGroups.length; j++) {
           for (let i = 0; i < formArray.length; i++) {
-            if (field.subFieldGroups[j].field.form.mandatory && formArray.controls[i].get(field.subFieldGroups[j].field.name).valid) {
+            if (field.subFieldGroups[j].form.mandatory && formArray.controls[i].get(field.subFieldGroups[j].name).valid) {
               found[j] = true;
               break;
             }
@@ -216,61 +215,61 @@ export class ChapterEditComponent implements OnChanges{
         }
         for (let i = 0; i < found.length; i++) {
           if (!found[i]) {
-            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].field.id), 0);
+            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].id), 0);
           } else {
-            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].field.id), 1);
+            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].id), 1);
           }
         }
-        this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
+        this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
       }
-    } else if (field.subFieldGroups[pos].field.form.mandatory) {
-      if (this.form.get(field.subFieldGroups[pos].field.accessPath).valid) {
-        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].field.id), 1);
-        if (this.form.get(field.field.accessPath).valid) {
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
+    } else if (field.subFieldGroups[pos].form.mandatory) {
+      if (this.form.get(field.subFieldGroups[pos].accessPath).valid) {
+        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].id), 1);
+        if (this.form.get(field.accessPath).valid) {
+          this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         } else {
-          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
+          this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         }
       } else {
-        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].field.id), 0);
-        if (this.form.get(field.field.accessPath).valid) {
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
+        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].id), 0);
+        if (this.form.get(field.accessPath).valid) {
+          this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         } else {
-          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.display.order);
+          this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         }
       }
     }
     this.updateLoaderPercentage();
   }
 
-  handleBitSet(data: Fields) {
-    console.log(data.field.name);
-    if (data.field.typeInfo.multiplicity) {
+  handleBitSet(data: Field) {
+    console.log(data.name);
+    if (data.typeInfo.multiplicity) {
       this.handleBitSetOfGroup(data);
       return;
     }
-    // console.log(this.form.get(data.field.accessPath).valid);
-    if (this.form.get(data.field.accessPath).valid) {
-      this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
-      this.loaderBitSet.set(parseInt(data.field.id), 1);
-    } else if (this.form.get(data.field.accessPath).invalid) {
-      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
-      this.loaderBitSet.set(parseInt(data.field.id), 0);
-    } else if (this.form.get(data.field.accessPath).pending) {
+    // console.log(this.form.get(data.accessPath).valid);
+    if (this.form.get(data.accessPath).valid) {
+      this.decreaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+      this.loaderBitSet.set(parseInt(data.id), 1);
+    } else if (this.form.get(data.accessPath).invalid) {
+      this.increaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+      this.loaderBitSet.set(parseInt(data.id), 0);
+    } else if (this.form.get(data.accessPath).pending) {
       this.timeOut(300).then(() => this.handleBitSet(data));
       return;
     }
     this.updateLoaderPercentage();
   }
 
-  handleBitSetOfGroup(data: Fields) {
-    let formArray = this.form.get(data.field.accessPath) as FormArray;
+  handleBitSetOfGroup(data: Field) {
+    let formArray = this.form.get(data.accessPath) as FormArray;
     let flag = false;
     for (let i = 0; i < formArray.length; i++) {
       if (formArray.controls[i].valid) {
         flag = true;
-        this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
-        this.loaderBitSet.set(parseInt(data.field.id), 1);
+        this.decreaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+        this.loaderBitSet.set(parseInt(data.id), 1);
         break;
       } else if (formArray.controls[i].pending) {
         this.timeOut(300).then(() => this.handleBitSetOfGroup(data));
@@ -278,8 +277,8 @@ export class ChapterEditComponent implements OnChanges{
       }
     }
     if (!flag) {
-      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.display.order);
-      this.loaderBitSet.set(parseInt(data.field.id), 0);
+      this.increaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+      this.loaderBitSet.set(parseInt(data.id), 0);
     }
     this.updateLoaderPercentage();
   }
@@ -326,7 +325,7 @@ export class ChapterEditComponent implements OnChanges{
       return;
     }
     this.tabIndex = i;
-    let element: HTMLElement = document.getElementById(this.chapter.chapter.id + '-tab' + i) as HTMLElement
+    let element: HTMLElement = document.getElementById(this.chapter.id + '-tab' + i) as HTMLElement
     element.click();
     console.log(element)
   }
@@ -334,7 +333,7 @@ export class ChapterEditComponent implements OnChanges{
   /** emit changes-->**/
   unsavedChangesPrompt(e: boolean, removeChanges: string = null){
     if (e) {
-      this.chapterHasChanges.emit([this.chapter.chapter.id, removeChanges]);
+      this.chapterHasChanges.emit([this.chapter.id, removeChanges]);
     }
   }
   /** <--emit changes**/

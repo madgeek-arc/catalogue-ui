@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ChapterModel, GroupedField} from "../../../domain/dynamic-form-model";
+import {GroupedFields} from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-field-builder',
@@ -7,7 +7,7 @@ import {ChapterModel, GroupedField} from "../../../domain/dynamic-form-model";
 })
 
 export class FieldBuilderComponent implements OnInit {
-  @Input() groupedFields: GroupedField;
+  @Input() groupedFields: GroupedFields;
 
   fieldTypes = [{id: 'string', name: 'small Text'}, {id: 'largeText', name: 'largeText'}];
 

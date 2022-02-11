@@ -1,24 +1,8 @@
 import BitSet from 'bitset/bitset';
 
-export class Group {
-  id: string;
-  name: string;
-  required: boolean;
-  description: string;
-  order: number;
-
-  constructor() {
-    this.id = '';
-    this.name = '';
-    this.description = '';
-    this.required = false;
-    this.order = 0;
-  }
-}
-
 export class Required {
-  topLevel: number;
-  total: number;
+  topLevel: number = 0;
+  total: number = 0;
 
 
   constructor() {
@@ -116,6 +100,7 @@ export class Field {
   includedInSnippet: boolean;
   form: Form;
   display: Display;
+  subFieldGroups: Field[];
 
   constructor() {
     this.id = '';
@@ -128,26 +113,17 @@ export class Field {
     this.includedInSnippet = false;
     this.form = new Form();
     this.display = new Display();
-  }
-}
-
-export class Fields {
-  field: Field;
-  subFieldGroups: Fields[];
-
-  constructor() {
-    this.field = new Field();
     this.subFieldGroups = [];
   }
 }
 
 export class Chapter {
+  description: string;
   id: string;
   name: string;
-  description: string;
-  sections: string[];
   order: number;
-
+  sections: GroupedFields[];
+  subType: string;
 
   constructor() {
     this.id = null;
@@ -158,33 +134,47 @@ export class Chapter {
   }
 }
 
-export class GroupedField {
-  group: Group;
-  fields: Fields[];
+export class GroupedFields {
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  fields: Field[];
   required: Required;
 
 
   constructor() {
-    this.group = new Group();
+    this.id = '';
+    this.name = '';
+    this.description = '';
+    this.order = 0;
     this.fields = [];
     this.required = new Required();
   }
 }
+//
+// export class ChapterModel {
+//   chapter: Chapter;
+//   groupedFieldsList: GroupedFields[];
+//
+//   constructor() {
+//     this.chapter = new Chapter();
+//     this.groupedFieldsList = [];
+//   }
+// }
 
-export class ChapterModel {
-  chapter: Chapter;
-  groupedFieldsList: GroupedField[];
-
-
-  constructor() {
-    this.chapter = new Chapter();
-    this.groupedFieldsList = [];
-  }
-}
-
-export class SurveyModel {
-  surveyId: string;
-  chapterModels: ChapterModel[];
+export class Model {
+  id: string;
+  name: string;
+  description: string;
+  notice: string;
+  type: string;
+  subType: string;
+  creationDate: string;
+  createdBy: string;
+  modifiedBy: string;
+  chapters: Chapter[];
+  locked: boolean;
 }
 
 export class UiVocabulary {
@@ -217,6 +207,6 @@ export class Tabs {
 }
 
 export class HandleBitSet {
-  field: Fields;
+  field: Field;
   position: number;
 }

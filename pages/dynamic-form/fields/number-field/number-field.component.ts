@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Fields, HandleBitSet} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
@@ -12,12 +12,12 @@ import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/gen
 })
 
 export class NumberFieldComponent implements OnInit {
-  @Input() fieldData: Fields;
+  @Input() fieldData: Field;
   @Input() editMode: any;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
-  @Output() handleBitSets = new EventEmitter<Fields>();
+  @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   formControl!: FormControl;
@@ -33,13 +33,13 @@ export class NumberFieldComponent implements OnInit {
     } else {
       this.form = this.rootFormGroup.control;
     }
-    this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as FormControl;
 
-    if (this.fieldData.field.form.dependsOn) {
-      // console.log(this.fieldData.field.form.dependsOn);
-      this.enableDisableField(this.form.get(this.fieldData.field.form.dependsOn.name).value);
+    if (this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
 
-      this.form.get(this.fieldData.field.form.dependsOn.name).valueChanges.subscribe(value => {
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
         this.enableDisableField(value);
       });
     }
@@ -84,8 +84,8 @@ export class NumberFieldComponent implements OnInit {
 
   /** Bitsets--> **/
 
-  updateBitSet(fieldData: Fields) {
-    if (fieldData.field.form.mandatory) {
+  updateBitSet(fieldData: Field) {
+    if (fieldData.form.mandatory) {
       this.handleBitSets.emit(fieldData);
     }
   }

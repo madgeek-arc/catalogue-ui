@@ -1,19 +1,19 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.field.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
-  <table [formGroupName]="fieldData.field.name" class="uk-table uk-table-hover uk-table-middle uk-table-divider">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+  <table [formGroupName]="fieldData.name" class="uk-table uk-table-hover uk-table-middle uk-table-divider">
     <thead>
     <tr>
-      <th>{{fieldData.field.label.text}}</th>
-      <th *ngFor="let value of fieldData.field.typeInfo.values" class="">{{value}}</th>
+      <th>{{fieldData.label.text}}</th>
+      <th *ngFor="let value of fieldData.typeInfo.values" class="">{{value}}</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let row of fieldData.subFieldGroups">
       <td class="">
-        {{row.field.label.text}}
+        {{row.label.text}}
       </td>
-      <td *ngFor="let value of fieldData.field.typeInfo.values">
+      <td *ngFor="let value of fieldData.typeInfo.values">
         <input class="uk-radio uk-margin-small-right" type="radio"
-               [formControlName]="row.field.name" [name]="row.field.name" [value]="value">
+               [formControlName]="row.name" [name]="row.name" [value]="value">
       </td>
     </tr>
     </tbody>

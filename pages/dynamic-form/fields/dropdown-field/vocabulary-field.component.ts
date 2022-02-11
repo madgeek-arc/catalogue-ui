@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Fields, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
@@ -11,14 +11,14 @@ import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/gen
 })
 
 export class VocabularyFieldComponent implements OnInit {
-  @Input() fieldData: Fields;
+  @Input() fieldData: Field;
   @Input() vocabularies: Map<string, string[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
-  @Output() handleBitSets = new EventEmitter<Fields>();
+  @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   formControl!: FormControl;
@@ -33,9 +33,9 @@ export class VocabularyFieldComponent implements OnInit {
     } else {
       this.form = this.rootFormGroup.control;
     }
-    this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
-    // console.log(this.vocabularies[this.fieldData.field.typeInfo.vocabulary]);
-    // console.log(this.fieldData.field.name);
+    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+    // console.log(this.vocabularies[this.fieldData.typeInfo.vocabulary]);
+    // console.log(this.fieldData.name);
     // console.log(this.formControl);
   }
 
@@ -77,9 +77,9 @@ export class VocabularyFieldComponent implements OnInit {
   }
   /** Bitsets--> **/
 
-  updateBitSet(fieldData: Fields) {
+  updateBitSet(fieldData: Field) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
-      if (fieldData.field.form.mandatory) {
+      if (fieldData.form.mandatory) {
         this.handleBitSets.emit(fieldData);
       }
     });

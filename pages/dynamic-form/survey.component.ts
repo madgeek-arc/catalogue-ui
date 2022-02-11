@@ -6,9 +6,10 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angul
 import {SurveyService} from "../../../app/services/survey.service";
 import {Router} from "@angular/router";
 import {
-  ChapterModel, Fields,
-  GroupedField,
-  SurveyModel,
+  Chapter,
+  Field,
+  GroupedFields,
+  Model,
   Tabs,
   UiVocabulary
 } from "../../domain/dynamic-form-model";
@@ -28,11 +29,11 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() survey: Survey = null;
   @Input() tabsHeader : string = null;
 
-  surveyModel: SurveyModel;
-  chapters: ChapterModel[] = [];
+  surveyModel: Model;
+  // chapters: Chapter[] = [];
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
-  currentChapter: ChapterModel = null;
-  chapterForSubmission: ChapterModel = null;
+  currentChapter: Chapter = null;
+  chapterForSubmission: Chapter = null;
   sortedSurveyAnswers: Object = {};
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
@@ -70,29 +71,31 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.formControlService.getFormModel(this.surveyAnswers.surveyId)
       ).subscribe(res => {
           this.vocabularies = res[0];
+          res[1].chapters.sort((a, b) => a.order - b.order);
           this.surveyModel = res[1];
-          res[1].chapterModels.sort((a, b) => a.chapter.order - b.chapter.order);
-          for (const model of res[1].chapterModels) {
+          for (const model of this.surveyModel.chapters) {
             for (const surveyAnswer in this.surveyAnswers.chapterAnswers) {
-              if (model.chapter.id === this.surveyAnswers.chapterAnswers[surveyAnswer].chapterId) {
-                this.chapters.push(model);
-                this.chapterChangeMap.set(model.chapter.id, false);
-                this.sortedSurveyAnswers[model.chapter.id] = this.surveyAnswers.chapterAnswers[surveyAnswer].answer;
+              // console.log(model);
+              if (model.id === this.surveyAnswers.chapterAnswers[surveyAnswer].chapterId) {
+                // this.chapters.push(model);
+                this.chapterChangeMap.set(model.id, false);
+                this.sortedSurveyAnswers[model.id] = this.surveyAnswers.chapterAnswers[surveyAnswer].answer;
                 break;
               }
             }
           }
-          this.currentChapter = this.chapters[0];
+          this.currentChapter = this.surveyModel.chapters[0];
         },
         error => {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
         },
         () => {
-          for (let i  = 0; i < this.chapters.length; i++) {
-            this.form.addControl(this.chapters[i].chapter.name, this.formControlService.toFormGroup(this.chapters[i].groupedFieldsList, true));
-            this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.chapters[i].groupedFieldsList)
-            this.form.get(this.chapters[i].chapter.name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
+          for (let i  = 0; i < this.surveyModel.chapters.length; i++) {
+            this.form.addControl(this.surveyModel.chapters[i].name, this.formControlService.toFormGroup(this.surveyModel.chapters[i].sections, true));
+            this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.chapters[i].sections)
+            this.form.get(this.surveyModel.chapters[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
+          console.log(this.surveyModel);
           if (this.surveyAnswers.validated) {
             this.readonly = true;
             this.validate = false;
@@ -150,10 +153,10 @@ export class SurveyComponent implements OnInit, OnChanges {
   onSubmit() {
     window.scrollTo(0, 0);
     // this.showLoader = true;
-    this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.chapter.name).value, this.editMode).subscribe(
+    this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
-        this.chapterChangeMap.set(this.chapterForSubmission.chapter.id, false);
+        this.chapterChangeMap.set(this.chapterForSubmission.id, false);
         UIkit.modal('#unsaved-changes-modal').hide();
       },
       error => {
@@ -171,8 +174,8 @@ export class SurveyComponent implements OnInit, OnChanges {
     );
   }
 
-  showUnsavedChangesPrompt(chapter: ChapterModel) {
-    if (this.chapterChangeMap.get(this.currentChapter.chapter.id)) {
+  showUnsavedChangesPrompt(chapter: Chapter) {
+    if (this.chapterChangeMap.get(this.currentChapter.id)) {
       this.chapterForSubmission = this.currentChapter;
       UIkit.modal('#unsaved-changes-modal').show();
     }
@@ -180,7 +183,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   getFormGroup(index: number): FormGroup {
-    return this.form.get(this.chapters[index].chapter.name) as FormGroup;
+    return this.form.get(this.surveyModel.chapters[index].name) as FormGroup;
   }
 
   setChapterChangesMap(chapterId: string[]) {
@@ -192,7 +195,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   /** create additional fields for arrays if needed --> **/
-  prepareForm(form: Object, fields: GroupedField[]) {
+  prepareForm(form: Object, fields: GroupedFields[]) {
     for (let key in form) {
       for (let formElementKey in form[key]) {
         if(form[key].hasOwnProperty(formElementKey)) {
@@ -201,13 +204,13 @@ export class SurveyComponent implements OnInit, OnChanges {
             // console.log(formElementKey);
             let formFieldData = this.getModelData(fields, formElementKey);
             let i = 1;
-            if (formFieldData.field.typeInfo.type === 'composite') { // In order for the fields to be enabled
+            if (formFieldData.typeInfo.type === 'composite') { // In order for the fields to be enabled
               this.popComposite(key, formElementKey)  // remove it first
               i = 0;  // increase the loops
             }
             let count = 0;
             for (i; i < form[key][formElementKey].length; i++) {
-              if (formFieldData.field.typeInfo.type === 'composite') {
+              if (formFieldData.typeInfo.type === 'composite') {
                 this.pushComposite(key, formElementKey, formFieldData.subFieldGroups);
                 // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
                 for (let formSubElementName in form[key][formElementKey][count]) {
@@ -218,8 +221,8 @@ export class SurveyComponent implements OnInit, OnChanges {
                       // console.log(control);
                       let required = false;
                       for (let j = 0; j < formFieldData.subFieldGroups.length; j++) {
-                        if (formFieldData.subFieldGroups[j].field.name === formSubElementName) {
-                          required = formFieldData.subFieldGroups[j].field.form.mandatory;
+                        if (formFieldData.subFieldGroups[j].name === formSubElementName) {
+                          required = formFieldData.subFieldGroups[j].form.mandatory;
                         }
                       }
                       for (let j = 0; j < form[key][formElementKey][count][formSubElementName].length - 1; j++) {
@@ -231,7 +234,7 @@ export class SurveyComponent implements OnInit, OnChanges {
                 // }
                 count++;
               } else {
-                this.push(key, formElementKey, formFieldData.field.form.mandatory);
+                this.push(key, formElementKey, formFieldData.form.mandatory);
               }
             }
           }
@@ -240,10 +243,10 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
-  getModelData(model: GroupedField[], name: string): Fields {
+  getModelData(model: GroupedFields[], name: string): Field {
     for (let i = 0; i < model.length; i++) {
       for (let j = 0; j < model[i].fields.length; j++) {
-        if(model[i].fields[j].field.name === name) {
+        if(model[i].fields[j].name === name) {
           return model[i].fields[j];
         }
       }
@@ -261,15 +264,15 @@ export class SurveyComponent implements OnInit, OnChanges {
     tmpArr.push(required ? new FormControl('', Validators.required) : new FormControl(''));
   }
 
-  pushComposite(group: string, field: string, subFields: Fields[]) {
+  pushComposite(group: string, field: string, subFields: Field[]) {
     const formGroup: any = {};
     subFields.forEach(subField => {
-      if (subField.field.typeInfo.multiplicity) {
-        formGroup[subField.field.name] = subField.field.form.mandatory ?
+      if (subField.typeInfo.multiplicity) {
+        formGroup[subField.name] = subField.form.mandatory ?
           new FormArray([new FormControl('', Validators.required)])
           : new FormArray([new FormControl('')]);
       } else {
-        formGroup[subField.field.name] = subField.field.form.mandatory ? new FormControl('', Validators.required)
+        formGroup[subField.name] = subField.form.mandatory ? new FormControl('', Validators.required)
           : new FormControl('');
       }
     });

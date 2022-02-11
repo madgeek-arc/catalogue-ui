@@ -1,5 +1,5 @@
 import {Component, Input} from "@angular/core";
-import {Group} from "../../../domain/dynamic-form-model";
+import {GroupedFields} from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-section-builder',
@@ -8,7 +8,7 @@ import {Group} from "../../../domain/dynamic-form-model";
 
 export class SectionBuilderComponent {
 
-  @Input() section: Group;
+  @Input() section: GroupedFields;
 
 
 }

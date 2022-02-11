@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ChapterModel, Fields, GroupedField} from "../../../domain/dynamic-form-model";
+import {Chapter, Field, GroupedFields} from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-side-menu',
@@ -8,7 +8,7 @@ import {ChapterModel, Fields, GroupedField} from "../../../domain/dynamic-form-m
 
 export class SideMenuComponent implements OnInit {
 
-  @Input() chapterModel: ChapterModel[];
+  @Input() chapterModel: Chapter[];
   // groups: Group[] = []
 
   ngOnInit() {
@@ -16,15 +16,15 @@ export class SideMenuComponent implements OnInit {
   }
 
   addSection(position) {
-    this.chapterModel[position].groupedFieldsList.push(new GroupedField());
+    this.chapterModel[position].sections.push(new GroupedFields());
   }
 
   addField(positionI, positionJ) {
-    this.chapterModel[positionI].groupedFieldsList[positionJ].fields.push(new Fields());
+    this.chapterModel[positionI].sections[positionJ].fields.push(new Field());
   }
 
   pushChapter() {
-    this.chapterModel.push(new ChapterModel());
+    this.chapterModel.push(new Chapter());
   }
 
   deleteChapter(position: number) {

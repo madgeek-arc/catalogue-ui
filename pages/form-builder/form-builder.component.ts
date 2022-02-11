@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ChapterModel} from "../../domain/dynamic-form-model";
+import {Chapter} from "../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-form-builder',
@@ -8,14 +8,14 @@ import {ChapterModel} from "../../domain/dynamic-form-model";
 
 export class FormBuilderComponent implements OnInit {
 
-  formBuilder: ChapterModel[] = [];
+  formBuilder: Chapter[] = [];
 
   ngOnInit() {
     // this.formBuilder.push();
   }
 
   pushChapter() {
-    this.formBuilder.push(new ChapterModel());
+    this.formBuilder.push(new Chapter());
   }
 
 }

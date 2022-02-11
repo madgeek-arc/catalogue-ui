@@ -3,7 +3,7 @@
     <li *ngFor="let chapter of chapterModel; let i=index" class="uk-width-1-1">
       <div class="uk-flex uk-flex-middle   uk-width-1-1">
         <div class="uk-width-3-5">
-          <span class="">{{(i + 1) + ' ' + (chapter.chapter.name !== '' ? chapter.chapter.name : 'Untitled chapter')}}</span>
+          <span class="">{{(i + 1) + ' ' + (chapter.name !== '' ? chapter.name : 'Untitled chapter')}}</span>
         </div>
         <div class="uk-width-1-5">
           <a class="" (click)="deleteChapter(i)">
@@ -13,11 +13,11 @@
       </div>
 <!--      <ul [attr.uk-tab]="'connect: #section-tabs-'+chapter.chapter.id">-->
       <ul uk-tab="connect: #section-tabs; animation: uk-animation-fade">
-        <li *ngFor="let section of chapter.groupedFieldsList; let j=index" class="uk-margin-small uk-margin-small-left  uk-width-1-1">
-          <span class="">{{(i+1) + '.' + (j+1) + ' ' + (section.group?.name !== '' ? section.group.name : 'Untitled section')}}</span>
+        <li *ngFor="let section of chapter.sections; let j=index" class="uk-margin-small uk-margin-small-left  uk-width-1-1">
+          <span class="">{{(i+1) + '.' + (j+1) + ' ' + (section.name !== '' ? section.name : 'Untitled section')}}</span>
           <div *ngFor="let field of section.fields; let k=index" class="uk-margin-small">
             <span class="uk-margin-small-left">
-              {{(i+1) + '.' + (j+1) + '.' + (k+1) + ' ' + (field.field.label.text !== '' ? field.field.label.text : 'Untitled question')}}
+              {{(i+1) + '.' + (j+1) + '.' + (k+1) + ' ' + (field.label.text !== '' ? field.label.text : 'Untitled question')}}
             </span>
           </div>
           <div class="uk-margin-small">

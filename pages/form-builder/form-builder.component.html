@@ -8,9 +8,9 @@
           <li *ngFor="let chapter of formBuilder">
             <app-chapter-builder [chapter]="chapter"></app-chapter-builder>
             <ul id="section-tabs" class="uk-switcher">
-              <li *ngFor="let fields of chapter.groupedFieldsList">
-                <app-section-builder [section]="fields.group"></app-section-builder>
-                <app-field-builder [groupedFields]="fields"></app-field-builder>
+              <li *ngFor="let groupedField of chapter.sections">
+                <app-section-builder [section]="groupedField"></app-section-builder>
+                <app-field-builder [groupedFields]="groupedField"></app-field-builder>
               </li>
             </ul>
           </li>
@@ -18,10 +18,7 @@
       </div>
 
     </div>
-
   </div>
 </div>
 
-<pre>
-  {{formBuilder | json}}
-</pre>
+<pre>{{formBuilder | json}}</pre>

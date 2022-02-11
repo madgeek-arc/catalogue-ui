@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Fields} from "../../../../domain/dynamic-form-model";
+import {Field} from "../../../../domain/dynamic-form-model";
 import {FormGroup, FormGroupDirective} from "@angular/forms";
 
 @Component({
@@ -8,7 +8,7 @@ import {FormGroup, FormGroupDirective} from "@angular/forms";
 })
 
 export class RadioGridFieldComponent implements OnInit {
-  @Input() fieldData: Fields;
+  @Input() fieldData: Field;
 
   form!: FormGroup;
   hideField: boolean = null;
