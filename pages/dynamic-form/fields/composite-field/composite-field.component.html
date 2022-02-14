@@ -1,5 +1,5 @@
 <form [formGroup]="form" class="{{fieldData.form.display.cssClasses}}">
-<!--  {{fieldData.name}}-->
+<!--  {{fieldData.name | json}}-->
   <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
        [attr.for]="fieldData.name" style="{{fieldData.label.style}}">
     {{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}
@@ -17,11 +17,10 @@
       <!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
     </div>
   </ng-template>
-
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
     <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
       <div [formGroupName]="i" class="uk-margin-bottom formGroupElement uk-width-1-1 uk-display-inline-block">
-        <div *ngFor="let control of fieldData?.subFieldGroups; let j=index">
+        <div *ngFor="let control of fieldData?.subFields; let j=index">
           <div class="">
             <div *ngIf="control.typeInfo.type === 'composite'">
               <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
@@ -84,7 +83,7 @@
       </a>
     </div>
     <div class="uk-width-9-10 uk-text-center uk-margin-top">
-      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData.subFieldGroups)">
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData.subFields)">
         <span class="material-icons">add</span> Add {{fieldData.label.text}}
       </a>
     </div>
@@ -92,7 +91,7 @@
 
   <ng-template #noMultiplicity>
     <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display.hasBorder}">
-      <div *ngFor="let control of fieldData?.subFieldGroups; let j=index">
+      <div *ngFor="let control of fieldData?.subFields; let j=index">
         <div class="">
           <div *ngIf="control.typeInfo.type === 'composite'">
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"

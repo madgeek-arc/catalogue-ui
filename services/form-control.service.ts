@@ -1,6 +1,6 @@
 import {Injectable, OnInit} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Field, GroupedFields, Model} from '../domain/dynamic-form-model';
+import {Field, GroupedFields, Model, Required} from '../domain/dynamic-form-model';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {urlRegEx} from "../shared/validators/generic.validator";
@@ -39,12 +39,12 @@ export class FormControlService implements OnInit{
     const group: any = {};
     form.forEach(groups => {
       groups.fields.sort((a, b) => a.form.display.order - b.form.display.order)
+      groups.required = new Required();
       groups.fields.forEach(formField => {
         if (formField.form.mandatory) {
           groups.required.topLevel++;
           groups.required.total++;
         }
-        console.log(form);
         // if (formField.form.immutable === checkImmutable) {
           if (formField.typeInfo.multiplicity) {
             if (formField.typeInfo.type === 'url') {
@@ -94,8 +94,8 @@ export class FormControlService implements OnInit{
   createCompositeField(formField: Field) {
     const subGroup: any = {};
     // console.log(formField);
-    formField.subFieldGroups?.sort((a, b) => a.form.display.order - b.form.display.order)
-    formField.subFieldGroups?.forEach(subField => {
+    formField.subFields?.sort((a, b) => a.form.display.order - b.form.display.order)
+    formField.subFields?.forEach(subField => {
       if (subField.typeInfo.type === 'composite' || subField.typeInfo.type === 'radioGrid') {
         if (subField.typeInfo.multiplicity) {
           subGroup[subField.name] = subField.form.mandatory ? new FormArray([], Validators.required)

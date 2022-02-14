@@ -60,9 +60,9 @@ export class CompositeFieldComponent implements OnInit {
         if (subField.typeInfo.multiplicity) {
           group[subField.name] = subField.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
-          group[subField.name].push(new FormGroup(this.createCompositeField(subField.subFieldGroups)));
+          group[subField.name].push(new FormGroup(this.createCompositeField(subField.subFields)));
         } else {
-          group[subField.name] = new FormGroup(this.createCompositeField(subField.subFieldGroups))
+          group[subField.name] = new FormGroup(this.createCompositeField(subField.subFields))
         }
       } else {
         group[subField.name] = subField.form.mandatory ? new FormControl('', Validators.required)
@@ -74,11 +74,11 @@ export class CompositeFieldComponent implements OnInit {
 
   // onCompositeChange(field: string, affects: Dependent[], index?: number) {
   onCompositeChange(fieldData: Field, j?: number, i?: number) {
-    // fieldData.subFieldGroups[j].parent, fieldData.subFieldGroups[j].form.affects
-    if (fieldData.subFieldGroups[j].form.affects !== null ) {
-      fieldData.subFieldGroups[j].form.affects.forEach( f => {
-        this.oldFieldAsFormArray(fieldData.subFieldGroups[j].parent).controls[i].get(f.name).reset();
-        this.oldFieldAsFormArray(fieldData.subFieldGroups[j].parent).controls[i].get(f.name).enable();
+    // fieldData.subFields[j].parent, fieldData.subFields[j].form.affects
+    if (fieldData.subFields[j].form.affects !== null ) {
+      fieldData.subFields[j].form.affects.forEach(f => {
+        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).reset();
+        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).enable();
         // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
       });
     }
@@ -111,8 +111,8 @@ export class CompositeFieldComponent implements OnInit {
     // console.log(fieldData.id);
     // console.log(fieldData.typeInfo.vocabulary);
     // console.log(this.vocabularies);
-    // if (fieldData.subFieldGroups[j].form.dependsOn !== null) {
-    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFieldGroups[j].parent).controls[i].get(fieldData.subFieldGroups[j].form.dependsOn.name).value];
+    // if (fieldData.subFields[j].form.dependsOn !== null) {
+    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(fieldData.subFields[j].form.dependsOn.name).value];
     // } else {
     // console.log(this.vocabularies[fieldData.typeInfo.vocabulary]);
       return this.vocabularies[fieldData.typeInfo.vocabulary];

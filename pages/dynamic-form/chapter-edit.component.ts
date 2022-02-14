@@ -147,8 +147,8 @@ export class ChapterEditComponent implements OnChanges{
           // console.log(key);
           if (formFieldData.typeInfo.type === 'composite') {
             // console.log('composite: ' + key);
-            for (let i = 0; i < formFieldData.subFieldGroups.length; i++) {
-              if (formFieldData.subFieldGroups[i].form.mandatory) {
+            for (let i = 0; i < formFieldData.subFields.length; i++) {
+              if (formFieldData.subFields[i].form.mandatory) {
                 let data = new HandleBitSet();
                 data.field = formFieldData;
                 data.position = i;
@@ -194,7 +194,7 @@ export class ChapterEditComponent implements OnChanges{
       for (let i = 0; i < formArray.length; i++) {
         if (formArray.controls[i].valid) {
           flag = true;
-          field.subFieldGroups.forEach(f => {
+          field.subFields.forEach(f => {
             if (f.form.mandatory)
               this.loaderBitSet.set(parseInt(f.id), 1);
           });
@@ -204,10 +204,10 @@ export class ChapterEditComponent implements OnChanges{
       }
       if (!flag) {
         // console.log('didnt found valid array field')
-        let found = new Array(field.subFieldGroups.length);
-        for (let j = 0; j < field.subFieldGroups.length; j++) {
+        let found = new Array(field.subFields.length);
+        for (let j = 0; j < field.subFields.length; j++) {
           for (let i = 0; i < formArray.length; i++) {
-            if (field.subFieldGroups[j].form.mandatory && formArray.controls[i].get(field.subFieldGroups[j].name).valid) {
+            if (field.subFields[j].form.mandatory && formArray.controls[i].get(field.subFields[j].name).valid) {
               found[j] = true;
               break;
             }
@@ -215,23 +215,23 @@ export class ChapterEditComponent implements OnChanges{
         }
         for (let i = 0; i < found.length; i++) {
           if (!found[i]) {
-            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].id), 0);
+            this.loaderBitSet.set(parseInt(field.subFields[i].id), 0);
           } else {
-            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].id), 1);
+            this.loaderBitSet.set(parseInt(field.subFields[i].id), 1);
           }
         }
         this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
       }
-    } else if (field.subFieldGroups[pos].form.mandatory) {
-      if (this.form.get(field.subFieldGroups[pos].accessPath).valid) {
-        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].id), 1);
+    } else if (field.subFields[pos].form.mandatory) {
+      if (this.form.get(field.subFields[pos].accessPath).valid) {
+        this.loaderBitSet.set(parseInt(field.subFields[pos].id), 1);
         if (this.form.get(field.accessPath).valid) {
           this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         } else {
           this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         }
       } else {
-        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].id), 0);
+        this.loaderBitSet.set(parseInt(field.subFields[pos].id), 0);
         if (this.form.get(field.accessPath).valid) {
           this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         } else {
@@ -327,7 +327,7 @@ export class ChapterEditComponent implements OnChanges{
     this.tabIndex = i;
     let element: HTMLElement = document.getElementById(this.chapter.id + '-tab' + i) as HTMLElement
     element.click();
-    console.log(element)
+    // console.log(element)
   }
 
   /** emit changes-->**/

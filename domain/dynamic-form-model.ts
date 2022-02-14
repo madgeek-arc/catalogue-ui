@@ -1,8 +1,8 @@
 import BitSet from 'bitset/bitset';
 
 export class Required {
-  topLevel: number = 0;
-  total: number = 0;
+  topLevel: number;
+  total: number;
 
 
   constructor() {
@@ -100,7 +100,7 @@ export class Field {
   includedInSnippet: boolean;
   form: Form;
   display: Display;
-  subFieldGroups: Field[];
+  subFields: Field[];
 
   constructor() {
     this.id = '';
@@ -113,7 +113,7 @@ export class Field {
     this.includedInSnippet = false;
     this.form = new Form();
     this.display = new Display();
-    this.subFieldGroups = [];
+    this.subFields = [];
   }
 }
 

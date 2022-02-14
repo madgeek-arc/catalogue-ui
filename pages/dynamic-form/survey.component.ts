@@ -90,16 +90,15 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
         },
         () => {
-          for (let i  = 0; i < this.surveyModel.chapters.length; i++) {
+          for (let i = 0; i < this.surveyModel.chapters.length; i++) {
             this.form.addControl(this.surveyModel.chapters[i].name, this.formControlService.toFormGroup(this.surveyModel.chapters[i].sections, true));
             this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.chapters[i].sections)
             this.form.get(this.surveyModel.chapters[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
-          console.log(this.surveyModel);
           if (this.surveyAnswers.validated) {
             this.readonly = true;
             this.validate = false;
-          } else if (this.validate){
+          } else if (this.validate) {
             UIkit.modal('#validation-modal').show();
           }
 
@@ -211,7 +210,7 @@ export class SurveyComponent implements OnInit, OnChanges {
             let count = 0;
             for (i; i < form[key][formElementKey].length; i++) {
               if (formFieldData.typeInfo.type === 'composite') {
-                this.pushComposite(key, formElementKey, formFieldData.subFieldGroups);
+                this.pushComposite(key, formElementKey, formFieldData.subFields);
                 // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
                 for (let formSubElementName in form[key][formElementKey][count]) {
                   if(form[key][formElementKey][count].hasOwnProperty(formSubElementName)) {
@@ -220,9 +219,9 @@ export class SurveyComponent implements OnInit, OnChanges {
                       const control = <FormArray>this.form.get([key,formElementKey,count,formSubElementName]);
                       // console.log(control);
                       let required = false;
-                      for (let j = 0; j < formFieldData.subFieldGroups.length; j++) {
-                        if (formFieldData.subFieldGroups[j].name === formSubElementName) {
-                          required = formFieldData.subFieldGroups[j].form.mandatory;
+                      for (let j = 0; j < formFieldData.subFields.length; j++) {
+                        if (formFieldData.subFields[j].name === formSubElementName) {
+                          required = formFieldData.subFields[j].form.mandatory;
                         }
                       }
                       for (let j = 0; j < form[key][formElementKey][count][formSubElementName].length - 1; j++) {

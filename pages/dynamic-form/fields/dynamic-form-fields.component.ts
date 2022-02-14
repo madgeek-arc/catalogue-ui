@@ -86,11 +86,11 @@ export class DynamicFormFieldsComponent implements OnInit {
 
   // onCompositeChange(field: string, affects: Dependent[], index?: number) {
   onCompositeChange(fieldData: Field, j?: number, i?: number) {
-    // fieldData.subFieldGroups[j].parent, fieldData.subFieldGroups[j].form.affects
-    if (fieldData.subFieldGroups[j].form.affects !== null ) {
-      fieldData.subFieldGroups[j].form.affects.forEach( f => {
-        this.fieldAsFormArray(fieldData.subFieldGroups[j].parent).controls[i].get(f.name).reset();
-        this.fieldAsFormArray(fieldData.subFieldGroups[j].parent).controls[i].get(f.name).enable();
+    // fieldData.subFields[j].parent, fieldData.subFields[j].form.affects
+    if (fieldData.subFields[j].form.affects !== null ) {
+      fieldData.subFields[j].form.affects.forEach(f => {
+        this.fieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).reset();
+        this.fieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).enable();
         // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
       });
     }
@@ -121,10 +121,10 @@ export class DynamicFormFieldsComponent implements OnInit {
   /** Return Vocabulary items for composite fields--> **/
 
   getCompositeVocabularyItems(fieldData: Field, j: number, i?: number) {
-    if (fieldData.subFieldGroups[j].form.dependsOn !== null) {
-      return this.subVocabularies[this.fieldAsFormArray(fieldData.subFieldGroups[j].parent).controls[i].get(fieldData.subFieldGroups[j].form.dependsOn.name).value];
+    if (fieldData.subFields[j].form.dependsOn !== null) {
+      return this.subVocabularies[this.fieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(fieldData.subFields[j].form.dependsOn.name).value];
     } else {
-      return this.vocabularies[fieldData.subFieldGroups[j].form.vocabulary];
+      return this.vocabularies[fieldData.subFields[j].form.vocabulary];
     }
   }
 
