@@ -5,7 +5,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {FormsModule} from "@angular/forms";
 import {SideMenuComponent} from "./side-menu/side-menu.component";
 import {FieldBuilderComponent} from "./field-builder/field-builder.component";
-import {SectionBuilderComponent} from "./group-builder/section-builder.component";
+import {SectionBuilderComponent} from "./section-builder/section-builder.component";
 import {ChapterBuilderComponent} from "./chapter-builder/chapter-builder.component";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 

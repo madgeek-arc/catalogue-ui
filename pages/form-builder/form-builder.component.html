@@ -2,12 +2,12 @@
   <div class="uk-container uk-container-expand">
     <div class="uk-grid">
 
-      <app-side-menu class="uk-width-1-5" [chapterModel]="formBuilder"></app-side-menu>
+      <app-side-menu class="uk-width-1-5" [chapterModel]="formBuilder" (showChapterOrSection)="updateView($event)"></app-side-menu>
       <div class="uk-width-3-5">
         <ul id="chapter-tabs" class="uk-switcher">
           <li *ngFor="let chapter of formBuilder">
-            <app-chapter-builder [chapter]="chapter"></app-chapter-builder>
-            <ul id="section-tabs" class="uk-switcher">
+            <app-chapter-builder [chapter]="chapter" [ngClass]="{'uk-display-none': show !== 'chapter'}"></app-chapter-builder>
+            <ul id="section-tabs" class="uk-switcher" [ngClass]="{'uk-display-none': show !== 'section'}">
               <li *ngFor="let groupedField of chapter.sections">
                 <app-section-builder [section]="groupedField"></app-section-builder>
                 <app-field-builder [groupedFields]="groupedField"></app-field-builder>

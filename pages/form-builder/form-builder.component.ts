@@ -9,13 +9,14 @@ import {Chapter} from "../../domain/dynamic-form-model";
 export class FormBuilderComponent implements OnInit {
 
   formBuilder: Chapter[] = [];
+  show: string = 'chapter';
 
   ngOnInit() {
     // this.formBuilder.push();
   }
 
-  pushChapter() {
-    this.formBuilder.push(new Chapter());
+  updateView(show: string) {
+    this.show = show;
   }
 
 }

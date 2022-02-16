@@ -152,16 +152,6 @@ export class GroupedFields {
     this.required = new Required();
   }
 }
-//
-// export class ChapterModel {
-//   chapter: Chapter;
-//   groupedFieldsList: GroupedFields[];
-//
-//   constructor() {
-//     this.chapter = new Chapter();
-//     this.groupedFieldsList = [];
-//   }
-// }
 
 export class Model {
   id: string;

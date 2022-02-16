@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Chapter, Field, GroupedFields} from "../../../domain/dynamic-form-model";
 
 @Component({
@@ -9,6 +9,7 @@ import {Chapter, Field, GroupedFields} from "../../../domain/dynamic-form-model"
 export class SideMenuComponent implements OnInit {
 
   @Input() chapterModel: Chapter[];
+  @Output() showChapterOrSection = new EventEmitter<string>();
   // groups: Group[] = []
 
   ngOnInit() {
@@ -29,6 +30,11 @@ export class SideMenuComponent implements OnInit {
 
   deleteChapter(position: number) {
     this.chapterModel.splice(position, 1);
+  }
+
+  emitSelection(str: string) {
+    console.log(str);
+    this.showChapterOrSection.emit(str);
   }
 
 }

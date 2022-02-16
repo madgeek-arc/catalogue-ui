@@ -1,31 +1,27 @@
 <div *ngFor="let field of groupedFields.fields" class="uk-card uk-card-body uk-card-default uk-margin-medium-bottom">
   <div class="uk-grid">
     <div class="uk-width-2-3">
-      <div class="uk-width-1-1 uk-margin-bottom">
+      <div class="uk-width-1-1 uk-margin-bottom uk-form-controls">
         <input [(ngModel)]="field.label.text" class="uk-input uk-width-2-3" placeholder="Label">
       </div>
-      <div class="uk-width-1-1 uk-margin-bottom">
-        <textarea [(ngModel)]="field.form.description.text"
-                  class="uk-textarea uk-width-2-3" placeholder="Short description">
+      <div class="uk-width-1-1 uk-margin-bottom uk-form-controls">
+        <textarea [(ngModel)]="field.form.description.text" class="uk-textarea uk-width-2-3"
+                  placeholder="Short description">
         </textarea>
       </div>
     </div>
 
     <div class="uk-width-1-3">
-      <ng-select [items]="fieldTypes" class="uk-width-1-1 uk-margin-bottom"
+      <ng-select [items]="fieldTypes" class="uk-width-1-1 uk-margin-bottom uk-form-controls"
                  bindLabel="name"
                  bindValue="id"
                  [(ngModel)]="field.typeInfo.type">
       </ng-select>
-      <div>
-        <label>
-          <input type="checkbox" [(ngModel)]="field.form.mandatory" class="uk-checkbox"> Required
-        </label>
+      <div class="uk-form-controls">
+        <label><input type="checkbox" [(ngModel)]="field.form.mandatory" class="uk-checkbox"> Required</label>
       </div>
-      <div>
-        <label>
-          <input type="checkbox" [(ngModel)]="field.typeInfo.multiplicity" class="uk-checkbox"> Multiple
-        </label>
+      <div class="uk-form-controls">
+        <label><input type="checkbox" [(ngModel)]="field.typeInfo.multiplicity" class="uk-checkbox"> Multiple</label>
       </div>
     </div>
   </div>
