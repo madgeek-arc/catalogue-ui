@@ -10,7 +10,9 @@
             <ul id="section-tabs" class="uk-switcher" [ngClass]="{'uk-display-none': show !== 'section'}">
               <li *ngFor="let groupedField of chapter.sections">
                 <app-section-builder [section]="groupedField"></app-section-builder>
-                <app-field-builder [groupedFields]="groupedField"></app-field-builder>
+                <ng-container *ngFor="let field of groupedField.fields">
+                  <app-field-builder [field]="field"></app-field-builder>
+                </ng-container>
               </li>
             </ul>
           </li>
