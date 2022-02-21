@@ -9,7 +9,7 @@
 <!--Chapter Selection-->
 <div *ngIf="surveyModel?.chapters.length > 0" [ngClass]="{'uk-display-none': surveyModel.chapters.length === 1}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
-    <li class="" *ngFor="let chapter of surveyModel.chapters">
+    <li class="" *ngFor="let chapter of chapters">
       <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}
         <span *ngIf="chapterChangeMap.get(chapter.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
     </li>

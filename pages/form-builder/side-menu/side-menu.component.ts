@@ -33,7 +33,6 @@ export class SideMenuComponent implements OnInit {
   }
 
   emitSelection(str: string) {
-    console.log(str);
     this.showChapterOrSection.emit(str);
   }
 

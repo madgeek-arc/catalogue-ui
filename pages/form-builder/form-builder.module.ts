@@ -8,6 +8,7 @@ import {FieldBuilderComponent} from "./field-builder/field-builder.component";
 import {SectionBuilderComponent} from "./section-builder/section-builder.component";
 import {ChapterBuilderComponent} from "./chapter-builder/chapter-builder.component";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
+import {TypeSelectorComponent} from "./type-selector-builder/type-selector.component";
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
     SideMenuComponent,
     FieldBuilderComponent,
     SectionBuilderComponent,
-    ChapterBuilderComponent
+    ChapterBuilderComponent,
+    TypeSelectorComponent
   ],
   imports: [
     CommonModule,

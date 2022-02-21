@@ -9,8 +9,9 @@
     <div class="uk-width-1-3">
       <ng-select class="uk-width-1-1 uk-margin-bottom uk-form-controls" [searchable]="false" [clearable]="false"
                  [(ngModel)]="field.typeInfo.type">
-        <ng-option [value]="'string'"><span uk-icon="heart"></span> small Text</ng-option>
-        <ng-option [value]="'largeText'"><span uk-icon="star"></span> largeText</ng-option>
+        <ng-option [value]="'string'" class="uk-flex uk-flex-middle"><span uk-icon="heart"></span> small Text</ng-option>
+        <ng-option [value]="'largeText'" class="uk-flex uk-flex-middle"><span uk-icon="star"></span> largeText</ng-option>
+        <ng-option [value]="'radio'"> radio</ng-option>
       </ng-select>
     </div>
 
@@ -24,6 +25,9 @@
       <ckeditor [editor]="editor" [config]="{placeholder: 'Give a short suggestion for the field'}"
                 [(ngModel)]="field.form.suggestion.text">
       </ckeditor>
+    </div>
+    <div class="uk-width-1-1">
+      <app-type-selector [typeInfo]="field.typeInfo" [type]="field.typeInfo.type"></app-type-selector>
     </div>
 
     <div class="uk-width-1-1 uk-form-controls">

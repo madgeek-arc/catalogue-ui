@@ -30,7 +30,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() tabsHeader : string = null;
 
   surveyModel: Model;
-  // chapters: Chapter[] = [];
+  chapters: Chapter[] = [];
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
   currentChapter: Chapter = null;
   chapterForSubmission: Chapter = null;
@@ -73,17 +73,18 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.vocabularies = res[0];
           res[1].chapters.sort((a, b) => a.order - b.order);
           this.surveyModel = res[1];
+          this.chapters = [];
           for (const model of this.surveyModel.chapters) {
             for (const surveyAnswer in this.surveyAnswers.chapterAnswers) {
-              // console.log(model);
               if (model.id === this.surveyAnswers.chapterAnswers[surveyAnswer].chapterId) {
-                // this.chapters.push(model);
+                this.chapters.push(model);
                 this.chapterChangeMap.set(model.id, false);
                 this.sortedSurveyAnswers[model.id] = this.surveyAnswers.chapterAnswers[surveyAnswer].answer;
                 break;
               }
             }
           }
+          console.log(this.chapters.length);
           this.currentChapter = this.surveyModel.chapters[0];
         },
         error => {
