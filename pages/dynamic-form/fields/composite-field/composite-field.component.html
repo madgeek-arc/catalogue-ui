@@ -29,7 +29,7 @@
                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
               </app-composite-field>
             </div>
-            <div *ngIf="control.typeInfo.type === 'vocabulary'" class="uk-form-controls uk-margin-medium-top">
+            <div *ngIf="control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select'" class="uk-form-controls uk-margin-medium-top">
               <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies"
                                     [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
                                     [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"

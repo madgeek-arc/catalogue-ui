@@ -1,8 +1,7 @@
 import {
-  ChangeDetectorRef,
   Component,
   Input,
-  OnChanges,
+  OnChanges, OnInit,
   SimpleChanges
 } from "@angular/core";
 import {TypeInfo} from "../../../domain/dynamic-form-model";
@@ -13,27 +12,9 @@ import {TypeInfo} from "../../../domain/dynamic-form-model";
   templateUrl: 'type-selector.component.html'
 })
 
-export class TypeSelectorComponent implements OnChanges{
+export class TypeSelectorComponent {
 
   @Input() typeInfo: TypeInfo;
-  @Input() type: string;
-
-  constructor(private cdr: ChangeDetectorRef) {}
-
-  ngAfterViewInit() {
-    if (this.type === 'radio') {
-      this.typeInfo.values.push('Option 1');
-      this.cdr.detectChanges();
-    }
-  }
-
-  ngOnChanges(changes:SimpleChanges) {
-    this.typeInfo.values = [];
-    if (this.type === 'radio') {
-      // this.typeInfo.values.push('Option 1');
-    }
-    this.cdr.detectChanges();
-  }
 
   addOption() {
     this.typeInfo.values.push('Option '+ (this.typeInfo.values.length+1));

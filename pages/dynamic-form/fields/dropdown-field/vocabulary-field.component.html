@@ -11,7 +11,7 @@
     <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
       <ng-select class="uk-width-9-10" [id]="fieldData.name" [formControlName]="i"
                  [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.name, i, this.editMode)}"
-                 [items]="vocabularies[fieldData.form.vocabulary]"
+                 [items]="fieldData.typeInfo.values ? fieldData.typeInfo.values : vocabularies[fieldData.typeInfo.vocabulary]"
                  (change)="updateBitSet(fieldData); unsavedChangesPrompt()"
                  bindLabel="name"
                  bindValue="id"
@@ -36,7 +36,7 @@
     <ng-select class="uk-select uk-width-9-10 uk-margin-small" [id]="fieldData.name" [formControlName]="fieldData.name"
                (change)="updateBitSet(fieldData); unsavedChangesPrompt()"
                [ngClass]="{'uk-form-danger': checkFormValidity()}"
-               [items]="fieldData.typeInfo.values? fieldData.typeInfo.values : vocabularies[fieldData.typeInfo.vocabulary]"
+               [items]="fieldData.typeInfo.values ? fieldData.typeInfo.values : vocabularies[fieldData.typeInfo.vocabulary]"
                bindLabel="name"
                bindValue="id"
                clearAllText="Clear">
