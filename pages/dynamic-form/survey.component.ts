@@ -84,7 +84,6 @@ export class SurveyComponent implements OnInit, OnChanges {
               }
             }
           }
-          console.log(this.chapters.length);
           this.currentChapter = this.surveyModel.chapters[0];
         },
         error => {

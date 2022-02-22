@@ -61,11 +61,13 @@
                       </ul>
 
                       <div *ngIf="bitset.requiredTotal !== 0" class="requiredFields uk-text-right">*Required fields</div>
-                      <div class="uk-margin-small-top" style="margin-left: 19%">
-                        <button class="uk-button uk-margin-small-right" [ngClass]="tabIndex === 0 ? 'uk-button-default' : 'uk-button-primary'" (click)="goToTab(tabIndex-1)">
+                      <div class="uk-margin-small-top uk-flex uk-flex-center">
+                        <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)" (click)="goToTab(tabIndex-1)"
+                                [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'" >
                           <i class="fa fa-angle-left"></i> PREVIOUS
                         </button>
-                        <button id="next" class="uk-button" [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-default' : 'uk-button-primary'" (click)="goToTab(tabIndex+1)">
+                        <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"  (click)="goToTab(tabIndex+1)"
+                                [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-secondary' : 'uk-button-primary'">
                           NEXT <i class="fa fa-angle-right"></i>
                         </button>
                       </div>
