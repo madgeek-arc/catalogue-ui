@@ -1,4 +1,4 @@
-/*@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap');*/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap');
 
 :root {
@@ -10,6 +10,8 @@
   --button-secondary-color: #fff;
   --button-secondary-background-color: #26C0E2;
   --button-secondary-hover-background-color: #1E95B0;
+
+  --main-font-family: 'Open Sans';
 }
 
 html {
@@ -17,7 +19,7 @@ html {
 }
 
 body {
-  font: 400 14px/19px 'Roboto', sans-serif;
+  font: 400 14px/19px var(--main-font-family), sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -273,16 +275,16 @@ ul.uk-pagination {
 }
 
 .formContainer {
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 6px #0000001A;
-  border-radius: 4px;
-  opacity: 1;
+  /*background: #FFFFFF 0% 0% no-repeat padding-box;*/
+  /*box-shadow: 0px 3px 6px #0000001A;*/
+  /*border-radius: 4px;*/
+  /*opacity: 1;*/
   padding: 20px;
 }
 
 .uk-form-label {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 18px !important;
   /*font: 700 18px Roboto;*/
   letter-spacing: 0px;
   color: #212121;
@@ -291,7 +293,7 @@ ul.uk-pagination {
 }
 
 .uk-form-description {
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0px;
   color: #212121;
   opacity: 0.81;
@@ -310,7 +312,7 @@ ul.uk-pagination {
 }
 
 .uk-textarea {
-  /*height: 135px;*/
+  height: 100px;
   background: #FAFAFA 0% 0% no-repeat padding-box;
   border: 1px solid #D1D1D1;
   border-radius: 4px;
@@ -387,6 +389,28 @@ a.remove-element i {
   display: flex;
   align-items: center;
   padding-left: 10px;
+}
+
+.uk-radio-label, .uk-checkbox-label {
+  font-weight: normal;
+  font-size: 16px;
+}
+
+.uk-suggestion {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.dp-picker-input {
+  background-color: #fff;
+  border: 1px solid var(--default-element-bg);
+  border-radius: 4px;
+  height: 34px;
+  padding: 0px 10px;
+}
+
+.ck-editor__editable_inline {
+  min-height: 150px;
 }
 
 /* ========================================================================
@@ -1020,7 +1044,7 @@ a[class*="wk-"]:hover {
 }
 
 .loader-small {
-  background: url("../../../assets/images/loaders/loader-small.gif") no-repeat center;
+  background: url("../images/loaders/loader-small.gif") no-repeat center;
   z-index: 110;
   width: 100%;
   height: 100%;
@@ -1030,7 +1054,7 @@ a[class*="wk-"]:hover {
 }
 
 .loader-big {
-  background: url("../../../assets/images/loaders/loader-big.gif") no-repeat center;
+  background: url("../images/loaders/loader-big.gif") no-repeat center;
   z-index: 110;
   width: 100%;
   height: 100%;

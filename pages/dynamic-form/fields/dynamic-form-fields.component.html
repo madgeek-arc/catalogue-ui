@@ -1,0 +1,103 @@
+<ng-container *ngIf="form" [formGroup]="form">
+
+  <div *ngIf="fieldData.form.display.visible">
+    <div class="">
+
+      <div class="uk-form-controls">
+
+        <div *ngIf="fieldData.typeInfo.type === 'composite'">
+          <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                               (hasChanges)="unsavedChangesPrompt()"
+                               (handleBitSets)="handleBitsetOfChildren($event)"
+                               (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-composite-field>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'string' || fieldData.typeInfo.type === 'url' ||
+                    fieldData.typeInfo.type === 'email' || fieldData.typeInfo.type === 'phone' ||
+                    fieldData.typeInfo.type === 'double'">
+          <app-string-url-email-field [fieldData]="fieldData"
+                                      (hasChanges)="unsavedChangesPrompt()"
+                                      (handleBitSets)="handleBitsetOfChildren($event)"
+                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-string-url-email-field>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'number'">
+          <app-number-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                            (handleBitSets)="handleBitsetOfChildren($event)"
+                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-number-field>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'vocabulary' || fieldData.typeInfo.type === 'select'">
+          <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                                (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-vocabulary-field>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'largeText'">
+          <app-large-text [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                          (handleBitSets)="handleBitsetOfChildren($event)"
+                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-large-text>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'radio'">
+          <app-radio-button-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                                  (handleBitSets)="handleBitsetOfChildren($event)"
+                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-radio-button-field>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'richText'">
+          <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
+            <!--To add multiplicity if needed-->
+          </div>
+
+          <ng-template #noMultiplicity>
+            <div class="uk-margin-medium-top uk-width-9-10">
+            <md-editor [id]="fieldData.name"
+                       [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode)}"
+                       [height]="'250px'"
+                       [mode]="'editor'"
+                       [options]="{markedjsOpt: { breaks: true }, showPreviewPanel: true, resizable: true, enablePreviewContentClick: true}"
+                       (ngModelChange)="updateBitSet(fieldData)"
+                       [formControlName]="fieldData.name">
+            </md-editor>
+            </div>
+            <div><i><small>{{fieldData.form.suggestion.text}}</small></i></div>
+          </ng-template>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'date'">
+          <app-date-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                          (handleBitSets)="handleBitsetOfChildren($event)"
+                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-date-field>
+        </div>
+
+        <div *ngIf="fieldData.typeInfo.type === 'boolean'">
+          <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.name">
+            <!--To add multiplicity if needed-->
+          </div>
+          <ng-template #noMultiplicity>
+            <label>
+              <input class="uk-radio" type="radio" [formControlName]="fieldData.name" [value]="true"
+                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [name]="fieldData.name"
+                     [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode) }"/>&nbsp;Yes&nbsp;
+            </label>
+            <label>
+              <input class="uk-radio" type="radio"  [formControlName]="fieldData.name" [value]="false"
+                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [name]="fieldData.name"
+                     [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode) }"/>&nbsp;No&nbsp;
+            </label>
+          </ng-template>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</ng-container>

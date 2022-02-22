@@ -21,11 +21,9 @@ export class LandingPageComponent implements OnInit {
       this.landingPageService.getDataset(params['id']).subscribe(
         res => {
           this.dataset = res;
-          console.log(this.dataset);
           this.landingPageService.searchDatasetInstance('dataset_instance', 'type=' + this.dataset['name']).subscribe(
             res => {
               this.instances = res['results'];
-              console.log(this.instances);
             }
           )
         }

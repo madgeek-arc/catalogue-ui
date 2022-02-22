@@ -2,17 +2,25 @@
   <div class="uk-container uk-container-expand">
     <div class="uk-grid">
 
-      <app-group-section class="uk-width-1-5"></app-group-section>
-
-      <app-field-section class="uk-width-4-5" [formBuilder]="formBuilder"></app-field-section>
+      <app-side-menu class="uk-width-1-5" [chapterModel]="formBuilder" (showChapterOrSection)="updateView($event)"></app-side-menu>
+      <div class="uk-width-3-5">
+        <ul id="chapter-tabs" class="uk-switcher">
+          <li *ngFor="let chapter of formBuilder">
+            <app-chapter-builder [chapter]="chapter" [ngClass]="{'uk-display-none': show !== 'chapter'}"></app-chapter-builder>
+            <ul id="section-tabs" class="uk-switcher" [ngClass]="{'uk-display-none': show !== 'section'}">
+              <li *ngFor="let section of chapter.sections">
+                <app-section-builder [section]="section"></app-section-builder>
+                <ng-container *ngFor="let field of section.fields; let i = index">
+                  <app-field-builder [field]="field"></app-field-builder>
+                </ng-container>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
 
     </div>
-    <button (click)="pushField()" class="uk-float-right"> Add field</button>
-
   </div>
 </div>
 
-<pre>
-  {{formBuilder | json}}
-</pre>
-
+<pre>{{formBuilder | json}}</pre>

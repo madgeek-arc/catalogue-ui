@@ -1,25 +1,27 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Fields, HandleBitSet} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
   selector: 'app-string-url-email-field',
-  templateUrl: './string-field.component.html'
+  templateUrl: './string-field.component.html',
+  styles: ['.clear-style { height: 0 !important;}']
 })
 
 export class StringFieldComponent implements OnInit {
-  @Input() fieldData: Fields;
+  @Input() fieldData: Field;
   @Input() editMode: any;
   @Input() position?: number = null;
 
-  @Output() handleBitSets = new EventEmitter<Fields>();
+  @Output() hasChanges = new EventEmitter<boolean>();
+  @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   formControl!: FormControl;
   form!: FormGroup;
-  hasChanges = false;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
   }
@@ -30,7 +32,17 @@ export class StringFieldComponent implements OnInit {
     } else {
       this.form = this.rootFormGroup.control;
     }
-    this.formControl = this.form.get(this.fieldData.field.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+
+    if(this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
+
     // console.log(this.fieldData);
     // console.log(this.form);
     // console.log(this.formControl);
@@ -60,14 +72,13 @@ export class StringFieldComponent implements OnInit {
   /** check fields validity--> **/
 
   checkFormValidity(): boolean {
-    return (!this.formControl.valid && (this.editMode || this.formControl.dirty));
+    return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
   }
 
   checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
     if (groupName) {
       return (!this.fieldAsFormArray()?.get([position])?.get(groupName).valid
         && (edit || this.fieldAsFormArray()?.get([position])?.get(groupName).dirty));
-
     }
     return (!this.fieldAsFormArray().get([position]).valid
       && (edit || this.fieldAsFormArray().get([position]).dirty));
@@ -75,9 +86,9 @@ export class StringFieldComponent implements OnInit {
 
   /** Bitsets--> **/
 
-  updateBitSet(fieldData: Fields) {
+  updateBitSet(fieldData: Field) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
-      if (fieldData.field.form.mandatory) {
+      if (fieldData.form.mandatory) {
         this.handleBitSets.emit(fieldData);
       }
     });
@@ -85,7 +96,24 @@ export class StringFieldComponent implements OnInit {
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    console.log('string-field.component emitting to parent->');
+    this.hasChanges.emit(true);
+  }
+
+  enableDisableField(value) {
+    // console.log(value);
+    if (value === true || value === 'Other, please specify') {
+      this.formControl.enable();
+      this.hideField = false;
+
+    } else {
+      this.formControl.disable();
+      this.formControl.reset();
+      this.hideField = true;
+      // maybe add this if the remaining empty fields are a problem
+      // (this.formControl as unknown as FormArray).clear();
+
+    }
   }
 
   timeOut(ms: number) {

@@ -1,0 +1,68 @@
+<div *ngIf="survey" class="uk-grid">
+  <h5 class="uk-width-1-2 uk-margin-bottom">{{survey.name}}</h5>
+  <div class="uk-width-1-2">
+    <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateSurvey()">Validate</button>
+  </div>
+  <p class="uk-margin-bottom">{{survey.notice}}</p>
+</div>
+
+<!--Chapter Selection-->
+<div *ngIf="surveyModel?.chapters.length > 0" [ngClass]="{'uk-display-none': surveyModel.chapters.length === 1}">
+  <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
+    <li class="" *ngFor="let chapter of chapters">
+      <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}
+        <span *ngIf="chapterChangeMap.get(chapter.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
+    </li>
+  </ul>
+</div>
+
+
+<pre *ngIf="errorMessage" id="errorAlert" class="uk-alert uk-alert-danger" style="border-width: 0">
+  <a (click)="closeAlert()" class="uk-alert-close" uk-close></a>
+  {{errorMessage}}
+</pre>
+<div *ngIf="successMessage" class="uk-alert uk-alert-success" id="successMessage">
+  <p>{{successMessage}}</p>
+</div>
+
+<div *ngIf="ready; else showLoader">
+  <ul id="top-navigation-tabs" class="uk-switcher">
+    <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">
+      <app-chapter-edit [answerValue]="answer.value" [form]="getFormGroup(i)" [readonly] = readonly [validate] = validate
+                        [tabsHeader]="tabsHeader" [chapter]="surveyModel.chapters[i]" [fields]="surveyModel.chapters[i].sections"
+                        [surveyAnswerId]="this.surveyAnswers.id" (chapterHasChanges)="setChapterChangesMap($event)">
+      </app-chapter-edit>
+    </li>
+  </ul>
+</div>
+
+<ng-template #showLoader class="whiteFilm">
+  <i class="loader-big" aria-hidden="true"></i>
+</ng-template>
+
+<!--<pre *ngIf="form">{{form.getRawValue() | json}}</pre>-->
+
+<!-- Validation modal -->
+<div id="validation-modal" uk-modal="esc-close: false; bg-close: false">
+  <div class="uk-modal-dialog uk-modal-body">
+    <h2 class="uk-modal-title">Survey validation</h2>
+    <p>The survey fields will be validated and if all required fields are present it will be locked and it will not be
+    editable until unlocked.</p>
+    <p class="uk-text-right">
+      <button class="uk-button uk-button-secondary uk-modal-close" type="button">Close</button>
+      <button class="uk-button uk-button-primary" type="button" (click)="validateSurvey()">I agree</button>
+    </p>
+  </div>
+</div>
+
+<!-- Unsaved changes modal -->
+<div id="unsaved-changes-modal" uk-modal="esc-close: false; bg-close: false">
+  <div class="uk-modal-dialog uk-modal-body">
+<!--    <h2 class="uk-modal-title"></h2>-->
+    <p>There are unsaved changes, do you want to submit them before moving on;</p>
+    <p class="uk-text-right">
+      <button class="uk-button uk-button-secondary uk-modal-close" type="button">I will do it later</button>
+      <button class="uk-button uk-button-primary" type="button" (click)="onSubmit()">Submit now</button>
+    </p>
+  </div>
+</div>

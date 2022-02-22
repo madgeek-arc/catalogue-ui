@@ -1,47 +1,60 @@
-import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, Input, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 import {FormControlService} from '../../services/form-control.service';
-import {Fields, FormModel, HandleBitSet, Tab, Tabs, UiVocabulary} from '../../domain/dynamic-form-model';
-import {environment} from '../../../environments/environment';
+import {
+  Chapter,
+  Field,
+  GroupedFields,
+  HandleBitSet,
+  Tab,
+  Tabs,
+  UiVocabulary
+} from '../../domain/dynamic-form-model';
 import BitSet from 'bitset/bitset';
 import {PremiumSortPipe} from '../../shared/pipes/premium-sort.pipe';
 import {zip} from 'rxjs/internal/observable/zip';
 import {Router} from "@angular/router";
+import {SurveyService} from "../../../app/services/survey.service";
 
 declare var UIkit: any;
 
 @Component({
   selector: 'app-dynamic-form',
-  templateUrl: './dynamic-form.component.html',
+  template: '',
   providers: [FormControlService]
 })
-export class DynamicFormComponent implements OnInit {
+export class ChapterComponent implements OnInit {
 
-  fields: FormModel[] = null;
+  @Input() tabsHeader: string;
+  @Input() surveyId: string = null;
+  @Input() readonly : boolean = null;
+  @Input() validate : boolean = null;
+  @Input() chapter: Chapter = null;
+  @Input() fields: GroupedFields[] = null;
+
+  chapters: Chapter[] = [];
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
 
-  serviceORresource = environment.serviceORresource;
-  projectName = environment.projectName;
-
   form: FormGroup;
   bitset: Tabs = new Tabs;
   errorMessage = '';
-  successMessage = '';
+  successMessage = null;
   ready = false;
   showLoader = false;
   hasChanges = false;
   pendingService = false;
 
+  showBitsets = false;
   loaderBitSet = new BitSet;
   loaderPercentage = 0;
   tabIndex= 0;
 
   premiumSort = new PremiumSortPipe();
 
-  constructor(protected formControlService: FormControlService,
+  constructor(protected formControlService: FormControlService, private surveyService: SurveyService,
               protected fb: FormBuilder,
               protected router: Router) {
   }
@@ -50,10 +63,12 @@ export class DynamicFormComponent implements OnInit {
     this.ready = false;
     zip(
       this.formControlService.getUiVocabularies(),
-      this.formControlService.getFormModel()
+      this.formControlService.getFormModel(this.surveyId)
     ).subscribe(res => {
         this.vocabularies = res[0];
-        this.fields = res[1];
+        // TODO handle it properly
+        this.fields = res[1][Object.keys(res[1])[0]];
+        // this.fields = res[1];
       },
       error => {
         this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -66,14 +81,13 @@ export class DynamicFormComponent implements OnInit {
 
 
   onSubmit(tempSave: boolean, pendingService?: boolean) {
-    if (this.form.valid) {
+    // if (this.form.valid) {
       window.scrollTo(0, 0);
       // console.log(this.form.getRawValue());
       this.showLoader = true;
-      // this.clearEmptyFields(); // Maybe clear form from empty strings
-      this.formControlService.postItem(this.form.getRawValue(), this.editMode).subscribe(
+      this.formControlService.postItem(this.surveyId, this.form.getRawValue(), this.editMode).subscribe(
         res => {
-          this.router.navigate(['/search']);
+          this.router.navigate(['/contributions/surveys']);
         },
         error => {
           this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error.error.error);
@@ -84,26 +98,32 @@ export class DynamicFormComponent implements OnInit {
           this.showLoader = false;
         }
       );
-    } else {
-      this.errorMessage = 'Please check if all the required fields have a value.';
-      window.scrollTo(0, 0);
-      console.log('is service valid: ' + this.form.get('service').valid);
-      console.log('is extras valid: ' + this.form.get('extras').valid);
+    // } else {
+    //   this.errorMessage = 'Please check if all the required fields have a value.';
+    //   window.scrollTo(0, 0);
+    //   console.log('is service valid: ' + this.form.get('service').valid);
+    //   console.log('is extras valid: ' + this.form.get('extras').valid);
       // for (let extrasKey in this.form.get('extras').value) {
       //   console.log(this.form.get('extras.'+extrasKey));
       //   console.log(extrasKey + ': '+ this.form.get('extras.'+extrasKey).valid);
       // }
-    }
+    // }
   }
 
-  clearEmptyFields() {
-    Object.keys(this.form.controls).forEach(key => {
-      console.log(key);
-      Object.keys(this.form['controls'][key]['controls']).forEach(key2 => {
-        console.log(key2);
-        console.log(this.form['controls'][key]['controls'][key2].value);
-      })
-    });
+  validateSurvey() {
+    if (this.form.valid) {
+      this.surveyService.changeAnswerValidStatus(this.surveyId, this.validate).subscribe(
+        next => {
+          UIkit.modal('#validation-modal').hide();
+          this.router.navigate(['/contributions/mySurveys'])
+        },
+        error => {
+          console.error(error)
+        },
+        () => {
+        }
+      );
+    }
   }
 
   initializations() {
@@ -112,7 +132,9 @@ export class DynamicFormComponent implements OnInit {
     // tmpForm['service'] = this.formControlService.toFormGroup(this.fields, true);
     // tmpForm['extras'] = this.formControlService.toFormGroup(this.fields, false);
     // this.form = this.fb.group(tmpForm);
-    this.form = this.formControlService.toFormGroup(this.fields, true);
+    for (let i  = 0; i < this.chapters.length; i++) {
+      this.form[i] = this.formControlService.toFormGroup(this.chapters[0].sections, true);
+    }
 
     /** Initialize tab bitsets **/
     let requiredTabs = 0, requiredTotal = 0;
@@ -121,10 +143,10 @@ export class DynamicFormComponent implements OnInit {
       let tab = new Tab();
       tab.requiredOnTab = tab.remainingOnTab = group.required.topLevel;
       tab.valid = false;
-      tab.order = group.group.order;
+      tab.order = group.order;
       tab.bitSet = new BitSet;
       // obj[group.group.id] = tab;
-      obj.set(group.group.id, tab);
+      obj.set(group.id, tab);
       if (group.required.topLevel > 0) {
         requiredTabs++;
       }
@@ -152,28 +174,28 @@ export class DynamicFormComponent implements OnInit {
   handleBitSetOfComposite(data: HandleBitSet) {
     let field = data.field;
     let pos = data.position;
-    // console.log(field.field.name);
+    // console.log(field.name);
 
-    if (field.field.typeInfo.multiplicity) {
-      let formArray = this.form.get(field.field.accessPath) as FormArray;
+    if (field.typeInfo.multiplicity) {
+      let formArray = this.form.get(field.accessPath) as FormArray;
       let flag = false;
       for (let i = 0; i < formArray.length; i++) {
         if (formArray.controls[i].valid) {
           flag = true;
-          field.subFieldGroups.forEach(f => {
-            if (f.field.form.mandatory)
-              this.loaderBitSet.set(parseInt(f.field.id), 1);
+          field.subFields.forEach(f => {
+            if (f.form.mandatory)
+              this.loaderBitSet.set(parseInt(f.id), 1);
           });
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
           break;
         }
       }
       if (!flag) {
         // console.log('didnt found valid array field')
-        let found = new Array(field.subFieldGroups.length);
-        for (let j = 0; j < field.subFieldGroups.length; j++) {
+        let found = new Array(field.subFields.length);
+        for (let j = 0; j < field.subFields.length; j++) {
           for (let i = 0; i < formArray.length; i++) {
-            if (field.subFieldGroups[j].field.form.mandatory && formArray.controls[i].get(field.subFieldGroups[j].field.name).valid) {
+            if (field.subFields[j].form.mandatory && formArray.controls[i].get(field.subFields[j].name).valid) {
               found[j] = true;
               break;
             }
@@ -181,61 +203,61 @@ export class DynamicFormComponent implements OnInit {
         }
         for (let i = 0; i < found.length; i++) {
           if (!found[i]) {
-            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].field.id), 0);
+            this.loaderBitSet.set(parseInt(field.subFields[i].id), 0);
           } else {
-            this.loaderBitSet.set(parseInt(field.subFieldGroups[i].field.id), 1);
+            this.loaderBitSet.set(parseInt(field.subFields[i].id), 1);
           }
         }
-        this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+        this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
       }
-    } else if (field.subFieldGroups[pos].field.form.mandatory) {
-      if (this.form.get(field.subFieldGroups[pos].field.accessPath).valid) {
-        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].field.id), 1);
-        if (this.form.get(field.field.accessPath).valid) {
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+    } else if (field.subFields[pos].form.mandatory) {
+      if (this.form.get(field.subFields[pos].accessPath).valid) {
+        this.loaderBitSet.set(parseInt(field.subFields[pos].id), 1);
+        if (this.form.get(field.accessPath).valid) {
+          this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         } else {
-          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         }
       } else {
-        this.loaderBitSet.set(parseInt(field.subFieldGroups[pos].field.id), 0);
-        if (this.form.get(field.field.accessPath).valid) {
-          this.decreaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+        this.loaderBitSet.set(parseInt(field.subFields[pos].id), 0);
+        if (this.form.get(field.accessPath).valid) {
+          this.decreaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         } else {
-          this.increaseRemainingFieldsPerTab(field.field.form.group, field.field.form.order);
+          this.increaseRemainingFieldsPerTab(field.form.group, field.form.display.order);
         }
       }
     }
     this.updateLoaderPercentage();
   }
 
-  handleBitSet(data: Fields) {
-    console.log(data.field.name);
-    if (data.field.typeInfo.multiplicity) {
+  handleBitSet(data: Field) {
+    console.log(data.name);
+    if (data.typeInfo.multiplicity) {
       this.handleBitSetOfGroup(data);
       return;
     }
-    // console.log(this.form.get(data.field.accessPath).valid);
-    if (this.form.get(data.field.accessPath).valid) {
-      this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
-      this.loaderBitSet.set(parseInt(data.field.id), 1);
-    } else if (this.form.get(data.field.accessPath).invalid) {
-      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
-      this.loaderBitSet.set(parseInt(data.field.id), 0);
-    } else if (this.form.get(data.field.accessPath).pending) {
+    // console.log(this.form.get(data.accessPath).valid);
+    if (this.form.get(data.accessPath).valid) {
+      this.decreaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+      this.loaderBitSet.set(parseInt(data.id), 1);
+    } else if (this.form.get(data.accessPath).invalid) {
+      this.increaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+      this.loaderBitSet.set(parseInt(data.id), 0);
+    } else if (this.form.get(data.accessPath).pending) {
       this.timeOut(300).then(() => this.handleBitSet(data));
       return;
     }
     this.updateLoaderPercentage();
   }
 
-  handleBitSetOfGroup(data: Fields) {
-    let formArray = this.form.get(data.field.accessPath) as FormArray;
+  handleBitSetOfGroup(data: Field) {
+    let formArray = this.form.get(data.accessPath) as FormArray;
     let flag = false;
     for (let i = 0; i < formArray.length; i++) {
       if (formArray.controls[i].valid) {
         flag = true;
-        this.decreaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
-        this.loaderBitSet.set(parseInt(data.field.id), 1);
+        this.decreaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+        this.loaderBitSet.set(parseInt(data.id), 1);
         break;
       } else if (formArray.controls[i].pending) {
         this.timeOut(300).then(() => this.handleBitSetOfGroup(data));
@@ -243,8 +265,8 @@ export class DynamicFormComponent implements OnInit {
       }
     }
     if (!flag) {
-      this.increaseRemainingFieldsPerTab(data.field.form.group, data.field.form.order);
-      this.loaderBitSet.set(parseInt(data.field.id), 0);
+      this.increaseRemainingFieldsPerTab(data.form.group, data.form.display.order);
+      this.loaderBitSet.set(parseInt(data.id), 0);
     }
     this.updateLoaderPercentage();
   }
@@ -284,7 +306,7 @@ export class DynamicFormComponent implements OnInit {
   /** tab prev next buttons **/
   setTabIndex(i: number) {
     this.tabIndex = i;
-    UIkit.switcher('#top-navigation-tabs').show(i);
+    // UIkit.switcher('#top-navigation-tabs').show(i);
   }
 
   goToTab(i: number) {
@@ -300,6 +322,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
   /** Other stuff **/
+
   groupByKey(array: any, key: any) {
     return array.reduce((hash: any, obj: any) => {
       if (obj[key] === undefined) {
@@ -309,8 +332,7 @@ export class DynamicFormComponent implements OnInit {
     }, {});
   }
 
-  getAsFormGroup(name: string) {
-    return this.form.get(name) as FormGroup;
-  }
+  unsavedChangesPrompt(e: boolean) {
 
+  }
 }

@@ -1,19 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
-import {FormControlService} from "../../../../services/form-control.service";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
-  selector: 'app-vocabulary-field',
-  templateUrl: './vocabulary-field.component.html',
-  styleUrls: ['./vocabulary-field.component.scss']
+  selector: 'app-date-field',
+  templateUrl: 'date-field.component.html'
 })
 
-export class VocabularyFieldComponent implements OnInit {
+export class DateFieldComponent implements OnInit {
+
   @Input() fieldData: Field;
-  @Input() vocabularies: Map<string, string[]>;
-  @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
 
@@ -23,8 +19,9 @@ export class VocabularyFieldComponent implements OnInit {
 
   formControl!: FormControl;
   form!: FormGroup;
+  hideFields: boolean = null;
 
-  constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
+  constructor(private rootFormGroup: FormGroupDirective) {
   }
 
   ngOnInit() {
@@ -34,8 +31,18 @@ export class VocabularyFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
-    // console.log(this.vocabularies[this.fieldData.typeInfo.vocabulary]);
-    // console.log(this.fieldData.name);
+
+    if(this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
+
+    // console.log(this.fieldData);
+    // console.log(this.form);
     // console.log(this.formControl);
   }
 
@@ -45,15 +52,8 @@ export class VocabularyFieldComponent implements OnInit {
     return this.formControl as unknown as FormArray;
   }
 
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]))
-          : new FormControl('', URLValidator));
-        break;
-      default:
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
+  push(field: string, required: boolean, type?: string) {
+    this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
   }
 
   remove(field: string, i: number) {
@@ -66,15 +66,6 @@ export class VocabularyFieldComponent implements OnInit {
     return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
   }
 
-  checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
-    if (groupName) {
-      return (!this.fieldAsFormArray()?.get([position])?.get(groupName).valid
-        && (edit || this.fieldAsFormArray()?.get([position])?.get(groupName).dirty));
-
-    }
-    return (!this.fieldAsFormArray().get([position]).valid
-      && (edit || this.fieldAsFormArray().get([position]).dirty));
-  }
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Field) {
@@ -85,9 +76,21 @@ export class VocabularyFieldComponent implements OnInit {
     });
   }
 
+
   /** other stuff--> **/
   unsavedChangesPrompt() {
     this.hasChanges.emit(true);
+  }
+
+  enableDisableField(value: boolean) {
+    if (!value) {
+      this.formControl.disable();
+      this.formControl.reset();
+      this.hideFields = true;
+    } else {
+      this.formControl.enable();
+      this.hideFields = false;
+    }
   }
 
   timeOut(ms: number) {

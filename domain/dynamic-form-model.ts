@@ -1,22 +1,14 @@
 import BitSet from 'bitset/bitset';
 
-export class Group {
-  id: string;
-  name: string;
-  required: boolean;
-  order: number;
-
-  constructor() {
-    this.id = '';
-    this.name = 'Untitled Group';
-    this.required = false;
-    this.order = 0;
-  }
-}
-
 export class Required {
   topLevel: number;
   total: number;
+
+
+  constructor() {
+    this.topLevel = 0;
+    this.total = 0;
+  }
 }
 
 export class Dependent {
@@ -44,32 +36,57 @@ export class Form {
   affects: Dependent[];
   vocabulary: string;
   group: string;
-  description: string;
-  suggestion: string;
+  description: StyledText;
+  suggestion: StyledText;
   placeholder: string;
   mandatory: boolean;
   immutable: boolean;
-  order: number;
-  visible: boolean;
+  display: Display;
 
   constructor() {
     this.dependsOn = null;
     this.affects = null;
     this.vocabulary = null;
     this.group = '';
-    this.description = '';
-    this.suggestion = '';
+    this.description = new StyledText();
+    this.suggestion = new StyledText();
     this.placeholder = '';
     this.mandatory = false;
     this.immutable = false;
-    this.order = 0;
-    this.visible = true;
+    this.display = new Display();
   }
 }
 
 export class Display {
-  placement: string;
+  hasBorder: boolean;
   order: number;
+  placement: string;
+  visible: boolean;
+  cssClasses: string;
+  style: string;
+
+  constructor() {
+    this.hasBorder = false;
+    this.order = 0;
+    this.placement = '';
+    this.cssClasses = '';
+    this.style = '';
+    this.visible = true;
+  }
+}
+
+export class StyledText {
+  cssClasses: string;
+  style: string;
+  text: string;
+  showLess: boolean;
+
+  constructor() {
+    this.cssClasses = '';
+    this.style = '';
+    this.text = '';
+    this.showLess = false;
+  }
 }
 
 export class Field {
@@ -77,41 +94,77 @@ export class Field {
   name: string;
   parentId: string;
   parent: string;
-  label: string;
+  label: StyledText;
   accessPath: string;
   typeInfo: TypeInfo;
   includedInSnippet: boolean;
   form: Form;
   display: Display;
+  subFields: Field[];
 
   constructor() {
     this.id = '';
     this.name = '';
     this.parentId = '';
     this.parent = '';
-    this.label = '';
+    this.label = new StyledText();
     this.accessPath = '';
     this.typeInfo = new TypeInfo()
     this.includedInSnippet = false;
     this.form = new Form();
     this.display = new Display();
+    this.subFields = [];
   }
 }
 
-export class Fields {
-  field: Field;
-  subFieldGroups: Fields[];
+export class Chapter {
+  description: string;
+  id: string;
+  name: string;
+  order: number;
+  sections: GroupedFields[];
+  subType: string;
 
   constructor() {
-    this.field = new Field();
-    this.subFieldGroups = null;
+    this.id = null;
+    this.name = '';
+    this.description = null;
+    this.sections = [];
+    this.order = 0;
   }
 }
 
-export class FormModel {
-  group: Group;
-  fields: Fields[];
+export class GroupedFields {
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  fields: Field[];
   required: Required;
+
+
+  constructor() {
+    this.id = '';
+    this.name = '';
+    this.description = '';
+    this.order = 0;
+    this.fields = [];
+    this.required = new Required();
+  }
+}
+
+export class Model {
+  id: string;
+  name: string;
+  description: string;
+  notice: string;
+  type: string;
+  subType: string;
+  creationDate: string;
+  createdBy: string;
+  modifiedBy: string;
+  chapters: Chapter[];
+  locked: boolean;
 }
 
 export class UiVocabulary {
@@ -144,6 +197,6 @@ export class Tabs {
 }
 
 export class HandleBitSet {
-  field: Fields;
+  field: Field;
   position: number;
 }

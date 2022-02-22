@@ -229,7 +229,6 @@ export class SearchComponent implements OnInit {
     let categoryIndex = 0;
     for (const urlParameter of this.urlParameters) {
       if (urlParameter.key === category) {
-        console.log(urlParameter);
         this.urlParameters.splice(categoryIndex, 1);
       }
       categoryIndex++;

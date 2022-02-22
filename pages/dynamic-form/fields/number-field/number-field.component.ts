@@ -1,19 +1,18 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
+
 @Component({
-  selector: 'app-vocabulary-field',
-  templateUrl: './vocabulary-field.component.html',
-  styleUrls: ['./vocabulary-field.component.scss']
+  selector: 'app-number-field',
+  templateUrl: './number-field.component.html',
+  styles: ['.clear-style { height: 0 !important;}']
 })
 
-export class VocabularyFieldComponent implements OnInit {
+export class NumberFieldComponent implements OnInit {
   @Input() fieldData: Field;
-  @Input() vocabularies: Map<string, string[]>;
-  @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
 
@@ -23,6 +22,7 @@ export class VocabularyFieldComponent implements OnInit {
 
   formControl!: FormControl;
   form!: FormGroup;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
   }
@@ -34,9 +34,15 @@ export class VocabularyFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
-    // console.log(this.vocabularies[this.fieldData.typeInfo.vocabulary]);
-    // console.log(this.fieldData.name);
-    // console.log(this.formControl);
+
+    if (this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
   }
 
   /** Handle Arrays --> **/
@@ -48,8 +54,8 @@ export class VocabularyFieldComponent implements OnInit {
   push(field: string, required: boolean, type: string) {
     switch (type) {
       case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]))
-          : new FormControl('', URLValidator));
+        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
+          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
         break;
       default:
         this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
@@ -75,14 +81,13 @@ export class VocabularyFieldComponent implements OnInit {
     return (!this.fieldAsFormArray().get([position]).valid
       && (edit || this.fieldAsFormArray().get([position]).dirty));
   }
+
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Field) {
-    this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
-      if (fieldData.form.mandatory) {
-        this.handleBitSets.emit(fieldData);
-      }
-    });
+    if (fieldData.form.mandatory) {
+      this.handleBitSets.emit(fieldData);
+    }
   }
 
   /** other stuff--> **/
@@ -90,8 +95,20 @@ export class VocabularyFieldComponent implements OnInit {
     this.hasChanges.emit(true);
   }
 
-  timeOut(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  enableDisableField(value) {
+    // console.log(value);
+    if (value === true || value === 'Other, please specify') {
+      this.formControl.enable();
+      this.hideField = false;
+
+    } else {
+      this.formControl.disable();
+      this.formControl.reset();
+      this.hideField = true;
+      // maybe add this if the remaining empty fields are a problem
+      // (this.formControl as unknown as FormArray).clear();
+
+    }
   }
 
 }

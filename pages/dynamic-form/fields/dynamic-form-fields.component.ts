@@ -1,26 +1,24 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
-import {Fields, HandleBitSet, UiVocabulary} from '../../domain/dynamic-form-model';
-import {environment} from '../../../environments/environment';
-import {urlAsyncValidator, URLValidator} from '../../shared/validators/generic.validator';
-import {FormControlService} from "../../services/form-control.service";
+import {Field, HandleBitSet, UiVocabulary} from '../../../domain/dynamic-form-model';
+import {urlAsyncValidator, URLValidator} from '../../../shared/validators/generic.validator';
+import {FormControlService} from "../../../services/form-control.service";
 
 @Component({
   selector: 'app-field',
   templateUrl: './dynamic-form-fields.component.html'
 })
 export class DynamicFormFieldsComponent implements OnInit {
-  @Input() fieldData: Fields;
+  @Input() fieldData: Field;
   @Input() form: FormGroup;
   @Input() vocabularies: Map<string, string[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
 
-  @Output() handleBitSets = new EventEmitter<Fields>();
+  @Output() hasChanges = new EventEmitter<boolean>();
+  @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
-
-  hasChanges = false;
 
 
   constructor(private formControlService: FormControlService) { }
@@ -67,32 +65,32 @@ export class DynamicFormFieldsComponent implements OnInit {
     this.fieldAsFormArray(field).removeAt(i);
   }
 
-  pushComposite(field: string, subFields: Fields[]) {
+  pushComposite(field: string, subFields: Field[]) {
     const group: any = {};
     subFields.forEach(subField => {
-      if (subField.field.typeInfo.multiplicity) {
-        group[subField.field.name] = subField.field.form.mandatory ?
+      if (subField.typeInfo.multiplicity) {
+        group[subField.name] = subField.form.mandatory ?
           new FormArray([new FormControl('', Validators.required)])
           : new FormArray([new FormControl('')]);
       } else {
-        group[subField.field.name] = subField.field.form.mandatory ? new FormControl('', Validators.required)
+        group[subField.name] = subField.form.mandatory ? new FormControl('', Validators.required)
           : new FormControl('');
       }
 
-      if (subField.field.form.dependsOn !== null) {
-        group[subField.field.name].disable();
+      if (subField.form.dependsOn !== null) {
+        group[subField.name].disable();
       }
     });
     this.fieldAsFormArray(field).push(new FormGroup(group));
   }
 
   // onCompositeChange(field: string, affects: Dependent[], index?: number) {
-  onCompositeChange(fieldData: Fields, j?: number, i?: number) {
-    // fieldData.subFieldGroups[j].field.parent, fieldData.subFieldGroups[j].field.form.affects
-    if (fieldData.subFieldGroups[j].field.form.affects !== null ) {
-      fieldData.subFieldGroups[j].field.form.affects.forEach( f => {
-        this.fieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).reset();
-        this.fieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).enable();
+  onCompositeChange(fieldData: Field, j?: number, i?: number) {
+    // fieldData.subFields[j].parent, fieldData.subFields[j].form.affects
+    if (fieldData.subFields[j].form.affects !== null ) {
+      fieldData.subFields[j].form.affects.forEach(f => {
+        this.fieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).reset();
+        this.fieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).enable();
         // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
       });
     }
@@ -122,11 +120,11 @@ export class DynamicFormFieldsComponent implements OnInit {
 
   /** Return Vocabulary items for composite fields--> **/
 
-  getCompositeVocabularyItems(fieldData: Fields, j: number, i?: number) {
-    if (fieldData.subFieldGroups[j].field.form.dependsOn !== null) {
-      return this.subVocabularies[this.fieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(fieldData.subFieldGroups[j].field.form.dependsOn.name).value];
+  getCompositeVocabularyItems(fieldData: Field, j: number, i?: number) {
+    if (fieldData.subFields[j].form.dependsOn !== null) {
+      return this.subVocabularies[this.fieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(fieldData.subFields[j].form.dependsOn.name).value];
     } else {
-      return this.vocabularies[fieldData.subFieldGroups[j].field.form.vocabulary];
+      return this.vocabularies[fieldData.subFields[j].form.vocabulary];
     }
   }
 
@@ -134,16 +132,16 @@ export class DynamicFormFieldsComponent implements OnInit {
 
   /** Bitsets--> **/
 
-  updateBitSet(fieldData: Fields) {
+  updateBitSet(fieldData: Field) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
-      if (fieldData.field.form.mandatory) {
+      if (fieldData.form.mandatory) {
         this.handleBitSets.emit(fieldData);
       }
     });
   }
 
-  updateBitSetOfComposite(fieldData: Fields, position: number) {
-    if (fieldData.field.form.mandatory) {
+  updateBitSetOfComposite(fieldData: Field, position: number) {
+    if (fieldData.form.mandatory) {
       let tmp = new HandleBitSet();
       tmp.field = fieldData;
       tmp.position = position;
@@ -155,12 +153,12 @@ export class DynamicFormFieldsComponent implements OnInit {
     this.handleBitSetsOfComposite.emit(data);
   }
 
-  handleBitsetOfChildren(data: Fields) {
+  handleBitsetOfChildren(data: Field) {
     this.handleBitSets.emit(data);
   }
 
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    this.hasChanges.emit(true);
   }
 
   timeOut(ms: number) {

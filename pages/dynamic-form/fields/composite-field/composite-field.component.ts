@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, Fields, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
@@ -8,29 +8,29 @@ import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from 
 })
 
 export class CompositeFieldComponent implements OnInit {
-  @Input() fieldData: Fields;
+  @Input() fieldData: Field;
   @Input() vocabularies: Map<string, string[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
 
-  @Output() handleBitSets = new EventEmitter<Fields>();
+  @Output() hasChanges = new EventEmitter<boolean>();
+  @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   form: FormGroup;
-  hasChanges = false;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
 
   ngOnInit() {
-    // console.log(this.fieldData.field.name);
+    // console.log(this.fieldData.name);
     if (this.position !== null) {
       // console.log(this.rootFormGroup.control.controls[this.position]);
-      // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.field.name));
-      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.field.name) as FormGroup;
+      // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.name));
+      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as FormGroup;
     } else {
-      this.form = this.rootFormGroup.control.get(this.fieldData.field.name) as FormGroup;
+      this.form = this.rootFormGroup.control.get(this.fieldData.name) as FormGroup;
       // console.log(this.form);
     }
     // console.log(this.form);
@@ -49,25 +49,23 @@ export class CompositeFieldComponent implements OnInit {
     this.fieldAsFormArray().removeAt(i);
   }
 
-  pushComposite(subFields: Fields[]) {
+  pushComposite(subFields: Field[]) {
     this.fieldAsFormArray().push(new FormGroup(this.createCompositeField(subFields)));
   }
 
-  createCompositeField(subFields: Fields[]) {
+  createCompositeField(subFields: Field[]) {
     const group: any = {};
     subFields.forEach(subField => {
-      if (subField.field.typeInfo.type === 'composite') {
-        if (subField.field.typeInfo.multiplicity) {
-          group[subField.field.name] = subField.field.form.mandatory ? new FormArray([], Validators.required)
+      if (subField.typeInfo.type === 'composite') {
+        if (subField.typeInfo.multiplicity) {
+          group[subField.name] = subField.form.mandatory ? new FormArray([], Validators.required)
             : new FormArray([]);
-          console.log(group);
-          group[subField.field.name].push(new FormGroup(this.createCompositeField(subField.subFieldGroups)));
-          console.log(group);
+          group[subField.name].push(new FormGroup(this.createCompositeField(subField.subFields)));
         } else {
-          group[subField.field.name] = new FormGroup(this.createCompositeField(subField.subFieldGroups))
+          group[subField.name] = new FormGroup(this.createCompositeField(subField.subFields))
         }
       } else {
-        group[subField.field.name] = subField.field.form.mandatory ? new FormControl('', Validators.required)
+        group[subField.name] = subField.form.mandatory ? new FormControl('', Validators.required)
             : new FormControl('');
       }
     });
@@ -75,12 +73,12 @@ export class CompositeFieldComponent implements OnInit {
   }
 
   // onCompositeChange(field: string, affects: Dependent[], index?: number) {
-  onCompositeChange(fieldData: Fields, j?: number, i?: number) {
-    // fieldData.subFieldGroups[j].field.parent, fieldData.subFieldGroups[j].field.form.affects
-    if (fieldData.subFieldGroups[j].field.form.affects !== null ) {
-      fieldData.subFieldGroups[j].field.form.affects.forEach( f => {
-        this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).reset();
-        this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(f.name).enable();
+  onCompositeChange(fieldData: Field, j?: number, i?: number) {
+    // fieldData.subFields[j].parent, fieldData.subFields[j].form.affects
+    if (fieldData.subFields[j].form.affects !== null ) {
+      fieldData.subFields[j].form.affects.forEach(f => {
+        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).reset();
+        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).enable();
         // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
       });
     }
@@ -113,8 +111,8 @@ export class CompositeFieldComponent implements OnInit {
     // console.log(fieldData.id);
     // console.log(fieldData.typeInfo.vocabulary);
     // console.log(this.vocabularies);
-    // if (fieldData.subFieldGroups[j].field.form.dependsOn !== null) {
-    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFieldGroups[j].field.parent).controls[i].get(fieldData.subFieldGroups[j].field.form.dependsOn.name).value];
+    // if (fieldData.subFields[j].form.dependsOn !== null) {
+    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(fieldData.subFields[j].form.dependsOn.name).value];
     // } else {
     // console.log(this.vocabularies[fieldData.typeInfo.vocabulary]);
       return this.vocabularies[fieldData.typeInfo.vocabulary];
@@ -123,16 +121,16 @@ export class CompositeFieldComponent implements OnInit {
 
   /** <--Return Vocabulary items for composite fields **/
 
-  updateBitSet(fieldData: Fields) {
+  updateBitSet(fieldData: Field) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
-      if (fieldData.field.form.mandatory) {
+      if (fieldData.form.mandatory) {
         this.handleBitSets.emit(fieldData);
       }
     });
   }
 
-  updateBitSetOfComposite(fieldData: Fields, position: number) {
-    if (fieldData.field.form.mandatory) {
+  updateBitSetOfComposite(fieldData: Field, position: number) {
+    if (fieldData.form.mandatory) {
       let tmp = new HandleBitSet();
       tmp.field = fieldData;
       tmp.position = position;
@@ -144,13 +142,13 @@ export class CompositeFieldComponent implements OnInit {
     this.handleBitSetsOfComposite.emit(data);
   }
 
-  handleBitsetOfChildren(data: Fields) {
+  handleBitsetOfChildren(data: Field) {
     this.handleBitSets.emit(data);
   }
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    this.hasChanges = true;
+    this.hasChanges.emit(true);
   }
 
   timeOut(ms: number) {
