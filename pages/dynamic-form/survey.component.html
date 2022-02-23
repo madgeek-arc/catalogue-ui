@@ -27,7 +27,9 @@
 
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
+    {{sortedSurveyAnswers | json}}
     <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">
+      {{i}}
       <app-chapter-edit [answerValue]="answer.value" [form]="getFormGroup(i)" [readonly] = readonly [validate] = validate
                         [tabsHeader]="tabsHeader" [chapter]="surveyModel.chapters[i]" [fields]="surveyModel.chapters[i].sections"
                         [surveyAnswerId]="this.surveyAnswers.id" (chapterHasChanges)="setChapterChangesMap($event)">
@@ -40,7 +42,7 @@
   <i class="loader-big" aria-hidden="true"></i>
 </ng-template>
 
-<!--<pre *ngIf="form">{{form.getRawValue() | json}}</pre>-->
+<pre *ngIf="form">{{form.getRawValue() | json}}</pre>
 
 <!-- Validation modal -->
 <div id="validation-modal" uk-modal="esc-close: false; bg-close: false">

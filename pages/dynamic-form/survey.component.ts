@@ -75,7 +75,9 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.surveyModel = res[1];
           this.chapters = [];
           for (const model of this.surveyModel.chapters) {
+            console.log('model id: ' + model.id);
             for (const surveyAnswer in this.surveyAnswers.chapterAnswers) {
+              console.log(surveyAnswer);
               if (model.id === this.surveyAnswers.chapterAnswers[surveyAnswer].chapterId) {
                 this.chapters.push(model);
                 this.chapterChangeMap.set(model.id, false);
@@ -92,6 +94,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         () => {
           for (let i = 0; i < this.surveyModel.chapters.length; i++) {
             this.form.addControl(this.surveyModel.chapters[i].name, this.formControlService.toFormGroup(this.surveyModel.chapters[i].sections, true));
+            console.log(this.surveyModel.chapters[0].sections);
             this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.chapters[i].sections)
             this.form.get(this.surveyModel.chapters[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
@@ -200,7 +203,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         if(form[key].hasOwnProperty(formElementKey)) {
           if(Array.isArray(form[key][formElementKey])) {
             // console.log(form[key][formElementKey]);
-            // console.log(formElementKey);
+            console.log(formElementKey);
             let formFieldData = this.getModelData(fields, formElementKey);
             let i = 1;
             if (formFieldData.typeInfo.type === 'composite') { // In order for the fields to be enabled
@@ -247,6 +250,12 @@ export class SurveyComponent implements OnInit, OnChanges {
       for (let j = 0; j < model[i].fields.length; j++) {
         if(model[i].fields[j].name === name) {
           return model[i].fields[j];
+        } else if (model[i].fields[j].subFields.length > 0) {
+          for (let k = 0; k < model[i].fields[j].subFields.length; k++) {
+            if (model[i].fields[j].subFields[k].name === name) {
+              return model[i].fields[j].subFields[k];
+            }
+          }
         }
       }
     }
@@ -254,6 +263,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   popComposite(group: string, field: string) {
+    console.log(group)
+    console.log(field)
     let tmpArr = this.form.get(group).get(field) as FormArray;
     tmpArr.removeAt(0);
   }

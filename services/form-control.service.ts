@@ -38,7 +38,7 @@ export class FormControlService implements OnInit{
   toFormGroup(form: GroupedFields[], checkImmutable: boolean) {
     const group: any = {};
     form.forEach(groups => {
-      groups.fields.sort((a, b) => a.form.display.order - b.form.display.order)
+      groups.fields.sort((a, b) => a.form.display?.order - b.form.display?.order)
       groups.required = new Required();
       groups.fields.forEach(formField => {
         if (formField.form.mandatory) {
@@ -94,7 +94,7 @@ export class FormControlService implements OnInit{
   createCompositeField(formField: Field) {
     const subGroup: any = {};
     // console.log(formField);
-    formField.subFields?.sort((a, b) => a.form.display.order - b.form.display.order)
+    formField.subFields?.sort((a, b) => a.form.display?.order - b.form.display?.order)
     formField.subFields?.forEach(subField => {
       if (subField.typeInfo.type === 'composite' || subField.typeInfo.type === 'radioGrid') {
         if (subField.typeInfo.multiplicity) {
