@@ -28,6 +28,7 @@ export class ChapterEditComponent implements OnChanges{
   @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
+  @Input() vocabularies: Map<string, string[]> = null;
   @Input() chapter: Chapter = null;
   @Input() fields: GroupedFields[] = null;
 
@@ -35,7 +36,6 @@ export class ChapterEditComponent implements OnChanges{
 
   @ViewChild('sections') sections: ElementRef<HTMLElement>;
 
-  vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = true;
 

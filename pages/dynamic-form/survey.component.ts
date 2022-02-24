@@ -86,6 +86,7 @@ export class SurveyComponent implements OnInit, OnChanges {
               }
             }
           }
+          console.log(this.sortedSurveyAnswers);
           this.currentChapter = this.surveyModel.chapters[0];
         },
         error => {
@@ -94,7 +95,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         () => {
           for (let i = 0; i < this.surveyModel.chapters.length; i++) {
             this.form.addControl(this.surveyModel.chapters[i].name, this.formControlService.toFormGroup(this.surveyModel.chapters[i].sections, true));
-            console.log(this.surveyModel.chapters[0].sections);
+            console.log(this.surveyModel.chapters[i].sections);
             this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.chapters[i].sections)
             this.form.get(this.surveyModel.chapters[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
@@ -206,39 +207,39 @@ export class SurveyComponent implements OnInit, OnChanges {
             console.log(formElementKey);
             let formFieldData = this.getModelData(fields, formElementKey);
             let i = 1;
-            if (formFieldData.typeInfo.type === 'composite') { // In order for the fields to be enabled
-              this.popComposite(key, formElementKey)  // remove it first
-              i = 0;  // increase the loops
-            }
+            // if (formFieldData.typeInfo.type === 'composite') { // In order for the fields to be enabled
+            //   this.popComposite(key, formElementKey)  // remove it first
+            //   i = 0;  // increase the loops
+            // }
             let count = 0;
-            for (i; i < form[key][formElementKey].length; i++) {
-              if (formFieldData.typeInfo.type === 'composite') {
-                this.pushComposite(key, formElementKey, formFieldData.subFields);
-                // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
-                for (let formSubElementName in form[key][formElementKey][count]) {
-                  if(form[key][formElementKey][count].hasOwnProperty(formSubElementName)) {
-                    if(Array.isArray(form[key][formElementKey][count][formSubElementName])) {
-                      // console.log('Key: ' + key + ' formElementKey: ' + formElementKey + ' count: ' + count + ' formSubElementName: ' + formSubElementName);
-                      const control = <FormArray>this.form.get([key,formElementKey,count,formSubElementName]);
-                      // console.log(control);
-                      let required = false;
-                      for (let j = 0; j < formFieldData.subFields.length; j++) {
-                        if (formFieldData.subFields[j].name === formSubElementName) {
-                          required = formFieldData.subFields[j].form.mandatory;
-                        }
-                      }
-                      for (let j = 0; j < form[key][formElementKey][count][formSubElementName].length - 1; j++) {
-                        control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
-                      }
-                    }
-                  }
-                }
-                // }
-                count++;
-              } else {
-                this.push(key, formElementKey, formFieldData.form.mandatory);
-              }
-            }
+            // for (i; i < form[key][formElementKey].length; i++) {
+            //   if (formFieldData.typeInfo.type === 'composite') {
+            //     this.pushComposite(key, formElementKey, formFieldData.subFields);
+            //     // for (let formSubElementKey in form[key][formElementKey]) { // Special case when composite contains array
+            //     for (let formSubElementName in form[key][formElementKey][count]) {
+            //       if(form[key][formElementKey][count].hasOwnProperty(formSubElementName)) {
+            //         if(Array.isArray(form[key][formElementKey][count][formSubElementName])) {
+            //           // console.log('Key: ' + key + ' formElementKey: ' + formElementKey + ' count: ' + count + ' formSubElementName: ' + formSubElementName);
+            //           const control = <FormArray>this.form.get([key,formElementKey,count,formSubElementName]);
+            //           // console.log(control);
+            //           let required = false;
+            //           for (let j = 0; j < formFieldData.subFields.length; j++) {
+            //             if (formFieldData.subFields[j].name === formSubElementName) {
+            //               required = formFieldData.subFields[j].form.mandatory;
+            //             }
+            //           }
+            //           for (let j = 0; j < form[key][formElementKey][count][formSubElementName].length - 1; j++) {
+            //             control.push(required ? new FormControl('', Validators.required) : new FormControl(''));
+            //           }
+            //         }
+            //       }
+            //     }
+            //     // }
+            //     count++;
+            //   } else {
+            //     this.push(key, formElementKey, formFieldData.form.mandatory);
+            //   }
+            // }
           }
         }
       }
@@ -263,8 +264,10 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   popComposite(group: string, field: string) {
-    console.log(group)
-    console.log(field)
+    // console.log(this.form.value);
+    // console.log(group)
+    // console.log(this.form.get(group));
+    // console.log(field)
     let tmpArr = this.form.get(group).get(field) as FormArray;
     tmpArr.removeAt(0);
   }
