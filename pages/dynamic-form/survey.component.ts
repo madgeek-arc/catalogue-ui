@@ -68,7 +68,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
       zip(
         this.formControlService.getUiVocabularies(),
-        this.formControlService.getFormModel(this.surveyAnswers.surveyId)
+        this.formControlService.getFormModel(this.surveyAnswers.modelId)
       ).subscribe(res => {
           this.vocabularies = res[0];
           res[1].chapters.sort((a, b) => a.order - b.order);
