@@ -138,6 +138,7 @@ export class SearchComponent implements OnInit {
             for (const parameterValue of urlParameter.values) {
               for (const facetValue of facet.values) {
                 if (parameterValue === facetValue.value) {
+                  this[facet.field+'Filters'].push(facetValue.value);
                   facetValue.isChecked = true;
                 }
               }
