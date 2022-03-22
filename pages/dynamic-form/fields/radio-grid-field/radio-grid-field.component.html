@@ -9,9 +9,10 @@
     <tbody>
     <tr *ngFor="let row of fieldData.subFields">
       <td class="">
-        {{row.label.text}}
+        {{row.label.text}}<br>
+        {{row.form.description.text}}
       </td>
-      <td *ngFor="let value of fieldData.typeInfo.values">
+      <td *ngFor="let value of fieldData.typeInfo.values" class="uk-text-center">
         <input class="uk-radio uk-margin-small-right" type="radio"
                [formControlName]="row.name" [name]="row.name" [value]="value">
       </td>
