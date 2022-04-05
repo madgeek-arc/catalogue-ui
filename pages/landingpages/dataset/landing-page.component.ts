@@ -6,7 +6,7 @@ import {NavigationService} from "../../../../app/services/navigation.service";
 
 @Component({
   selector: 'app-dataset',
-  templateUrl: 'dataset-landing-page.component.ts.html',
+  templateUrl: 'dataset-landing-page.component.html',
   providers: [LandingPageService]
 })
 
@@ -25,7 +25,7 @@ export class LandingPageComponent implements OnInit {
       this.landingPageService.getDataset(params['id']).subscribe(
         res => {
           this.dataset = res;
-          console.log(this.dataset);
+          // console.log(this.dataset);
           this.landingPageService.searchDatasetInstance('dataset_instance', this.dataset['name']).subscribe(
             res => {
               this.instances = res['results'];

@@ -14,10 +14,10 @@ export class LandingPageService {
     return this.http.get(this.base + `/items/${id}?resourceType=dataset_type`);
   }
 
-  searchDatasetInstance(resourceType: string, query: string, ) {
+  searchDatasetInstance(resourceType: string, datasetName: string, ) {
     let params = new HttpParams();
     params = params.append('resourceType', resourceType);
-    params = params.append('query', query);
+    params = params.append('type', datasetName);
 
     return this.http.get(this.base + '/items', {params});
 
