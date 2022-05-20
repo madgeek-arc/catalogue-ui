@@ -18,6 +18,7 @@ export class LargeTextComponent implements OnInit {
 
   formControl!: FormControl;
   form!: FormGroup;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -31,7 +32,16 @@ export class LargeTextComponent implements OnInit {
     // console.log(this.form);
 
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
-    // console.log(this.formControl);s
+    // console.log(this.formControl);
+
+    if(this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
   }
 
   /** check fields validity--> **/
@@ -58,6 +68,22 @@ export class LargeTextComponent implements OnInit {
 
   timeOut(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  enableDisableField(value) {
+    // console.log(value);
+    if (value === true || value === 'Other, please specify') {
+      this.formControl.enable();
+      this.hideField = false;
+
+    } else {
+      this.formControl.disable();
+      this.formControl.reset();
+      this.hideField = true;
+      // maybe add this if the remaining empty fields are a problem
+      // (this.formControl as unknown as FormArray).clear();
+
+    }
   }
 
 }
