@@ -3,7 +3,7 @@ import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 
 import {FormControlService} from '../../services/form-control.service';
 import {
-  Chapter,
+  Section,
   Field,
   GroupedFields,
   HandleBitSet,
@@ -30,10 +30,10 @@ export class ChapterComponent implements OnInit {
   @Input() surveyId: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
-  @Input() chapter: Chapter = null;
+  @Input() chapter: Section = null;
   @Input() fields: GroupedFields[] = null;
 
-  chapters: Chapter[] = [];
+  chapters: Section[] = [];
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
@@ -133,7 +133,7 @@ export class ChapterComponent implements OnInit {
     // tmpForm['extras'] = this.formControlService.toFormGroup(this.fields, false);
     // this.form = this.fb.group(tmpForm);
     for (let i  = 0; i < this.chapters.length; i++) {
-      this.form[i] = this.formControlService.toFormGroup(this.chapters[0].sections, true);
+      this.form[i] = this.formControlService.toFormGroup(this.chapters[0].subSections, true);
     }
 
     /** Initialize tab bitsets **/

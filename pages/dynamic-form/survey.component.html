@@ -7,7 +7,7 @@
 </div>
 
 <!--Chapter Selection-->
-<div *ngIf="surveyModel?.chapters.length > 0" [ngClass]="{'uk-display-none': surveyModel.chapters.length === 1}">
+<div *ngIf="surveyModel?.sections.length > 0" [ngClass]="{'uk-display-none': surveyModel.sections.length === 1}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
     <li class="" *ngFor="let chapter of chapters">
       <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}
@@ -29,8 +29,8 @@
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">
       <app-chapter-edit [answerValue]="answer.value" [form]="getFormGroup(i)" [readonly] = readonly [validate] = validate
-                        [tabsHeader]="tabsHeader" [chapter]="surveyModel.chapters[i]"
-                        [fields]="surveyModel.chapters[i].sections" [vocabularies]="vocabularies"
+                        [tabsHeader]="tabsHeader" [chapter]="surveyModel.sections[i]"
+                        [fields]="surveyModel.sections[i].subSections" [vocabularies]="vocabularies"
                         [surveyAnswerId]="this.surveyAnswers.id" (chapterHasChanges)="setChapterChangesMap($event)">
       </app-chapter-edit>
     </li>

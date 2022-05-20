@@ -117,19 +117,20 @@ export class Field {
   }
 }
 
-export class Chapter {
-  description: string;
+export class Section {
   id: string;
   name: string;
+  description: string;
   order: number;
-  sections: GroupedFields[];
-  subType: string;
+  subSections: Section[];
+  fields: Field[];
+  required: Required;
 
   constructor() {
     this.id = null;
     this.name = '';
     this.description = null;
-    this.sections = [];
+    this.subSections = [];
     this.order = 0;
   }
 }
@@ -163,7 +164,7 @@ export class Model {
   creationDate: string;
   createdBy: string;
   modifiedBy: string;
-  chapters: Chapter[];
+  sections: Section[];
   locked: boolean;
 }
 

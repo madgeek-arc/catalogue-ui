@@ -3,7 +3,7 @@ import {FormControlService} from '../../services/form-control.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
-  Chapter,
+  Section,
   Field,
   GroupedFields,
   HandleBitSet,
@@ -29,7 +29,7 @@ export class ChapterEditComponent implements OnChanges{
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
   @Input() vocabularies: Map<string, string[]> = null;
-  @Input() chapter: Chapter = null;
+  @Input() chapter: Section = null;
   @Input() fields: GroupedFields[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();

@@ -4,9 +4,9 @@ import {zip} from "rxjs/internal/observable/zip";
 import {FormControlService} from "../../services/form-control.service";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {SurveyService} from "../../../app/services/survey.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Route, Router} from "@angular/router";
 import {
-  Chapter,
+  Section,
   Field,
   GroupedFields,
   Model,
@@ -30,10 +30,10 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() tabsHeader : string = null;
 
   surveyModel: Model;
-  chapters: Chapter[] = [];
+  chapters: Section[] = [];
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
-  currentChapter: Chapter = null;
-  chapterForSubmission: Chapter = null;
+  currentChapter: Section = null;
+  chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
   vocabularies: Map<string, string[]>;
   subVocabularies: UiVocabulary[] = [];
@@ -49,7 +49,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   form: FormGroup;
 
   constructor(private formControlService: FormControlService, private fb: FormBuilder,
-              private router: Router, private surveyService: SurveyService) {
+              private router: Router, private surveyService: SurveyService,
+              private route: ActivatedRoute) {
     this.form = this.fb.group({});
   }
 
@@ -71,10 +72,10 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.formControlService.getFormModel(this.surveyAnswers.modelId)
       ).subscribe(res => {
           this.vocabularies = res[0];
-          res[1].chapters.sort((a, b) => a.order - b.order);
+          res[1].sections.sort((a, b) => a.order - b.order);
           this.surveyModel = res[1];
           this.chapters = [];
-          for (const model of this.surveyModel.chapters) {
+          for (const model of this.surveyModel.sections) {
             for (const surveyAnswer in this.surveyAnswers.chapterAnswers) {
               if (model.id === this.surveyAnswers.chapterAnswers[surveyAnswer].chapterId) {
                 this.chapters.push(model);
@@ -84,16 +85,16 @@ export class SurveyComponent implements OnInit, OnChanges {
               }
             }
           }
-          this.currentChapter = this.surveyModel.chapters[0];
+          this.currentChapter = this.surveyModel.sections[0];
         },
         error => {
           this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
         },
         () => {
-          for (let i = 0; i < this.surveyModel.chapters.length; i++) {
-            this.form.addControl(this.surveyModel.chapters[i].name, this.formControlService.toFormGroup(this.surveyModel.chapters[i].sections, true));
-            this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.chapters[i].sections)
-            this.form.get(this.surveyModel.chapters[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
+          for (let i = 0; i < this.surveyModel.sections.length; i++) {
+            this.form.addControl(this.surveyModel.sections[i].name, this.formControlService.toFormGroup(this.surveyModel.sections[i].subSections, true));
+            this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.sections[i].subSections)
+            this.form.get(this.surveyModel.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
           }
           if (this.surveyAnswers.validated) {
             this.readonly = true;
@@ -109,6 +110,17 @@ export class SurveyComponent implements OnInit, OnChanges {
           }, 0);
           this.ready = true;
         });
+    }
+    else { // TODO: remove later
+      this.route.params.subscribe(
+        params => {
+          this.formControlService.getFormModel(params['datasetTypeId']).subscribe(
+            res => {this.surveyModel = res},
+            error => {console.log(error)},
+            () => {this.ready = true}
+          );
+        }
+      );
     }
   }
 
@@ -173,7 +185,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     );
   }
 
-  showUnsavedChangesPrompt(chapter: Chapter) {
+  showUnsavedChangesPrompt(chapter: Section) {
     if (this.chapterChangeMap.get(this.currentChapter.id)) {
       this.chapterForSubmission = this.currentChapter;
       UIkit.modal('#unsaved-changes-modal').show();
@@ -182,7 +194,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   getFormGroup(index: number): FormGroup {
-    return this.form.get(this.surveyModel.chapters[index].name) as FormGroup;
+    return this.form.get(this.surveyModel.sections[index].name) as FormGroup;
   }
 
   setChapterChangesMap(chapterId: string[]) {
@@ -194,7 +206,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   /** create additional fields for arrays if needed --> **/
-  prepareForm(form: Object, fields: GroupedFields[]) {
+  prepareForm(form: Object, fields: Section[]) {
     console.log(form);
     for (const [key, value] of Object.entries(form)) {
       console.log(`${key}: ${value}`);

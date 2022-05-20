@@ -13,7 +13,7 @@
       </div>
 <!--      <ul [attr.uk-tab]="'connect: #section-tabs-'+chapter.chapter.id">-->
       <ul uk-tab="connect: #section-tabs; animation: uk-animation-fade">
-        <li *ngFor="let section of chapter.sections; let j=index" class="uk-margin-small uk-margin-small-left uk-width-1-1">
+        <li *ngFor="let section of chapter.subSections; let j=index" class="uk-margin-small uk-margin-small-left uk-width-1-1">
           <span (click)="emitSelection('section')">
             {{(i+1) + '.' + (j+1) + ' ' + (section.name !== '' ? section.name : 'Untitled section')}}
           </span>

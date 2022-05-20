@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Chapter, Field, GroupedFields} from "../../../domain/dynamic-form-model";
+import {Section, Field, GroupedFields} from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-side-menu',
@@ -8,7 +8,7 @@ import {Chapter, Field, GroupedFields} from "../../../domain/dynamic-form-model"
 
 export class SideMenuComponent implements OnInit {
 
-  @Input() chapterModel: Chapter[];
+  @Input() chapterModel: Section[];
   @Output() showChapterOrSection = new EventEmitter<string>();
   // groups: Group[] = []
 
@@ -17,15 +17,15 @@ export class SideMenuComponent implements OnInit {
   }
 
   addSection(position) {
-    this.chapterModel[position].sections.push(new GroupedFields());
+    this.chapterModel[position].subSections.push(new Section());
   }
 
   addField(positionI, positionJ) {
-    this.chapterModel[positionI].sections[positionJ].fields.push(new Field());
+    this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
   }
 
   pushChapter() {
-    this.chapterModel.push(new Chapter());
+    this.chapterModel.push(new Section());
   }
 
   deleteChapter(position: number) {
