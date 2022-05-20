@@ -19,6 +19,7 @@ export class CompositeFieldComponent implements OnInit {
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   form: FormGroup;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -34,6 +35,13 @@ export class CompositeFieldComponent implements OnInit {
       // console.log(this.form);
     }
     // console.log(this.form);
+    if(this.fieldData.form.dependsOn) { // specific changes for composite field, maybe revise it
+      this.enableDisableField(this.rootFormGroup.form.get(this.fieldData.form.dependsOn.name).value);
+
+      this.rootFormGroup.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
   }
 
   /** Handle Arrays --> **/
@@ -153,5 +161,21 @@ export class CompositeFieldComponent implements OnInit {
 
   timeOut(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  enableDisableField(value) {
+    // console.log(value);
+    if (value === 'Applicable') {
+      this.form.enable();
+      this.hideField = false;
+
+    } else {
+      this.form.disable();
+      this.form.reset();
+      this.hideField = true;
+      // maybe add this if the remaining empty fields are a problem
+      // (this.formControl as unknown as FormArray).clear();
+
+    }
   }
 }
