@@ -8,7 +8,7 @@ import {
   GroupedFields,
   HandleBitSet,
   Tab, Tabs,
-  UiVocabulary
+  UiVocabulary, Model
 } from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
 import {PremiumSortPipe} from "../../shared/pipes/premium-sort.pipe";
@@ -29,8 +29,8 @@ export class ChapterEditComponent implements OnChanges{
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
   @Input() vocabularies: Map<string, string[]> = null;
-  @Input() chapter: Section = null;
-  @Input() fields: GroupedFields[] = null;
+  @Input() chapter: Model = null;
+  @Input() fields: Section[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
 
@@ -65,7 +65,9 @@ export class ChapterEditComponent implements OnChanges{
   }
 
   ngOnChanges(changes:SimpleChanges) {
-    this.ready=false
+    // remove later
+    this.initializations();
+    this.ready=true
     if (this.answerValue) {
       this.initializations();
       this.ready = true

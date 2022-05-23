@@ -117,7 +117,30 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.formControlService.getFormModel(params['datasetTypeId']).subscribe(
             res => {this.surveyModel = res},
             error => {console.log(error)},
-            () => {this.ready = true}
+            () => {
+              for (let i = 0; i < this.surveyModel.sections.length; i++) {
+                if (this.surveyModel.sections[i].subSections)
+                  this.form.addControl(this.surveyModel.sections[i].name, this.formControlService.toFormGroup(this.surveyModel.sections[i].subSections, true));
+                else {
+                  this.form.addControl(this.surveyModel.name, this.formControlService.toFormGroup(this.surveyModel.sections, true));
+                }
+                // this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.sections[i].subSections)
+                // this.form.get(this.surveyModel.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
+              }
+              // if (this.surveyAnswers.validated) {
+              //   this.readonly = true;
+              //   this.validate = false;
+              // } else if (this.validate) {
+              //   UIkit.modal('#validation-modal').show();
+              // }
+
+              // setTimeout(() => {
+              //   if (this.readonly) {
+              //     this.form.disable();
+              //   }
+              // }, 0);
+              this.ready = true
+            }
           );
         }
       );
@@ -193,8 +216,11 @@ export class SurveyComponent implements OnInit, OnChanges {
     this.currentChapter = chapter;
   }
 
-  getFormGroup(index: number): FormGroup {
-    return this.form.get(this.surveyModel.sections[index].name) as FormGroup;
+  getFormGroup(index?: number): FormGroup {
+    if (this.surveyModel.sections[0].subSections === null) {
+      return this.form.get(this.surveyModel.name) as FormGroup;
+    } else
+      return this.form.get(this.surveyModel.sections[index].name) as FormGroup;
   }
 
   setChapterChangesMap(chapterId: string[]) {

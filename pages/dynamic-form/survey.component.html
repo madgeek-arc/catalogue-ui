@@ -9,7 +9,7 @@
 <!--Chapter Selection-->
 <div *ngIf="surveyModel?.sections.length > 0" [ngClass]="{'uk-display-none': surveyModel.sections.length === 1}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
-    <li class="" *ngFor="let chapter of chapters">
+    <li class="" *ngFor="let chapter of surveyModel.sections">
       <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}
         <span *ngIf="chapterChangeMap.get(chapter.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
     </li>
@@ -27,13 +27,14 @@
 
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
-    <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">
-      <app-chapter-edit [answerValue]="answer.value" [form]="getFormGroup(i)" [readonly] = readonly [validate] = validate
-                        [tabsHeader]="tabsHeader" [chapter]="surveyModel.sections[i]"
-                        [fields]="surveyModel.sections[i].subSections" [vocabularies]="vocabularies"
-                        [surveyAnswerId]="this.surveyAnswers.id" (chapterHasChanges)="setChapterChangesMap($event)">
+<!--    <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">-->
+<!--    <li *ngFor="let answer of surveyModel.sections let i = index">-->
+      <app-chapter-edit [answerValue]="" [form]="getFormGroup()" [readonly]="readonly" [validate]="validate"
+                        [tabsHeader]="tabsHeader" [chapter]="surveyModel"
+                        [fields]="surveyModel.sections" [vocabularies]="vocabularies"
+                        [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
       </app-chapter-edit>
-    </li>
+<!--    </li>-->
   </ul>
 </div>
 

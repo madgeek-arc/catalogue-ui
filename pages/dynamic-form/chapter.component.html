@@ -61,12 +61,14 @@
                       </ul>
 
                       <div *ngIf="bitset.requiredTotal !== 0" class="requiredFields uk-text-right">*Required fields</div>
-                      <div class="uk-margin-small-top uk-flex uk-flex-center">
-                        <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)" (click)="goToTab(tabIndex-1)"
-                                [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'" >
+                      <div *ngIf="bitset?.tabs" class="uk-margin-small-top uk-flex uk-flex-center">
+                        <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
+                                (click)="goToTab(tabIndex-1)"
+                                [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'">
                           <i class="fa fa-angle-left"></i> PREVIOUS
                         </button>
-                        <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"  (click)="goToTab(tabIndex+1)"
+                        <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"
+                                (click)="goToTab(tabIndex+1)"
                                 [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-secondary' : 'uk-button-primary'">
                           NEXT <i class="fa fa-angle-right"></i>
                         </button>
@@ -93,7 +95,7 @@
                           <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
                             <li *ngFor="let group of fields">
                               <div *ngFor="let fieldsData of group.fields"
-                                   [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display.visible}">
+                                   [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
                                 <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                            [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                             (hasChanges)="unsavedChangesPrompt($event)">
