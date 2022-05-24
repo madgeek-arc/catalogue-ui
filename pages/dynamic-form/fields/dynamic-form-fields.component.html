@@ -1,6 +1,6 @@
 <ng-container *ngIf="form" [formGroup]="form">
-    {{form}}
-  <div *ngIf="fieldData.form.display?.visible">
+<!-- FIXME: remove ! from !fieldData.form.display?.visible -->
+  <div *ngIf="!fieldData.form.display?.visible">
     <div class="">
 
       <div class="uk-form-controls">

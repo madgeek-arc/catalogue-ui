@@ -7,7 +7,7 @@
 </div>
 
 <!--Chapter Selection-->
-<div *ngIf="surveyModel?.sections.length > 0" [ngClass]="{'uk-display-none': surveyModel.sections.length === 1}">
+<div *ngIf="surveyModel?.sections.length > 0" [ngClass]="{'uk-display-none': surveyModel.sections[0].fields !== null}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
     <li class="" *ngFor="let chapter of surveyModel.sections">
       <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}

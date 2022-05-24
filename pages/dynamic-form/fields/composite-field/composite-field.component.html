@@ -1,9 +1,10 @@
-<form [formGroup]="form" class="{{fieldData.form.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+<form [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
 <!--  {{fieldData.name | json}}-->
-  <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
+  <div *ngIf="fieldData.label?.text" class="uk-form-label uk-margin-bottom {{fieldData.label?.cssClasses}}"
        [attr.for]="fieldData.name" style="{{fieldData.label.style}}">
-    {{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}
+    {{fieldData.label?.text + (fieldData.form.mandatory ? ' (*)' : '')}}
   </div>
+
   <ng-container *ngIf="fieldData.form.description?.showLess; else noReadMore">
     <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
          style="{{fieldData.form.description.style}}">
@@ -11,12 +12,13 @@
     </div>
   </ng-container>
   <ng-template #noReadMore>
-    <div *ngIf="fieldData.form.description.text"
+    <div *ngIf="fieldData.form.description?.text"
          class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
          [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
       <!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
     </div>
   </ng-template>
+
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
     <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
       <div [formGroupName]="i" class="uk-margin-bottom formGroupElement uk-width-1-1 uk-display-inline-block">
@@ -90,7 +92,7 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display.hasBorder}">
+    <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
       <div *ngFor="let control of fieldData?.subFields; let j=index">
         <div class="">
           <div *ngIf="control.typeInfo.type === 'composite'">
@@ -159,7 +161,7 @@
     </div>
   </ng-template>
 
-  <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
+  <div *ngIf="fieldData.form.suggestion?.text" class="uk-margin-top">
     <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
   </div>
 

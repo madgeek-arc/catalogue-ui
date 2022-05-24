@@ -114,8 +114,14 @@ export class SurveyComponent implements OnInit, OnChanges {
     else { // TODO: remove later
       this.route.params.subscribe(
         params => {
-          this.formControlService.getFormModel(params['datasetTypeId']).subscribe(
-            res => {this.surveyModel = res},
+          zip(
+            this.formControlService.getUiVocabularies(),
+            this.formControlService.getFormModel(params['datasetTypeId'])
+          ).subscribe(
+            res => {
+              this.vocabularies = res[0];
+              this.surveyModel = res[1]
+            },
             error => {console.log(error)},
             () => {
               for (let i = 0; i < this.surveyModel.sections.length; i++) {
