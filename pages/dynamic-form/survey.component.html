@@ -28,13 +28,24 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
 <!--    <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">-->
-<!--    <li *ngFor="let answer of surveyModel.sections let i = index">-->
-      <app-chapter-edit [answerValue]="" [form]="getFormGroup()" [readonly]="readonly" [validate]="validate"
-                        [tabsHeader]="tabsHeader" [chapter]="surveyModel"
-                        [fields]="surveyModel.sections" [vocabularies]="vocabularies"
-                        [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
-      </app-chapter-edit>
-<!--    </li>-->
+    <div *ngIf="surveyModel.sections[0].fields === null else singleDepth">
+      <li *ngFor="let answer of surveyModel.sections let i = index">
+        <app-chapter-edit [answerValue]="" [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
+                          [tabsHeader]="tabsHeader" [chapter]="surveyModel"
+                          [fields]="surveyModel.sections[i].subSections" [vocabularies]="vocabularies"
+                          [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
+        </app-chapter-edit>
+      </li>
+    </div>
+    <ng-template #singleDepth>
+      <li>
+        <app-chapter-edit [answerValue]="" [form]="getFormGroup()" [readonly]="readonly" [validate]="validate"
+                          [tabsHeader]="tabsHeader" [chapter]="surveyModel"
+                          [fields]="surveyModel.sections" [vocabularies]="vocabularies"
+                          [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
+        </app-chapter-edit>
+      </li>
+    </ng-template>
   </ul>
 </div>
 

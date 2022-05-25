@@ -33,7 +33,7 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <ng-select class="uk-select uk-width-9-10 uk-margin-small" [id]="fieldData.name" [formControlName]="fieldData.name"
+    <ng-select class="uk-width-9-10 uk-margin-small" [id]="fieldData.name" [formControlName]="fieldData.name"
                (change)="updateBitSet(fieldData); unsavedChangesPrompt()"
                [ngClass]="{'uk-form-danger': checkFormValidity()}"
                [items]="fieldData.typeInfo.values ? fieldData.typeInfo.values : vocabularies[fieldData.typeInfo.vocabulary]"
