@@ -38,10 +38,10 @@
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'largeText'">
-          <app-large-text [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-          </app-large-text>
+          <app-large-text-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-large-text-field>
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'radio'">
@@ -52,23 +52,10 @@
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'richText'">
-          <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-            <!--To add multiplicity if needed-->
-          </div>
-
-          <ng-template #noMultiplicity>
-            <div class="uk-margin-medium-top uk-width-9-10">
-            <md-editor [id]="fieldData.name"
-                       [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode)}"
-                       [height]="'250px'"
-                       [mode]="'editor'"
-                       [options]="{markedjsOpt: { breaks: true }, showPreviewPanel: true, resizable: true, enablePreviewContentClick: true}"
-                       (ngModelChange)="updateBitSet(fieldData)"
-                       [formControlName]="fieldData.name">
-            </md-editor>
-            </div>
-            <div><i><small>{{fieldData.form.suggestion.text}}</small></i></div>
-          </ng-template>
+          <app-rich-text-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-rich-text-field>
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'date'">

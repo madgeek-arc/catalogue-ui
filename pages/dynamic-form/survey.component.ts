@@ -1,10 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {Survey, SurveyAnswer} from "../../../app/domain/survey";
+import {Survey, SurveyAnswer} from "../../../pages/domain/survey";
 import {zip} from "rxjs/internal/observable/zip";
 import {FormControlService} from "../../services/form-control.service";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {SurveyService} from "../../../app/services/survey.service";
-import {ActivatedRoute, Route, Router} from "@angular/router";
+import {SurveyService} from "../../../pages/services/survey.service";
+import {ActivatedRoute, Router} from "@angular/router";
 import {
   Section,
   Field,

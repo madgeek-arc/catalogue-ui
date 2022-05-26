@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {FormControl, FormGroup, FormGroupDirective} from "@angular/forms";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
-  selector: 'app-large-text',
-  templateUrl: './large-text.component.html'
+  selector: 'app-rich-text-field',
+  templateUrl: './rich-text-field.component.html'
 })
 
-export class LargeTextComponent implements OnInit {
+export class RichTextFieldComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() editMode: any;
   @Input() position?: number = null;
@@ -19,6 +20,8 @@ export class LargeTextComponent implements OnInit {
   formControl!: FormControl;
   form!: FormGroup;
   hideField: boolean = null;
+
+  public editor = ClassicEditor;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }

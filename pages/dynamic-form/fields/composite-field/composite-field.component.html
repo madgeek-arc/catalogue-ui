@@ -59,10 +59,10 @@
               </app-checkbox-field>
             </div>
             <div *ngIf="control.typeInfo.type === 'largeText'">
-              <app-large-text [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                              (handleBitSets)="handleBitsetOfChildren($event)"
-                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-large-text>
+              <app-large-text-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                                    (handleBitSets)="handleBitsetOfChildren($event)"
+                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+              </app-large-text-field>
             </div>
             <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
               <app-radio-button-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
@@ -134,10 +134,10 @@
           </div>
 
           <div *ngIf="control.typeInfo.type === 'largeText'" class="uk-form-controls">
-            <app-large-text [fieldData]="control" (hasChanges)="unsavedChangesPrompt()"
-                            (handleBitSets)="handleBitsetOfChildren($event)"
-                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-            </app-large-text>
+            <app-large-text-field [fieldData]="control" (hasChanges)="unsavedChangesPrompt()"
+                                  (handleBitSets)="handleBitsetOfChildren($event)"
+                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            </app-large-text-field>
           </div>
 
           <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">

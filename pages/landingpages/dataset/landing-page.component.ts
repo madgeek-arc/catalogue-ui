@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Subscriber, Subscription} from "rxjs";
+import {Subscriber} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {LandingPageService} from "../../../services/landing-page.service";
-import {NavigationService} from "../../../../app/services/navigation.service";
-import {UserService} from "../../../../app/services/user.service";
-import {UserInfo} from "../../../../app/domain/userInfo";
+import {NavigationService} from "../../../../pages/services/navigation.service";
+import {UserService} from "../../../../pages/services/user.service";
+import {UserInfo} from "../../../../pages/domain/userInfo";
 
 @Component({
   selector: 'app-dataset',
