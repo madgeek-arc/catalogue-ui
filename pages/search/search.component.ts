@@ -12,7 +12,7 @@ import {SearchService} from "../../services/search.service";
   selector: 'app-search',
   templateUrl: './search.component.html',
   providers: [SearchService]
-  // styleUrls: ['../../../lib/pages/search/search.component.css']
+  // styleUrls: ['../../../lib/pages/search/search.component.scss']
 })
 
 export class SearchComponent implements OnInit {
