@@ -15,7 +15,7 @@ import BitSet from 'bitset/bitset';
 import {PremiumSortPipe} from '../../shared/pipes/premium-sort.pipe';
 import {zip} from 'rxjs/internal/observable/zip';
 import {Router} from "@angular/router";
-import {SurveyService} from "../../../pages/services/survey.service";
+import {SurveyService} from "../../../services/survey.service";
 
 declare var UIkit: any;
 
