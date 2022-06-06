@@ -5,6 +5,8 @@ import {LandingPageService} from "../../../services/landing-page.service";
 import {NavigationService} from "../../../../services/navigation.service";
 import {UserService} from "../../../../services/user.service";
 import {UserInfo} from "../../../../domain/userInfo";
+import {environment} from "../../../../../environments/environment";
+
 
 @Component({
   selector: 'app-dataset',
@@ -17,6 +19,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   dataset: Object = null;
   instances: Object[] = null;
   userInfo: UserInfo = null;
+  projectName = environment.projectName;
 
   constructor(protected route: ActivatedRoute,
               protected navigationService: NavigationService,
@@ -70,4 +73,5 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 }
