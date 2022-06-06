@@ -19,7 +19,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   dataset: Object = null;
   instances: Object[] = null;
   userInfo: UserInfo = null;
-  projectName = environment.projectName;
+  projectName: string = null;
 
   constructor(protected route: ActivatedRoute,
               protected navigationService: NavigationService,
@@ -28,6 +28,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
               protected userService: UserService) {}
 
   ngOnInit() {
+    this.projectName = environment.projectName;
     if (this.userService.userInfo !== null) {
       this.userInfo = this.userService.userInfo;
     } else {
