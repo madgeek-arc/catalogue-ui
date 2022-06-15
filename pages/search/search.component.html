@@ -34,12 +34,11 @@
               <div *ngIf="facet.field === 'publisher' || facet.field === 'languages' || facet.field === 'rights'" class="uk-margin-medium-top">
                 <read-more [maxHeight]="235">
                   <div class="uk-flex uk-flex-bottom">
-                    <p class="big-text uk-margin-remove">{{facet.label}}</p><a class="uk-margin-left"
-                                                                                         (click)="clearSelections($event, facet.field)">Clear</a>
+                    <p class="big-text uk-margin-remove">{{facet.label}}</p>
+                    <a class="uk-margin-left" (click)="clearSelections($event, facet.field)">Clear</a>
                   </div>
                   <div class="refineOption uk-margin-top" *ngFor="let facetValue of facet.values">
-                    <input type="checkbox" class=""
-                           (change)="this.onSelection($event, facet.field, facetValue.value)"
+                    <input type="checkbox" (change)="this.onSelection($event, facet.field, facetValue.value)"
                            [checked]="facetValue.isChecked">
                     {{facetValue.value}}
                     <span>({{facetValue.count}})</span>
@@ -85,13 +84,25 @@
                   </p>
 
                   <ul class="uk-pagination uk-visible@m">
-                    <li *ngIf="currentPage>2 && pageTotal>5"><a (click)="goToPage(1)"><span uk-pagination-previous></span><span uk-pagination-previous></span></a></li>
-                    <li *ngIf="currentPage!==1"><a (click)="previousPage()"><span uk-pagination-previous></span></a></li>
+                    <li *ngIf="currentPage>2 && pageTotal>5">
+                      <a (click)="goToPage(1)">
+                        <span uk-pagination-previous></span><span uk-pagination-previous></span>
+                      </a>
+                    </li>
+                    <li *ngIf="currentPage!==1">
+                      <a (click)="previousPage()"><span uk-pagination-previous></span></a>
+                    </li>
                     <li *ngFor="let i of pages" [ngClass]="i === currentPage ? 'uk-active': ''">
                       <a (click)="goToPage(i)">{{i}}</a>
                     </li>
-                    <li *ngIf="currentPage!==pageTotal"><a (click)="nextPage()"><span uk-pagination-next></span></a></li>
-                    <li *ngIf="currentPage<pageTotal-1 && pageTotal>5"><a (click)="goToPage(pageTotal)"><span uk-pagination-next></span><span uk-pagination-next></span></a></li>
+                    <li *ngIf="currentPage!==pageTotal">
+                      <a (click)="nextPage()"><span uk-pagination-next></span></a>
+                    </li>
+                    <li *ngIf="currentPage<pageTotal-1 && pageTotal>5">
+                      <a (click)="goToPage(pageTotal)">
+                        <span uk-pagination-next></span><span uk-pagination-next></span>
+                      </a>
+                    </li>
                   </ul>
 
                 </div>
