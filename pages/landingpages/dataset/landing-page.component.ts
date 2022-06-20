@@ -36,7 +36,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
         this.userService.getUserInfo().subscribe(
           res => {
             this.userInfo = res;
-            this.userService.userInfo = res;
+            this.userService.roleToSessionStorage(res);
           },
           error => {
             console.log(error);
