@@ -31,6 +31,10 @@ export class FormControlService implements OnInit{
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}?chapterAnswerId=${item.id}`, item, this.options);
   }
 
+  postGenericItem(resourceType: string, item, edit: boolean) {
+    return this.http.post(this.base + `/items?resourceType=${resourceType}`, item);
+  }
+
   validateUrl(url: string) {
     // console.log(`knocking on: ${this.base}/provider/validateUrl?urlForValidation=${url}`);
     return this.http.get<boolean>(this.base + `/provider/validateUrl?urlForValidation=${url}`);

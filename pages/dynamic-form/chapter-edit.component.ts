@@ -78,7 +78,7 @@ export class ChapterEditComponent implements OnChanges{
     // if (this.form.valid) {
     window.scrollTo(0, 0);
     this.showLoader = true;
-    this.formControlService.postItem(this.surveyAnswerId, this.form.getRawValue(), this.editMode).subscribe(
+    this.formControlService.postGenericItem(this.chapter.resourceType, this.form.getRawValue(), this.editMode).subscribe(
       res => {
         // this.router.navigate(['/contributions/mySurveys']);
       },

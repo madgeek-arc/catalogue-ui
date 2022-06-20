@@ -161,6 +161,7 @@ export class Model {
   notice: string;
   type: string;
   subType: string;
+  resourceType: string;
   creationDate: string;
   createdBy: string;
   modifiedBy: string;
