@@ -7,9 +7,9 @@
 </div>
 
 <!--Chapter Selection-->
-<div *ngIf="surveyModel?.sections.length > 0" [ngClass]="{'uk-display-none': surveyModel.sections[0].fields !== null}">
+<div *ngIf="model?.sections.length > 0" [ngClass]="{'uk-display-none': model.sections[0].fields !== null}">
   <ul uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade" class="chapter-tabs">
-    <li class="" *ngFor="let chapter of surveyModel.sections">
+    <li class="" *ngFor="let chapter of model.sections">
       <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}
         <span *ngIf="chapterChangeMap.get(chapter.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
     </li>
@@ -28,11 +28,11 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
 <!--    <li *ngFor="let answer of this.sortedSurveyAnswers | keyvalue; let i = index">-->
-    <div *ngIf="surveyModel.sections[0].fields === null else singleDepth">
-      <li *ngFor="let answer of surveyModel.sections let i = index">
+    <div *ngIf="model.sections[0].fields === null else singleDepth">
+      <li *ngFor="let answer of model.sections let i = index">
         <app-chapter-edit [answerValue]="" [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
-                          [tabsHeader]="tabsHeader" [chapter]="surveyModel"
-                          [fields]="surveyModel.sections[i].subSections" [vocabularies]="vocabularies"
+                          [tabsHeader]="tabsHeader" [chapter]="model"
+                          [fields]="model.sections[i].subSections" [vocabularies]="vocabularies"
                           [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
         </app-chapter-edit>
       </li>
@@ -40,8 +40,8 @@
     <ng-template #singleDepth>
       <li>
         <app-chapter-edit [answerValue]="" [form]="getFormGroup()" [readonly]="readonly" [validate]="validate"
-                          [tabsHeader]="tabsHeader" [chapter]="surveyModel"
-                          [fields]="surveyModel.sections" [vocabularies]="vocabularies"
+                          [tabsHeader]="tabsHeader" [chapter]="model"
+                          [fields]="model.sections" [vocabularies]="vocabularies"
                           [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
         </app-chapter-edit>
       </li>

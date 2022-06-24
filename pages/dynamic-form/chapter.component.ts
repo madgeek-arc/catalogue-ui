@@ -64,7 +64,7 @@ export class ChapterComponent implements OnInit {
     this.ready = false;
     zip(
       this.formControlService.getUiVocabularies(),
-      this.formControlService.getFormModel(this.surveyId)
+      this.formControlService.getFormModelById(this.surveyId)
     ).subscribe(res => {
         this.vocabularies = res[0];
         // TODO handle it properly

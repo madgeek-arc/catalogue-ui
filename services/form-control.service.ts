@@ -4,6 +4,7 @@ import {Field, GroupedFields, Model, Required, Section} from '../domain/dynamic-
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {urlRegEx} from "../shared/validators/generic.validator";
+import {Paging} from "../domain/paging";
 
 @Injectable()
 export class FormControlService implements OnInit{
@@ -18,9 +19,13 @@ export class FormControlService implements OnInit{
   ngOnInit() {
   }
 
-  getFormModel(id: string) {
+  getFormModelById(id: string) {
     // return this.http.get<Model>(this.base + `/ui/form/model/${id}`);
     return this.http.get<Model>(this.base + `/forms/models/${id}`);
+  }
+
+  getFormModelByType(type: string) {
+    return this.http.get<Paging<Model>>(this.base + `/forms/models?type=${type}`);
   }
 
   getUiVocabularies() {
