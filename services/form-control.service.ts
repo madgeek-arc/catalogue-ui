@@ -61,7 +61,7 @@ export class FormControlService implements OnInit{
               group[formField.name] = formField.form.mandatory ?
                 new FormArray([new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.urlRegEx)]))])
                 : new FormArray([new FormControl('', Validators.pattern(this.urlRegEx))]);
-            } else if (formField.typeInfo.type === 'composite') {
+            } else if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
               group[formField.name] = formField.form.mandatory ? new FormArray([], Validators.required)
                 : new FormArray([]);
               group[formField.name].push(new FormGroup(this.createCompositeField(formField)));
@@ -75,7 +75,7 @@ export class FormControlService implements OnInit{
               group[formField.name] = formField.form.mandatory ?
               new FormControl('', [Validators.required, Validators.pattern(this.urlRegEx)])
                 : new FormControl('', Validators.pattern(this.urlRegEx));
-            } else if (formField.typeInfo.type === 'composite') {
+            } else if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
               group[formField.name] = new FormGroup(this.createCompositeField(formField));
             } else if (formField.typeInfo.type === 'email') {
               group[formField.name] = formField.form.mandatory ?

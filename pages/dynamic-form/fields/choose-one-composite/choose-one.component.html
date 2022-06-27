@@ -31,13 +31,6 @@
                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
               </app-composite-field>
             </div>
-            <div *ngIf="control.typeInfo.type === 'chooseOne'">
-              <app-choose-one [fieldData]="control" [subVocabularies]="subVocabularies"
-                             [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                             [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-choose-one>
-            </div>
             <div *ngIf="control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select'" class="uk-form-controls uk-margin-medium-top">
               <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies"
                                     [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
@@ -107,13 +100,6 @@
                                  (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-composite-field>
-          </div>
-
-          <div *ngIf="control.typeInfo.type === 'chooseOne'">
-            <app-choose-one [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                           (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
-                           (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-            </app-choose-one>
           </div>
 
           <div *ngIf="control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select'" class="uk-form-controls uk-margin-medium-top">

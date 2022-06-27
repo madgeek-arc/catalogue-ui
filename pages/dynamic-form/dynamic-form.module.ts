@@ -19,6 +19,7 @@ import {NumberFieldComponent} from "./fields/number-field/number-field.component
 import {ReusableComponentsModule} from "../../shared/reusable-components/reusable-components.module";
 import {RichTextFieldComponent} from "./fields/rich-text-field/rich-text-field.component";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
+import {ChooseOneComponent} from "./fields/choose-one-composite/choose-one.component";
 
 @NgModule({
     declarations: [
@@ -35,6 +36,7 @@ import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
       RichTextFieldComponent,
       RadioGridFieldComponent,
       NumberFieldComponent,
+      ChooseOneComponent,
       SurveyComponent
     ],
   imports: [

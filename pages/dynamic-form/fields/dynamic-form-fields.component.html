@@ -12,6 +12,13 @@
           </app-composite-field>
         </div>
 
+        <div *ngIf="fieldData.typeInfo.type === 'chooseOne'">
+          <app-choose-one [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                         (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
+                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-choose-one>
+        </div>
+
         <div *ngIf="fieldData.typeInfo.type === 'string' || fieldData.typeInfo.type === 'url' ||
                     fieldData.typeInfo.type === 'email' || fieldData.typeInfo.type === 'phone' ||
                     fieldData.typeInfo.type === 'double'">
