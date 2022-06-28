@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {AbstractControl, FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
   selector: 'app-choose-one',
@@ -21,7 +22,7 @@ export class ChooseOneComponent implements OnInit {
   form: FormGroup;
   hideField: boolean = null;
 
-  constructor(private rootFormGroup: FormGroupDirective) {
+  constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {
   }
 
   ngOnInit() {
@@ -35,13 +36,25 @@ export class ChooseOneComponent implements OnInit {
       // console.log(this.form);
     }
     // console.log(this.form);
-    if(this.fieldData.form.dependsOn) { // specific changes for composite field, maybe revise it
-      this.enableDisableField(this.rootFormGroup.form.get(this.fieldData.form.dependsOn.name).value);
+  }
 
-      this.rootFormGroup.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value);
-      });
+  /** Choose one to show **/
+  chooseOne(name: string) {
+    //
+    for (const control in this.form.controls) {
+      if (control === name) {
+        this.form.setControl(name, new FormGroup(this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name))));
+        this.form.get(name).enable();
+        this.fieldData.subFields.find(field => field.name === name).form.display.visible = true;
+      } else {
+        this.fieldData.subFields.find(field => field.name === control).form.display.visible = false;
+        this.form.setControl(control, new FormControl(null));
+        this.form.get(control).disable();
+        // this.form.get(control).disabled;
+      }
+      // this.form.removeControl(control);
     }
+    // this.form.addControl(name, new FormGroup(this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name))));
   }
 
   /** Handle Arrays --> **/
@@ -78,18 +91,6 @@ export class ChooseOneComponent implements OnInit {
       }
     });
     return group;
-  }
-
-  // onCompositeChange(field: string, affects: Dependent[], index?: number) {
-  onCompositeChange(fieldData: Field, j?: number, i?: number) {
-    // fieldData.subFields[j].parent, fieldData.subFields[j].form.affects
-    if (fieldData.subFields[j].form.affects !== null ) {
-      fieldData.subFields[j].form.affects.forEach(f => {
-        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).reset();
-        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).enable();
-        // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
-      });
-    }
   }
 
   /** <-- Handle Arrays **/

@@ -96,7 +96,7 @@ export class StringFieldComponent implements OnInit {
 
   /** other stuff--> **/
   unsavedChangesPrompt() {
-    console.log('string-field.component emitting to parent->');
+    // console.log('string-field.component emitting to parent->');
     this.hasChanges.emit(true);
   }
 

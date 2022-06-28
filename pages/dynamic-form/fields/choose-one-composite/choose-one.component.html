@@ -19,6 +19,16 @@
     </div>
   </ng-template>
 
+  <!-- Show radio so user can choose one-->
+  <div class="uk-margin-small-bottom">
+    <div *ngFor="let field of fieldData.subFields">
+      <label class="uk-form-label">
+        <input class="uk-radio uk-margin-small-right" type="radio" [name]="fieldData.name" (click)="chooseOne(field.name)">
+        {{field.label.text}}
+      </label>
+    </div>
+  </div>
+
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
     <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
       <div [formGroupName]="i" class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
@@ -42,7 +52,7 @@
                       control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
                       control.typeInfo.type === 'double'">
               <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                          (handleBitSets)="handleBitsetOfChildren($event)"
+                                          (handleBitSets)="handleBitsetOfChildren($event)" [form]="form"
                                           (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
               </app-string-url-email-field>
             </div>
@@ -167,3 +177,4 @@
 
 </form>
 <!--<pre>{{fieldData | json}}</pre>-->
+<pre>{{form.getRawValue() | json}}</pre>

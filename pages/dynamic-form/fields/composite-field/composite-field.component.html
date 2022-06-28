@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+<form [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
 <!--  {{fieldData.name | json}}-->
   <div *ngIf="fieldData.label?.text" class="uk-form-label uk-margin-bottom {{fieldData.label?.cssClasses}}"
        [attr.for]="fieldData.name" style="{{fieldData.label.style}}">
@@ -128,7 +128,7 @@
                     control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
                     control.typeInfo.type === 'double'">
             <app-string-url-email-field [fieldData]="control" (hasChanges)="unsavedChangesPrompt()"
-                                        (handleBitSets)="handleBitsetOfChildren($event)"
+                                        (handleBitSets)="handleBitsetOfChildren($event)" [form]="form"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-string-url-email-field>
           </div>
