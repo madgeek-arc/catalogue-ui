@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
   selector: 'app-composite-field',
@@ -21,7 +22,7 @@ export class CompositeFieldComponent implements OnInit {
   form: FormGroup;
   hideField: boolean = null;
 
-  constructor(private rootFormGroup: FormGroupDirective) {
+  constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {
   }
 
   ngOnInit() {
@@ -57,39 +58,8 @@ export class CompositeFieldComponent implements OnInit {
     this.fieldAsFormArray().removeAt(i);
   }
 
-  pushComposite(subFields: Field[]) {
-    this.fieldAsFormArray().push(new FormGroup(this.createCompositeField(subFields)));
-  }
-
-  createCompositeField(subFields: Field[]) {
-    const group: any = {};
-    subFields.forEach(subField => {
-      if (subField.typeInfo.type === 'composite') {
-        if (subField.typeInfo.multiplicity) {
-          group[subField.name] = subField.form.mandatory ? new FormArray([], Validators.required)
-            : new FormArray([]);
-          group[subField.name].push(new FormGroup(this.createCompositeField(subField.subFields)));
-        } else {
-          group[subField.name] = new FormGroup(this.createCompositeField(subField.subFields))
-        }
-      } else {
-        group[subField.name] = subField.form.mandatory ? new FormControl('', Validators.required)
-            : new FormControl('');
-      }
-    });
-    return group;
-  }
-
-  // onCompositeChange(field: string, affects: Dependent[], index?: number) {
-  onCompositeChange(fieldData: Field, j?: number, i?: number) {
-    // fieldData.subFields[j].parent, fieldData.subFields[j].form.affects
-    if (fieldData.subFields[j].form.affects !== null ) {
-      fieldData.subFields[j].form.affects.forEach(f => {
-        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).reset();
-        this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(f.name).enable();
-        // this.updateBitSetOfGroup(fieldData, i, f.name, f.id.toString());
-      });
-    }
+  pushComposite(compositeField: Field) {
+    this.fieldAsFormArray().push(new FormGroup(this.formService.createCompositeField(compositeField)));
   }
 
   /** <-- Handle Arrays **/

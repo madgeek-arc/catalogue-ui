@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
+<form *ngIf="form" [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
 <!--  {{fieldData.name | json}}-->
   <div *ngIf="fieldData.label?.text" class="uk-form-label uk-margin-bottom {{fieldData.label?.cssClasses}}"
        [attr.for]="fieldData.name" style="{{fieldData.label.style}}">
@@ -92,7 +92,7 @@
       </a>
     </div>
     <div class="uk-width-9-10 uk-text-center uk-margin-top">
-      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData.subFields)">
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
         <span class="material-icons">add</span> Add {{fieldData.label.text}}
       </a>
     </div>

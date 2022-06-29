@@ -1,11 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
-import {AbstractControl, FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {FormArray, FormGroup, FormGroupDirective} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
   selector: 'app-choose-one',
-  templateUrl: './choose-one.component.html'
+  templateUrl: './choose-one.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ChooseOneComponent implements OnInit {
@@ -33,28 +34,17 @@ export class ChooseOneComponent implements OnInit {
       this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as FormGroup;
     } else {
       this.form = this.rootFormGroup.control.get(this.fieldData.name) as FormGroup;
-      // console.log(this.form);
     }
     // console.log(this.form);
+    this.chooseOne(Object.entries(this.form.controls)[0][0])
   }
 
   /** Choose one to show **/
   chooseOne(name: string) {
-    //
     for (const control in this.form.controls) {
-      if (control === name) {
-        this.form.setControl(name, new FormGroup(this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name))));
-        this.form.get(name).enable();
-        this.fieldData.subFields.find(field => field.name === name).form.display.visible = true;
-      } else {
-        this.fieldData.subFields.find(field => field.name === control).form.display.visible = false;
-        this.form.setControl(control, new FormControl(null));
-        this.form.get(control).disable();
-        // this.form.get(control).disabled;
-      }
-      // this.form.removeControl(control);
+      this.form.removeControl(control);
     }
-    // this.form.addControl(name, new FormGroup(this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name))));
+    this.form.addControl(name, new FormGroup(this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name))));
   }
 
   /** Handle Arrays --> **/
@@ -62,73 +52,15 @@ export class ChooseOneComponent implements OnInit {
     return this.form as unknown as FormArray;
   }
 
-  oldFieldAsFormArray(field: string) {
-    return this.form.get(field) as FormArray;
-  }
-
   remove(i: number) {
     this.fieldAsFormArray().removeAt(i);
   }
 
-  pushComposite(subFields: Field[]) {
-    this.fieldAsFormArray().push(new FormGroup(this.createCompositeField(subFields)));
-  }
-
-  createCompositeField(subFields: Field[]) {
-    const group: any = {};
-    subFields.forEach(subField => {
-      if (subField.typeInfo.type === 'composite') {
-        if (subField.typeInfo.multiplicity) {
-          group[subField.name] = subField.form.mandatory ? new FormArray([], Validators.required)
-            : new FormArray([]);
-          group[subField.name].push(new FormGroup(this.createCompositeField(subField.subFields)));
-        } else {
-          group[subField.name] = new FormGroup(this.createCompositeField(subField.subFields))
-        }
-      } else {
-        group[subField.name] = subField.form.mandatory ? new FormControl('', Validators.required)
-            : new FormControl('');
-      }
-    });
-    return group;
+  pushComposite(compositeField: Field) {
+    this.fieldAsFormArray().push(new FormGroup(this.formService.createCompositeField(compositeField)));
   }
 
   /** <-- Handle Arrays **/
-
-  /** check form fields and tabs validity--> **/
-
-  checkFormValidity(name: string, edit: boolean): boolean {
-    return (!this.form.get(name).valid && (edit || this.form.get(name).dirty));
-  }
-
-  checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
-    if (groupName) {
-      return (!this.oldFieldAsFormArray(name)?.get([position])?.get(groupName).valid
-        && (edit || this.oldFieldAsFormArray(name)?.get([position])?.get(groupName).dirty));
-
-    }
-    return (!this.oldFieldAsFormArray(name).get([position]).valid
-      && (edit || this.oldFieldAsFormArray(name).get([position]).dirty));
-  }
-
-  /** <-- check form fields and tabs validity **/
-
-  /** Return Vocabulary items for composite fields--> **/
-
-  getCompositeVocabularyItems(fieldData: Field) {
-    // console.log(fieldData.name);
-    // console.log(fieldData.id);
-    // console.log(fieldData.typeInfo.vocabulary);
-    // console.log(this.vocabularies);
-    // if (fieldData.subFields[j].form.dependsOn !== null) {
-    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(fieldData.subFields[j].form.dependsOn.name).value];
-    // } else {
-    // console.log(this.vocabularies[fieldData.typeInfo.vocabulary]);
-      return this.vocabularies[fieldData.typeInfo.vocabulary];
-    // }
-  }
-
-  /** <--Return Vocabulary items for composite fields **/
 
   updateBitSet(fieldData: Field) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
