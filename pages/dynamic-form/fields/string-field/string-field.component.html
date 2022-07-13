@@ -1,0 +1,50 @@
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+  <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
+       [attr.for]="fieldData.name" [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}"
+       style="{{fieldData.label.style}}">
+    {{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}
+  </div>
+  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
+  </div>
+
+  <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
+      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
+        <input [id]="fieldData.name" [formControlName]="i"
+               class="uk-input uk-width-9-10 uk-animation-slide-top-small"
+               [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
+               [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.name, i, this.editMode)}"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
+        <a *ngIf="fieldAsFormArray().length > 1"
+           (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
+           class="remove-element uk-padding-small uk-animation-slide-top-small">
+          <span class="material-icons">clear</span>
+        </a>
+      </div>
+    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+         [innerHTML]="fieldData.form.suggestion.text">
+    </div>
+
+      <div class="uk-width-9-10 uk-text-center uk-margin-top">
+        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
+           (click)="push(fieldData.name, fieldData.form.mandatory, fieldData.typeInfo.type)">
+          <span class="material-icons">add</span>Add {{fieldData.label.text}}
+        </a>
+      </div>
+    </div>
+
+  <ng-template #noMultiplicity>
+    <input [formControlName]="fieldData.name" [id]="fieldData.id" class="uk-input uk-width-9-10 uk-animation-scale-up"
+           [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
+           (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+           [ngClass]="{'uk-form-danger': checkFormValidity() }">
+<!--      {{form.controls[fieldData.name].errors | json}}-->
+    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+           [innerHTML]="fieldData.form.suggestion.text" >
+      </div>
+    </div>
+  </ng-template>
+
+</form>
+<!--<pre>{{form.value | json}}</pre>-->
