@@ -23,7 +23,7 @@ import UIkit from 'uikit';
 export class ChapterEditComponent implements OnChanges{
 
   @Input() answerValue: Object = null;
-  @Input() form: FormGroup = null;
+  @Input() form: any = null;
   @Input() tabsHeader: string;
   @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
@@ -66,9 +66,10 @@ export class ChapterEditComponent implements OnChanges{
 
   ngOnChanges(changes:SimpleChanges) {
     // remove later
-    this.initializations();
-    this.ready=true
-    if (this.answerValue) {
+    // this.initializations();
+    // this.ready=true
+    if (this.fields) {
+      console.log(this.fields);
       this.initializations();
       this.ready = true
     }
