@@ -8,8 +8,8 @@
 
 <!--Chapter Selection-->
 <!--<div *ngIf="survey?.sections.length > 0" [ngClass]="{'uk-display-none': survey.sections[0].fields !== null}">-->
-<div>
-  <ul class="chapter-tabs" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
+<div [ngClass]="{'uk-display-none': survey.sections.length === 1}">
+  <ul class="chapter-tabs uk-tab" uk-switcher="connect: #top-navigation-tabs; animation: uk-animation-fade">
     <li class="" *ngFor="let chapter of survey.sections; trackBy: trackByMethod">
       <a (click)="showUnsavedChangesPrompt(chapter)">{{chapter.name}}
         <span *ngIf="chapterChangeMap.get(chapter.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
@@ -27,25 +27,25 @@
 </div>
 
 <div *ngIf="ready; else showLoader">
-  <ul id="top-navigation-tabs" class="uk-tab">
-    <div *ngIf="survey.sections[0].fields === null else singleDepth">
+  <ul id="top-navigation-tabs" class="uk-switcher">
+<!--    <div *ngIf="survey.sections[0].fields === null else singleDepth">-->
       <li *ngFor="let answer of survey.sections let i = index">
-        <app-chapter-edit [answerValue]="" [form]="form.controls[i]" [readonly]="readonly" [validate]="validate"
-                          [tabsHeader]="tabsHeader" [chapter]="survey"
+        <app-chapter-edit [answerValue]="" [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
+                          [tabsHeader]="tabsHeader" [chapter]="survey.sections[i]" [resourceType]="survey.resourceType"
                           [fields]="survey.sections[i].subSections" [vocabularies]="vocabularies"
                           [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
         </app-chapter-edit>
       </li>
-    </div>
-    <ng-template #singleDepth>
-      <li>
-        <app-chapter-edit [answerValue]="" [form]="getFormGroup(sectionIndex)" [readonly]="readonly" [validate]="validate"
-                          [tabsHeader]="tabsHeader" [chapter]="survey"
-                          [fields]="survey.sections" [vocabularies]="vocabularies"
-                          [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">
-        </app-chapter-edit>
-      </li>
-    </ng-template>
+<!--    </div>-->
+<!--    <ng-template #singleDepth>-->
+<!--      <li>-->
+<!--        <app-chapter-edit [answerValue]="" [form]="getFormGroup(sectionIndex)" [readonly]="readonly" [validate]="validate"-->
+<!--                          [tabsHeader]="tabsHeader" [chapter]="survey"-->
+<!--                          [fields]="survey.sections" [vocabularies]="vocabularies"-->
+<!--                          [surveyAnswerId]="" (chapterHasChanges)="setChapterChangesMap($event)">-->
+<!--        </app-chapter-edit>-->
+<!--      </li>-->
+<!--    </ng-template>-->
   </ul>
 </div>
 

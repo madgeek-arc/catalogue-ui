@@ -1,18 +1,11 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {SurveyAnswer} from "../../../app/domain/survey";
-import {zip} from "rxjs/internal/observable/zip";
-import {FormControlService} from "../../services/form-control.service";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {SurveyService} from "../../../app/services/survey.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {
-  Section,
-  Field,
-  GroupedFields,
-  Model,
-  Tabs,
-  UiVocabulary
-} from "../../domain/dynamic-form-model";
+import {zip} from "rxjs/internal/observable/zip";
+import {SurveyAnswer} from "../../../app/domain/survey";
+import {SurveyService} from "../../../app/services/survey.service";
+import {FormControlService} from "../../services/form-control.service";
+import {Section, Field, GroupedFields, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
 import BitSet from "bitset";
 
 import UIkit from "uikit";
@@ -220,12 +213,10 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   getFormGroup(sectionIndex: number): FormGroup {
-    console.log('sectionIndex: ' + sectionIndex);
-    console.log(this.survey.sections[sectionIndex]);
     if (this.survey.sections[sectionIndex].subSections === null) {
       return this.form.get(this.survey.name) as FormGroup;
     } else
-      console.log(this.form.get(this.survey.sections[sectionIndex].name));
+      // console.log(this.form.get(this.survey.sections[sectionIndex].name));
       return this.form.get(this.survey.sections[sectionIndex].name) as FormGroup;
   }
 

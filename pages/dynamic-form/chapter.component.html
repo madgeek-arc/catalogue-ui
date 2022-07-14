@@ -47,7 +47,7 @@
                     <div class="uk-width-1-4" [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
                       <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
                       <ul id="{{chapter.name}}" class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
-                       [attr.uk-tab]="'connect: #side-tab-'+chapter.id">
+                       [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
                         <li *ngFor="let tab of fields; let i=index"  (click)="setTabIndex(i)">
                           <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration uk-flex uk-flex-between"
                              [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
