@@ -84,11 +84,14 @@ export class DateFieldComponent implements OnInit {
 
   enableDisableField(value: boolean) {
     if (!value) {
+      this.formControl.reset(null);
       this.formControl.disable();
-      this.formControl.reset();
       this.hideFields = true;
     } else {
       this.formControl.enable();
+      if (!this.formControl.value) {
+        this.formControl.setValue('');
+      }
       this.hideFields = false;
     }
   }

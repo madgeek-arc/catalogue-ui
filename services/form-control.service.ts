@@ -20,8 +20,6 @@ export class FormControlService implements OnInit{
   }
 
   getFormModelById(id: string) {
-    // return this.http.get<Model>(this.base + `/ui/form/model/${id}`);
-    console.log('skataaaaaaaaaaaaa')
     return this.http.get<Model>(this.base + `/forms/models/${id}`);
   }
 

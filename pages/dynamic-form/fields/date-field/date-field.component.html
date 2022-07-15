@@ -13,7 +13,7 @@
   <ng-template #noMultiplicity>
     <dp-date-picker [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-width-9-10"
                     [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
-                    (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+                    (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [config]="{format: 'DD-MM-YYYY'}"
                     [ngClass]="{'uk-form-danger': checkFormValidity() }"></dp-date-picker>
     <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
       <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
