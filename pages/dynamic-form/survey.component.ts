@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {zip} from "rxjs/internal/observable/zip";
 import {SurveyAnswer} from "../../../app/domain/survey";
@@ -22,7 +22,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() survey: Model = null;
   @Input() tabsHeader : string = null;
 
-  chapters: Section[] = [];
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
   currentChapter: Section = null;
@@ -57,6 +56,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.ready = false;
+    this.currentChapter = this.survey.sections[0];
     if (this.answer)
       this.editMode = true;
     if (this.survey) {
@@ -75,7 +75,6 @@ export class SurveyComponent implements OnInit, OnChanges {
             }
           }
         }
-        this.currentChapter = this.survey.sections[0];
       },
       error => {
         this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
@@ -190,7 +189,9 @@ export class SurveyComponent implements OnInit, OnChanges {
     this.formControlService.postItem(this.answer.id, this.form.getRawValue(), this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
-        this.chapterChangeMap.set(this.chapterForSubmission.id, false);
+        for (const key of this.chapterChangeMap.keys()) {
+          this.chapterChangeMap.set(key, false);
+        }
         UIkit.modal('#unsaved-changes-modal').hide();
       },
       error => {
@@ -234,23 +235,19 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   /** create additional fields for arrays if needed --> **/
   prepareForm(answer: Object, fields: Section[]) {
-    // console.log(form);
     for (const [key, value] of Object.entries(answer)) {
       // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-        // console.log(key + ' is object');
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
-        // console.log(key + ' is array');
         let i = 1;
         if (value?.length > 1)
           this.pushToFormArray(key, value?.length);
         for ( ;i < value?.length; i++) {
-          // console.log('pushing to array ' + key);
-          // this.push()
           if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value !== null) {
             this.prepareForm(value[i], fields);
           }
+          // Maybe a check for array in array should be here
         }
       } else if (value === null) {
         // console.log(key+ ' is null');
@@ -259,15 +256,13 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   pushToFormArray(name: string, length: number) {
-    console.log(name +' with length: '+ length);
-    console.log(this.getModelData(this.survey.sections, name));
     let field = this.getModelData(this.survey.sections, name);
-    console.log(this.getFormControl(this.form, name));
-    // this.getFormControl(this.form, name).push(this.formControlService.createCompositeField(this.getModelData(this.survey.sections, name)) as FormControl);
+    for (let i = 0; i < length-1; i++) {
+      this.getFormControl(this.form, name).push(this.formControlService.createField(field));
+    }
   }
 
   getModelData(model: Section[], name: string): Field {
-    // console.log(model);
     let field = null;
     for (let i = 0; i < model.length; i++) {
       if (model[i].fields === null) {
@@ -299,16 +294,12 @@ export class SurveyComponent implements OnInit, OnChanges {
     for (const key in group.controls) {
       abstractControl = group.controls[key];
       if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
-        if (key === name) {
-          console.log(abstractControl);
-          break;
+        if (key !== name) {
+          abstractControl = this.getFormControl(abstractControl, name);
         }
-        abstractControl = this.getFormControl(abstractControl, name);
-      } else {
-        if (key === name)
+        break;
+      } else if (key === name)
           break;
-      }
-      console.log(key);
     }
     return abstractControl;
   }

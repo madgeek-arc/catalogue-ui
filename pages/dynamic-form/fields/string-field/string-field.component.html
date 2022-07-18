@@ -9,15 +9,15 @@
   </div>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
+      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">
         <input [id]="fieldData.name" [formControlName]="i"
                class="uk-input uk-width-9-10 uk-animation-slide-top-small"
                [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
-               [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.name, i, this.editMode)}"
+               [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
         <a *ngIf="fieldAsFormArray().length > 1"
            (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
-           class="remove-element uk-padding-small uk-animation-slide-top-small">
+           class="remove-element uk-animation-slide-top-small uk-margin-small-left">
           <span class="material-icons">clear</span>
         </a>
       </div>
@@ -27,7 +27,7 @@
 
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
         <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
-           (click)="push(fieldData.name, fieldData.form.mandatory, fieldData.typeInfo.type)">
+           (click)="push()">
           <span class="material-icons">add</span>Add {{fieldData.label.text}}
         </a>
       </div>
@@ -47,4 +47,4 @@
   </ng-template>
 
 </form>
-<pre>{{form.value | json}}</pre>
+<!--<pre>{{form.value | json}}</pre>-->

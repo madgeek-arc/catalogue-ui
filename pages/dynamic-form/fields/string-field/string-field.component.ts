@@ -12,7 +12,7 @@ import {FormControlService} from "../../../../services/form-control.service";
 
 export class StringFieldComponent implements OnInit {
   @Input() fieldData: Field;
-  @Input() editMode: any;
+  @Input() editMode: boolean = false;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
@@ -54,15 +54,8 @@ export class StringFieldComponent implements OnInit {
     return this.formControl as unknown as FormArray;
   }
 
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
-        break;
-      default:
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
+  push() {
+    this.fieldAsFormArray().push(this.formControlService.createField(this.fieldData));
   }
 
   remove(field: string, i: number) {
@@ -75,13 +68,9 @@ export class StringFieldComponent implements OnInit {
     return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
   }
 
-  checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
-    if (groupName) {
-      return (!this.fieldAsFormArray()?.get([position])?.get(groupName).valid
-        && (edit || this.fieldAsFormArray()?.get([position])?.get(groupName).dirty));
-    }
-    return (!this.fieldAsFormArray().get([position]).valid
-      && (edit || this.fieldAsFormArray().get([position]).dirty));
+  checkFormArrayValidity(position: number): boolean {
+    return ((this.fieldAsFormArray().get([position]).invalid && this.fieldAsFormArray().get([position]).touched)
+      && (this.editMode || this.fieldAsFormArray().get([position]).dirty));
   }
 
   /** Bitsets--> **/
