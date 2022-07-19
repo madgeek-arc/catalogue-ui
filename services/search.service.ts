@@ -3,7 +3,7 @@ import {Router} from "@angular/router";
 import {URLParameter} from "../domain/url-parameter";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Paging} from "../domain/paging";
-import {Snippet} from "../domain/model";
+import {Snippet} from "../domain/snippet";
 import {environment} from "../../environments/environment";
 import {Subject} from "rxjs";
 

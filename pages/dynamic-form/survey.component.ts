@@ -6,8 +6,12 @@ import {SurveyAnswer} from "../../../app/domain/survey";
 import {SurveyService} from "../../../app/services/survey.service";
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
+import {Content, DocDefinition} from "../../domain/PDFclasses";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
 
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import UIkit from "uikit";
 
 @Component({
@@ -267,9 +271,14 @@ export class SurveyComponent implements OnInit, OnChanges {
     for (let i = 0; i < model.length; i++) {
       if (model[i].fields === null) {
         field = this.getModelData(model[i].subSections, name);
+        if (field) {
+          console.log('get model data field is: ' + field?.label.text);
+          return field;
+        }
       } else {
         field = this.searchSubFields(model[i].fields, name);
         if (field) {
+          console.log('get model data field is: ' + field?.label.text);
           return field;
         }
       }
@@ -277,12 +286,13 @@ export class SurveyComponent implements OnInit, OnChanges {
     return field;
   }
 
-  searchSubFields(fields: Field[], name) {
+  searchSubFields(fields: Field[], name): Field | null {
     for (let j = 0; j < fields.length; j++) {
+      console.log(fields[j].name);
       if(fields[j].name === name) {
-        // console.log(fields[j]);
         return fields[j];
       } else if (fields[j].subFields.length > 0) {
+        console.log(this.searchSubFields(fields[j].subFields, name));
         return this.searchSubFields(fields[j].subFields, name);
       }
     }
@@ -304,6 +314,47 @@ export class SurveyComponent implements OnInit, OnChanges {
     return abstractControl;
   }
   /** <-- create additional fields for arrays if needed **/
+
+  /** Generate PDF --> **/
+  generatePDF() {
+    let docDefinition: DocDefinition = new DocDefinition();
+    docDefinition.header.text = 'Header Text'
+    docDefinition.header.style = 'sectionHeader'
+    docDefinition.content.push(new Content('Customer Details', ''));
+    docDefinition.styles ={
+      sectionHeader: {
+        bold: true,
+        alignment: 'center',
+        decoration: 'underline',
+        color: 'skyblue',
+        fontSize: 18,
+        margin: [0, 15, 0, 15]
+      }
+    }
+    this.createDocumentDefinition(this.form, docDefinition);
+
+    pdfMake.createPdf(docDefinition).open();
+    // pdfMake.createPDF(docDefinition).download();
+  }
+
+  createDocumentDefinition(group: FormGroup, docDefinition: DocDefinition) {
+    for (const key in group.controls) {
+      let abstractControl = group.controls[key];
+      if (abstractControl instanceof FormGroup) {
+        this.createDocumentDefinition(abstractControl, docDefinition);
+      } else if (abstractControl instanceof FormArray) {
+        console.log(key+' is array');
+      } else {
+        console.log(key+' is control');
+        let field = this.getModelData(this.survey.sections, key);
+        console.log(field);
+        docDefinition.content.push(new Content(field.label.text,''));
+      }
+
+    }
+  }
+
+  /** <-- Generate PDF **/
 
   /** other stuff --> **/
   closeAlert() {
