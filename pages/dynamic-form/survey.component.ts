@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {zip} from "rxjs/internal/observable/zip";
@@ -272,13 +272,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       if (model[i].fields === null) {
         field = this.getModelData(model[i].subSections, name);
         if (field) {
-          console.log('get model data field is: ' + field?.label.text);
           return field;
         }
       } else {
         field = this.searchSubFields(model[i].fields, name);
         if (field) {
-          console.log('get model data field is: ' + field?.label.text);
           return field;
         }
       }
@@ -287,13 +285,14 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   searchSubFields(fields: Field[], name): Field | null {
+    let field = null;
     for (let j = 0; j < fields.length; j++) {
-      console.log(fields[j].name);
       if(fields[j].name === name) {
         return fields[j];
-      } else if (fields[j].subFields.length > 0) {
-        console.log(this.searchSubFields(fields[j].subFields, name));
-        return this.searchSubFields(fields[j].subFields, name);
+      } else if (fields[j].subFields?.length > 0) {
+        field = this.searchSubFields(fields[j].subFields, name);
+        if (field?.name === name)
+          return field;
       }
     }
     return null;
@@ -316,11 +315,30 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** <-- create additional fields for arrays if needed **/
 
   /** Generate PDF --> **/
+  printElementToPDF(elem: string)
+  {
+    let mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+    mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+    mywindow.document.write('</head><body >');
+    mywindow.document.write('<h1>' + document.title  + '</h1>');
+    mywindow.document.write(document.getElementById(elem).innerHTML);
+    mywindow.document.write('</body></html>');
+
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+
+    mywindow.print();
+    mywindow.close();
+
+    return true;
+  }
+
   generatePDF() {
     let docDefinition: DocDefinition = new DocDefinition();
     docDefinition.header.text = 'Header Text'
     docDefinition.header.style = 'sectionHeader'
-    docDefinition.content.push(new Content('Customer Details', ''));
+    // docDefinition.content.push(new Content('Customer Details', ''));
     docDefinition.styles ={
       sectionHeader: {
         bold: true,
@@ -329,26 +347,40 @@ export class SurveyComponent implements OnInit, OnChanges {
         color: 'skyblue',
         fontSize: 18,
         margin: [0, 15, 0, 15]
+      },
+      marginTop: {
+        margin: [0, 8, 0, 0]
+      },
+      marginTopSmall: {
+        margin: [0, 2, 0, 0]
       }
     }
     this.createDocumentDefinition(this.form, docDefinition);
 
-    pdfMake.createPdf(docDefinition).open();
-    // pdfMake.createPDF(docDefinition).download();
+    pdfMake.createPDF(docDefinition).download();
   }
 
-  createDocumentDefinition(group: FormGroup, docDefinition: DocDefinition) {
+  createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition) {
     for (const key in group.controls) {
       let abstractControl = group.controls[key];
+      let field = this.getModelData(this.survey.sections, key);
       if (abstractControl instanceof FormGroup) {
+        if (field)
+          docDefinition.content.push(new Content(field.label.text,''));
         this.createDocumentDefinition(abstractControl, docDefinition);
       } else if (abstractControl instanceof FormArray) {
-        console.log(key+' is array');
+        docDefinition.content.push(new Content(field.label.text,'marginTop'));
+        for (let i = 0; i < abstractControl.controls.length; i++) {
+          let control = group.controls[key].controls[i];
+          if (control instanceof FormGroup || control instanceof FormArray) {
+            this.createDocumentDefinition(control, docDefinition);
+          } else {
+            docDefinition.content.push(new Content(control.value,''));
+          }
+        }
       } else {
-        console.log(key+' is control');
-        let field = this.getModelData(this.survey.sections, key);
-        console.log(field);
-        docDefinition.content.push(new Content(field.label.text,''));
+        docDefinition.content.push(new Content(field.label.text,'marginTop'));
+        docDefinition.content.push(new Content(abstractControl.value,'marginTopSmall'));
       }
 
     }

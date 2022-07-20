@@ -26,6 +26,7 @@
 </div>
 
 <button class="uk-button" (click)="generatePDF()">Print</button>
+<button class="uk-button" (click)="printElementToPDF('top-navigation-tabs')">Print</button>
 
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
