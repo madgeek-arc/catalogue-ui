@@ -14,7 +14,7 @@
   <ng-template #noMultiplicity>
     <div *ngFor="let value of fieldData.typeInfo.values" class="uk-margin-small-top">
       <label class="uk-form-label">
-        <input class="uk-radio uk-margin-small-right" type="radio"
+        <input class="uk-radio uk-margin-small-right" type="radio" onchange="this.setAttribute('value', this.value)"
                [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
                [ngClass]="{'uk-form-danger': checkFormValidity() }">

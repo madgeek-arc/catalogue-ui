@@ -9,6 +9,7 @@ import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-fo
 import {Content, DocDefinition} from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { jsPDF } from "jspdf";
 import BitSet from "bitset";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -25,6 +26,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() answer: SurveyAnswer = null;
   @Input() survey: Model = null;
   @Input() tabsHeader : string = null;
+
+  @ViewChild('printPDF', { static: false }) el!: ElementRef;
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
@@ -319,19 +322,33 @@ export class SurveyComponent implements OnInit, OnChanges {
   {
     let mywindow = window.open('', 'PRINT', 'height=400,width=600');
 
-    mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-    mywindow.document.write('</head><body >');
-    mywindow.document.write('<h1>' + document.title  + '</h1>');
-    mywindow.document.write(document.getElementById(elem).innerHTML);
-    mywindow.document.write('</body></html>');
-
-    mywindow.document.close(); // necessary for IE >= 10
-    mywindow.focus(); // necessary for IE >= 10*/
-
-    mywindow.print();
-    mywindow.close();
+    // mywindow.document.write('<html lang="en"><head><link rel="stylesheet" type="text/css" href="../../../styles/styles.scss" /><title>' + document.title  + '</title>');
+    // mywindow.document.write('</head><body>');
+    // mywindow.document.write('<h1>' + document.title  + '</h1>');
+    // mywindow.document.write(document.getElementById(elem).innerHTML);
+    // mywindow.document.write('</body></html>');
+    // //
+    // mywindow.document.close(); // necessary for IE >= 10
+    // mywindow.focus(); // necessary for IE >= 10*/
+    //
+    // mywindow.print();
+    // mywindow.close();
+    window.print();
 
     return true;
+  }
+
+  jsPDF() {
+    let doc = new jsPDF();
+
+    // doc.html(`<html><head><title>Test</title></head><body>` + document.getElementById('top-navigation-tabs').innerHTML + `</body></html>`);
+    // doc.save('div.pdf');
+    let pdf = new jsPDF()
+    pdf.html(this.el.nativeElement.innerHTML, {
+      callback: (pdf) => {
+        pdf.save("sample.pdf")
+      }
+    })
   }
 
   generatePDF() {
@@ -357,7 +374,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
     this.createDocumentDefinition(this.form, docDefinition);
 
-    pdfMake.createPDF(docDefinition).download();
+    pdfMake.createPdf(docDefinition).open();
   }
 
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition) {

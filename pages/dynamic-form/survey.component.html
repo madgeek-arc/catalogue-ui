@@ -25,11 +25,12 @@
   <p>{{successMessage}}</p>
 </div>
 
-<button class="uk-button" (click)="generatePDF()">Print</button>
+<button class="uk-button" (click)="generatePDF()">Print with pdf make</button>
+<button class="uk-button" (click)="jsPDF()">Print with js pdf</button>
 <button class="uk-button" (click)="printElementToPDF('top-navigation-tabs')">Print</button>
 
 <div *ngIf="ready; else showLoader">
-  <ul id="top-navigation-tabs" class="uk-switcher">
+  <ul id="top-navigation-tabs" #printPDF class="uk-switcher">
 <!--    <div *ngIf="survey.sections[0].fields === null else singleDepth">-->
       <li *ngFor="let section of survey.sections let i = index">
         <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate" [vocabularies]="vocabularies"
@@ -55,7 +56,7 @@
   <i class="loader-big" aria-hidden="true"></i>
 </ng-template>
 
-<pre *ngIf="form">{{form.getRawValue() | json}}</pre>
+<!--<pre *ngIf="form">{{form.getRawValue() | json}}</pre>-->
 
 <!-- Validation modal -->
 <div id="validation-modal" uk-modal="esc-close: false; bg-close: false">
