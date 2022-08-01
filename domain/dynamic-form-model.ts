@@ -96,6 +96,7 @@ export class Field {
   parent: string;
   label: StyledText;
   accessPath: string;
+  kind: string;
   typeInfo: TypeInfo;
   includedInSnippet: boolean;
   form: Form;
