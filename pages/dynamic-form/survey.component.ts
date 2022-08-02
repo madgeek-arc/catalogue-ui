@@ -211,6 +211,9 @@ export class SurveyComponent implements OnInit, OnChanges {
         setTimeout(() => {
           UIkit.alert('#successMessage').close();
         }, 4000);
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 4200);
         // this.showLoader = false;
       }
     );
