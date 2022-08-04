@@ -321,38 +321,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** <-- create additional fields for arrays if needed **/
 
   /** Generate PDF --> **/
-  printElementToPDF(elem: string) {
-    let mywindow = window.open('', 'PRINT', 'height=400,width=600');
-
-    // mywindow.document.write('<html lang="en"><head><link rel="stylesheet" type="text/css" href="../../../styles/styles.scss" /><title>' + document.title  + '</title>');
-    // mywindow.document.write('</head><body>');
-    // mywindow.document.write('<h1>' + document.title  + '</h1>');
-    // mywindow.document.write(document.getElementById(elem).innerHTML);
-    // mywindow.document.write('</body></html>');
-    // //
-    // mywindow.document.close(); // necessary for IE >= 10
-    // mywindow.focus(); // necessary for IE >= 10*/
-    //
-    // mywindow.print();
-    // mywindow.close();
-    window.print();
-
-    return true;
-  }
-
-  jsPDF() {
-    let doc = new jsPDF();
-
-    // doc.html(`<html><head><title>Test</title></head><body>` + document.getElementById('top-navigation-tabs').innerHTML + `</body></html>`);
-    // doc.save('div.pdf');
-    let pdf = new jsPDF()
-    pdf.html(this.el.nativeElement.innerHTML, {
-      callback: (pdf) => {
-        pdf.save("sample.pdf")
-      }
-    })
-  }
-
   generatePDF() {
     let docDefinition: DocDefinition = new DocDefinition();
     docDefinition.header.text = 'Header Text'
@@ -372,6 +340,9 @@ export class SurveyComponent implements OnInit, OnChanges {
       },
       marginTopSmall: {
         margin: [0, 2, 0, 0]
+      },
+      marginTopBig: {
+        margin: [0, 25, 0, 0]
       },
       marginLeftSmall: {
         margin: [3, 0, 0, 0]
@@ -396,23 +367,35 @@ export class SurveyComponent implements OnInit, OnChanges {
       let abstractControl = group.controls[key];
       let field = this.getModelData(this.survey.sections, key);
       if (abstractControl instanceof FormGroup) {
-        if (field)
-          docDefinition.content.push(new Content(field.label.text,['']));
+        if (field){
+          if (field.kind === 'question')
+            docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
+          else
+            docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
+        }
         this.createDocumentDefinition(abstractControl, docDefinition);
       } else if (abstractControl instanceof FormArray) {
-        docDefinition.content.push(new Content(field.label.text,['marginTop']));
+        if (field.kind === 'question')
+          docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
+        else
+          docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
+        // docDefinition.content.push(new Content(field.label.text,['marginTop']));
         for (let i = 0; i < abstractControl.controls.length; i++) {
           let control = group.controls[key].controls[i];
           if (control instanceof FormGroup || control instanceof FormArray) {
             this.createDocumentDefinition(control, docDefinition);
           } else {
-            docDefinition.content.push(new Content(control.value,['']));
+            docDefinition.content.push(new Content(control.value,['marginTopSmall']));
           }
         }
       } else {
         let field = this.getModelData(this.survey.sections, key);
 
-        docDefinition.content.push(new Content(field.label.text,['marginTop']));
+        if (field.kind === 'question')
+          docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
+        else
+          docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
+        // docDefinition.content.push(new Content(field.label.text,['marginTop']));
         if (field.typeInfo.type === 'radio') {
           // console.log(field.label.text);
           // console.log(field.typeInfo.values);
