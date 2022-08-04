@@ -9,7 +9,6 @@ import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-fo
 import {Columns, Content, DocDefinition, PdfImage, PdfTable, TableDefinition} from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { jsPDF } from "jspdf";
 import BitSet from "bitset";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;

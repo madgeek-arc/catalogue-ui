@@ -7,13 +7,11 @@ import {CommonModule} from "@angular/common";
 import {SearchComponent} from "./pages/search/search.component";
 import {RouterModule} from "@angular/router";
 import {FormBuilderModule} from "./pages/form-builder/form-builder.module";
-import {PrintToPdfComponent} from "./pages/printToPDF/print-to-pdf.component";
 
 @NgModule({
   declarations: [
     SearchComponent,
     LandingPageComponent,
-    PrintToPdfComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +24,6 @@ import {PrintToPdfComponent} from "./pages/printToPDF/print-to-pdf.component";
   ],
   providers: [],
   exports: [
-    PrintToPdfComponent
   ]
 })
 
