@@ -6,7 +6,15 @@ import {SurveyAnswer} from "../../../app/domain/survey";
 import {SurveyService} from "../../../app/services/survey.service";
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
-import {Columns, Content, DocDefinition, PdfImage, PdfTable, TableDefinition} from "../../domain/PDFclasses";
+import {
+  Columns,
+  Content,
+  DocDefinition,
+  PdfImage,
+  PdfTable,
+  PdfUnorderedList,
+  TableDefinition
+} from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
@@ -346,6 +354,9 @@ export class SurveyComponent implements OnInit, OnChanges {
       marginLeftSmall: {
         margin: [3, 0, 0, 0]
       },
+      marginLeftBig: {
+        margin: [20, 0, 0, 0]
+      },
       marginTopCheckBox: {
         margin: [0, 3, 0, 0]
       }
@@ -379,13 +390,22 @@ export class SurveyComponent implements OnInit, OnChanges {
         else
           docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
         // docDefinition.content.push(new Content(field.label.text,['marginTop']));
+        console.log(abstractControl.value);
+        let tmpArr = [];
         for (let i = 0; i < abstractControl.controls.length; i++) {
           let control = group.controls[key].controls[i];
           if (control instanceof FormGroup || control instanceof FormArray) {
             this.createDocumentDefinition(control, docDefinition);
           } else {
-            docDefinition.content.push(new Content(control.value,['marginTopSmall']));
+            tmpArr.push(control.value);
+            // docDefinition.content.push(new Content(control.value,['marginTopSmall']));
           }
+        }
+        if (tmpArr.length > 0) {
+          let columns = new Columns()
+          columns.columns.push(new Content('', [''], 80));
+          columns.columns.push(new PdfUnorderedList(tmpArr,''));
+          docDefinition.content.push(columns);
         }
       } else {
         let field = this.getModelData(this.survey.sections, key);

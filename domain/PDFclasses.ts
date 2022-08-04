@@ -14,11 +14,13 @@ export class DocDefinition {
 export class Content {
   text: string;
   style: string[];
-  width: string;
+  width: number;
 
-  constructor(text: string, style: string[]) {
+  constructor(text: string, style: string[], width?: number) {
     this.text = text;
     this.style = style;
+    if (width)
+      this.width = width;
   }
 }
 
@@ -78,5 +80,18 @@ export class TableDefinition {
     this.widths = widths;
     if (heights)
       this.heights = heights;
+  }
+}
+
+export class PdfUnorderedList {
+  ul: string[];
+  type: string;
+  markerColor: string;
+  color: string;
+
+  constructor(ul: string[], type?: string) {
+    this.ul = ul;
+    if (type)
+      this.type = type;
   }
 }
