@@ -6,6 +6,10 @@
   <p class="uk-margin-bottom">{{survey.notice}}</p>
 </div>
 
+<div class="uk-flex uk-flex-right">
+  <button class="uk-button uk-button-secondary" (click)="generatePDF()">Download as pdf</button>
+</div>
+
 <!--Chapter Selection-->
 <div [ngClass]="{'uk-display-none': survey.sections.length === 1}">
   <ul class="chapter-tabs uk-tab" uk-switcher="connect: #top-navigation-tabs; animation: uk-animation-fade">
@@ -24,8 +28,6 @@
 <div *ngIf="successMessage" class="uk-alert uk-alert-success uk-animation-slide-top-small" id="successMessage">
   <p>{{successMessage}}</p>
 </div>
-
-<button class="uk-button" (click)="generatePDF()">Print with pdf make</button>
 
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" #printPDF class="uk-switcher">

@@ -10,7 +10,7 @@ import {
   Columns,
   Content,
   DocDefinition,
-  PdfImage,
+  PdfImage, PdfMetadata,
   PdfTable,
   PdfUnorderedList,
   TableDefinition
@@ -259,7 +259,7 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (Array.isArray(value)) {
         let i = 1;
         if (value?.length > 1)
-          this.pushToFormArray(key, value?.length);
+          this.pushToFormArray(key, value.length);
         for ( ;i < value?.length; i++) {
           if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value !== null) {
             this.prepareForm(value[i], fields);
@@ -316,12 +316,19 @@ export class SurveyComponent implements OnInit, OnChanges {
     for (const key in group.controls) {
       abstractControl = group.controls[key];
       if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
-        if (key !== name) {
+        if (key === name) {
+          return abstractControl as FormArray;
+        } else if (key !== name) {
           abstractControl = this.getFormControl(abstractControl, name);
+          if (abstractControl !== null)
+            return abstractControl;
         }
-        break;
-      } else if (key === name)
-          break;
+      } else {
+        if (key === name) {
+          return abstractControl;
+        }
+        abstractControl = null;
+      }
     }
     return abstractControl;
   }
@@ -330,15 +337,16 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** Generate PDF --> **/
   generatePDF() {
     let docDefinition: DocDefinition = new DocDefinition();
-    docDefinition.header.text = 'Header Text'
-    docDefinition.header.style = ['sectionHeader']
-    // docDefinition.content.push(new Content('Customer Details', ''));
+    // docDefinition.header.text = 'Header Text'
+    // docDefinition.header.style = ['sectionHeader']
+    docDefinition.content.push(new Content(this.survey.name, ['sectionHeader']));
+    docDefinition.info = new PdfMetadata(this.survey.name);
     docDefinition.styles = {
       sectionHeader: {
         bold: true,
         alignment: 'center',
         decoration: 'underline',
-        color: 'skyblue',
+        color: '',
         fontSize: 18,
         margin: [0, 15, 0, 15]
       },
@@ -369,7 +377,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
     this.createDocumentDefinition(this.form, docDefinition);
 
-    pdfMake.createPdf(docDefinition).open();
+    pdfMake.createPdf(docDefinition).download(this.survey.name);
   }
 
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition) {
@@ -389,8 +397,6 @@ export class SurveyComponent implements OnInit, OnChanges {
           docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
         else
           docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
-        // docDefinition.content.push(new Content(field.label.text,['marginTop']));
-        console.log(abstractControl.value);
         let tmpArr = [];
         for (let i = 0; i < abstractControl.controls.length; i++) {
           let control = group.controls[key].controls[i];
@@ -402,23 +408,18 @@ export class SurveyComponent implements OnInit, OnChanges {
           }
         }
         if (tmpArr.length > 0) {
-          let columns = new Columns()
-          columns.columns.push(new Content('', [''], 80));
+          let columns = new Columns();
+          columns.columns.push(new Content('', [''], 15));
           columns.columns.push(new PdfUnorderedList(tmpArr,''));
           docDefinition.content.push(columns);
         }
       } else {
         let field = this.getModelData(this.survey.sections, key);
-
         if (field.kind === 'question')
           docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
         else
           docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
-        // docDefinition.content.push(new Content(field.label.text,['marginTop']));
         if (field.typeInfo.type === 'radio') {
-          // console.log(field.label.text);
-          // console.log(field.typeInfo.values);
-          // console.log(key);
           let values = field.typeInfo.values
           if (field.kind === 'conceal-reveal')
             values = this.getModelData(this.survey.sections, field.parent).typeInfo.values;

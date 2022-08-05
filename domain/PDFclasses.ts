@@ -3,9 +3,10 @@ export class DocDefinition {
   content: any[];
   styles: Object;
   images: Object;
+  info: PdfMetadata;
 
   constructor() {
-    this.header = new Content('', ['']);
+    this.header = null;
     this.content = [];
     this.styles = {};
   }
@@ -93,5 +94,21 @@ export class PdfUnorderedList {
     this.ul = ul;
     if (type)
       this.type = type;
+  }
+}
+
+export class PdfMetadata {
+  title: string;
+  author: string;
+  subject: string;
+  keywords: string;
+  creator: string;
+  producer: string;
+  creationDate: any;
+  modDate: any;
+  trapped: any;
+
+  constructor(title: string) {
+    this.title = title;
   }
 }
