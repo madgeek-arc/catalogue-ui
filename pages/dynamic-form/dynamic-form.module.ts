@@ -1,7 +1,6 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {ChapterComponent} from "./chapter.component";
 import {DynamicFormFieldsComponent} from "./fields/dynamic-form-fields.component";
 import {ChapterEditComponent} from "./chapter-edit.component";
 import {NgSelectModule} from "@ng-select/ng-select";
@@ -26,7 +25,6 @@ import {ChooseOneComponent} from "./fields/choose-one-composite/choose-one.compo
       StringFieldComponent,
       CompositeFieldComponent,
       DynamicFormFieldsComponent,
-      ChapterComponent,
       ChapterEditComponent,
       VocabularyFieldComponent,
       CheckboxFieldComponent,
@@ -49,7 +47,6 @@ import {ChooseOneComponent} from "./fields/choose-one-composite/choose-one.compo
     CKEditorModule,
   ],
   exports: [
-    ChapterComponent,
     ChapterEditComponent,
     SurveyComponent
   ]
