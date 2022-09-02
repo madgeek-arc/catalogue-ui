@@ -1,16 +1,16 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {zip} from "rxjs/internal/observable/zip";
-import {SurveyAnswer} from "../../../app/domain/survey";
-import {SurveyService} from "../../../app/services/survey.service";
+// import {SurveyAnswer} from "../../../app/domain/survey"; // answer
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
 import {
   Columns,
   Content,
   DocDefinition,
-  PdfImage, PdfMetadata,
+  PdfImage,
+  PdfMetadata,
   PdfTable,
   PdfUnorderedList,
   TableDefinition
@@ -30,11 +30,10 @@ import UIkit from "uikit";
 
 export class SurveyComponent implements OnInit, OnChanges {
 
-  @Input() answer: SurveyAnswer = null;
+  @Input() answer: any = null; // cant import specific project class in lib file
   @Input() survey: Model = null;
   @Input() tabsHeader : string = null;
-
-  @ViewChild('printPDF', { static: false }) el!: ElementRef;
+  @Output() valid = new EventEmitter<boolean>();
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
@@ -54,8 +53,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   form: FormGroup;
 
-  constructor(private formControlService: FormControlService, private fb: FormBuilder,
-              private router: Router, private surveyService: SurveyService,
+  constructor(private formControlService: FormControlService, private fb: FormBuilder, private router: Router,
               private route: ActivatedRoute) {
     this.form = this.fb.group({});
   }
@@ -159,7 +157,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
-  validateSurvey() {
+  validateForm() {
     for (const chapterChangeMapElement of this.chapterChangeMap) {
       if (chapterChangeMapElement[1]) {
         UIkit.modal('#validation-modal').hide();
@@ -168,15 +166,7 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
     }
     if (this.form.valid) {
-      this.surveyService.changeAnswerValidStatus(this.answer.id, !this.answer.validated).subscribe(
-        next => {
-          UIkit.modal('#validation-modal').hide();
-          this.router.navigate(['/contributions/mySurveys']);
-        },
-        error => {
-          console.error(error);
-        },
-        () => {});
+      this.valid.emit(this.form.valid);
     } else {
       UIkit.modal('#validation-modal').hide();
       console.log('Invalid form');

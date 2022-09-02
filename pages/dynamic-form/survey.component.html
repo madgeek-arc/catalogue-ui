@@ -1,7 +1,7 @@
 <div *ngIf="survey" class="uk-grid">
   <h5 class="uk-width-1-2 uk-margin-bottom">{{survey.name}}</h5>
   <div class="uk-width-1-2">
-    <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateSurvey()">Validate</button>
+    <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>
   </div>
   <p class="uk-margin-bottom">{{survey.notice}}</p>
 </div>
@@ -66,7 +66,7 @@
     editable until unlocked.</p>
     <p class="uk-text-right">
       <button class="uk-button uk-button-secondary uk-modal-close" type="button">Close</button>
-      <button class="uk-button uk-button-primary" type="button" (click)="validateSurvey()">I agree</button>
+      <button class="uk-button uk-button-primary" type="button" (click)="validateForm()">I agree</button>
     </p>
   </div>
 </div>
