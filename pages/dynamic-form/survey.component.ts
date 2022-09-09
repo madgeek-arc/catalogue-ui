@@ -68,7 +68,8 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.ready = false;
-    this.currentChapter = this.survey.sections[0];
+    if (this.survey)
+      this.currentChapter = this.survey.sections[0];
     if (this.answer)
       this.editMode = true;
     if (this.survey) {
