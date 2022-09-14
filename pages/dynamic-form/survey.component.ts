@@ -191,7 +191,16 @@ export class SurveyComponent implements OnInit, OnChanges {
     window.scrollTo(0, 0);
     // this.showLoader = true;
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
-    this.formControlService.postItem(this.answer.id, this.form.getRawValue(), this.editMode).subscribe(
+    let postMethod = '';
+    let firstParam = '';
+    if (this.answer?.id) {
+      postMethod = 'postItem';
+      firstParam = this.answer.id;
+    } else {
+      postMethod = 'postGenericItem'
+      firstParam = this.survey.resourceType;
+    }
+    this.formControlService[postMethod](firstParam, this.form.getRawValue(), this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
         for (const key of this.chapterChangeMap.keys()) {
