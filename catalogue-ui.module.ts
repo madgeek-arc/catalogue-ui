@@ -24,6 +24,7 @@ import {FormBuilderModule} from "./pages/form-builder/form-builder.module";
   ],
   providers: [],
   exports: [
+    DynamicFormModule
   ]
 })
 
