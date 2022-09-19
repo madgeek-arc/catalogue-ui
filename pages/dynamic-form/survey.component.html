@@ -11,7 +11,7 @@
 </div>
 
 <!--Chapter Selection-->
-<div [ngClass]="{'uk-display-none': survey.sections.length === 1}">
+<div *ngIf="survey" [ngClass]="{'uk-display-none': (survey.sections.length === 1 || !survey.sections[0].subSections)}">
   <ul class="chapter-tabs uk-tab" uk-switcher="connect: #top-navigation-tabs; animation: uk-animation-fade">
     <li class="" *ngFor="let section of survey.sections; trackBy: trackByMethod">
       <a (click)="showUnsavedChangesPrompt(section)">{{section.name}}

@@ -36,7 +36,8 @@ export class FormControlService implements OnInit{
   }
 
   postGenericItem(resourceType: string, item, edit: boolean) {
-    return this.http.post(this.base + `/items?resourceType=${resourceType}`, item);
+    // console.log(item[Object.keys(item)[0]]);
+    return this.http.post(this.base + `/items?resourceType=${resourceType}`, item[Object.keys(item)[0]]);
   }
 
   validateUrl(url: string) {
