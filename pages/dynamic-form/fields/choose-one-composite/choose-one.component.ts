@@ -44,7 +44,7 @@ export class ChooseOneComponent implements OnInit {
     for (const control in this.form.controls) {
       this.form.removeControl(control);
     }
-    this.form.addControl(name, new FormGroup(this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name))));
+    this.form.addControl(name, this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name)));
   }
 
   /** Handle Arrays --> **/
@@ -57,7 +57,7 @@ export class ChooseOneComponent implements OnInit {
   }
 
   pushComposite(compositeField: Field) {
-    this.fieldAsFormArray().push(new FormGroup(this.formService.createCompositeField(compositeField)));
+    this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
   }
 
   /** <-- Handle Arrays **/

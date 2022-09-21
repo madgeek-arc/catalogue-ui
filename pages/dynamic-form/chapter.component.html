@@ -96,6 +96,7 @@
                             <li *ngFor="let group of fields">
                               <div *ngFor="let fieldsData of group.fields"
                                    [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
+                                <pre>{{fieldsData.form.display | json}}</pre>
                                 <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                            [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                             (hasChanges)="unsavedChangesPrompt($event)">

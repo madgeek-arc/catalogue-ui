@@ -59,7 +59,7 @@ export class CompositeFieldComponent implements OnInit {
   }
 
   pushComposite(compositeField: Field) {
-    this.fieldAsFormArray().push(new FormGroup(this.formService.createCompositeField(compositeField)));
+    this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
   }
 
   /** <-- Handle Arrays **/
