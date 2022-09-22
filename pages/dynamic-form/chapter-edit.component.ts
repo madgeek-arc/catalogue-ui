@@ -201,7 +201,7 @@ export class ChapterEditComponent implements OnChanges{
         }
       }
       if (!flag) {
-        // console.log('didnt found valid array field')
+        // console.log('didn't find valid array field')
         let found = new Array(field.subFields.length);
         for (let j = 0; j < field.subFields.length; j++) {
           for (let i = 0; i < formArray.length; i++) {

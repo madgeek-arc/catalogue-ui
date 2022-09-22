@@ -101,6 +101,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           }
           this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
           if (this.answer) {
+            console.log(this.answer)
             this.prepareForm(this.answer.answer, this.model.sections[i].subSections)
             this.form.patchValue(this.answer.answer);
           }
@@ -260,6 +261,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   /** create additional fields for arrays if needed --> **/
   prepareForm(answer: Object, fields: Section[]) {
+    console.log(answer)
     for (const [key, value] of Object.entries(answer)) {
       // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
