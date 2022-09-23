@@ -11,7 +11,7 @@ import {FormControlService} from "../../../../services/form-control.service";
 
 export class ChooseOneComponent implements OnInit {
   @Input() fieldData: Field;
-  @Input() vocabularies: Map<string, string[]>;
+  @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;

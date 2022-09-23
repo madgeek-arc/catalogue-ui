@@ -18,18 +18,15 @@ export class ChapterEditComponent implements OnChanges{
   // @Input() answerValue: Object = null;
   @Input() form: any = null;
   @Input() tabsHeader: string;
-  @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
-  @Input() vocabularies: Map<string, string[]> = null;
+  @Input() vocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;
-  @Input() resourceType: string = null;
   @Input() fields: Section[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
   @Output() submit = new EventEmitter();
 
-  // @ViewChild('sections') sections: ElementRef<HTMLElement>;
 
   subVocabularies: UiVocabulary[] = [];
   editMode = true;

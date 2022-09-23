@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {zip} from "rxjs/internal/observable/zip";
-// import {SurveyAnswer} from "../../../app/domain/survey"; // answer
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
 import {
@@ -18,6 +17,7 @@ import {
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
+// import {SurveyAnswer} from "../../../app/domain/survey"; // answer
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import UIkit from "uikit";
@@ -32,6 +32,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   @Input() answer: any = null; // cant import specific project class in lib file
   @Input() model: Model = null;
+  @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() tabsHeader : string = null;
   @Output() valid = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<FormGroup>();
@@ -69,20 +70,16 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.ready = false;
-    if (this.model)
-      this.currentChapter = this.model.sections[0];
     if (this.answer)
       this.editMode = true;
     if (this.model) {
+      this.currentChapter = this.model.sections[0];
       this.formControlService.getUiVocabularies().subscribe(res => {
         this.vocabularies = res;
-        // res[1].sections.sort((a, b) => a.order - b.order);
         this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
-        // this.chapters = [];
         for (const section of this.model.sections) {
           for (const surveyAnswer in this.answer?.answer) {
             if (section.id === this.answer.answer[surveyAnswer].chapterId) {
-              // this.chapters.push(section);
               this.chapterChangeMap.set(section.id, false);
               this.sortedSurveyAnswers[section.id] = this.answer.answer[surveyAnswer].answer;
               break;
@@ -101,7 +98,6 @@ export class SurveyComponent implements OnInit, OnChanges {
           }
           this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
           if (this.answer) {
-            console.log(this.answer)
             this.prepareForm(this.answer.answer, this.model.sections[i].subSections)
             this.form.patchValue(this.answer.answer);
           }
@@ -261,7 +257,6 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   /** create additional fields for arrays if needed --> **/
   prepareForm(answer: Object, fields: Section[]) {
-    console.log(answer)
     for (const [key, value] of Object.entries(answer)) {
       // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {

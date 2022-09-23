@@ -32,10 +32,10 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
-      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate" [vocabularies]="vocabularies"
-                        [tabsHeader]="tabsHeader" [chapter]="model.sections[i]" [resourceType]="model.resourceType"
+      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
+                        [tabsHeader]="tabsHeader" [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
                         [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
-                        [surveyAnswerId]="" (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)">
+                        (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)">
       </app-chapter-edit>
     </li>
   </ul>
@@ -45,7 +45,7 @@
   <i class="loader-big" aria-hidden="true"></i>
 </ng-template>
 
-<!--<pre *ngIf="form">{{form.getRawValue() | json}}</pre>-->
+<pre *ngIf="form">{{form.getRawValue() | json}}</pre>
 
 <!-- Validation modal -->
 <div id="validation-modal" uk-modal="esc-close: false; bg-close: false">
