@@ -79,7 +79,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
         for (const section of this.model.sections) {
           for (const surveyAnswer in this.answer?.answer) {
-            if (section.id === this.answer.answer[surveyAnswer].chapterId) {
+            if (section.id === this.answer.answer[surveyAnswer]?.chapterId) {
               this.chapterChangeMap.set(section.id, false);
               this.sortedSurveyAnswers[section.id] = this.answer.answer[surveyAnswer].answer;
               break;
