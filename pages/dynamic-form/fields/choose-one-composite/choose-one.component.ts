@@ -27,7 +27,7 @@ export class ChooseOneComponent implements OnInit {
   }
 
   ngOnInit() {
-    // console.log(this.fieldData.name);
+    console.log(this.position);
     if (this.position !== null) {
       // console.log(this.rootFormGroup.control.controls[this.position]);
       // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.name));
@@ -35,16 +35,29 @@ export class ChooseOneComponent implements OnInit {
     } else {
       this.form = this.rootFormGroup.control.get(this.fieldData.name) as FormGroup;
     }
-    // console.log(this.form);
-    this.chooseOne(Object.entries(this.form.controls)[0][0])
+    if (this.fieldData.typeInfo.multiplicity){
+      // console.log(Object.entries((this.form.controls[0] as FormGroup).controls)[0][0]);
+      this.chooseOne(Object.entries((this.form.controls[0] as FormGroup).controls)[0][0], 0);
+    } else {
+      this.chooseOne(Object.entries(this.form.controls)[0][0])
+    }
   }
 
   /** Choose one to show **/
-  chooseOne(name: string) {
-    for (const control in this.form.controls) {
-      this.form.removeControl(control);
+  chooseOne(name: string, index?: number) {
+    let tmpGroup: FormGroup;
+    if (index !== null) {
+      tmpGroup = this.form.controls[index] as FormGroup;
+      console.log(tmpGroup)
+    } else
+      tmpGroup = this.form;
+    for (const control in tmpGroup.controls) {
+      console.log(name);
+      console.log(control);
+      console.log(tmpGroup);
+      tmpGroup.removeControl(control);
     }
-    this.form.addControl(name, this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name)));
+    tmpGroup.addControl(name, this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name)));
   }
 
   /** Handle Arrays --> **/

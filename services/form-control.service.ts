@@ -28,7 +28,7 @@ export class FormControlService implements OnInit{
   }
 
   getUiVocabularies() {
-    return this.http.get<Map<string, string[]>>(this.base + `/ui/vocabularies/map`);
+    return this.http.get<Map<string, object[]>>(this.base + `/ui/vocabularies/map`);
   }
 
   postItem(surveyId: string, item: any, edit:boolean) {
@@ -89,10 +89,16 @@ export class FormControlService implements OnInit{
                 new FormControl(null, Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
                 : new FormControl(null, Validators.pattern('[+]?\\d+$'));
             } else if (formField.typeInfo.type === 'number') {
-              this.numbersOfDecimals = this.calculateNumberOfDecimals(formField.typeInfo.values);
-              group[formField.name] = formField.form.mandatory ?
-                new FormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
-                : new FormControl(null, Validators.pattern(this.numberRegEx));
+              if (formField.typeInfo.values) {
+                this.numbersOfDecimals = this.calculateNumberOfDecimals(formField.typeInfo.values);
+                group[formField.name] = formField.form.mandatory ?
+                  new FormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
+                  : new FormControl(null, Validators.pattern(this.numberRegEx));
+              } else {
+                group[formField.name] = formField.form.mandatory ?
+                  new FormControl(null, Validators.required) : new FormControl(null);
+              }
+
             } else {
               group[formField.name] = formField.form.mandatory ? new FormControl(null, Validators.required)
                 : new FormControl(null);
@@ -134,9 +140,14 @@ export class FormControlService implements OnInit{
         new FormControl(null, [Validators.required, Validators.pattern(this.urlRegEx)])
             : new FormControl(null, Validators.pattern(this.urlRegEx));
       } else if (subField.typeInfo.type === 'number') {
+        if (subField.typeInfo.values) {
         subGroup[subField.name] = subField.form.mandatory ?
           new FormControl(null, [Validators.required, Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))])
           : new FormControl(null, Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values)));
+        } else {
+          subGroup[subField.name] = subField.form.mandatory ?
+            new FormControl(null, Validators.required) : new FormControl(null);
+        }
       } else {
         subGroup[subField.name] = subField.form.mandatory ?
           new FormControl(null, Validators.required)
@@ -162,10 +173,15 @@ export class FormControlService implements OnInit{
         new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
         : new FormControl('', Validators.pattern('[+]?\\d+$'));
     } else if (formField.typeInfo.type === 'number') {
-      this.numbersOfDecimals = this.calculateNumberOfDecimals(formField.typeInfo.values);
-      return formField.form.mandatory ?
-        new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
-        : new FormControl('', Validators.pattern(this.numberRegEx));
+      if (formField.typeInfo.values) {
+        this.numbersOfDecimals = this.calculateNumberOfDecimals(formField.typeInfo.values);
+        return formField.form.mandatory ?
+          new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
+          : new FormControl('', Validators.pattern(this.numberRegEx));
+      } else {
+        return formField.form.mandatory ? new FormControl('', Validators.required) : new FormControl('');
+      }
+
     } else {
       return new FormControl(null, Validators.required)
     }

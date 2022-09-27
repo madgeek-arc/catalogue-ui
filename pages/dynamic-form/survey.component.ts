@@ -42,7 +42,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   currentChapter: Section = null;
   chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
-  vocabularies: Map<string, string[]>;
+  vocabularies: Map<string, object[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
   bitset: Tabs = new Tabs;

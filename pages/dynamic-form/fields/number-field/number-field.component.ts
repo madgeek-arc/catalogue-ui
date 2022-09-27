@@ -24,6 +24,8 @@ export class NumberFieldComponent implements OnInit {
   form!: FormGroup;
   hideField: boolean = null;
 
+  step: string = '';
+
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
   }
 
@@ -42,6 +44,10 @@ export class NumberFieldComponent implements OnInit {
       this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
         this.enableDisableField(value);
       });
+    }
+
+    if (this.fieldData.typeInfo.values) {
+      this.step = this.fieldData.typeInfo.values[0]
     }
   }
 
