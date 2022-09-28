@@ -27,7 +27,6 @@ export class ChooseOneComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.position);
     if (this.position !== null) {
       // console.log(this.rootFormGroup.control.controls[this.position]);
       // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.name));
@@ -36,7 +35,6 @@ export class ChooseOneComponent implements OnInit {
       this.form = this.rootFormGroup.control.get(this.fieldData.name) as FormGroup;
     }
     if (this.fieldData.typeInfo.multiplicity){
-      // console.log(Object.entries((this.form.controls[0] as FormGroup).controls)[0][0]);
       this.chooseOne(Object.entries((this.form.controls[0] as FormGroup).controls)[0][0], 0);
     } else {
       this.chooseOne(Object.entries(this.form.controls)[0][0])
@@ -46,23 +44,28 @@ export class ChooseOneComponent implements OnInit {
   /** Choose one to show **/
   chooseOne(name: string, index?: number) {
     let tmpGroup: FormGroup;
-    if (index !== null) {
+    if (index !== undefined) {
       tmpGroup = this.form.controls[index] as FormGroup;
-      console.log(tmpGroup)
-    } else
+    } else {
       tmpGroup = this.form;
+    }
     for (const control in tmpGroup.controls) {
-      console.log(name);
-      console.log(control);
-      console.log(tmpGroup);
       tmpGroup.removeControl(control);
     }
-    tmpGroup.addControl(name, this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name)));
+    if (this.fieldData.subFields.find(field => field.name === name).typeInfo.type === 'composite')
+      tmpGroup.addControl(name, this.formService.createCompositeField(this.fieldData.subFields.find(field => field.name === name)));
+    else if (this.fieldData.subFields.find(field => field.name === name).typeInfo.type === 'string') {
+      tmpGroup.addControl(name, this.formService.createField(this.fieldData.subFields.find(field => field.name === name)));
+    }
   }
 
   /** Handle Arrays --> **/
   fieldAsFormArray() {
     return this.form as unknown as FormArray;
+  }
+
+  getGroupOfArray(index: number) {
+    return this.fieldAsFormArray().controls[index] as FormGroup;
   }
 
   remove(i: number) {
@@ -71,6 +74,7 @@ export class ChooseOneComponent implements OnInit {
 
   pushComposite(compositeField: Field) {
     this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
+    this.chooseOne(Object.entries((this.form.controls[this.fieldAsFormArray().length - 1] as FormGroup).controls)[0][0], this.fieldAsFormArray().length - 1);
   }
 
   /** <-- Handle Arrays **/

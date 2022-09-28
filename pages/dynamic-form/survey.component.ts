@@ -192,7 +192,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     this.submit.emit(this.form);
   }
 
-  onSubmit(e: any) { // FIXME
+  onSubmit() { // FIXME
     window.scrollTo(0, 0);
     // this.showLoader = true;
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
