@@ -33,7 +33,9 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() answer: any = null; // cant import specific project class in lib file
   @Input() model: Model = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
-  @Input() tabsHeader : string = null;
+  @Input() tabsHeader: string = null;
+  @Input() mandatoryFieldsText: string = null;
+  @Input() downloadPDF: boolean = false;
   @Output() valid = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<FormGroup>();
 

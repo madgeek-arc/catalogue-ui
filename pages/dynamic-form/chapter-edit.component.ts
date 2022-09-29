@@ -18,6 +18,7 @@ export class ChapterEditComponent implements OnChanges{
   // @Input() answerValue: Object = null;
   @Input() form: any = null;
   @Input() tabsHeader: string;
+  @Input() mandatoryFieldsText: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
   @Input() vocabularies: Map<string, object[]> = null;

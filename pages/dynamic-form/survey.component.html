@@ -6,7 +6,7 @@
   <p class="uk-margin-bottom">{{model.notice}}</p>
 </div>
 
-<div class="uk-flex uk-flex-right">
+<div *ngIf="downloadPDF" class="uk-flex uk-flex-right">
   <button class="uk-button uk-button-secondary" (click)="generatePDF()">Download as pdf</button>
 </div>
 
@@ -32,10 +32,11 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
-      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
-                        [tabsHeader]="tabsHeader" [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
+      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate" [tabsHeader]="tabsHeader"
+                        [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
                         [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
-                        (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)">
+                        (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)"
+                        [mandatoryFieldsText]="mandatoryFieldsText">
       </app-chapter-edit>
     </li>
   </ul>
