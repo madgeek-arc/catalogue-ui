@@ -31,7 +31,7 @@
           </label>
         </div>
       </div>
-      <div [formGroupName]="i" class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+      <div [formGroupName]="i" class="uk-width-9-10 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
         <div *ngFor="let control of fieldData?.subFields; let j=index">
           <div class="">
             <div *ngIf="getGroupOfArray(i).contains(control.name)">
