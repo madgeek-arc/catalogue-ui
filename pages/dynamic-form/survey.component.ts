@@ -44,7 +44,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   currentChapter: Section = null;
   chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
-  vocabularies: Map<string, object[]>;
+  // vocabularies: Map<string, object[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
   bitset: Tabs = new Tabs;
@@ -76,8 +76,8 @@ export class SurveyComponent implements OnInit, OnChanges {
       this.editMode = true;
     if (this.model) {
       this.currentChapter = this.model.sections[0];
-      this.formControlService.getUiVocabularies().subscribe(res => {
-        this.vocabularies = res;
+      // this.formControlService.getUiVocabularies().subscribe(res => {
+      //   this.vocabularies = res;
         this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
         for (const section of this.model.sections) {
           for (const surveyAnswer in this.answer?.answer) {
@@ -88,11 +88,11 @@ export class SurveyComponent implements OnInit, OnChanges {
             }
           }
         }
-      },
-      error => {
-        this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
-      },
-      () => {
+      // },
+      // error => {
+      //   this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
+      // },
+      // () => {
         for (let i = 0; i < this.model.sections.length; i++) {
           if (this.model.sections[i].subSections === null) {
             this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
@@ -117,48 +117,48 @@ export class SurveyComponent implements OnInit, OnChanges {
           }
         }, 0);
         this.ready = true;
-      });
+      // });
     }
-    else { // TODO: remove later
-      this.route.params.subscribe(
-        params => {
-          zip(
-            this.formControlService.getUiVocabularies(),
-            this.formControlService.getFormModelByType(params['resourceTypeModel'])
-          ).subscribe(
-            res => {
-              this.vocabularies = res[0];
-              this.model = res[1].results[0];
-            },
-            error => {console.log(error)},
-            () => {
-              for (let i = 0; i < this.model.sections.length; i++) {
-                if (this.model.sections[i].subSections)
-                  this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
-                else {
-                  this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
-                }
-                // this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.sections[i].subSections)
-                // this.form.get(this.surveyModel.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
-              }
-              // if (this.surveyAnswers.validated) {
-              //   this.readonly = true;
-              //   this.validate = false;
-              // } else if (this.validate) {
-              //   UIkit.modal('#validation-modal').show();
-              // }
-
-              // setTimeout(() => {
-              //   if (this.readonly) {
-              //     this.form.disable();
-              //   }
-              // }, 0);
-              this.ready = true
-            }
-          );
-        }
-      );
-    }
+    // else { // TODO: remove later
+    //   this.route.params.subscribe(
+    //     params => {
+    //       zip(
+    //         this.formControlService.getUiVocabularies(),
+    //         this.formControlService.getFormModelByType(params['resourceTypeModel'])
+    //       ).subscribe(
+    //         res => {
+    //           this.vocabularies = res[0];
+    //           this.model = res[1].results[0];
+    //         },
+    //         error => {console.log(error)},
+    //         () => {
+    //           for (let i = 0; i < this.model.sections.length; i++) {
+    //             if (this.model.sections[i].subSections)
+    //               this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
+    //             else {
+    //               this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
+    //             }
+    //             // this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.sections[i].subSections)
+    //             // this.form.get(this.surveyModel.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
+    //           }
+    //           // if (this.surveyAnswers.validated) {
+    //           //   this.readonly = true;
+    //           //   this.validate = false;
+    //           // } else if (this.validate) {
+    //           //   UIkit.modal('#validation-modal').show();
+    //           // }
+    //
+    //           // setTimeout(() => {
+    //           //   if (this.readonly) {
+    //           //     this.form.disable();
+    //           //   }
+    //           // }, 0);
+    //           this.ready = true
+    //         }
+    //       );
+    //     }
+    //   );
+    // }
   }
 
   validateForm() {
