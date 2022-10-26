@@ -207,7 +207,9 @@ export class SurveyComponent implements OnInit, OnChanges {
       postMethod = 'postGenericItem'
       firstParam = this.model.resourceType;
     }
-    this.formControlService[postMethod](firstParam, this.form.getRawValue(), this.editMode).subscribe(
+    console.log(postMethod)
+    console.log(firstParam);
+    this.formControlService[postMethod](firstParam, this.form.value, this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
         for (const key of this.chapterChangeMap.keys()) {
@@ -216,18 +218,13 @@ export class SurveyComponent implements OnInit, OnChanges {
         UIkit.modal('#unsaved-changes-modal').hide();
       },
       error => {
-        this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.error);
-        // this.showLoader = false;
+        this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.message);
         UIkit.modal('#unsaved-changes-modal').hide();
-        console.log(error);
+        // this.showLoader = false;
+        // console.log(error);
       },
       () => {
-        setTimeout(() => {
-          UIkit.alert('#successMessage').close();
-        }, 4000);
-        setTimeout(() => {
-          this.successMessage = '';
-        }, 4200);
+        this.closeSuccessAlert();
         // this.showLoader = false;
       }
     );
@@ -466,12 +463,20 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** <-- Generate PDF **/
 
   /** other stuff --> **/
-  closeAlert() {
-    this.errorMessage = '';
+  closeError() {
     UIkit.alert('#errorAlert').close();
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 550);
   }
 
-  trackByMethod(index:number) {
-    this.sectionIndex = index;
+  closeSuccessAlert() {
+    setTimeout(() => {
+      UIkit.alert('#successAlert').close();
+    }, 4000);
+    setTimeout(() => {
+      this.successMessage = '';
+    }, 4550);
   }
+
 }
