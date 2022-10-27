@@ -135,7 +135,7 @@ export class CompositeFieldComponent implements OnInit {
 
   enableDisableField(value) {
     // console.log(value);
-    if (value === 'Applicable') {
+    if (value === 'Applicable' || value === 'Yes') {
       this.form.enable();
       this.hideField = false;
 

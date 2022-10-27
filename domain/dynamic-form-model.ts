@@ -14,6 +14,7 @@ export class Required {
 export class Dependent {
   id: number;
   name: string;
+  value: string;
 }
 
 export class TypeInfo {

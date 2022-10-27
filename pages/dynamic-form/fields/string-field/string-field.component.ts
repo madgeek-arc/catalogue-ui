@@ -37,10 +37,11 @@ export class StringFieldComponent implements OnInit {
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
       this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
-
-      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value);
-      });
+      console.log(this.fieldData.name);
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
+        value => {this.enableDisableField(value);},
+        error => {console.log(error)}
+      );
     }
 
     // console.log(this.fieldData);
@@ -91,7 +92,7 @@ export class StringFieldComponent implements OnInit {
 
   enableDisableField(value) {
     // console.log(value);
-    if (value === true || value === 'Other, please specify') {
+    if (value === true || value === 'Other, please specify' || value === 'Yes') {
       this.formControl.enable();
       this.hideField = false;
 
