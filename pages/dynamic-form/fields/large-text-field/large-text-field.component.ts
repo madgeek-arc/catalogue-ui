@@ -72,7 +72,7 @@ export class LargeTextFieldComponent implements OnInit {
 
   enableDisableField(value) {
     // console.log(value);
-    if (value === true || value === 'Other, please specify') {
+    if (value === true || value === 'Other, please specify' || value === 'Yes') {
       this.formControl.enable();
       this.hideField = false;
 
