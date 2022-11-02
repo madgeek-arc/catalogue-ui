@@ -39,10 +39,10 @@ export class NumberFieldComponent implements OnInit {
 
     if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
-      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
-
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
+      // console.log(this.fieldData.name);
       this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value);
+        this.enableDisableField(value, this.fieldData.form.dependsOn.value);
       });
     }
 
@@ -101,9 +101,9 @@ export class NumberFieldComponent implements OnInit {
     this.hasChanges.emit(true);
   }
 
-  enableDisableField(value) {
+  enableDisableField(value, enableValue) {
     // console.log(value);
-    if (value === true || value === 'Other, please specify') {
+    if (value === enableValue) {
       this.formControl.enable();
       this.hideField = false;
 
