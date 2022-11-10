@@ -102,6 +102,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           if (this.answer) {
             this.prepareForm(this.answer.answer, this.model.sections[i].subSections)
             this.form.patchValue(this.answer.answer);
+            this.form.markAllAsTouched();
           }
         }
         if (this.answer?.validated) {

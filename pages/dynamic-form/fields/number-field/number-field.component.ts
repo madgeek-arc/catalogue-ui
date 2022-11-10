@@ -4,7 +4,6 @@ import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from 
 import {FormControlService} from "../../../../services/form-control.service";
 import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
-
 @Component({
   selector: 'app-number-field',
   templateUrl: './number-field.component.html',
@@ -99,6 +98,13 @@ export class NumberFieldComponent implements OnInit {
   /** other stuff--> **/
   unsavedChangesPrompt() {
     this.hasChanges.emit(true);
+  }
+
+  getNumberOfDecimals() {
+    if (this.fieldData.typeInfo.values) {
+      return this.fieldData.typeInfo.values[0].split('.')[1].length;
+    }
+    return 0
   }
 
   enableDisableField(value, enableValue) {
