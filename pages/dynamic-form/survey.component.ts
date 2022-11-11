@@ -33,6 +33,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() answer: any = null; // cant import specific project class in lib file
   @Input() model: Model = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
+  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() tabsHeader: string = null;
   @Input() mandatoryFieldsText: string = null;
   @Input() downloadPDF: boolean = false;
@@ -45,7 +46,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
   // vocabularies: Map<string, object[]>;
-  subVocabularies: UiVocabulary[] = [];
   editMode = false;
   bitset: Tabs = new Tabs;
 

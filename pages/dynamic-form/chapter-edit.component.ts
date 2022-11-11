@@ -22,14 +22,13 @@ export class ChapterEditComponent implements OnChanges{
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
   @Input() vocabularies: Map<string, object[]> = null;
+  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;
-  @Input() fields: Section[] = null;
 
+  @Input() fields: Section[] = null;
   @Output() chapterHasChanges = new EventEmitter<string[]>();
   @Output() submit = new EventEmitter();
 
-
-  subVocabularies: UiVocabulary[] = [];
   editMode = true;
 
   bitset: Tabs = new Tabs;

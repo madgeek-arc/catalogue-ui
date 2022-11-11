@@ -33,7 +33,7 @@
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
       <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate" [tabsHeader]="tabsHeader"
-                        [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
+                        [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [subVocabularies]="subVocabularies"
                         [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
                         (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)"
                         [mandatoryFieldsText]="mandatoryFieldsText">
