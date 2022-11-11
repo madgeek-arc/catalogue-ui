@@ -1,4 +1,5 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
+      [ngClass]="{'uk-hidden clear-style': hideField}">
   <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
        [attr.for]="fieldData.name" [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}"
        style="{{fieldData.label.style}}">
@@ -9,28 +10,28 @@
   </div>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">
-        <input [id]="fieldData.name" [formControlName]="i"
-               class="uk-input uk-width-9-10 uk-animation-slide-top-small"
-               [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
-               [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
-               (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
-        <a *ngIf="fieldAsFormArray().length > 1"
-           (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
-           class="remove-element uk-animation-slide-top-small uk-margin-small-left">
-          <span class="material-icons">clear</span>
-        </a>
-      </div>
-    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-         [innerHTML]="fieldData.form.suggestion.text">
+    <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">
+      <input [id]="fieldData.name" [formControlName]="i"
+             class="uk-input uk-width-9-10 uk-animation-slide-top-small"
+             [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
+             [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
+             (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
+      <a *ngIf="fieldAsFormArray().length > 1"
+         (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
+         class="remove-element uk-animation-slide-top-small uk-margin-small-left">
+        <span class="material-icons">clear</span>
+      </a>
     </div>
+  <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+       [innerHTML]="fieldData.form.suggestion.text">
+  </div>
 
-      <div class="uk-width-9-10 uk-text-center uk-margin-top">
-        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
-          <span class="material-icons">add</span>Add {{fieldData.label.text}}
-        </a>
-      </div>
+    <div class="uk-width-9-10 uk-text-center uk-margin-top">
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
+        <span class="material-icons">add</span>Add {{fieldData.label.text}}
+      </a>
     </div>
+  </div>
 
   <ng-template #noMultiplicity>
     <input [formControlName]="fieldData.name" [id]="fieldData.id" class="uk-input uk-width-9-10 uk-animation-scale-up"

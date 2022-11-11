@@ -19,6 +19,7 @@ export class RadioButtonFieldComponent implements OnInit {
 
   formControl!: FormControl;
   form!: FormGroup;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -34,6 +35,14 @@ export class RadioButtonFieldComponent implements OnInit {
 
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
     // console.log(this.formControl);
+    if(this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
+      // console.log(this.fieldData.name);
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value, this.fieldData.form.dependsOn.value);
+      }, error => {console.log(error)});
+    }
   }
 
   /** check fields validity--> **/
@@ -53,6 +62,20 @@ export class RadioButtonFieldComponent implements OnInit {
   }
 
   /** other stuff--> **/
+  enableDisableField(value, enableValue) {
+
+    if (value === enableValue) {
+      this.formControl.enable();
+      this.hideField = false;
+
+    } else {
+      this.formControl.disable();
+      this.formControl.reset();
+      this.hideField = true;
+    }
+
+  }
+
   unsavedChangesPrompt() {
     this.hasChanges.emit(true);
   }
