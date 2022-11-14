@@ -8,7 +8,7 @@
   </div>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.name">
-    <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom">
+    <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">
       <ng-select class="uk-width-9-10" [id]="fieldData.name" [formControlName]="i"
                  [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.name, i, this.editMode)}"
                  [items]="dynamicVoc?.length > 0 ? dynamicVoc :
