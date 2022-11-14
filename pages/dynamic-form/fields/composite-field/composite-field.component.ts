@@ -11,7 +11,7 @@ import {FormControlService} from "../../../../services/form-control.service";
 export class CompositeFieldComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() vocabularies: Map<string, object[]>;
-  @Input() subVocabularies: UiVocabulary[];
+  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: any;
   @Input() position?: number = null;
 

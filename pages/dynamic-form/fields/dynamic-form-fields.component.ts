@@ -13,7 +13,7 @@ export class DynamicFormFieldsComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() form: FormGroup;
   @Input() vocabularies: Map<string, object[]>;
-  @Input() subVocabularies: UiVocabulary[];
+  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: any;
 
   @Output() hasChanges = new EventEmitter<boolean>();

@@ -320,6 +320,7 @@ ul.uk-pagination {
 }
 
 a.add-new-element {
+  text-decoration-line: none;
   font-weight: bold;
   letter-spacing: -0.35px;
   color: #444444;
@@ -330,9 +331,10 @@ a.add-new-element:hover {
   text-decoration: none;
 }
 
-a.remove-element i {
+a.remove-element {
   color: #B5B5B5;
   font-size: 25px;
+  text-decoration-line: none;
 }
 
 .formGroupElement {
