@@ -28,10 +28,6 @@ export class FormControlService implements OnInit{
     return this.http.get<Paging<Model>>(this.base + `/forms/models?type=${type}`);
   }
 
-  getUiVocabularies() {
-    return this.http.get<Map<string, object[]>>(this.base + `/ui/vocabularies/map`);
-  }
-
   postItem(surveyId: string, item: any, edit:boolean) {
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}?chapterAnswerId=${item.id}`, item, this.options);
   }
