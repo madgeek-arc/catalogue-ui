@@ -108,8 +108,7 @@ export class NumberFieldComponent implements OnInit {
   }
 
   enableDisableField(value, enableValue) {
-    // console.log(value);
-    if (value === enableValue) {
+    if (value?.toString() == enableValue) {
       this.formControl.enable();
       this.hideField = false;
 

@@ -39,7 +39,9 @@ export class StringFieldComponent implements OnInit {
       this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
       // console.log(this.fieldData.name);
       this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
-        value => {this.enableDisableField(value, this.fieldData.form.dependsOn.value);},
+        value => {
+            this.enableDisableField(value, this.fieldData.form.dependsOn.value);
+          },
         error => {console.log(error)}
       );
     }
@@ -91,18 +93,15 @@ export class StringFieldComponent implements OnInit {
   }
 
   enableDisableField(value, enableValue) {
-    // console.log(value);
-    if (value === enableValue) {
+    if (value?.toString() == enableValue) {
       this.formControl.enable();
       this.hideField = false;
-
     } else {
       this.formControl.disable();
       this.formControl.reset();
       this.hideField = true;
       // maybe add this if the remaining empty fields are a problem
       // (this.formControl as unknown as FormArray).clear();
-
     }
   }
 
