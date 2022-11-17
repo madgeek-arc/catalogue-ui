@@ -106,7 +106,6 @@ export class VocabularyFieldComponent implements OnInit {
   }
 
   enableDisableField(value) {
-    this.formControl.reset();
     this.dynamicVoc = [];
 
     if (this.fieldData.form.dependsOn.value) {
@@ -115,12 +114,14 @@ export class VocabularyFieldComponent implements OnInit {
         this.formControl.enable();
       } else {
         this.formControl.disable();
+        this.formControl.reset();
       }
     } else if (value) {
       this.dynamicVoc = this.subVocabularies[value];
       this.formControl.enable();
     } else {
       this.formControl.disable();
+      this.formControl.reset();
     }
   }
 

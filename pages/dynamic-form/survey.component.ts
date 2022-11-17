@@ -263,8 +263,10 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
         let i = 1;
-        if (value?.length > 1)
+        if (value?.length > 1) {
+          console.log(value);
           this.pushToFormArray(key, value.length);
+        }
         for ( ;i < value?.length; i++) {
           if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value !== null) {
             this.prepareForm(value[i], fields);
@@ -277,7 +279,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
-  pushToFormArray(name: string, length: number) {
+  pushToFormArray(name: string, length: number) { //FIXME this breaks in a very bad way with arrays in arrays!!!
     let field = this.getModelData(this.model.sections, name);
     for (let i = 0; i < length-1; i++) {
       this.getFormControl(this.form, name).push(this.formControlService.createField(field));
