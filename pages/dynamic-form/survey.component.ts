@@ -38,7 +38,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() mandatoryFieldsText: string = null;
   @Input() downloadPDF: boolean = false;
   @Output() valid = new EventEmitter<boolean>();
-  @Output() submit = new EventEmitter<FormGroup>();
+  @Output() submit = new EventEmitter<[FormGroup, boolean]>();
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
@@ -192,7 +192,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   parentSubmit() {
-    this.submit.emit(this.form);
+    this.submit.emit([this.form, this.editMode]);
   }
 
   onSubmit() { // FIXME
@@ -256,20 +256,18 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   /** create additional fields for arrays if needed --> **/
-  prepareForm(answer: Object, fields: Section[]) {
+  prepareForm(answer: Object, fields: Section[], arrayIndex?: number) {
     for (const [key, value] of Object.entries(answer)) {
       // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
-        let i = 1;
         if (value?.length > 1) {
-          console.log(value);
-          this.pushToFormArray(key, value.length);
+          this.pushToFormArray(key, value.length, arrayIndex);
         }
-        for ( ;i < value?.length; i++) {
+        for (let i = 0 ;i < value?.length; i++) {
           if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value !== null) {
-            this.prepareForm(value[i], fields);
+            this.prepareForm(value[i], fields, i);
           }
           // Maybe a check for array in array should be here
         }
@@ -279,10 +277,10 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
-  pushToFormArray(name: string, length: number) { //FIXME this breaks in a very bad way with arrays in arrays!!!
+  pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
     for (let i = 0; i < length-1; i++) {
-      this.getFormControl(this.form, name).push(this.formControlService.createField(field));
+      this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
 
@@ -318,17 +316,31 @@ export class SurveyComponent implements OnInit, OnChanges {
     return null;
   }
 
-  getFormControl(group: FormGroup | FormArray, name: string): FormArray {
+  getFormControl(group: FormGroup | FormArray, name: string, position?: number): FormArray {
     let abstractControl = null;
+    let i = 0;
+    // if (position) {
+    //   console.log('position: ' + position);
+    // } else {
+    //   position = 0;
+    // }
     for (const key in group.controls) {
       abstractControl = group.controls[key];
       if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
         if (key === name) {
           return abstractControl as FormArray;
         } else if (key !== name) {
-          abstractControl = this.getFormControl(abstractControl, name);
-          if (abstractControl !== null)
-            return abstractControl;
+          if (abstractControl instanceof FormArray) {
+            if (abstractControl.value.length > position) {
+              abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
+              if (abstractControl !== null)
+                return abstractControl;
+            }
+          } else {
+            abstractControl = this.getFormControl(abstractControl, name, position);
+            if (abstractControl !== null)
+              return abstractControl;
+          }
         }
       } else {
         if (key === name) {
@@ -336,6 +348,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         }
         abstractControl = null;
       }
+      i++;
     }
     return abstractControl;
   }
