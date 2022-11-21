@@ -256,7 +256,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   /** create additional fields for arrays if needed --> **/
-  prepareForm(answer: Object, fields: Section[], arrayIndex?: number) {
+  prepareForm(answer: Object, fields: Section[], arrayIndex?: number) { // I don't think it will work with greater depth than 2 of array nesting
     for (const [key, value] of Object.entries(answer)) {
       // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
@@ -318,12 +318,6 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   getFormControl(group: FormGroup | FormArray, name: string, position?: number): FormArray {
     let abstractControl = null;
-    let i = 0;
-    // if (position) {
-    //   console.log('position: ' + position);
-    // } else {
-    //   position = 0;
-    // }
     for (const key in group.controls) {
       abstractControl = group.controls[key];
       if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
@@ -348,7 +342,6 @@ export class SurveyComponent implements OnInit, OnChanges {
         }
         abstractControl = null;
       }
-      i++;
     }
     return abstractControl;
   }

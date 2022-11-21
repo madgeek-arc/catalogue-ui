@@ -77,6 +77,12 @@
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
               </app-radio-button-field>
             </div>
+            <div *ngIf="control.typeInfo.type === 'richText'" class="uk-form-controls">
+              <app-rich-text-field [fieldData]="control" [position]="i"  (hasChanges)="unsavedChangesPrompt()"
+                                   (handleBitSets)="handleBitsetOfChildren($event)"
+                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+              </app-rich-text-field>
+            </div>
             <div *ngIf="control.typeInfo.type === 'date'">
               <app-date-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
                               (handleBitSets)="handleBitsetOfChildren($event)"
@@ -152,6 +158,13 @@
                                   (handleBitSets)="handleBitsetOfChildren($event)"
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-large-text-field>
+          </div>
+
+          <div *ngIf="control.typeInfo.type === 'richText'" class="uk-form-controls">
+            <app-rich-text-field [fieldData]="control" (hasChanges)="unsavedChangesPrompt()"
+                                  (handleBitSets)="handleBitsetOfChildren($event)"
+                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            </app-rich-text-field>
           </div>
 
           <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
