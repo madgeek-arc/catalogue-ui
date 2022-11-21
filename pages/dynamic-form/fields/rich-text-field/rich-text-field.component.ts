@@ -35,7 +35,7 @@ export class RichTextFieldComponent implements OnInit {
     // console.log(this.form);
 
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
-    console.log(this.formControl);
+    // console.log(this.formControl);
 
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
