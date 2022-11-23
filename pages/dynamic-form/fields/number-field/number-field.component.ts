@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
   selector: 'app-number-field',
@@ -54,17 +53,6 @@ export class NumberFieldComponent implements OnInit {
 
   fieldAsFormArray() {
     return this.formControl as unknown as FormArray;
-  }
-
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
-        break;
-      default:
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
   }
 
   remove(field: string, i: number) {
