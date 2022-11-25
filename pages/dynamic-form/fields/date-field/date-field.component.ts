@@ -32,7 +32,7 @@ export class DateFieldComponent implements OnInit {
     }
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
 
-    if(this.fieldData.form.dependsOn) {
+    if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
       this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
 
@@ -41,6 +41,9 @@ export class DateFieldComponent implements OnInit {
       });
     }
 
+    if (this.formControl.value.includes('T')) { //parse Date
+      this.formControl.setValue(this.formControl.value.split('T')[0]);
+    }
     // console.log(this.fieldData);
     // console.log(this.form);
     // console.log(this.formControl);
