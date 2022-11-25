@@ -238,7 +238,7 @@ export class ChapterEditComponent implements OnChanges{
   }
 
   handleBitSet(data: Field) {
-    console.log(data.name);
+    // console.log(data.name);
     if (data.typeInfo.multiplicity) {
       this.handleBitSetOfGroup(data);
       return;

@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {zip} from "rxjs/internal/observable/zip";
 import {FormControlService} from "../../services/form-control.service";
-import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
+import {Section, Field, Model, Tabs} from "../../domain/dynamic-form-model";
 import {
   Columns,
   Content,
@@ -17,7 +16,6 @@ import {
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
-// import {SurveyAnswer} from "../../../app/domain/survey"; // answer
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import UIkit from "uikit";
@@ -45,8 +43,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   currentChapter: Section = null;
   chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
-  // vocabularies: Map<string, object[]>;
-  editMode = false;
+  editMode: boolean = false;
   bitset: Tabs = new Tabs;
 
   ready = false;
