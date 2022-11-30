@@ -28,6 +28,10 @@ export class FormControlService implements OnInit{
     return this.http.get<Paging<Model>>(this.base + `/forms/models?type=${type}`);
   }
 
+  getFormModelByName(name: string) {
+    return this.http.get<Paging<Model>>(this.base + `/forms/models?name=${name}`);
+  }
+
   postItem(surveyId: string, item: any, edit:boolean) {
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}?chapterAnswerId=${item.id}`, item, this.options);
   }
