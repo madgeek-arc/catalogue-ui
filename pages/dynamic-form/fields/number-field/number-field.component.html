@@ -16,7 +16,7 @@
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [step]='step'
            placeholder="{{fieldData.form.placeholder}}" [ngClass]="{'uk-form-danger': checkFormValidity()}">
 
-    <p *ngIf="formControl.invalid" class="uk-form-danger uk-animation-fade uk-text-italic">
+    <p *ngIf="checkFormValidity()" class="uk-form-danger uk-animation-fade uk-text-italic">
       Value should be numeric{{getNumberOfDecimals() ? ' with up to ' + getNumberOfDecimals() + ' decimals seperated with \'.\'' : ''}}
     </p>
 

@@ -36,7 +36,7 @@ export class StringFieldComponent implements OnInit {
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
       this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
-      // console.log(this.fieldData.name);
+
       this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
         value => {
             this.enableDisableField(value, this.fieldData.form.dependsOn.value);

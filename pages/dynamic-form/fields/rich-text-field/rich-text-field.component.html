@@ -8,7 +8,28 @@
   </div>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-    <!--To add multiplicity if needed-->
+    <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">
+      <div class="uk-margin-medium-top uk-width-9-10">
+        <ckeditor [id]="fieldData.name" [formControlName]="i" [config]="{placeholder: fieldData.form.placeholder}"
+                  (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"
+                  [ngClass]="{'uk-form-danger': checkFormValidity()}">
+        </ckeditor>
+      </div>
+      <a *ngIf="fieldAsFormArray().length > 1"
+         (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
+         class="remove-element uk-animation-slide-top-small uk-margin-small-left">
+        <span class="material-icons">clear</span>
+      </a>
+    </div>
+    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+         [innerHTML]="fieldData.form.suggestion.text">
+    </div>
+
+    <div class="uk-width-9-10 uk-text-center uk-margin-top">
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
+        <span class="material-icons">add</span>Add {{fieldData.label.text}}
+      </a>
+    </div>
   </div>
 
   <ng-template #noMultiplicity>
