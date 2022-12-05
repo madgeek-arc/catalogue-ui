@@ -71,24 +71,6 @@
           </app-date-field>
         </div>
 
-        <div *ngIf="fieldData.typeInfo.type === 'boolean'">
-          <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.name">
-            <!--To add multiplicity if needed-->
-          </div>
-          <ng-template #noMultiplicity>
-            <label>
-              <input class="uk-radio" type="radio" [formControlName]="fieldData.name" [value]="true"
-                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [name]="fieldData.name"
-                     [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode) }"/>&nbsp;Yes&nbsp;
-            </label>
-            <label>
-              <input class="uk-radio" type="radio"  [formControlName]="fieldData.name" [value]="false"
-                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [name]="fieldData.name"
-                     [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode) }"/>&nbsp;No&nbsp;
-            </label>
-          </ng-template>
-        </div>
-
       </div>
     </div>
   </div>

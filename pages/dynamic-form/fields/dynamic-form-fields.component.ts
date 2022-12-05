@@ -17,18 +17,6 @@ export class DynamicFormFieldsComponent {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-
-  /** check form fields and tabs validity--> **/
-
-  checkFormValidity(name: string, edit: boolean): boolean {
-    // console.log(name);
-    return (!this.form.get(name).valid && (edit || this.form.get(name).dirty));
-    // return true;
-  }
-
-  /** <-- check form fields and tabs validity **/
-
-
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Field) {
