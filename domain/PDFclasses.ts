@@ -1,9 +1,10 @@
 export class DocDefinition {
   header: Content;
   content: any[];
-  styles: Object;
-  images: Object;
+  styles: object;
+  images: object;
   info: PdfMetadata;
+  defaultStyle: object;
 
   constructor() {
     this.header = null;
