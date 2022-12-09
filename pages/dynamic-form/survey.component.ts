@@ -349,16 +349,27 @@ export class SurveyComponent implements OnInit, OnChanges {
     let docDefinition: DocDefinition = new DocDefinition();
     // docDefinition.header.text = 'Header Text'
     // docDefinition.header.style = ['sectionHeader']
-    docDefinition.content.push(new Content(this.model.name, ['sectionHeader']));
+    docDefinition.content.push(new Content(this.model.name, ['title']));
     docDefinition.info = new PdfMetadata(this.model.name);
+    docDefinition.defaultStyle = {
+      font: 'Roboto',
+      fontSize: 12,
+      color: 'red',
+    }
     docDefinition.styles = {
-      sectionHeader: {
+      title: {
         bold: true,
         alignment: 'center',
         decoration: 'underline',
         color: '',
         fontSize: 18,
         margin: [0, 15, 0, 15]
+      },
+      chapterHeader:{
+
+      },
+      tabHeader: {
+
       },
       marginTop: {
         margin: [0, 8, 0, 0]
@@ -387,10 +398,75 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
     this.createDocumentDefinition(this.form, docDefinition);
 
+    pdfMake.fonts = {
+      Roboto: {
+        normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
+        bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
+        italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
+        bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
+      }
+    }
+
     pdfMake.createPdf(docDefinition).download(this.model.name);
   }
 
+  documentDefinitionRecursion(fields: Field[], docDefinition: DocDefinition, descriptionAtEnd?: DocDefinition) {
+    for (const field of fields) {
+      if (field.label.text)
+        docDefinition.content.push(new Content(field.label.text, ['marginTop']));
+      if (field.form.description.text)
+        descriptionAtEnd.content.push(new Content(field.form.description.text, ['marginTop']));
+
+      let answerValues = this.findVal(this.answer, field.name);
+      if (field.typeInfo.type === 'radio') {
+        let values = field.typeInfo.values
+        // if (field.kind === 'conceal-reveal')
+        //   values = this.getModelData(this.model.sections, field.parent).typeInfo.values;
+        for (const value of values) {
+          let content = new Columns();
+          if (value === answerValues?.[0]){
+            content.columns.push(new PdfImage('radioChecked', 10, 10, ['marginTopCheckBox']));
+          }
+          else {
+            content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
+          }
+          content.columns.push(new Content(value,['marginLeftSmall', 'marginTopSmall']));
+          docDefinition.content.push(content);
+        }
+      } else if (field.typeInfo.type !== 'composite') {
+        if (answerValues?.[0]) {
+          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['marginTopSmall']));
+        } else {
+          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['marginTopSmall']));
+        }
+      }
+      if (field.subFields)
+        this.documentDefinitionRecursion(field.subFields, docDefinition, descriptionAtEnd);
+    }
+  }
+
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition) {
+    let descriptionsAtEnd = new DocDefinition();
+    this.model.sections.sort((a, b) => a.order - b.order);
+    for (const section of this.model.sections) {
+      section.subSections.sort((a, b) => a.order - b.order);
+      if (this.model.sections.length > 1) {
+        docDefinition.content.push(new Content(section.name, ['chapterHeader']));
+      }
+
+      for (const subSection of section.subSections) {
+        if (section.subSections.length > 1) {
+          docDefinition.content.push(new Content(subSection.name, ['tabHeader']));
+        }
+        if (subSection.fields)
+          this.documentDefinitionRecursion(subSection.fields, docDefinition, descriptionsAtEnd);
+      }
+
+    }
+    docDefinition.content.push(...descriptionsAtEnd.content);
+
+    return;
+
     for (const key in group.controls) {
       let abstractControl = group.controls[key];
       let field = this.getModelData(this.model.sections, key);
@@ -464,6 +540,28 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
 
     }
+  }
+
+  findVal(obj, key) {
+    var seen = new Set, active = [obj];
+    while (active.length) {
+      var new_active = [], found = [];
+      for (var i=0; i<active.length; i++) {
+        Object.keys(active[i]).forEach(function(k){
+          var x = active[i][k];
+          if (k === key) {
+            found.push(x);
+          } else if (x && typeof x === "object" &&
+            !seen.has(x)) {
+            seen.add(x);
+            new_active.push(x);
+          }
+        });
+      }
+      if (found.length) return found;
+      active = new_active;
+    }
+    return null;
   }
 
   /** <-- Generate PDF **/
