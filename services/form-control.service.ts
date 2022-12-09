@@ -24,8 +24,8 @@ export class FormControlService implements OnInit{
     return this.http.get<Model>(this.base + `/forms/models/${id}`);
   }
 
-  getFormModelByType(type: string) {
-    return this.http.get<Paging<Model>>(this.base + `/forms/models?type=${type}`);
+  getFormModelByResourceType(type: string) {
+    return this.http.get<Paging<Model>>(this.base + `/forms/models?resourceType=${type}`);
   }
 
   getFormModelByName(name: string) {
