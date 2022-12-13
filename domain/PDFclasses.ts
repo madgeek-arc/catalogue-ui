@@ -28,9 +28,12 @@ export class Content {
 
 export class Columns {
   columns: any[];
+  style: string[];
 
-  constructor() {
+  constructor(style?: string[]) {
     this.columns = [];
+    if (style)
+        this.style = style;
   }
 }
 

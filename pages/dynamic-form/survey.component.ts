@@ -28,7 +28,7 @@ import UIkit from "uikit";
 
 export class SurveyComponent implements OnInit, OnChanges {
 
-  @Input() answer: any = null; // cant import specific project class in lib file
+  @Input() payload: any = null; // cant import specific project class in lib file
   @Input() model: Model = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
@@ -69,7 +69,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.ready = false;
-    if (this.answer)
+    if (this.payload)
       this.editMode = true;
     if (this.model) {
       this.currentChapter = this.model.sections[0];
@@ -77,10 +77,10 @@ export class SurveyComponent implements OnInit, OnChanges {
       //   this.vocabularies = res;
         this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
         for (const section of this.model.sections) {
-          for (const surveyAnswer in this.answer?.answer) {
-            if (section.id === this.answer.answer[surveyAnswer]?.chapterId) {
+          for (const surveyAnswer in this.payload?.answer) {
+            if (section.id === this.payload.answer[surveyAnswer]?.chapterId) {
               this.chapterChangeMap.set(section.id, false);
-              this.sortedSurveyAnswers[section.id] = this.answer.answer[surveyAnswer].answer;
+              this.sortedSurveyAnswers[section.id] = this.payload.answer[surveyAnswer].answer;
               break;
             }
           }
@@ -96,13 +96,13 @@ export class SurveyComponent implements OnInit, OnChanges {
             break;
           }
           this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
-          if (this.answer) {
-            this.prepareForm(this.answer.answer, this.model.sections[i].subSections)
-            this.form.patchValue(this.answer.answer);
+          if (this.payload) {
+            this.prepareForm(this.payload.answer, this.model.sections[i].subSections);
+            this.form.patchValue(this.payload.answer);
             this.form.markAllAsTouched();
           }
         }
-        if (this.answer?.validated) {
+        if (this.payload?.validated) {
           this.readonly = true;
           this.validate = false;
         } else if (this.validate) {
@@ -198,9 +198,9 @@ export class SurveyComponent implements OnInit, OnChanges {
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
     let postMethod = '';
     let firstParam = '';
-    if (this.answer?.id) {
+    if (this.payload?.id) {
       postMethod = 'postItem';
-      firstParam = this.answer.id;
+      firstParam = this.payload.id;
     } else {
       postMethod = 'postGenericItem'
       firstParam = this.model.resourceType;
@@ -255,7 +255,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** create additional fields for arrays if needed --> **/
   prepareForm(answer: Object, fields: Section[], arrayIndex?: number) { // I don't think it will work with greater depth than 2 of array nesting
     for (const [key, value] of Object.entries(answer)) {
-      // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
@@ -263,7 +262,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.pushToFormArray(key, value.length, arrayIndex);
         }
         for (let i = 0 ;i < value?.length; i++) {
-          if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value !== null) {
+          if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value[i] !== null) {
             this.prepareForm(value[i], fields, i);
           }
           // Maybe a check for array in array should be here
@@ -354,36 +353,50 @@ export class SurveyComponent implements OnInit, OnChanges {
     docDefinition.defaultStyle = {
       font: 'Roboto',
       fontSize: 12,
-      color: 'red',
+      color: 'black',
     }
     docDefinition.styles = {
       title: {
         bold: true,
         alignment: 'center',
-        decoration: 'underline',
-        color: '',
-        fontSize: 18,
-        margin: [0, 15, 0, 15]
+        fontSize: 24,
+        margin: [0, 15, 0, 10]
       },
-      chapterHeader:{
-
+      chapterHeader: {
+        bold: true,
+        fontSize: 18,
+        alignment: 'center',
+        margin: [0, 30, 0, 10]
       },
       tabHeader: {
-
+        bold: true,
+        fontSize: 15,
+        alignment: 'center',
+        decoration: 'underline',
+        margin: [0, 20, 0, 15]
       },
-      marginTop: {
-        margin: [0, 8, 0, 0]
+      link: {
+        color: 'blue',
       },
-      marginTopSmall: {
+      mt_1: {
         margin: [0, 2, 0, 0]
       },
-      marginTopBig: {
+      mt_3: {
+        margin: [0, 8, 0, 0]
+      },
+      mt_5: {
         margin: [0, 25, 0, 0]
       },
-      marginLeftSmall: {
+      mx_1: {
+        margin: [0, 2, 0, 2]
+      },
+      mx_3: {
+        margin: [0, 8, 0, 8]
+      },
+      ms_1: {
         margin: [3, 0, 0, 0]
       },
-      marginLeftBig: {
+      ms_5: {
         margin: [20, 0, 0, 0]
       },
       marginTopCheckBox: {
@@ -396,28 +409,45 @@ export class SurveyComponent implements OnInit, OnChanges {
       checked: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAQAAACROWYpAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAF+2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMTItMzBUMDE6Mzc6MjArMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjI4KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjI4KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMSIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9IkRvdCBHYWluIDIwJSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowNzVjYjZmMy1jNGIxLTRiZjctYWMyOS03YzUxMWY5MWJjYzQiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo5ZTM1YTc3ZC0zNDM0LTI5NGQtYmEwOC1iY2I5MjYyMjBiOGIiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowYzc2MDY3Ny0xNDcwLTRlZDUtOGU4ZS1kNTdjODJlZDk1Y2UiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjBjNzYwNjc3LTE0NzAtNGVkNS04ZThlLWQ1N2M4MmVkOTVjZSIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozNzoyMCswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjA3NWNiNmYzLWM0YjEtNGJmNy1hYzI5LTdjNTExZjkxYmNjNCIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozODoyOCswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+jHsR7AAAAUNJREFUOMvN1T9Lw0AYx/EviLVFxFH8M3USgyAFoUsQ0UV8F6Ui4qCTbuJg34HgptBdUATrUoxiqYMgiOBoIcW9BVED+jgkntGm9i6CmN+Sg/vAcc89dwBd5Clzj6uZGg7LJAC62UFipEgKcmroaeZj/gpcIAhl5rE1M0cJQbiCOsIrs5h8WZ4R6j72yBrhcRo+dhE8bCOcoYng/hFOMxAXb/DAHTNxcCGo7JE5LqhjsW2KP6nDcGecCv1vRdC2eJQDLllooach2hbvIghvLJJgM0QHdeq8F0x/5ETRM4b0DonF7be+Pf+y4A4bZnETok4E/XG3xxR3WhasUWeLCg2OGYnXGP1MkPwnLRmJf3UN+RfgtBGe5MnHVQShxBQZzdgcIgjXsKSu/KZmXgKxBkmKsZ6bffoAelilQs3goauyTi+8A8mhgeQlxdNWAAAAAElFTkSuQmCC',
       unchecked: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAQAAACROWYpAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAF+2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMTItMzBUMDE6Mzc6MjArMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjU3KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjU3KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMSIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9IkRvdCBHYWluIDIwJSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpjMGUyMmJhZC1lY2VkLTQzZWUtYjIzZC1jNDZjOTNiM2UzNWMiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo5M2FhOTEzYy1hZDVmLWZmNGEtOWE5Ny1kMmUwZjdmYzFlYmUiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDozYmY2ODFlMy1hMTRhLTQyODMtOGIxNi0zNjQ4M2E2YmZlNjYiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjNiZjY4MWUzLWExNGEtNDI4My04YjE2LTM2NDgzYTZiZmU2NiIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozNzoyMCswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmMwZTIyYmFkLWVjZWQtNDNlZS1iMjNkLWM0NmM5M2IzZTM1YyIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozODo1NyswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+6AB6cQAAAPxJREFUOMvF1b1Kw1AYBuAnFf8QL8WlIHQJIriIdyEu4qCTXop7dwenTgUHpYvgJVhob8AuakE+h9hapJqcFDXvFDgPIXlzvgNLjnQ9GlRM340TK7DsUtRI2zqH09txxUzWn3IrhK4DecXs6wjhnqHwZk/K1fIiDAs81krCW54KPBDG8iTcNBIGf4ND1MWTdmrgqIOL5TM0S8SRhmMu1dAo+2DZ57t9eWajtKrvN1GVnrMK9HewhbBy+nPPJbTsJwmymOn8P7fkfLzQGCoG4G4S3vZc4J4QOnY0KyZ3LYQHjqcjf1Qxrx/inDXtWsfNlU1YdeZOP+Gg67mwwTvIDqR1iAowgQAAAABJRU5ErkJggg==',
     }
-    this.createDocumentDefinition(this.form, docDefinition);
-
-    pdfMake.fonts = {
-      Roboto: {
-        normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
-        bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
-        italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
-        bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
-      }
+    let description = 'none';
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022')
+    {
+      description = 'end'
     }
+    this.createDocumentDefinition(this.form, docDefinition, description);
 
     pdfMake.createPdf(docDefinition).download(this.model.name);
   }
 
-  documentDefinitionRecursion(fields: Field[], docDefinition: DocDefinition, descriptionAtEnd?: DocDefinition) {
+  documentDefinitionRecursion(fields: Field[], docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
       if (field.label.text)
-        docDefinition.content.push(new Content(field.label.text, ['marginTop']));
-      if (field.form.description.text)
-        descriptionAtEnd.content.push(new Content(field.form.description.text, ['marginTop']));
-
-      let answerValues = this.findVal(this.answer, field.name);
+        docDefinition.content.push(new Content(field.label.text, ['mx_3']));
+      if (field.form.description.text) {
+        if (description === 'end') {
+          let questionNumber = null;
+          if (field.label.text) {
+            questionNumber = field.label.text.split('. ')[0];
+          }
+          // let term = field.form.description.text.split('-')[0]
+          let components = this.strip(field.form.description.text).split(' - ');
+          let content = {
+            style: ['mt_3'],
+            text: [
+              questionNumber,
+              ' ',
+              {text:  components.shift(), bold: true},
+              ' - ',
+              components.join('-')
+            ]
+          }
+          // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
+          descriptionAtEnd.content.push(content);
+        }
+        if (description === 'show')
+          docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
+      }
+      let answerValues = this.findVal(this.payload, field.name);
       if (field.typeInfo.type === 'radio') {
         let values = field.typeInfo.values
         // if (field.kind === 'conceal-reveal')
@@ -430,22 +460,38 @@ export class SurveyComponent implements OnInit, OnChanges {
           else {
             content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
           }
-          content.columns.push(new Content(value,['marginLeftSmall', 'marginTopSmall']));
+          content.columns.push(new Content(value,['ms_1', 'mt_1']));
           docDefinition.content.push(content);
+        }
+      } else if (field.typeInfo.type === 'checkbox') {
+        docDefinition.content.pop();
+        let content = new Columns(['mx_1']);
+        if (answerValues?.[0]) {
+          content.columns.push(new PdfImage('checked', 10, 10, ['mt_1']));
+        } else {
+          content.columns.push(new PdfImage('unchecked', 10, 10, ['mt_1']));
+        }
+        content.columns.push(new Content(field.label.text,['ms_1']));
+        docDefinition.content.push(content);
+      } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
+        if (answerValues?.[0]) {
+          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
+        } else {
+          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [48]), ['mt_1']));
         }
       } else if (field.typeInfo.type !== 'composite') {
         if (answerValues?.[0]) {
-          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['marginTopSmall']));
+          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
         } else {
-          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['marginTopSmall']));
+          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
       }
       if (field.subFields)
-        this.documentDefinitionRecursion(field.subFields, docDefinition, descriptionAtEnd);
+        this.documentDefinitionRecursion(field.subFields, docDefinition, description, descriptionAtEnd);
     }
   }
 
-  createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition) {
+  createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
     this.model.sections.sort((a, b) => a.order - b.order);
     for (const section of this.model.sections) {
@@ -459,96 +505,114 @@ export class SurveyComponent implements OnInit, OnChanges {
           docDefinition.content.push(new Content(subSection.name, ['tabHeader']));
         }
         if (subSection.fields)
-          this.documentDefinitionRecursion(subSection.fields, docDefinition, descriptionsAtEnd);
+          this.documentDefinitionRecursion(subSection.fields, docDefinition, description, descriptionsAtEnd);
       }
 
     }
-    docDefinition.content.push(...descriptionsAtEnd.content);
+
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+
+      docDefinition.content.push(new Content('Appendix A', ['title']));
+      docDefinition.content.push(...descriptionsAtEnd.content);
+
+      docDefinition.content.push(new Content('Appendix B', ['title']));
+      let content = [
+        {
+          style: ['mt_3'],
+          text: ['Visit the ',
+            {text: 'EOSC Observatory', link: 'https://eoscobservatory.eosc-portal.eu', color: 'cornflowerblue', decoration: 'underline'},
+            ' to explore the data from the first EOSC Steering Board survey on National Contributions to EOSC 2021 and visit the ',
+            {text: 'EOSC Observatory Zenodo Community', link: 'https://zenodo.org/communities/eoscobservatory', color: 'cornflowerblue', decoration: 'underline'},
+            ' to access all relevant documents for the surveys and EOSC Observatory']
+        }
+      ]
+      docDefinition.content.push(content);
+    }
 
     return;
 
-    for (const key in group.controls) {
-      let abstractControl = group.controls[key];
-      let field = this.getModelData(this.model.sections, key);
-      if (abstractControl instanceof FormGroup) {
-        if (field){
-          if (field.kind === 'question')
-            docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
-          else
-            docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
-        }
-        this.createDocumentDefinition(abstractControl, docDefinition);
-      } else if (abstractControl instanceof FormArray) {
-        if (field.kind === 'question')
-          docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
-        else
-          docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
-        let tmpArr = [];
-        for (let i = 0; i < abstractControl.controls.length; i++) {
-          let control = group.controls[key].controls[i];
-          if (control instanceof FormGroup || control instanceof FormArray) {
-            this.createDocumentDefinition(control, docDefinition);
-          } else {
-            tmpArr.push(control.value);
-            // docDefinition.content.push(new Content(control.value,['marginTopSmall']));
-          }
-        }
-        if (tmpArr.length > 0) {
-          let columns = new Columns();
-          columns.columns.push(new Content('', [''], 15));
-          columns.columns.push(new PdfUnorderedList(tmpArr,''));
-          docDefinition.content.push(columns);
-        }
-      } else {
-        let field = this.getModelData(this.model.sections, key);
-        if (field.kind === 'question')
-          docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
-        else
-          docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
-        if (field.typeInfo.type === 'radio') {
-          let values = field.typeInfo.values
-          if (field.kind === 'conceal-reveal')
-            values = this.getModelData(this.model.sections, field.parent).typeInfo.values;
-          for (const value of values) {
-            let content = new Columns();
-            if (value === abstractControl.value){
-              content.columns.push(new PdfImage('radioChecked', 10, 10, ['marginTopCheckBox']));
-            }
-            else {
-              content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
-            }
-            content.columns.push(new Content(value,['marginLeftSmall', 'marginTopSmall']));
-            docDefinition.content.push(content);
-          }
-        } else if (field.typeInfo.type === 'checkbox') {
-          docDefinition.content.pop();
-          let content = new Columns();
-          if (abstractControl.value) {
-            content.columns.push(new PdfImage('checked', 10, 10, ['marginTopCheckBox']));
-          } else {
-            content.columns.push(new PdfImage('unchecked', 10, 10, ['marginTopCheckBox']));
-          }
-          content.columns.push(new Content(field.label.text,['marginLeftSmall', 'marginTopSmall']));
-          docDefinition.content.push(content);
-        } else {
-          if (abstractControl.value){
-            docDefinition.content.push(new PdfTable(new TableDefinition([[abstractControl.value]], ['*']), ['marginTopSmall']));
-          } else {
-            docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['marginTopSmall']));
-          }
-        }
-      }
-
-    }
+    // for (const key in group.controls) {
+    //   let abstractControl = group.controls[key];
+    //   let field = this.getModelData(this.model.sections, key);
+    //   if (abstractControl instanceof FormGroup) {
+    //     if (field){
+    //       if (field.kind === 'question')
+    //         docDefinition.content.push(new Content(field.label.text,['mt_5']));
+    //       else
+    //         docDefinition.content.push(new Content(field.label.text,['mt_1']));
+    //     }
+    //     this.createDocumentDefinition(abstractControl, docDefinition);
+    //   } else if (abstractControl instanceof FormArray) {
+    //     if (field.kind === 'question')
+    //       docDefinition.content.push(new Content(field.label.text,['mt_5']));
+    //     else
+    //       docDefinition.content.push(new Content(field.label.text,['mt_1']));
+    //     let tmpArr = [];
+    //     for (let i = 0; i < abstractControl.controls.length; i++) {
+    //       let control = group.controls[key].controls[i];
+    //       if (control instanceof FormGroup || control instanceof FormArray) {
+    //         this.createDocumentDefinition(control, docDefinition);
+    //       } else {
+    //         tmpArr.push(control.value);
+    //         // docDefinition.content.push(new Content(control.value,['mt_1']));
+    //       }
+    //     }
+    //     if (tmpArr.length > 0) {
+    //       let columns = new Columns();
+    //       columns.columns.push(new Content('', [''], 15));
+    //       columns.columns.push(new PdfUnorderedList(tmpArr,''));
+    //       docDefinition.content.push(columns);
+    //     }
+    //   } else {
+    //     let field = this.getModelData(this.model.sections, key);
+    //     if (field.kind === 'question')
+    //       docDefinition.content.push(new Content(field.label.text,['mt_5']));
+    //     else
+    //       docDefinition.content.push(new Content(field.label.text,['mt_1']));
+    //     if (field.typeInfo.type === 'radio') {
+    //       let values = field.typeInfo.values
+    //       if (field.kind === 'conceal-reveal')
+    //         values = this.getModelData(this.model.sections, field.parent).typeInfo.values;
+    //       for (const value of values) {
+    //         let content = new Columns();
+    //         if (value === abstractControl.value){
+    //           content.columns.push(new PdfImage('radioChecked', 10, 10, ['marginTopCheckBox']));
+    //         }
+    //         else {
+    //           content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
+    //         }
+    //         content.columns.push(new Content(value,['ms_1', 'mt_1']));
+    //         docDefinition.content.push(content);
+    //       }
+    //     } else if (field.typeInfo.type === 'checkbox') {
+    //       docDefinition.content.pop();
+    //       let content = new Columns();
+    //       if (abstractControl.value) {
+    //         content.columns.push(new PdfImage('checked', 10, 10, ['marginTopCheckBox']));
+    //       } else {
+    //         content.columns.push(new PdfImage('unchecked', 10, 10, ['marginTopCheckBox']));
+    //       }
+    //       content.columns.push(new Content(field.label.text,['ms_1', 'mt_1']));
+    //       docDefinition.content.push(content);
+    //     } else {
+    //       if (abstractControl.value){
+    //         docDefinition.content.push(new PdfTable(new TableDefinition([[abstractControl.value]], ['*']), ['mt_1']));
+    //       } else {
+    //         docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
+    //       }
+    //     }
+    //   }
+    //
+    // }
   }
 
   findVal(obj, key) {
-    var seen = new Set, active = [obj];
+    let seen = new Set, active = [obj];
     while (active.length) {
-      var new_active = [], found = [];
-      for (var i=0; i<active.length; i++) {
+      let new_active = [], found = [];
+      for (let i=0; i<active.length; i++) {
         Object.keys(active[i]).forEach(function(k){
-          var x = active[i][k];
+          let x = active[i][k];
           if (k === key) {
             found.push(x);
           } else if (x && typeof x === "object" &&
@@ -562,6 +626,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       active = new_active;
     }
     return null;
+  }
+
+  strip(html){
+    let doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
   }
 
   /** <-- Generate PDF **/
