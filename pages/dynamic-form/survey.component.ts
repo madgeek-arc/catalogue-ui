@@ -28,7 +28,7 @@ import UIkit from "uikit";
 
 export class SurveyComponent implements OnInit, OnChanges {
 
-  @Input() answer: any = null; // cant import specific project class in lib file
+  @Input() payload: any = null; // cant import specific project class in lib file
   @Input() model: Model = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
@@ -69,7 +69,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.ready = false;
-    if (this.answer)
+    if (this.payload)
       this.editMode = true;
     if (this.model) {
       this.currentChapter = this.model.sections[0];
@@ -77,10 +77,10 @@ export class SurveyComponent implements OnInit, OnChanges {
       //   this.vocabularies = res;
         this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
         for (const section of this.model.sections) {
-          for (const surveyAnswer in this.answer?.answer) {
-            if (section.id === this.answer.answer[surveyAnswer]?.chapterId) {
+          for (const surveyAnswer in this.payload?.answer) {
+            if (section.id === this.payload.answer[surveyAnswer]?.chapterId) {
               this.chapterChangeMap.set(section.id, false);
-              this.sortedSurveyAnswers[section.id] = this.answer.answer[surveyAnswer].answer;
+              this.sortedSurveyAnswers[section.id] = this.payload.answer[surveyAnswer].answer;
               break;
             }
           }
@@ -96,13 +96,13 @@ export class SurveyComponent implements OnInit, OnChanges {
             break;
           }
           this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
-          if (this.answer) {
-            this.prepareForm(this.answer.answer, this.model.sections[i].subSections)
-            this.form.patchValue(this.answer.answer);
+          if (this.payload) {
+            this.prepareForm(this.payload.answer, this.model.sections[i].subSections);
+            this.form.patchValue(this.payload.answer);
             this.form.markAllAsTouched();
           }
         }
-        if (this.answer?.validated) {
+        if (this.payload?.validated) {
           this.readonly = true;
           this.validate = false;
         } else if (this.validate) {
@@ -198,9 +198,9 @@ export class SurveyComponent implements OnInit, OnChanges {
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
     let postMethod = '';
     let firstParam = '';
-    if (this.answer?.id) {
+    if (this.payload?.id) {
       postMethod = 'postItem';
-      firstParam = this.answer.id;
+      firstParam = this.payload.id;
     } else {
       postMethod = 'postGenericItem'
       firstParam = this.model.resourceType;
@@ -255,7 +255,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** create additional fields for arrays if needed --> **/
   prepareForm(answer: Object, fields: Section[], arrayIndex?: number) { // I don't think it will work with greater depth than 2 of array nesting
     for (const [key, value] of Object.entries(answer)) {
-      // console.log(`${key}: ${value}`);
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
@@ -263,7 +262,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.pushToFormArray(key, value.length, arrayIndex);
         }
         for (let i = 0 ;i < value?.length; i++) {
-          if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value !== null) {
+          if (typeof value[i] === 'object' && !Array.isArray(value[i]) && value[i] !== null) {
             this.prepareForm(value[i], fields, i);
           }
           // Maybe a check for array in array should be here
@@ -448,7 +447,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         if (description === 'show')
           docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
       }
-      let answerValues = this.findVal(this.answer, field.name);
+      let answerValues = this.findVal(this.payload, field.name);
       if (field.typeInfo.type === 'radio') {
         let values = field.typeInfo.values
         // if (field.kind === 'conceal-reveal')
