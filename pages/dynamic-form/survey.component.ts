@@ -354,35 +354,50 @@ export class SurveyComponent implements OnInit, OnChanges {
     docDefinition.defaultStyle = {
       font: 'Roboto',
       fontSize: 12,
+      color: 'black',
     }
     docDefinition.styles = {
       title: {
         bold: true,
         alignment: 'center',
-        decoration: 'underline',
-        color: '',
-        fontSize: 18,
-        margin: [0, 15, 0, 15]
+        fontSize: 24,
+        margin: [0, 15, 0, 10]
       },
-      chapterHeader:{
-
+      chapterHeader: {
+        bold: true,
+        fontSize: 18,
+        alignment: 'center',
+        margin: [0, 30, 0, 10]
       },
       tabHeader: {
-
+        bold: true,
+        fontSize: 15,
+        alignment: 'center',
+        decoration: 'underline',
+        margin: [0, 20, 0, 15]
       },
-      marginTop: {
-        margin: [0, 8, 0, 0]
+      link: {
+        color: 'blue',
       },
-      marginTopSmall: {
+      mt_1: {
         margin: [0, 2, 0, 0]
       },
-      marginTopBig: {
+      mt_3: {
+        margin: [0, 8, 0, 0]
+      },
+      mt_5: {
         margin: [0, 25, 0, 0]
       },
-      marginLeftSmall: {
+      mx_1: {
+        margin: [0, 2, 0, 2]
+      },
+      mx_3: {
+        margin: [0, 8, 0, 8]
+      },
+      ms_1: {
         margin: [3, 0, 0, 0]
       },
-      marginLeftBig: {
+      ms_5: {
         margin: [20, 0, 0, 0]
       },
       marginTopCheckBox: {
@@ -402,32 +417,36 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
     this.createDocumentDefinition(this.form, docDefinition, description);
 
-    pdfMake.fonts = {
-      Roboto: {
-        normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf',
-        bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf',
-        italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf',
-        bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf'
-      }
-    }
-
     pdfMake.createPdf(docDefinition).download(this.model.name);
   }
 
   documentDefinitionRecursion(fields: Field[], docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
       if (field.label.text)
-        docDefinition.content.push(new Content(field.label.text, ['marginTop']));
+        docDefinition.content.push(new Content(field.label.text, ['mx_3']));
       if (field.form.description.text) {
         if (description === 'end') {
           let questionNumber = null;
           if (field.label.text) {
             questionNumber = field.label.text.split('. ')[0];
           }
-          descriptionAtEnd.content.push(new Content(questionNumber + ' ' + field.form.description.text, ['marginTop']));
+          // let term = field.form.description.text.split('-')[0]
+          let components = this.strip(field.form.description.text).split(' - ');
+          let content = {
+            style: ['mt_3'],
+            text: [
+              questionNumber,
+              ' ',
+              {text:  components.shift(), bold: true},
+              ' - ',
+              components.join('-')
+            ]
+          }
+          // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
+          descriptionAtEnd.content.push(content);
         }
         if (description === 'show')
-          docDefinition.content.push(new Content(field.form.description.text, ['marginTop']));
+          docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
       }
       let answerValues = this.findVal(this.answer, field.name);
       if (field.typeInfo.type === 'radio') {
@@ -442,24 +461,30 @@ export class SurveyComponent implements OnInit, OnChanges {
           else {
             content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
           }
-          content.columns.push(new Content(value,['marginLeftSmall', 'marginTopSmall']));
+          content.columns.push(new Content(value,['ms_1', 'mt_1']));
           docDefinition.content.push(content);
         }
       } else if (field.typeInfo.type === 'checkbox') {
         docDefinition.content.pop();
-        let content = new Columns();
+        let content = new Columns(['mx_1']);
         if (answerValues?.[0]) {
-          content.columns.push(new PdfImage('checked', 10, 10, ['marginTopCheckBox']));
+          content.columns.push(new PdfImage('checked', 10, 10, ['mt_1']));
         } else {
-          content.columns.push(new PdfImage('unchecked', 10, 10, ['marginTopCheckBox']));
+          content.columns.push(new PdfImage('unchecked', 10, 10, ['mt_1']));
         }
-        content.columns.push(new Content(field.label.text,['marginLeftSmall', 'marginTopSmall']));
+        content.columns.push(new Content(field.label.text,['ms_1']));
         docDefinition.content.push(content);
+      } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
+        if (answerValues?.[0]) {
+          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
+        } else {
+          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [48]), ['mt_1']));
+        }
       } else if (field.typeInfo.type !== 'composite') {
         if (answerValues?.[0]) {
-          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['marginTopSmall']));
+          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
         } else {
-          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['marginTopSmall']));
+          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
       }
       if (field.subFields)
@@ -485,16 +510,20 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
 
     }
-    docDefinition.content.push(...descriptionsAtEnd.content);
 
     if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+
+      docDefinition.content.push(new Content('Appendix A', ['title']));
+      docDefinition.content.push(...descriptionsAtEnd.content);
+
+      docDefinition.content.push(new Content('Appendix B', ['title']));
       let content = [
         {
-          style: ['marginTop'],
+          style: ['mt_3'],
           text: ['Visit the ',
-            {text: 'EOSC Observatory', link: 'https://eoscobservatory.eosc-portal.eu'},
-            'to explore the data from the first EOSC Steering Board survey on National Contributions to EOSC 2021 and visit the ',
-            {text: 'EOSC Observatory Zenodo Community', link: 'https://zenodo.org/communities/eoscobservatory'},
+            {text: 'EOSC Observatory', link: 'https://eoscobservatory.eosc-portal.eu', color: 'cornflowerblue', decoration: 'underline'},
+            ' to explore the data from the first EOSC Steering Board survey on National Contributions to EOSC 2021 and visit the ',
+            {text: 'EOSC Observatory Zenodo Community', link: 'https://zenodo.org/communities/eoscobservatory', color: 'cornflowerblue', decoration: 'underline'},
             ' to access all relevant documents for the surveys and EOSC Observatory']
         }
       ]
@@ -509,16 +538,16 @@ export class SurveyComponent implements OnInit, OnChanges {
     //   if (abstractControl instanceof FormGroup) {
     //     if (field){
     //       if (field.kind === 'question')
-    //         docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
+    //         docDefinition.content.push(new Content(field.label.text,['mt_5']));
     //       else
-    //         docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
+    //         docDefinition.content.push(new Content(field.label.text,['mt_1']));
     //     }
     //     this.createDocumentDefinition(abstractControl, docDefinition);
     //   } else if (abstractControl instanceof FormArray) {
     //     if (field.kind === 'question')
-    //       docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
+    //       docDefinition.content.push(new Content(field.label.text,['mt_5']));
     //     else
-    //       docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
+    //       docDefinition.content.push(new Content(field.label.text,['mt_1']));
     //     let tmpArr = [];
     //     for (let i = 0; i < abstractControl.controls.length; i++) {
     //       let control = group.controls[key].controls[i];
@@ -526,7 +555,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     //         this.createDocumentDefinition(control, docDefinition);
     //       } else {
     //         tmpArr.push(control.value);
-    //         // docDefinition.content.push(new Content(control.value,['marginTopSmall']));
+    //         // docDefinition.content.push(new Content(control.value,['mt_1']));
     //       }
     //     }
     //     if (tmpArr.length > 0) {
@@ -538,9 +567,9 @@ export class SurveyComponent implements OnInit, OnChanges {
     //   } else {
     //     let field = this.getModelData(this.model.sections, key);
     //     if (field.kind === 'question')
-    //       docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
+    //       docDefinition.content.push(new Content(field.label.text,['mt_5']));
     //     else
-    //       docDefinition.content.push(new Content(field.label.text,['marginTopSmall']));
+    //       docDefinition.content.push(new Content(field.label.text,['mt_1']));
     //     if (field.typeInfo.type === 'radio') {
     //       let values = field.typeInfo.values
     //       if (field.kind === 'conceal-reveal')
@@ -553,7 +582,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     //         else {
     //           content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
     //         }
-    //         content.columns.push(new Content(value,['marginLeftSmall', 'marginTopSmall']));
+    //         content.columns.push(new Content(value,['ms_1', 'mt_1']));
     //         docDefinition.content.push(content);
     //       }
     //     } else if (field.typeInfo.type === 'checkbox') {
@@ -564,13 +593,13 @@ export class SurveyComponent implements OnInit, OnChanges {
     //       } else {
     //         content.columns.push(new PdfImage('unchecked', 10, 10, ['marginTopCheckBox']));
     //       }
-    //       content.columns.push(new Content(field.label.text,['marginLeftSmall', 'marginTopSmall']));
+    //       content.columns.push(new Content(field.label.text,['ms_1', 'mt_1']));
     //       docDefinition.content.push(content);
     //     } else {
     //       if (abstractControl.value){
-    //         docDefinition.content.push(new PdfTable(new TableDefinition([[abstractControl.value]], ['*']), ['marginTopSmall']));
+    //         docDefinition.content.push(new PdfTable(new TableDefinition([[abstractControl.value]], ['*']), ['mt_1']));
     //       } else {
-    //         docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['marginTopSmall']));
+    //         docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
     //       }
     //     }
     //   }
@@ -598,6 +627,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       active = new_active;
     }
     return null;
+  }
+
+  strip(html){
+    let doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
   }
 
   /** <-- Generate PDF **/
