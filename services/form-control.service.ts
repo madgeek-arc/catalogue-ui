@@ -33,7 +33,7 @@ export class FormControlService implements OnInit{
   }
 
   postItem(surveyId: string, item: any, edit:boolean) {
-    return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}?chapterAnswerId=${item.id}`, item, this.options);
+    return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}/answer`, item, this.options);
   }
 
   postGenericItem(resourceType: string, item, edit: boolean) {
