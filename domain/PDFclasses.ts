@@ -76,11 +76,11 @@ export class PdfTable {
 }
 
 export class TableDefinition {
-  body: string[][];
+  body: any[][];
   widths: string[];
   heights: number[];
 
-  constructor(body: string[][], widths: string[], heights?: number[]) {
+  constructor(body: any[][], widths: string[], heights?: number[]) {
     this.body = body;
     this.widths = widths;
     if (heights)

@@ -482,6 +482,8 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (field.typeInfo.type !== 'composite') {
         if (answerValues?.[0]) {
           docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
+        } else if (field.form.placeholder) {
+          docDefinition.content.push(new PdfTable(new TableDefinition([[{text: field.form.placeholder, color: 'gray'}]],['*']), ['mt_1']));
         } else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
@@ -493,6 +495,11 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
+
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+      docDefinition.content.push(new Content('Find definitions at appendix A', ['mt_3']));
+    }
+
     this.model.sections.sort((a, b) => a.order - b.order);
     for (const section of this.model.sections) {
       section.subSections.sort((a, b) => a.order - b.order);
