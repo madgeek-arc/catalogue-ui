@@ -205,8 +205,6 @@ export class SurveyComponent implements OnInit, OnChanges {
       postMethod = 'postGenericItem'
       firstParam = this.model.resourceType;
     }
-    console.log(postMethod)
-    console.log(firstParam);
     this.formControlService[postMethod](firstParam, this.form.value, this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
@@ -214,6 +212,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.chapterChangeMap.set(key, false);
         }
         UIkit.modal('#unsaved-changes-modal').hide();
+        this.payload = res;
       },
       error => {
         this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.message);
