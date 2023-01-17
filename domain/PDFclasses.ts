@@ -5,6 +5,21 @@ export class DocDefinition {
   images: object;
   info: PdfMetadata;
   defaultStyle: object;
+  footer(currentPage, pageCount) {
+    return {
+      layout: "noBorders",
+      fontSize: 8,
+      margin: [25, 20, 25, 0],
+      table: {
+        widths: ["*"],
+        body: [
+          [
+            { text: "Page  " + currentPage.toString() + " of " + pageCount },
+          ]
+        ]
+      }
+    }
+  }
 
   constructor() {
     this.header = null;
