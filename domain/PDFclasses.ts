@@ -5,19 +5,16 @@ export class DocDefinition {
   images: object;
   info: PdfMetadata;
   defaultStyle: object;
+  // pageMargins: [ 40, 60, 40, 60 ];
+  // pageSize: 'A4';
   footer(currentPage, pageCount) {
     return {
       layout: "noBorders",
       fontSize: 8,
-      margin: [25, 20, 25, 0],
-      table: {
-        widths: ["*"],
-        body: [
-          [
-            { text: "Page  " + currentPage.toString() + " of " + pageCount },
-          ]
-        ]
-      }
+      margin: [25, 20, 5, 0],
+      columns: [
+        { text: currentPage.toString() + " of " + pageCount, alignment: 'right' },
+      ]
     }
   }
 
@@ -125,23 +122,15 @@ export class PdfImage {
   }
 }
 
-export class PdfSvg {
-  svg: string
-  height: number;
-  width: number;
-  style: string[];
-
-  constructor(svg: string, height: number, width: number, style: string[]) {
-    this.svg = svg;
-    this.height = height;
-    this.width = width;
-    this.style = style;
-  }
-}
-
 export class PdfTable {
   table: TableDefinition;
-  styles: string[]
+  styles: string[];
+  // layout = {
+  //   paddingLeft(i, node) { return 2},
+  //   paddingTop(i, node) { return 8},
+  //   paddingRight(i, node) { return 2},
+  //   paddingBottom(i, node) { return 8}
+  // };
 
   constructor(table: TableDefinition, styles: string[]) {
     this.table = table;
