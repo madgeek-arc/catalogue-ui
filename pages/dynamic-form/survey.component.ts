@@ -303,7 +303,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     docDefinition.info = new PdfMetadata(this.model.name);
 
     let description = 'none';
-    if (this.model.name === 'National Contributions to EOSC 2022') {
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
       description = 'end'
     }
     this.createDocumentDefinition(this.form, docDefinition, description);
@@ -388,7 +388,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
 
-    if (this.model.name === 'National Contributions to EOSC 2022') {
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
       docDefinition.content.push(new Content('Definitions of key terms can be found in Appendix A', ['mt_3']));
     }
 
@@ -422,7 +422,7 @@ export class SurveyComponent implements OnInit, OnChanges {
             {text: 'EOSC Observatory', link: 'https://eoscobservatory.eosc-portal.eu', color: 'cornflowerblue', decoration: 'underline'},
             ' to explore the data from the first EOSC Steering Board survey on National Contributions to EOSC 2021 and visit the ',
             {text: 'EOSC Observatory Zenodo Community', link: 'https://zenodo.org/communities/eoscobservatory', color: 'cornflowerblue', decoration: 'underline'},
-            ' to access all relevant documents for the surveys and EOSC Observatory']
+            ' to access all relevant documents for the surveys and EOSC Observatory.']
         }
       ]
       docDefinition.content.push(content);
