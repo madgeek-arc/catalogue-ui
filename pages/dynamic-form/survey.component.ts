@@ -315,7 +315,10 @@ export class SurveyComponent implements OnInit, OnChanges {
     for (const field of fields) {
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
-      if (field.form.description.text) {
+      if (field.form.description.text
+        && !field.form.description.text.includes('Please add only new use cases as any use cases submitted in the previous survey will be imported here')
+        && !field.form.description.text.includes('For example on curricula for data stewardship')
+      ) {
         if (description === 'end') {
           let questionNumber = null;
           if (field.label.text) {
