@@ -3,7 +3,7 @@
   <div class="uk-width-1-2">
     <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>
   </div>
-  <p class="uk-margin-bottom">{{model.notice}}</p>
+  <p class="uk-margin-bottom" [innerHTML]="model.notice"></p>
 </div>
 
 <div *ngIf="downloadPDF" class="uk-flex uk-flex-right">

@@ -10,7 +10,6 @@ import {
   PdfImage,
   PdfMetadata,
   PdfTable,
-  PdfUnorderedList,
   TableDefinition
 } from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -73,90 +72,42 @@ export class SurveyComponent implements OnInit, OnChanges {
       this.editMode = true;
     if (this.model) {
       this.currentChapter = this.model.sections[0];
-      // this.formControlService.getUiVocabularies().subscribe(res => {
-      //   this.vocabularies = res;
-        this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
-        for (const section of this.model.sections) {
-          for (const surveyAnswer in this.payload?.answer) {
-            if (section.id === this.payload.answer[surveyAnswer]?.chapterId) {
-              this.chapterChangeMap.set(section.id, false);
-              this.sortedSurveyAnswers[section.id] = this.payload.answer[surveyAnswer].answer;
-              break;
-            }
-          }
-        }
-      // },
-      // error => {
-      //   this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
-      // },
-      // () => {
-        for (let i = 0; i < this.model.sections.length; i++) {
-          if (this.model.sections[i].subSections === null) {
-            this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
+      this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
+      for (const section of this.model.sections) {
+        for (const surveyAnswer in this.payload?.answer) {
+          if (section.id === this.payload.answer[surveyAnswer]?.chapterId) {
+            this.chapterChangeMap.set(section.id, false);
+            this.sortedSurveyAnswers[section.id] = this.payload.answer[surveyAnswer].answer;
             break;
           }
-          this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
-          if (this.payload) {
-            this.prepareForm(this.payload.answer, this.model.sections[i].subSections);
-            this.form.patchValue(this.payload.answer);
-            this.form.markAllAsTouched();
-          }
         }
-        if (this.payload?.validated) {
-          this.readonly = true;
-          this.validate = false;
-        } else if (this.validate) {
-          UIkit.modal('#validation-modal').show();
+      }
+      for (let i = 0; i < this.model.sections.length; i++) {
+        if (this.model.sections[i].subSections === null) {
+          this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
+          break;
         }
+        this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
+        if (this.payload) {
+          this.prepareForm(this.payload.answer, this.model.sections[i].subSections);
+          this.form.patchValue(this.payload.answer);
+          this.form.markAllAsTouched();
+        }
+      }
+      if (this.payload?.validated) {
+        this.readonly = true;
+        this.validate = false;
+      } else if (this.validate) {
+        UIkit.modal('#validation-modal').show();
+      }
 
-        setTimeout(() => {
-          if (this.readonly) {
-            this.form.disable();
-          }
-        }, 0);
-        this.ready = true;
-      // });
+      setTimeout(() => {
+        if (this.readonly) {
+          this.form.disable();
+        }
+      }, 0);
+      this.ready = true;
     }
-    // else { // TODO: remove later
-    //   this.route.params.subscribe(
-    //     params => {
-    //       zip(
-    //         this.formControlService.getUiVocabularies(),
-    //         this.formControlService.getFormModelByType(params['resourceTypeModel'])
-    //       ).subscribe(
-    //         res => {
-    //           this.vocabularies = res[0];
-    //           this.model = res[1].results[0];
-    //         },
-    //         error => {console.log(error)},
-    //         () => {
-    //           for (let i = 0; i < this.model.sections.length; i++) {
-    //             if (this.model.sections[i].subSections)
-    //               this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
-    //             else {
-    //               this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
-    //             }
-    //             // this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.sections[i].subSections)
-    //             // this.form.get(this.surveyModel.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
-    //           }
-    //           // if (this.surveyAnswers.validated) {
-    //           //   this.readonly = true;
-    //           //   this.validate = false;
-    //           // } else if (this.validate) {
-    //           //   UIkit.modal('#validation-modal').show();
-    //           // }
-    //
-    //           // setTimeout(() => {
-    //           //   if (this.readonly) {
-    //           //     this.form.disable();
-    //           //   }
-    //           // }, 0);
-    //           this.ready = true
-    //         }
-    //       );
-    //     }
-    //   );
-    // }
   }
 
   validateForm() {
@@ -205,8 +156,6 @@ export class SurveyComponent implements OnInit, OnChanges {
       postMethod = 'postGenericItem'
       firstParam = this.model.resourceType;
     }
-    console.log(postMethod)
-    console.log(firstParam);
     this.formControlService[postMethod](firstParam, this.form.value, this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
@@ -214,6 +163,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.chapterChangeMap.set(key, false);
         }
         UIkit.modal('#unsaved-changes-modal').hide();
+        this.payload = res;
       },
       error => {
         this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.message);
@@ -276,6 +226,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
     for (let i = 0; i < length-1; i++) {
+      console.log(name);
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
@@ -346,72 +297,13 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** Generate PDF --> **/
   generatePDF() {
     let docDefinition: DocDefinition = new DocDefinition();
-    // docDefinition.header.text = 'Header Text'
-    // docDefinition.header.style = ['sectionHeader']
     docDefinition.content.push(new Content(this.model.name, ['title']));
+    if (this.model.notice)
+      docDefinition.content.push({text: this.strip(this.model.notice), italics: true, alignment: 'justify'});
     docDefinition.info = new PdfMetadata(this.model.name);
-    docDefinition.defaultStyle = {
-      font: 'Roboto',
-      fontSize: 12,
-      color: 'black',
-    }
-    docDefinition.styles = {
-      title: {
-        bold: true,
-        alignment: 'center',
-        fontSize: 24,
-        margin: [0, 15, 0, 10]
-      },
-      chapterHeader: {
-        bold: true,
-        fontSize: 18,
-        alignment: 'center',
-        margin: [0, 30, 0, 10]
-      },
-      tabHeader: {
-        bold: true,
-        fontSize: 15,
-        alignment: 'center',
-        decoration: 'underline',
-        margin: [0, 20, 0, 15]
-      },
-      link: {
-        color: 'blue',
-      },
-      mt_1: {
-        margin: [0, 2, 0, 0]
-      },
-      mt_3: {
-        margin: [0, 8, 0, 0]
-      },
-      mt_5: {
-        margin: [0, 25, 0, 0]
-      },
-      mx_1: {
-        margin: [0, 2, 0, 2]
-      },
-      mx_3: {
-        margin: [0, 8, 0, 8]
-      },
-      ms_1: {
-        margin: [3, 0, 0, 0]
-      },
-      ms_5: {
-        margin: [20, 0, 0, 0]
-      },
-      marginTopCheckBox: {
-        margin: [0, 3, 0, 0]
-      }
-    }
-    docDefinition.images = {
-      radioChecked: ' data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAD/klEQVRoQ+2Zj3HVMAzG2wmACUgnoExAmAA6AY8JgAkIEwATkE4ATECYgDIB6QTABKBfse5UP9uy8/7AO6o73UtiW9b3SZadvOOjA5fjA/f/6AbA347gNiNwKmAeifait0W5t3IhNz9Ep6CftwF+UwA4+kx0Jdo1OjRL/w+irwKwxuF/ui8FoI4/D2wvmjwMIipvRN8uAbIEwGOZ6HWC8Z+BUVIEdlXxk+igAGc8eitCDZCnwUY1Ia0AXorlIbJOLvMMx1ukD+MeRIOwRVpVSS0AmIP1lbF6Ge5bHY8dAwgpdM80jHL9QpSoFKUWwLvI+XO5J//dCTwHQjsEAeJJBIKU2hjAIBZIHRXCy7NdSPNcXgRYbO/35LxOE4M4kwbKbVJKAAjrN1F+EdJmtQvaEzZHeabpRJqeiCbTtQTAMvFVDPQ5IxlQcXVp2XkhbRLVhZ1N2xyAmP2HwaAXgE46sF5IPY2cjoFB3Xlnz1Ag7FPol41CDgAVgSMCAnOw70lqj8iNGaShptYTBY0kOzWV75rkAJD7XehZw35cZj2wtI+iXpmEOI3CLNesBReAHcTxIE6F2IaNVo3jtk9NSSZ99NixRmYqAoRX675XeYgS0dpEYBV2c0KktCKtAU4BmGSA5l2xBks/a3wpCI8kuxetrccUgC/iyWnwxsv/7xUp5gEjRe4UOvXSpuvgQq7v274pAL9Mh1J4rWHPSa+9RBRkQqrKNZ89AKWNbl8AcNyS+n8BOMgUYqHoGcRbxLZGe3mea/f2GpuqnMm0wFzZ88ooO+VY8Iw2+xKyBIRXRldilJ0e+ShKWU2v6PB0kN9/dSPjNZOdvwjAli2vRmPIAm6NQM1Rwu417AGkeBEAjbPo3dDLWwd0G0VbU8lLHez2orqJXcp1FzOUq/OW1UkGAcKTlkjUMM98OA8IJDkmB4ATKFHIngIzaGAIICy0+MOVfviiHdue4Liyz1hsr71WlnZayygTkn/J99KMJ8qcNk+ex6YdAjk+4DSSjVgJAEZYMLoWeB3kdLoP4UuIlktyn8KSJK8EAEftUZb75GvdlhENYs9+h1r8WUX94j2Uz4oq1GHq8S4kfq9eq/vxpF4EtP8oF7ZMkk7s0i1rogSYdGW3tbtsTZmt/n+ACWDegphDJACzifTB+c4YwXki7xJUGwG1HacTz6cAjnNKi+A4KcOvldo94mpMKwDGEGaiodVJJ4ctogGgWZTards+VYR9oQsOY4OoWqH/KtiImvK3SwBgjcmJBhpvWNWTh444DiGomzKx8aUA1I4Cgbk4Ih4Q6jsRG5Y4rsY3BWCdJE1IDX47UfuPC/14GYHhyagH0m3fJgB3sl10uAGwC1ZbbB58BH4DHK/eMUOdTWMAAAAASUVORK5CYII=',
-      radioUnchecked: ' data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADeUlEQVRoQ+2Zi5HUMAyG7yoAKmCpgKMCQgVABYQKgAoIFQAVsFQAVECogKMCchUAFYA+sGZ0jh3b2SS+HU4zmmwSW9avl+Xs6cmR0+mR639yDaC2B5f0wJmAeSjcCN8U5t7Sudz8FO4df1kC/KEAUPSZcCu8K1RokPEfhV85YIXT/w2fC0AVf+6sPWtxNwmvvBF+OwfIHACPZKHXAYv/chYlRLCuMnriHRjgzIdveKgB8tTJyDZIKYCXIrnzpBPLPEPxEmrcvPveJGQRVlmUCwDLYfXWSL1w96WK+4oBhBC6a17s5fcLYbwySbkA3nnKv5d74j+5QEoB9x4DAeKJB4KQOhhAJxIIHSXcy7M1qHitlAdItg8bKa/L+CAeywvKbZCmAODW78JcIcKmXcPsAZl7eabhRJjeEQ6G6xQAa4lvIqCJCVkBFEbrhTWxo2EbA+Bb/4ETuIKuUZEY7LN7G/VCDAAVgRYBos4jrAbhBd0n2KmpfJcoBoDY37mRNayvSlovDPKQXEgCsJNoDzSJa3iANQkfbTtGxgx5oJMJWve3rDwxA+3lhVakUTKHANi4m6zBG7nE7kWjfAwB+CqKnV2B+A/lwbk8vGcNFwLw2wwgaUiemoQxMarSJZ1TAFKtxlbArFH/LwBHGUIkivYgNTexUBLTk2mB+fs+VUY5UFCHa1Iri3Oggj4JU1bDGe2ednK9qhsZx0z6tEkAtmyxjd+qaX5Z+4ewtjPsAYT4JABeDsK33aiaedCIDtpSX8jvnW/MWJ23YdTLJEDUIJQHBBQ81EwdaPBCtAvcAI21Pl0x1h8dK6d2WusFwBB/S31GSeEn5mkfNGSC1kfIFACEkDCaC3wZoDvdgvgSouWS2KewFB/qUdS2stwHj3ULI7KeR/TszyqqF+dQPisqUYepx2uQ/+11VPf9RXO7zb1MtJ/9CCd26aVygnBlt7W7bNZpMBcAC2B5C2JwngDMIdQ45XdGCMrj+aSBcgHEwonnvQNHn1JCKE7IcLUUrTgh4aUAkIGb8YZWJ5WLtfAGgAZhardu+1QR9pSdUxgZ2h7ofMa3Tka2IeYAQDiL42LY/6cle3E3EMUxCJwMGV/4XAAqR4FgOd8jKSDUdzzWzVFchR8KwCpJmBAaXAkV+48L4ziMYOHecApk8v2SAJKLrTHgGsAaVi2RefQe+APW/7QxCYAvyQAAAABJRU5ErkJggg==',
-      checked: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAQAAACROWYpAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAF+2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMTItMzBUMDE6Mzc6MjArMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjI4KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjI4KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMSIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9IkRvdCBHYWluIDIwJSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowNzVjYjZmMy1jNGIxLTRiZjctYWMyOS03YzUxMWY5MWJjYzQiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo5ZTM1YTc3ZC0zNDM0LTI5NGQtYmEwOC1iY2I5MjYyMjBiOGIiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowYzc2MDY3Ny0xNDcwLTRlZDUtOGU4ZS1kNTdjODJlZDk1Y2UiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjBjNzYwNjc3LTE0NzAtNGVkNS04ZThlLWQ1N2M4MmVkOTVjZSIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozNzoyMCswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjA3NWNiNmYzLWM0YjEtNGJmNy1hYzI5LTdjNTExZjkxYmNjNCIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozODoyOCswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+jHsR7AAAAUNJREFUOMvN1T9Lw0AYx/EviLVFxFH8M3USgyAFoUsQ0UV8F6Ui4qCTbuJg34HgptBdUATrUoxiqYMgiOBoIcW9BVED+jgkntGm9i6CmN+Sg/vAcc89dwBd5Clzj6uZGg7LJAC62UFipEgKcmroaeZj/gpcIAhl5rE1M0cJQbiCOsIrs5h8WZ4R6j72yBrhcRo+dhE8bCOcoYng/hFOMxAXb/DAHTNxcCGo7JE5LqhjsW2KP6nDcGecCv1vRdC2eJQDLllooach2hbvIghvLJJgM0QHdeq8F0x/5ETRM4b0DonF7be+Pf+y4A4bZnETok4E/XG3xxR3WhasUWeLCg2OGYnXGP1MkPwnLRmJf3UN+RfgtBGe5MnHVQShxBQZzdgcIgjXsKSu/KZmXgKxBkmKsZ6bffoAelilQs3goauyTi+8A8mhgeQlxdNWAAAAAElFTkSuQmCC',
-      unchecked: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAQAAACROWYpAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAF+2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMTItMzBUMDE6Mzc6MjArMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjU3KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTEyLTMwVDAxOjM4OjU3KzAxOjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMSIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9IkRvdCBHYWluIDIwJSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpjMGUyMmJhZC1lY2VkLTQzZWUtYjIzZC1jNDZjOTNiM2UzNWMiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo5M2FhOTEzYy1hZDVmLWZmNGEtOWE5Ny1kMmUwZjdmYzFlYmUiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDozYmY2ODFlMy1hMTRhLTQyODMtOGIxNi0zNjQ4M2E2YmZlNjYiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjNiZjY4MWUzLWExNGEtNDI4My04YjE2LTM2NDgzYTZiZmU2NiIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozNzoyMCswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmMwZTIyYmFkLWVjZWQtNDNlZS1iMjNkLWM0NmM5M2IzZTM1YyIgc3RFdnQ6d2hlbj0iMjAxOS0xMi0zMFQwMTozODo1NyswMTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+6AB6cQAAAPxJREFUOMvF1b1Kw1AYBuAnFf8QL8WlIHQJIriIdyEu4qCTXop7dwenTgUHpYvgJVhob8AuakE+h9hapJqcFDXvFDgPIXlzvgNLjnQ9GlRM340TK7DsUtRI2zqH09txxUzWn3IrhK4DecXs6wjhnqHwZk/K1fIiDAs81krCW54KPBDG8iTcNBIGf4ND1MWTdmrgqIOL5TM0S8SRhmMu1dAo+2DZ57t9eWajtKrvN1GVnrMK9HewhbBy+nPPJbTsJwmymOn8P7fkfLzQGCoG4G4S3vZc4J4QOnY0KyZ3LYQHjqcjf1Qxrx/inDXtWsfNlU1YdeZOP+Gg67mwwTvIDqR1iAowgQAAAABJRU5ErkJggg==',
-    }
+
     let description = 'none';
-    if (this.model.name === 'Survey on National Contributions to EOSC 2022')
-    {
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
       description = 'end'
     }
     this.createDocumentDefinition(this.form, docDefinition, description);
@@ -423,7 +315,10 @@ export class SurveyComponent implements OnInit, OnChanges {
     for (const field of fields) {
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
-      if (field.form.description.text) {
+      if (field.form.description.text
+        && !field.form.description.text.includes('Please add only new use cases as any use cases submitted in the previous survey will be imported here')
+        && !field.form.description.text.includes('For example on curricula for data stewardship')
+      ) {
         if (description === 'end') {
           let questionNumber = null;
           if (field.label.text) {
@@ -482,6 +377,8 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (field.typeInfo.type !== 'composite') {
         if (answerValues?.[0]) {
           docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
+        } else if (field.form.placeholder) {
+          docDefinition.content.push(new PdfTable(new TableDefinition([[{text: field.form.placeholder, color: 'gray'}]],['*']), ['mt_1']));
         } else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
@@ -493,6 +390,11 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
+
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+      docDefinition.content.push(new Content('Definitions of key terms can be found in Appendix A', ['mt_3']));
+    }
+
     this.model.sections.sort((a, b) => a.order - b.order);
     for (const section of this.model.sections) {
       section.subSections.sort((a, b) => a.order - b.order);
@@ -523,7 +425,7 @@ export class SurveyComponent implements OnInit, OnChanges {
             {text: 'EOSC Observatory', link: 'https://eoscobservatory.eosc-portal.eu', color: 'cornflowerblue', decoration: 'underline'},
             ' to explore the data from the first EOSC Steering Board survey on National Contributions to EOSC 2021 and visit the ',
             {text: 'EOSC Observatory Zenodo Community', link: 'https://zenodo.org/communities/eoscobservatory', color: 'cornflowerblue', decoration: 'underline'},
-            ' to access all relevant documents for the surveys and EOSC Observatory']
+            ' to access all relevant documents for the surveys and EOSC Observatory.']
         }
       ]
       docDefinition.content.push(content);
@@ -531,79 +433,6 @@ export class SurveyComponent implements OnInit, OnChanges {
 
     return;
 
-    // for (const key in group.controls) {
-    //   let abstractControl = group.controls[key];
-    //   let field = this.getModelData(this.model.sections, key);
-    //   if (abstractControl instanceof FormGroup) {
-    //     if (field){
-    //       if (field.kind === 'question')
-    //         docDefinition.content.push(new Content(field.label.text,['mt_5']));
-    //       else
-    //         docDefinition.content.push(new Content(field.label.text,['mt_1']));
-    //     }
-    //     this.createDocumentDefinition(abstractControl, docDefinition);
-    //   } else if (abstractControl instanceof FormArray) {
-    //     if (field.kind === 'question')
-    //       docDefinition.content.push(new Content(field.label.text,['mt_5']));
-    //     else
-    //       docDefinition.content.push(new Content(field.label.text,['mt_1']));
-    //     let tmpArr = [];
-    //     for (let i = 0; i < abstractControl.controls.length; i++) {
-    //       let control = group.controls[key].controls[i];
-    //       if (control instanceof FormGroup || control instanceof FormArray) {
-    //         this.createDocumentDefinition(control, docDefinition);
-    //       } else {
-    //         tmpArr.push(control.value);
-    //         // docDefinition.content.push(new Content(control.value,['mt_1']));
-    //       }
-    //     }
-    //     if (tmpArr.length > 0) {
-    //       let columns = new Columns();
-    //       columns.columns.push(new Content('', [''], 15));
-    //       columns.columns.push(new PdfUnorderedList(tmpArr,''));
-    //       docDefinition.content.push(columns);
-    //     }
-    //   } else {
-    //     let field = this.getModelData(this.model.sections, key);
-    //     if (field.kind === 'question')
-    //       docDefinition.content.push(new Content(field.label.text,['mt_5']));
-    //     else
-    //       docDefinition.content.push(new Content(field.label.text,['mt_1']));
-    //     if (field.typeInfo.type === 'radio') {
-    //       let values = field.typeInfo.values
-    //       if (field.kind === 'conceal-reveal')
-    //         values = this.getModelData(this.model.sections, field.parent).typeInfo.values;
-    //       for (const value of values) {
-    //         let content = new Columns();
-    //         if (value === abstractControl.value){
-    //           content.columns.push(new PdfImage('radioChecked', 10, 10, ['marginTopCheckBox']));
-    //         }
-    //         else {
-    //           content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
-    //         }
-    //         content.columns.push(new Content(value,['ms_1', 'mt_1']));
-    //         docDefinition.content.push(content);
-    //       }
-    //     } else if (field.typeInfo.type === 'checkbox') {
-    //       docDefinition.content.pop();
-    //       let content = new Columns();
-    //       if (abstractControl.value) {
-    //         content.columns.push(new PdfImage('checked', 10, 10, ['marginTopCheckBox']));
-    //       } else {
-    //         content.columns.push(new PdfImage('unchecked', 10, 10, ['marginTopCheckBox']));
-    //       }
-    //       content.columns.push(new Content(field.label.text,['ms_1', 'mt_1']));
-    //       docDefinition.content.push(content);
-    //     } else {
-    //       if (abstractControl.value){
-    //         docDefinition.content.push(new PdfTable(new TableDefinition([[abstractControl.value]], ['*']), ['mt_1']));
-    //       } else {
-    //         docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
-    //       }
-    //     }
-    //   }
-    //
-    // }
   }
 
   findVal(obj, key) {

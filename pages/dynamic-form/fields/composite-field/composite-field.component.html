@@ -4,18 +4,15 @@
        [attr.for]="fieldData.name" style="{{fieldData.label.style}}">
     {{fieldData.label?.text + (fieldData.form.mandatory ? ' (*)' : '')}}
   </div>
-
   <ng-container *ngIf="fieldData.form.description?.showLess; else noReadMore">
-    <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-         style="{{fieldData.form.description.style}}">
-    <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
+    <div class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+         *ngIf="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
+      <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
     </div>
   </ng-container>
   <ng-template #noReadMore>
-    <div *ngIf="fieldData.form.description?.text"
-         class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-         [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-      <!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
+    <div *ngIf="fieldData.form.description?.text" [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}"
+         class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}">
     </div>
   </ng-template>
 
@@ -97,7 +94,7 @@
         <span class="material-icons">clear</span>
       </a>
     </div>
-    <div class="uk-width-9-10 uk-text-center uk-margin-top">
+    <div class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
       <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
         <span class="material-icons">add</span> Add {{fieldData.label.text}}
       </a>
@@ -189,7 +186,9 @@
   </ng-template>
 
   <div *ngIf="fieldData.form.suggestion?.text" class="uk-margin-top">
-    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
+    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+         [innerHTML]="fieldData.form.suggestion.text">
+    </div>
   </div>
 
 </form>
