@@ -62,6 +62,12 @@ export class CompositeFieldComponent implements OnInit {
     this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
   }
 
+  movedElement(e) {
+    // console.log(e);
+    console.log(e.target);
+    e.target.childNodes.forEach(child => console.log(child.id));
+  }
+
   /** <-- Handle Arrays **/
 
   /** check form fields and tabs validity--> **/
@@ -82,22 +88,7 @@ export class CompositeFieldComponent implements OnInit {
 
   /** <-- check form fields and tabs validity **/
 
-  /** Return Vocabulary items for composite fields--> **/
-
-  getCompositeVocabularyItems(fieldData: Field) {
-    // console.log(fieldData.name);
-    // console.log(fieldData.id);
-    // console.log(fieldData.typeInfo.vocabulary);
-    // console.log(this.vocabularies);
-    // if (fieldData.subFields[j].form.dependsOn !== null) {
-    //   return this.subVocabularies[this.oldFieldAsFormArray(fieldData.subFields[j].parent).controls[i].get(fieldData.subFields[j].form.dependsOn.name).value];
-    // } else {
-    // console.log(this.vocabularies[fieldData.typeInfo.vocabulary]);
-      return this.vocabularies[fieldData.typeInfo.vocabulary];
-    // }
-  }
-
-  /** <--Return Vocabulary items for composite fields **/
+  /** Handle Bitsets--> **/
 
   updateBitSet(fieldData: Field) {
     this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour

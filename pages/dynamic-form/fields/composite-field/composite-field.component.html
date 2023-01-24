@@ -17,82 +17,85 @@
   </ng-template>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
-    <div *ngFor="let control of fieldAsFormArray().controls; let i=index">
-      <div [formGroupName]="i" class="uk-width-9-10 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
-        <div *ngFor="let control of fieldData?.subFields; let j=index">
-          <div class="">
-            <div *ngIf="control.typeInfo.type === 'composite'">
-              <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
-                                   [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                   [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-composite-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'chooseOne'">
-              <app-choose-one [fieldData]="control" [subVocabularies]="subVocabularies"
-                             [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                             [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-choose-one>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select'" class="uk-form-controls uk-margin-medium-top">
-              <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies"
-                                    [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                    [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-vocabulary-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'string' || control.typeInfo.type === 'email'||
-                      control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
-                      control.typeInfo.type === 'double'">
-              <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                          (handleBitSets)="handleBitsetOfChildren($event)"
-                                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-string-url-email-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'number'">
-              <app-number-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                (handleBitSets)="handleBitsetOfChildren($event)"
-                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-number-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'checkbox'" class="uk-form-controls">
-              <app-checkbox-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+    <div uk-sortable (moved)="movedElement($event)">
+      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}">
+        <div [formGroupName]="i" class="uk-width-9-10 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+          position = {{i}}
+          <div *ngFor="let control of fieldData?.subFields; let j=index">
+            <div class="">
+              <div *ngIf="control.typeInfo.type === 'composite'">
+                <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
+                                     [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                                     [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-composite-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'chooseOne'">
+                <app-choose-one [fieldData]="control" [subVocabularies]="subVocabularies"
+                               [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                               [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                               (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-choose-one>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select'" class="uk-form-controls uk-margin-medium-top">
+                <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies"
+                                      [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                                      [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-vocabulary-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'string' || control.typeInfo.type === 'email'||
+                        control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
+                        control.typeInfo.type === 'double'">
+                <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                                            (handleBitSets)="handleBitsetOfChildren($event)"
+                                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-string-url-email-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'number'">
+                <app-number-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
                                   (handleBitSets)="handleBitsetOfChildren($event)"
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-checkbox-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'largeText'">
-              <app-large-text-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                </app-number-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'checkbox'" class="uk-form-controls">
+                <app-checkbox-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
                                     (handleBitSets)="handleBitsetOfChildren($event)"
                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-large-text-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
-              <app-radio-button-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                </app-checkbox-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'largeText'">
+                <app-large-text-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
                                       (handleBitSets)="handleBitsetOfChildren($event)"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-radio-button-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'richText'" class="uk-form-controls">
-              <app-rich-text-field [fieldData]="control" [position]="i"  (hasChanges)="unsavedChangesPrompt()"
-                                   (handleBitSets)="handleBitsetOfChildren($event)"
-                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-rich-text-field>
-            </div>
-            <div *ngIf="control.typeInfo.type === 'date'">
-              <app-date-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                              (handleBitSets)="handleBitsetOfChildren($event)"
-                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-              </app-date-field>
+                </app-large-text-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
+                <app-radio-button-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                                        (handleBitSets)="handleBitsetOfChildren($event)"
+                                        (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-radio-button-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'richText'" class="uk-form-controls">
+                <app-rich-text-field [fieldData]="control" [position]="i"  (hasChanges)="unsavedChangesPrompt()"
+                                     (handleBitSets)="handleBitsetOfChildren($event)"
+                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-rich-text-field>
+              </div>
+              <div *ngIf="control.typeInfo.type === 'date'">
+                <app-date-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-date-field>
+              </div>
             </div>
           </div>
         </div>
+        <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-display-inline-block"
+           (click)="remove(i); updateBitSetOfComposite(fieldData, i); unsavedChangesPrompt();">
+          <span class="material-icons">clear</span>
+        </a>
       </div>
-      <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-display-inline-block"
-         (click)="remove(i); updateBitSetOfComposite(fieldData, i); unsavedChangesPrompt();">
-        <span class="material-icons">clear</span>
-      </a>
     </div>
     <div class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
       <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
