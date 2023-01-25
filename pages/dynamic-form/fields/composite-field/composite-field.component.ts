@@ -62,10 +62,31 @@ export class CompositeFieldComponent implements OnInit {
     this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
   }
 
-  movedElement(e) {
-    // console.log(e);
-    console.log(e.target);
-    e.target.childNodes.forEach(child => console.log(child.id));
+  movedElement(e, ) {
+    let newOrder: number[] = [];
+    e.target.childNodes.forEach(child => {
+      newOrder.push(child.id);
+    });
+    // console.log(newOrder);
+    for (let i = 0; i < newOrder.length-1; i++) {
+      if (newOrder[i] != i) {
+        if (newOrder[i] > i+1) {
+          this.move(newOrder[i], i);
+          break;
+        } else if (newOrder[i] < i) {
+          this.move(i, newOrder[i]);
+          break;
+        }
+      }
+    }
+  }
+
+  move(newIndex: number, currentIndex: number) {
+    const formArray = this.fieldAsFormArray();
+
+    const currentGroup = formArray.at(currentIndex);
+    formArray.removeAt(currentIndex);
+    formArray.insert(newIndex, currentGroup)
   }
 
   /** <-- Handle Arrays **/

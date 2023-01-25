@@ -226,7 +226,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
     for (let i = 0; i < length-1; i++) {
-      console.log(name);
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
