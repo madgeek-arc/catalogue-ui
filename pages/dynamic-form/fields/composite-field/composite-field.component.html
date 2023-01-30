@@ -18,8 +18,9 @@
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
     <div uk-sortable (moved)="movedElement($event)">
-      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}">
-        <div [formGroupName]="i" class="uk-width-9-10 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-width-1-1 uk-grid">
+        <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
+             [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
           <div *ngFor="let control of fieldData?.subFields; let j=index">
             <div class="">
               <div *ngIf="control.typeInfo.type === 'composite'">
@@ -90,10 +91,20 @@
             </div>
           </div>
         </div>
-        <a *ngIf="fieldAsFormArray().length > 1" class="remove-element uk-padding-small uk-display-inline-block"
-           (click)="remove(i); updateBitSetOfComposite(fieldData, i); unsavedChangesPrompt();">
-          <span class="material-icons">clear</span>
-        </a>
+        <div *ngIf="fieldAsFormArray().length > 1" class="">
+          <div>
+            <a class="remove-element uk-margin-small-top uk-margin-medium-bottom uk-display-inline-block"
+               (click)="remove(i); updateBitSetOfComposite(fieldData, i); unsavedChangesPrompt();">
+              <span class="material-icons">clear</span>
+            </a>
+          </div>
+          <div>
+            <a (click)="move(i-1, i)"><span class="material-icons">north</span></a>
+          </div>
+          <div>
+            <a (click)="move(i+1, i)"><span class="material-icons">south</span></a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
