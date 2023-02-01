@@ -18,7 +18,7 @@
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
     <div uk-sortable (moved)="movedElement($event)">
-      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-width-1-1 uk-grid">
+      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-width-expand uk-grid">
         <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
              [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
           <div *ngFor="let control of fieldData?.subFields; let j=index">
@@ -91,18 +91,20 @@
             </div>
           </div>
         </div>
-        <div *ngIf="fieldAsFormArray().length > 1" class="">
-          <div>
-            <a class="remove-element uk-margin-small-top uk-margin-medium-bottom uk-display-inline-block"
+        <div *ngIf="fieldAsFormArray().length > 1" class="uk-width-expand uk-padding-remove uk-margin-small-top uk-grid uk-child-width-1-2">
+          <div class="">
+            <div>
+              <a (click)="move(i-1, i)"><span class="material-icons">north</span></a>
+            </div>
+            <div>
+              <a (click)="move(i+1, i)"><span class="material-icons">south</span></a>
+            </div>
+          </div>
+          <div class="uk-padding-small">
+            <a class="remove-element"
                (click)="remove(i); updateBitSetOfComposite(fieldData, i); unsavedChangesPrompt();">
               <span class="material-icons">clear</span>
             </a>
-          </div>
-          <div>
-            <a (click)="move(i-1, i)"><span class="material-icons">north</span></a>
-          </div>
-          <div>
-            <a (click)="move(i+1, i)"><span class="material-icons">south</span></a>
           </div>
         </div>
       </div>
