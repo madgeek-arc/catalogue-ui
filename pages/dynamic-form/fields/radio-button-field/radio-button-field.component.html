@@ -21,5 +21,11 @@
         <span class="uk-radio-label">{{value}}</span>
       </label>
     </div>
+
+    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+           [innerHTML]="fieldData.form.suggestion.text">
+      </div>
+    </div>
   </ng-template>
 </form>
