@@ -88,11 +88,13 @@ export class SurveyComponent implements OnInit, OnChanges {
           break;
         }
         this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
-        if (this.payload) {
-          this.prepareForm(this.payload.answer, this.model.sections[i].subSections);
-          this.form.patchValue(this.payload.answer);
-          this.form.markAllAsTouched();
+      }
+      if (this.payload?.answer) {
+        for (let i = 0; i < this.model.sections.length; i++) {
+          this.prepareForm(this.payload.answer[this.model.sections[i].name], this.model.sections[i].subSections);
         }
+        this.form.patchValue(this.payload.answer);
+        this.form.markAllAsTouched();
       }
       if (this.payload?.validated) {
         this.readonly = true;
