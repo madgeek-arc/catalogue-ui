@@ -123,6 +123,7 @@ export class Section {
   id: string;
   name: string;
   description: string;
+  subType: string;
   order: number;
   subSections: Section[];
   fields: Field[];

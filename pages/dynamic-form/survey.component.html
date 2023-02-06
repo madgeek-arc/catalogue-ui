@@ -14,8 +14,9 @@
 <div *ngIf="model && ready" [ngClass]="{'uk-display-none': (model.sections.length === 1 || !model.sections[0].subSections)}">
   <ul class="chapter-tabs uk-tab" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
     <li class="" *ngFor="let section of model.sections">
-      <a (click)="showUnsavedChangesPrompt(section)">{{section.name}}
-        <span *ngIf="chapterChangeMap.get(section.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
+      <a *ngIf="(!section.subType || section.subType===subType)" (click)="showUnsavedChangesPrompt(section)">{{section.name}}
+        <span *ngIf="chapterChangeMap.get(section.id)" class="material-icons md-10 uk-margin-small-left">circle</span>
+      </a>
     </li>
   </ul>
 </div>
