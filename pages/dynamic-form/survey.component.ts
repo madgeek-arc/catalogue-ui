@@ -347,7 +347,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         if (description === 'show')
           docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
       }
-      let answerValues = this.findVal(this.payload, field.name);
+      let answerValues = this.findVal(this.payload?.answer, field.name);
       if (field.typeInfo.type === 'radio') {
         let values = field.typeInfo.values
         // if (field.kind === 'conceal-reveal')
@@ -441,6 +441,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   findVal(obj, key) {
+    if (!obj)
+      return null;
     let seen = new Set, active = [obj];
     while (active.length) {
       let new_active = [], found = [];
