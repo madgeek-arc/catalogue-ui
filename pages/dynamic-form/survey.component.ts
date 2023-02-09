@@ -110,6 +110,7 @@ export class SurveyComponent implements OnInit, OnChanges {
       setTimeout(() => {
         if (this.readonly) {
           this.form.disable();
+          this.form.markAsUntouched();
         }
       }, 0);
       this.ready = true;
@@ -375,7 +376,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         docDefinition.content.push(content);
       } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
         if (answerValues?.[0]) {
-          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
+          docDefinition.content.push(new PdfTable(new TableDefinition([[this.strip(answerValues[0])]], ['*']), ['mt_1']));
         } else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [48]), ['mt_1']));
         }
