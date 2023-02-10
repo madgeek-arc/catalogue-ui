@@ -17,10 +17,13 @@
   </ng-template>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
-    <div uk-sortable (moved)="movedElement($event)">
+    <div uk-sortable="handle: .uk-sortable-handle" (moved)="movedElement($event)">
       <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-width-expand uk-grid">
         <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
              [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+          <div class="uk-flex uk-flex-right">
+            <span class="uk-sortable-handle uk-text-center" uk-icon="icon: move"></span>
+          </div>
           <div *ngFor="let control of fieldData?.subFields; let j=index">
             <div class="">
               <div *ngIf="control.typeInfo.type === 'composite'">
