@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, FormGroupDirective} from "@angular/forms";
+import {AbstractControl, FormArray, FormControl, FormGroup, FormGroupDirective} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
@@ -64,6 +64,28 @@ export class StringFieldComponent implements OnInit {
     this.fieldAsFormArray().removeAt(i);
   }
 
+  movedElement(e) {
+    let newOrder: number[] = [];
+    e.target.childNodes.forEach(child => {
+      if (Number.isInteger((parseInt(child.id))))
+        newOrder.push(child.id);
+    });
+    for (let i = 0; i < newOrder.length; i++) {
+      if (newOrder[i] != i && (newOrder[i] > i+1 || newOrder[i] < i)) {
+        this.move(i, newOrder[i]);
+        break;
+      }
+    }
+  }
+
+  move(newIndex: number, currentIndex: number) {
+    const formArray: FormArray = this.fieldAsFormArray();
+    const currentControl: AbstractControl = formArray.at(currentIndex);
+
+    formArray.removeAt(currentIndex);
+    formArray.insert(newIndex, currentControl)
+  }
+
   /** check fields validity--> **/
 
   checkFormValidity(): boolean {
@@ -71,8 +93,16 @@ export class StringFieldComponent implements OnInit {
   }
 
   checkFormArrayValidity(position: number): boolean {
-    return ((this.fieldAsFormArray().get([position]).invalid && this.fieldAsFormArray().get([position]).touched)
-      && (this.editMode || this.fieldAsFormArray().get([position]).dirty));
+    const formControl: AbstractControl = this.fieldAsFormArray()?.get([position]);
+    // console.log(formControl);
+    // console.log(position);
+    if (formControl)
+      return (!formControl.valid && (formControl.touched || formControl.dirty));
+    else
+      return false
+
+    // return ((this.fieldAsFormArray().get([position]).invalid && this.fieldAsFormArray().get([position]).touched)
+    //   && (this.editMode || this.fieldAsFormArray().get([position]).dirty));
   }
 
   /** Bitsets--> **/
