@@ -21,7 +21,7 @@
       <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-width-expand uk-grid">
         <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
              [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
-          <div class="uk-flex uk-flex-right">
+          <div *ngIf="fieldAsFormArray().length > 1" class="uk-flex uk-flex-right">
             <span class="uk-sortable-handle uk-text-center" uk-icon="icon: move"></span>
           </div>
           <div *ngFor="let control of fieldData?.subFields; let j=index">
