@@ -1,6 +1,9 @@
 <div *ngIf="model" class="uk-grid">
   <h5 class="uk-width-1-2 uk-margin-bottom">{{model.name}}</h5>
-  <div class="uk-width-1-2">
+  <div class="uk-width-1-2 uk-flex uk-flex-middle uk-flex-right">
+    <div *ngIf="activeUsers?.length > 0" class="uk-margin-medium-right">
+      <span class="uk-alert-warning">There are {{activeUsers.length}} users editing the survey</span>
+    </div>
     <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>
   </div>
   <p class="uk-margin-bottom" [innerHTML]="model.notice"></p>
