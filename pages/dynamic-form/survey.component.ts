@@ -107,6 +107,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (this.validate) {
         UIkit.modal('#validation-modal').show();
       }
+      if (this.activeUsers?.length > 0) {
+        setTimeout(()=> {
+          UIkit.tooltip('#concurrentEdit', {title: this.activeUsers.toString(), pos: 'bottom'});
+          }, 0);
+      }
 
       setTimeout(() => {
         if (this.readonly) {
@@ -233,7 +238,8 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
-    for (let i = 0; i < length-1; i++) {
+    while (this.getFormControl(this.form, name, arrayIndex).length < length) {
+    // for (let i = 0; i < length-1; i++) {
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
