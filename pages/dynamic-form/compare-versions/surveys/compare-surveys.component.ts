@@ -70,7 +70,7 @@ export class CompareSurveysComponent implements OnInit, OnChanges{
     }
     form.patchValue(payload);
     form.markAllAsTouched();
-    setTimeout( () => {form.disable();}, 0);
+    setTimeout(() => {form.disable();}, 0);
   }
 
   getFormGroup(form: FormGroup, sectionIndex: number): FormGroup {
