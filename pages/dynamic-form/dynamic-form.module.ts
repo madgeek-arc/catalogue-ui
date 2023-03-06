@@ -48,7 +48,8 @@ import {ChooseOneComponent} from "./fields/choose-one-composite/choose-one.compo
   ],
   exports: [
     ChapterEditComponent,
-    SurveyComponent
+    SurveyComponent,
+    DynamicFormFieldsComponent
   ]
 })
 
