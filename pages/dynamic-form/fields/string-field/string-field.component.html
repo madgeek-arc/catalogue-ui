@@ -1,5 +1,5 @@
 <form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-      [ngClass]="{'uk-hidden clear-style': hideField}">
+      [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
   <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
        [attr.for]="fieldData.name" [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}">
     {{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}
