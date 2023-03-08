@@ -10,6 +10,8 @@
   </ul>
 </div>
 
+<div class="titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px"></div>
+
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">

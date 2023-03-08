@@ -28,12 +28,12 @@ export class CompareSurveysComponent implements OnInit, OnChanges{
   }
 
   ngOnInit() {
-    const el: HTMLElement = document.getElementById('hamburger');
-    if(el.classList.contains('change')) {
-      el.classList.remove('change');
-      const el1: HTMLElement = document.getElementById('sidebar_main_content');
-      el1.classList.remove('sidebar_main_active');
-    }
+    // const el: HTMLElement = document.getElementById('hamburger');
+    // if(el.classList.contains('change')) {
+    //   el.classList.remove('change');
+    //   const el1: HTMLElement = document.getElementById('sidebar_main_content');
+    //   el1.classList.remove('sidebar_main_active');
+    // }
   }
 
   ngOnChanges(changes: SimpleChanges) {
