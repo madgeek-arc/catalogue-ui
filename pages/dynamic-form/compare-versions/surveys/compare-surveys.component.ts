@@ -1,6 +1,6 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {Field, Model, Section} from "../../../../domain/dynamic-form-model";
+import {Component, Input, OnChanges, SimpleChanges} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {Field, Model, Section} from "../../../../domain/dynamic-form-model";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
@@ -9,7 +9,7 @@ import {FormControlService} from "../../../../services/form-control.service";
   providers: [FormControlService]
 })
 
-export class CompareSurveysComponent implements OnInit, OnChanges{
+export class CompareSurveysComponent implements OnChanges{
 
   @Input() payloadA: any = null;
   @Input() payloadB: any = null;
@@ -27,24 +27,16 @@ export class CompareSurveysComponent implements OnInit, OnChanges{
   constructor(private formControlService: FormControlService, private fb: FormBuilder,) {
   }
 
-  ngOnInit() {
-    // const el: HTMLElement = document.getElementById('hamburger');
-    // if(el.classList.contains('change')) {
-    //   el.classList.remove('change');
-    //   const el1: HTMLElement = document.getElementById('sidebar_main_content');
-    //   el1.classList.remove('sidebar_main_active');
-    // }
-  }
-
   ngOnChanges(changes: SimpleChanges) {
-    if (this.model) {
+    if (this.model && this.payloadA?.answer && this.payloadB?.answer) {
       this.createForm(this.formA);
+      this.patchForm(this.formA, this.payloadA.answer);
       this.createForm(this.formB);
-      if (this.payloadA?.answer && this.payloadB?.answer) {
-        this.patchForm(this.formA, this.payloadA.answer);
-        this.patchForm(this.formB, this.payloadB.answer);
-        this.ready = true;
-      }
+      this.patchForm(this.formB, this.payloadB.answer);
+      this.ready = true;
+    } else {
+      this.formA = this.fb.group({});
+      this.formB = this.fb.group({});
     }
   }
 
