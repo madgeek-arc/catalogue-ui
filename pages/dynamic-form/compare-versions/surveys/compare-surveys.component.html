@@ -15,9 +15,10 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
-      <app-chapter-compare [formA]="getFormGroup(formA, i)" [formB]="getFormGroup(formB, i)"
-                           [tabsHeader]="tabsHeader" [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
-                           [subVocabularies]="subVocabularies" [fields]="model.sections[i].subSections">
+      <app-chapter-compare [formA]="getFormGroup(formA, i)" [formB]="getFormGroup(formB, i)" [tabsHeader]="tabsHeader"
+                           [entryA]="entryA" [entryB]="entryB" [fields]="model.sections[i].subSections"
+                           [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
+                           [subVocabularies]="subVocabularies">
       </app-chapter-compare>
     </li>
   </ul>

@@ -12,6 +12,8 @@ export class CompareChapterComponent implements OnChanges {
 
   @Input() formA: FormGroup = null;
   @Input() formB: FormGroup = null;
+  @Input() entryA: any = null;
+  @Input() entryB: any = null;
   @Input() tabsHeader: string;
   @Input() chapter: Section = null;
   @Input() fields: Section[] = null;

@@ -13,6 +13,8 @@ export class CompareSurveysComponent implements OnChanges{
 
   @Input() payloadA: any = null;
   @Input() payloadB: any = null;
+  @Input() entryA: any = null;
+  @Input() entryB: any = null;
   @Input() model: Model = null;
   @Input() subType: string = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
