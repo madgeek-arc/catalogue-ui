@@ -30,7 +30,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() payload: any = null; // can't import specific project class in lib file
   @Input() model: Model = null;
   @Input() subType: string = null;
-  @Input() activeUsers: string[] = null;
+  @Input() activeUsers: any[] = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() tabsHeader: string = null;
@@ -109,7 +109,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
       if (this.activeUsers?.length > 0) {
         setTimeout(()=> {
-          UIkit.tooltip('#concurrentEdit', {title: this.activeUsers.toString(), pos: 'bottom'});
+          let users = [];
+          this.activeUsers.forEach(user => {
+            users.push(' '+user.fullname);
+          });
+          UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
           }, 0);
       }
 

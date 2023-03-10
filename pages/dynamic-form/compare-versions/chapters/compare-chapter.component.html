@@ -55,8 +55,8 @@
                       </div>
                         <ul id="side-tab-{{chapter.id}}" class="uk-switcher uk-margin-remove-top">
                           <li *ngFor="let group of fields">
-                            <div *ngFor="let fieldsData of group.fields" class="uk-grid uk-grid-match uk-child-width-1-2"
-                                 [ngClass]="{'uk-display-none': !fieldsData.form.display?.visible}" uk-grid="">
+                            <div *ngFor="let fieldsData of group.fields" class="uk-grid-match uk-child-width-1-2"
+                                 [ngClass]="{'uk-display-none': !fieldsData.form.display?.visible}" uk-grid>
                               <div>
                                 <div class="uk-card-body uk-card-default uk-margin-medium-bottom">
                                   <app-field [editMode]="false" [fieldData]="fieldsData" [form]="formA"
