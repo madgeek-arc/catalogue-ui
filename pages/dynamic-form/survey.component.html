@@ -1,11 +1,22 @@
 <div *ngIf="model" class="uk-grid">
-  <h5 class="uk-width-1-2 uk-margin-bottom">{{model.name}}</h5>
-  <div class="uk-width-1-2 uk-flex uk-flex-middle uk-flex-right">
-    <div *ngIf="activeUsers?.length > 0" id="concurrentEdit" class="uk-margin-medium-right" uk-tooltip>
-      <span class="uk-alert-warning">There are {{activeUsers.length}} users editing the survey</span>
+  <div class="uk-width-1-1 uk-flex uk-flex-middle uk-flex-right">
+    <div *ngIf="activeUsers === null; else users" class="uk-margin-large-right">
+      <div uk-spinner></div>
     </div>
+    <ng-template #users id="concurrentEdit">
+      <div class="uk-margin-medium-right">
+        <a *ngFor="let user of activeUsers" class="uk-icon" title="{{user.fullname}}" aria-expanded="false">
+          <svg height="42" width="42">
+            <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="badgeColor(user.action)"></circle>
+            <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">
+              {{getInitials(user.fullname)}} </text>
+          </svg>
+        </a>
+      </div>
+    </ng-template>
     <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>
   </div>
+  <h5 class="uk-width-1-1 uk-margin-bottom">{{model.name}}</h5>
   <p class="uk-margin-bottom" [innerHTML]="model.notice"></p>
 </div>
 

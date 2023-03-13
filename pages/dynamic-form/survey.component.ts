@@ -500,4 +500,21 @@ export class SurveyComponent implements OnInit, OnChanges {
     }, 4550);
   }
 
+  getInitials(fullName: string) {
+    return fullName.split(" ").map((n)=>n[0]).join("")
+  }
+
+  badgeColor(action: string) {
+    switch (action) {
+      case 'view':
+        return 'rgb(182,198,194)';
+      case 'validate':
+        return 'rgb(240, 80, 110)';
+      case 'edit':
+        return 'rgb(250, 160, 90)';
+      default:
+        return 'rgb(182,198,194)';
+    }
+  }
+
 }
