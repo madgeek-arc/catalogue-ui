@@ -30,15 +30,19 @@ export class CompareSurveysComponent implements OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.model && this.payloadA?.answer && this.payloadB?.answer) {
+    if (this.model && this.payloadA?.answer) {
       this.createForm(this.formA);
       this.patchForm(this.formA, this.payloadA.answer);
-      this.createForm(this.formB);
-      this.patchForm(this.formB, this.payloadB.answer);
+      if (this.payloadB?.answer) {
+        this.createForm(this.formB);
+        this.patchForm(this.formB, this.payloadB.answer);
+      }
       this.ready = true;
     } else {
-      this.formA = this.fb.group({});
-      this.formB = this.fb.group({});
+      // this.formA = this.fb.group({});
+      this.formA = null;
+      // this.formB = this.fb.group({});
+      this.formB = null;
     }
   }
 

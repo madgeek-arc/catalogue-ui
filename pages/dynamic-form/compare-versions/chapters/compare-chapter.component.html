@@ -46,10 +46,10 @@
                   <div *ngIf="formA && ready" [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
                     <form [formGroup]="formA">
                       <div class="uk-margin-small-bottom" uk-grid>
-                        <div class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
+                        <div *ngIf="entryA" class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
                           {{entryA.time | date: 'dd/MM/yyyy, h:mm a'}} - Version({{entryA.version}})
                         </div>
-                        <div class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
+                        <div *ngIf="entryB" class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
                           {{entryB.time | date: 'dd/MM/yyyy, h:mm a'}} - Version({{entryB.version}})
                         </div>
                       </div>
@@ -57,7 +57,7 @@
                           <li *ngFor="let group of fields">
                             <div *ngFor="let fieldsData of group.fields" class="uk-grid-match uk-child-width-1-2"
                                  [ngClass]="{'uk-display-none': !fieldsData.form.display?.visible}" uk-grid>
-                              <div>
+                              <div *ngIf="entryA">
                                 <div class="uk-card-body uk-card-default uk-margin-medium-bottom">
                                   <app-field [editMode]="false" [fieldData]="fieldsData" [form]="formA"
                                              [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
@@ -65,7 +65,7 @@
                                   </app-field>
                                 </div>
                               </div>
-                              <div>
+                              <div *ngIf="entryB">
                                 <div class="uk-card-body uk-card-default uk-margin-medium-bottom ">
                                   <app-field [editMode]="false" [fieldData]="fieldsData" [form]="formB"
                                              [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
