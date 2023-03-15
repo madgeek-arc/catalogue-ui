@@ -7,7 +7,7 @@
       <div class="uk-margin-medium-right">
         <a *ngFor="let user of activeUsers" class="uk-icon" title="{{user.fullname}}" aria-expanded="false">
           <svg height="42" width="42">
-            <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="badgeColor(user.action)"></circle>
+            <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="getRandomDarkColor(user.sessionId)"></circle>
             <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">
               {{getInitials(user.fullname)}} </text>
           </svg>

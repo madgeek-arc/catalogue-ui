@@ -16,8 +16,10 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import UIkit from "uikit";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+declare var require: any;
+const seedRandom = require('seedrandom');
 
 @Component({
   selector: 'app-survey',
@@ -516,5 +518,15 @@ export class SurveyComponent implements OnInit, OnChanges {
         return 'rgb(182,198,194)';
     }
   }
+
+  getRandomDarkColor(sessionId: string) { // (use for background with white/light font color)
+    const rng = seedRandom(sessionId);
+    const h = Math.floor(rng() * 360),
+      s = Math.floor(rng() * 100) + '%',
+      // max value of l is 100, but I set to 60 because I want to generate dark colors
+      l = Math.floor(rng() * 60) + '%';
+
+    return `hsl(${h},${s},${l})`;
+  };
 
 }
