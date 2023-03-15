@@ -1,6 +1,6 @@
 
 <!--Chapter Selection-->
-<div *ngIf="ready" [ngClass]="{'uk-display-none': (model.sections.length === 1 || !model.sections[0].subSections)}">
+<div *ngIf="ready && model" [ngClass]="{'uk-display-none': (model.sections.length === 1 || !model.sections[0].subSections)}">
   <ul class="chapter-tabs uk-tab" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
     <li class="" *ngFor="let section of model.sections">
       <a *ngIf="(!section.subType || section.subType===subType)">{{section.name}}
@@ -12,7 +12,7 @@
 
 <div class="titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px"></div>
 
-<div *ngIf="ready; else showLoader">
+<div *ngIf="ready && model; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
       <app-chapter-compare [formA]="getFormGroup(formA, i)" [formB]="getFormGroup(formB, i)" [tabsHeader]="tabsHeader"

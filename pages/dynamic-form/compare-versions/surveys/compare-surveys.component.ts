@@ -39,10 +39,8 @@ export class CompareSurveysComponent implements OnChanges{
       }
       this.ready = true;
     } else {
-      // this.formA = this.fb.group({});
-      this.formA = null;
-      // this.formB = this.fb.group({});
-      this.formB = null;
+      this.formA = this.fb.group({});
+      this.formB = this.fb.group({});
     }
   }
 
