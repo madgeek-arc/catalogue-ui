@@ -506,16 +506,29 @@ export class SurveyComponent implements OnInit, OnChanges {
     return fullName.split(" ").map((n)=>n[0]).join("")
   }
 
-  badgeColor(action: string) {
+  actionIcon(action: string) {
     switch (action) {
       case 'view':
-        return 'rgb(182,198,194)';
+        return 'visibility';
       case 'validate':
-        return 'rgb(240, 80, 110)';
+        return 'task_alt';
       case 'edit':
-        return 'rgb(250, 160, 90)';
+        return 'edit';
       default:
-        return 'rgb(182,198,194)';
+        return '';
+    }
+  }
+
+  actionTooltip(action: string) {
+    switch (action) {
+      case 'view':
+        return 'viewing';
+      case 'validate':
+        return 'validating';
+      case 'edit':
+        return 'editing';
+      default:
+        return '';
     }
   }
 
@@ -523,7 +536,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     const rng = seedRandom(sessionId);
     const h = Math.floor(rng() * 360),
       s = Math.floor(rng() * 100) + '%',
-      // max value of l is 100, but I set to 60 because I want to generate dark colors
+      // max value of l is 100, but set it to 60 in order to generate dark colors
       l = Math.floor(rng() * 60) + '%';
 
     return `hsl(${h},${s},${l})`;

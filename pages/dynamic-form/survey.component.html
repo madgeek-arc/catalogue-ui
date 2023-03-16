@@ -5,11 +5,13 @@
     </div>
     <ng-template #users id="concurrentEdit">
       <div class="uk-margin-medium-right">
-        <a *ngFor="let user of activeUsers" class="uk-icon" title="{{user.fullname}}" aria-expanded="false">
-          <svg height="42" width="42">
-            <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="getRandomDarkColor(user.sessionId)"></circle>
+        <a *ngFor="let user of activeUsers" class="uk-icon" title="{{user.fullname + ' currently ' + actionTooltip(user.action)}}"
+           aria-expanded="false">
+          <svg height="38" width="54">
+            <ellipse cx="27" cy="19" ry="18" rx="26" stroke-width="1" [attr.fill]="getRandomDarkColor(user.sessionId)"></ellipse>
             <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">
-              {{getInitials(user.fullname)}} </text>
+              {{getInitials(user.fullname)}}<tspan class="material-icons md-12"> {{actionIcon(user.action)}}</tspan>
+            </text>
           </svg>
         </a>
       </div>
