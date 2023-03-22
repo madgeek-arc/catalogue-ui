@@ -536,8 +536,8 @@ export class SurveyComponent implements OnInit, OnChanges {
     const rng = seedRandom(sessionId);
     const h = Math.floor(rng() * 360),
       s = Math.floor(rng() * 100) + '%',
-      // max value of l is 100, but set it to 60 in order to generate dark colors
-      l = Math.floor(rng() * 60) + '%';
+      // max value of l is 100, but set it to 55 in order to generate dark colors
+      l = Math.floor(rng() * 55) + '%';
 
     return `hsl(${h},${s},${l})`;
   };
