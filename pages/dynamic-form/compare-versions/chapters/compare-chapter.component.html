@@ -14,45 +14,49 @@
             <div class="uk-width-expand@m uk-margin-top">
               <div>
 
-                <div id="serviceForm" uk-grid>
+                <div id="serviceForm">
 
-                  <div class="uk-width-1-5 uk-padding-small uk-padding-remove-vertical"
-                       [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
-                    <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
-                    <ul id="{{chapter.name}}" class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
-                        [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
-                      <li *ngFor="let tab of fields; let i=index"  (click)="setTabIndex(i)">
-                        <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration uk-flex uk-flex-between">
-                          <span>{{tab.name}}</span>
-                        </a>
-                      </li>
-                    </ul>
+                  <div uk-grid>
+                    <div class="uk-width-1-5">
+                      <div class="uk-padding-small uk-padding-remove-vertical"
+                           [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
+                        <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
+                        <ul id="{{chapter.name}}" class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
+                            [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
+                          <li *ngFor="let tab of fields; let i=index"  (click)="setTabIndex(i)">
+                            <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration uk-flex uk-flex-between">
+                              <span>{{tab.name}}</span>
+                            </a>
+                          </li>
+                        </ul>
 
-                    <div *ngIf="fields.length > 1" class="uk-margin-small-top uk-flex uk-flex-center">
-                      <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
-                              [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'"
-                              (click)="goToTab(tabIndex-1)">
-                        <i class="fa fa-angle-left"></i> PREVIOUS
-                      </button>
-                      <button id="next" class="uk-button" [disabled]="(tabIndex === fields.length - 1)"
-                              [ngClass]="tabIndex === fields.length - 1  ? 'uk-button-secondary' : 'uk-button-primary'"
-                              (click)="goToTab(tabIndex+1)">
-                        NEXT <i class="fa fa-angle-right"></i>
-                      </button>
-                    </div>
-
-                  </div>
-
-                  <div *ngIf="formA && ready" [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
-                    <form [formGroup]="formA">
-                      <div class="uk-margin-small-bottom" uk-grid>
-                        <div *ngIf="entryB" class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
-                          {{entryA.time | date: 'dd/MM/yyyy, h:mm a'}} - Version({{entryA.version}})
+                        <div *ngIf="fields.length > 1" class="uk-margin-small-top uk-flex uk-flex-center">
+                          <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
+                                  [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'"
+                                  (click)="goToTab(tabIndex-1)">
+                            <i class="fa fa-angle-left"></i> PREVIOUS
+                          </button>
+                          <button id="next" class="uk-button" [disabled]="(tabIndex === fields.length - 1)"
+                                  [ngClass]="tabIndex === fields.length - 1  ? 'uk-button-secondary' : 'uk-button-primary'"
+                                  (click)="goToTab(tabIndex+1)">
+                            NEXT <i class="fa fa-angle-right"></i>
+                          </button>
                         </div>
-                        <div *ngIf="entryB" class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
-                          {{entryB.time | date: 'dd/MM/yyyy, h:mm a'}} - Version({{entryB.version}})
-                        </div>
+
                       </div>
+                    </div>
+                    
+
+                    <div *ngIf="formA && ready" [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
+                      <form [formGroup]="formA">
+                        <div class="uk-margin-small-bottom" uk-grid>
+                          <div *ngIf="entryB" class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
+                            {{entryA.time | date: 'dd/MM/yyyy, h:mm a'}} - Version({{entryA.version}})
+                          </div>
+                          <div *ngIf="entryB" class="uk-width-1-2 uk-padding-remove-left uk-flex uk-flex-center">
+                            {{entryB.time | date: 'dd/MM/yyyy, h:mm a'}} - Version({{entryB.version}})
+                          </div>
+                        </div>
                         <ul id="side-tab-{{chapter.id}}" class="uk-switcher uk-margin-remove-top">
                           <li *ngFor="let group of fields">
                             <div *ngFor="let fieldsData of group.fields" class="uk-grid-match"
@@ -77,9 +81,12 @@
                           </li>
                         </ul>
 
-                    </form>
+                      </form>
                       <!--                      <pre>{{form.value | json}}</pre>-->
                     </div>
+                  </div>
+
+
 
                 </div>
 
