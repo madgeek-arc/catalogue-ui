@@ -63,7 +63,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.router.url.includes('/view')) {
+    if (this.router.url.includes('/view') || this.router.url.includes('/freeView')) {
       this.readonly = true;
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
