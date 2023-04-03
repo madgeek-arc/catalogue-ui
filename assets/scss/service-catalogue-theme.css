@@ -194,7 +194,7 @@ ul.uk-pagination {
    Form tabs
  ========================================================================== */
 
-.uk-tab > * > a {
+.form-tabs.uk-tab > * > a, .chapter-tabs.uk-tab > * > a {
   text-transform: none;
   font-weight: 300;
   font-size: 16px;
@@ -202,20 +202,41 @@ ul.uk-pagination {
   letter-spacing: 0px;
   color: #212121 !important;
   opacity: 0.6;
-  padding: 8px 15px;
+  /*padding: 8px 15px;*/
+  padding: 10px 15px;
 }
 
-.uk-tab > .uk-active > a {
+.form-tabs.uk-tab > .uk-active > a, .chapter-tabs.uk-tab > .uk-active > a {
   color: #fff !important;
-  font-weight: 600;
+  /*font-weight: 600;*/
   background: var(--primary-color) 0% 0% no-repeat padding-box;
   opacity: 1;
   border-radius: 4px;
+  font-weight: normal;
 }
 
-.uk-tab-left::before {
+.form-tabs.uk-tab-left::before, .chapter-tabs.uk-tab-left::before {
   border-left: none;
 }
+
+.form-tabs.uk-tab-left > li {
+  margin-bottom: 15px;
+}
+
+/*.uk-tab-left > * > a {*/
+/*  text-decoration: none;*/
+/*  padding: 10px 15px;*/
+/*}*/
+
+/*.uk-tab > .uk-active > a {*/
+/*//background-color: rgba(255, 205, 0, 0.7);*/
+/*  background-color: var(--eosc-observatory-primary-color);*/
+/*//background-color: rgba(0, 68, 148, 0.9);*/
+/*//color: var(--black) !important;*/
+/*  color: var(--white) !important;*/
+/*  border-color: transparent;*/
+/*  font-weight: normal;*/
+/*}*/
 
 .tabsTitle {
   font-weight: 300;
