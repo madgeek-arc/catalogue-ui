@@ -12,7 +12,7 @@ import {FormControlService} from "../../../services/form-control.service";
 export class DynamicFormFieldsComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() form: FormGroup;
-  @Input() vocabularies: Map<string, object[]>;
+  @Input() vocabularies: Map<string, string[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
 

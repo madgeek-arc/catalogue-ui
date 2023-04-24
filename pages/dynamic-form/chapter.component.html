@@ -3,8 +3,11 @@
     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
       <div class="uk-width-1-1@m uk-first-column">
 
-        <div class="titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px">
-          <div>
+        <div class="titleAndActionsBar" style="min-height: 40px">
+          <div class="pageTitle">
+<!--        {{editMode ? "Update" : "Add New"}} {{serviceORresource}}-->
+          </div>
+          <div class="">
             <button *ngIf="!readonly" class="uk-button uk-button-secondary uk-margin-left"
                     (click)="onSubmit(false)" type="submit"> Submit
             </button>
@@ -26,8 +29,8 @@
             <div class="uk-width-expand@m uk-margin-top">
               <div>
 
-                <div *ngIf="bitset.requiredTotal !== 0 && mandatoryFieldsText" class="requiredFields">
-                  {{mandatoryFieldsText}}
+                <div *ngIf="bitset.requiredTotal !== 0" class="requiredFields">
+                  Fields with (*) are mandatory and must be completed in order for the survey to be validated.
                 </div>
 
                 <div id="serviceForm">

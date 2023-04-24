@@ -18,16 +18,18 @@ export class ChapterEditComponent implements OnChanges{
   // @Input() answerValue: Object = null;
   @Input() form: any = null;
   @Input() tabsHeader: string;
-  @Input() mandatoryFieldsText: string = null;
+  @Input() surveyAnswerId: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
-  @Input() vocabularies: Map<string, object[]> = null;
+  @Input() vocabularies: Map<string, string[]> = null;
   @Input() chapter: Section = null;
+  @Input() resourceType: string = null;
   @Input() fields: Section[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
   @Output() submit = new EventEmitter();
 
+  // @ViewChild('sections') sections: ElementRef<HTMLElement>;
 
   subVocabularies: UiVocabulary[] = [];
   editMode = true;
@@ -199,7 +201,7 @@ export class ChapterEditComponent implements OnChanges{
         }
       }
       if (!flag) {
-        // console.log('didn't find valid array field')
+        // console.log('didnt found valid array field')
         let found = new Array(field.subFields.length);
         for (let j = 0; j < field.subFields.length; j++) {
           for (let i = 0; i < formArray.length; i++) {

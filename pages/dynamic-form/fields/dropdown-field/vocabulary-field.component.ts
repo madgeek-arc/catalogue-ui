@@ -12,7 +12,7 @@ import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/gen
 
 export class VocabularyFieldComponent implements OnInit {
   @Input() fieldData: Field;
-  @Input() vocabularies: Map<string, object[]> = null;
+  @Input() vocabularies: Map<string, string[]> = null;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;

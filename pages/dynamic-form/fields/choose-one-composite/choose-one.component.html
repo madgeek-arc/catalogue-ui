@@ -19,37 +19,28 @@
     </div>
   </ng-template>
 
+  <!-- Show radio so user can choose one-->
+  <div class="uk-margin-small-bottom">
+    <div *ngFor="let field of fieldData.subFields; let i=index">
+      <label class="uk-form-label">
+        <input class="uk-radio uk-margin-small-right" type="radio" [name]="fieldData.name" [checked]="i===0"
+               (click)="chooseOne(field.name)">
+        {{field.label.text}}
+      </label>
+    </div>
+  </div>
+
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
     <div *ngFor="let arrayControl of fieldAsFormArray().controls; let i=index">
-      <!-- Show radio so user can choose one-->
-      <div class="uk-margin-small-bottom">
-        <div *ngFor="let field of fieldData.subFields; let j=index">
-          <label class="uk-form-label">
-            <input class="uk-radio uk-margin-small-right" type="radio" [name]="i+'-'+fieldData.name" [checked]="j===0"
-                   (click)="chooseOne(field.name, i)">
-            {{field.label.text}}
-          </label>
-        </div>
-      </div>
-      <div [formGroupName]="i" class="uk-width-9-10 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+      <div [formGroupName]="i" class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
         <div *ngFor="let control of fieldData?.subFields; let j=index">
           <div class="">
-            <div *ngIf="getGroupOfArray(i).contains(control.name)">
-              <ng-container *ngIf="control.typeInfo.type === 'composite'">
-                <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
-                                     [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                     [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-                </app-composite-field>
-              </ng-container>
-              <ng-container *ngIf="control.typeInfo.type === 'string' || control.typeInfo.type === 'double' ||
-                    control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
-                    control.typeInfo.type === 'url'">
-                <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                            (handleBitSets)="handleBitsetOfChildren($event)"
-                                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
-                </app-string-url-email-field>
-              </ng-container>
+            <div *ngIf="control.typeInfo.type === 'composite'">
+              <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
+                                   [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                                   [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+              </app-composite-field>
             </div>
           </div>
         </div>
@@ -67,17 +58,6 @@
   </div>
 
   <ng-template #noMultiplicity>
-    <!-- Show radio so user can choose one-->
-    <div class="uk-margin-small-bottom">
-      <div *ngFor="let field of fieldData.subFields; let i=index">
-        <label class="uk-form-label">
-          <input class="uk-radio uk-margin-small-right" type="radio" [name]="fieldData.name" [checked]="i===0"
-                 (click)="chooseOne(field.name)">
-          {{field.label.text}}
-        </label>
-      </div>
-    </div>
-
     <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
       <div *ngFor="let control of fieldData?.subFields; let j=index">
         <div class="">
