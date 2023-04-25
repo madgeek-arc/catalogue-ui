@@ -114,7 +114,7 @@
     </div>
     <div *ngIf="form.enabled" class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
       <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
-        <span class="material-icons">add</span> Add {{fieldData.label.text}}
+        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
       </a>
     </div>
   </div>
