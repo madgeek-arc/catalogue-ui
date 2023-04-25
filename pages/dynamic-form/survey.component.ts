@@ -245,7 +245,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
     while (this.getFormControl(this.form, name, arrayIndex).length < length) {
-    // for (let i = 0; i < length-1; i++) {
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
@@ -295,6 +294,8 @@ export class SurveyComponent implements OnInit, OnChanges {
               abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
               if (abstractControl !== null)
                 return abstractControl;
+            } else {
+              abstractControl = null;
             }
           } else {
             abstractControl = this.getFormControl(abstractControl, name, position);
