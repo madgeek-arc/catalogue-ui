@@ -65,10 +65,10 @@ export class CompareSurveysComponent implements OnChanges{
         this.prepareForm(form, payload[this.model.sections[i].name], this.model.sections[i].subSections);
     }
     form.patchValue(payload);
-    setTimeout(() => {
+    // setTimeout(() => {
       form.disable();
       form.markAsUntouched();
-    }, 0);
+    // }, 0);
   }
 
   getFormGroup(form: FormGroup, sectionIndex: number): FormGroup {
@@ -150,10 +150,12 @@ export class CompareSurveysComponent implements OnChanges{
           return abstractControl as FormArray;
         } else if (key !== name) {
           if (abstractControl instanceof FormArray) {
-            if (abstractControl.value.length > position) {
+            if (abstractControl.controls.length > position) {
               abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
               if (abstractControl !== null)
                 return abstractControl;
+            } else {
+              abstractControl = null;
             }
           } else {
             abstractControl = this.getFormControl(abstractControl, name, position);

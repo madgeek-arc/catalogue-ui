@@ -1,4 +1,15 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
+import {
+  AfterContentChecked,
+  AfterContentInit, AfterViewChecked,
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControlService} from "../../services/form-control.service";
@@ -109,6 +120,12 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (this.validate) {
         UIkit.modal('#validation-modal').show();
       }
+      if (this.readonly) {
+        this.form.disable();
+        this.form.markAsUntouched();
+      }
+      this.ready = true;
+
       if (this.activeUsers?.length > 0) {
         setTimeout(()=> {
           let users = [];
@@ -119,13 +136,6 @@ export class SurveyComponent implements OnInit, OnChanges {
           }, 0);
       }
 
-      setTimeout(() => {
-        if (this.readonly) {
-          this.form.disable();
-          this.form.markAsUntouched();
-        }
-      }, 0);
-      this.ready = true;
     }
   }
 
@@ -290,7 +300,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           return abstractControl as FormArray;
         } else if (key !== name) {
           if (abstractControl instanceof FormArray) {
-            if (abstractControl.value.length > position) {
+            if (abstractControl.controls.length > position) {
               abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
               if (abstractControl !== null)
                 return abstractControl;

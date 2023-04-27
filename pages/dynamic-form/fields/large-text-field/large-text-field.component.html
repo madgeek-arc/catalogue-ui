@@ -11,10 +11,11 @@
     <!--To add multiplicity if needed-->
   </div>
   <ng-template #noMultiplicity>
-    <textarea [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
+    <textarea [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-textarea uk-width-9-10 uk-animation-scale-up uk-disabled"
               [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
               [maxlength]="fieldData.typeInfo.values ? fieldData.typeInfo.values[0] : null"
-              (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [ngClass]="{'uk-form-danger': checkFormValidity()}">
+              (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+              [ngClass]="{'uk-form-danger': checkFormValidity()}">
     </textarea>
     <div class="uk-width-9-10">
       <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values" style="float: right;">

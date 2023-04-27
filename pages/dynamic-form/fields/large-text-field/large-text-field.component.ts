@@ -10,6 +10,7 @@ import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 export class LargeTextFieldComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() editMode: any;
+  @Input() readonly: boolean = null;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
