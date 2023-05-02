@@ -6,7 +6,7 @@
     {{fieldData.form.mandatory ? ' (*)' : ''}}
   </div>
   <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
+       [innerHTML]="fieldData.form.description.text | safeUrl: 'html'" style="{{fieldData.form.description.style}}">
   </div>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
