@@ -1,28 +1,9 @@
-import {
-  AfterContentChecked,
-  AfterContentInit, AfterViewChecked,
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges
-} from "@angular/core";
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs} from "../../domain/dynamic-form-model";
-import {
-  Columns,
-  Content,
-  DocDefinition,
-  PdfImage,
-  PdfMetadata,
-  PdfTable,
-  TableDefinition
-} from "../../domain/PDFclasses";
+import {Columns, Content, DocDefinition, PdfImage, PdfMetadata, PdfTable, TableDefinition} from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
@@ -60,22 +41,24 @@ export class SurveyComponent implements OnInit, OnChanges {
   editMode: boolean = false;
   bitset: Tabs = new Tabs;
 
-  ready = false;
-  readonly : boolean = false;
-  validate : boolean = false;
+  ready: boolean = false;
+  readonly: boolean = false;
+  freeView: boolean = false;
+  validate: boolean = false;
   errorMessage = '';
   successMessage = '';
 
   form: FormGroup;
 
-  constructor(private formControlService: FormControlService, private fb: FormBuilder, private router: Router,
-              private route: ActivatedRoute) {
+  constructor(private formControlService: FormControlService, private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({});
   }
 
   ngOnInit() {
-    if (this.router.url.includes('/view') || this.router.url.includes('/freeView')) {
+    if (this.router.url.includes('/view')) {
       this.readonly = true;
+    } else if (this.router.url.includes('/freeView')) {
+      this.freeView = true;
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
     }
@@ -133,7 +116,7 @@ export class SurveyComponent implements OnInit, OnChanges {
             users.push(' '+user.fullname);
           });
           UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
-          }, 0);
+        }, 0);
       }
 
     }
@@ -208,6 +191,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesPrompt(chapter: Section) {
+    if (this.readonly)
+      return;
     if (this.chapterChangeMap.get(this.currentChapter.id)) {
       this.chapterForSubmission = this.currentChapter;
       UIkit.modal('#unsaved-changes-modal').show();
