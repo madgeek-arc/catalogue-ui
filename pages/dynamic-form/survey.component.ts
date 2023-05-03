@@ -191,7 +191,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesPrompt(chapter: Section) {
-    if (this.readonly)
+    if (this.readonly || this.freeView)
       return;
     if (this.chapterChangeMap.get(this.currentChapter.id)) {
       this.chapterForSubmission = this.currentChapter;
