@@ -13,7 +13,7 @@
 
   <ng-template #noMultiplicity>
     <input [formControlName]="fieldData.name" [id]="fieldData.id" class="uk-input uk-width-9-10 uk-animation-scale-up"
-           (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [step]='fieldData.typeInfo.values[0]'
+           (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [step]='step'
            placeholder="{{fieldData.form.placeholder}}"
            [ngClass]="{'uk-form-danger': checkFormValidity()}" type="number">
 

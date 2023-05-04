@@ -26,8 +26,7 @@
     </div>
 
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
-        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
-           (click)="push()">
+        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
           <span class="material-icons">add</span>Add {{fieldData.label.text}}
         </a>
       </div>
@@ -41,7 +40,7 @@
 <!--      {{form.controls[fieldData.name].errors | json}}-->
     <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
       <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-           [innerHTML]="fieldData.form.suggestion.text" >
+           [innerHTML]="fieldData.form.suggestion.text">
       </div>
     </div>
   </ng-template>

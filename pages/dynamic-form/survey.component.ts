@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {zip} from "rxjs/internal/observable/zip";
-// import {SurveyAnswer} from "../../../app/domain/survey"; // answer
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs, UiVocabulary} from "../../domain/dynamic-form-model";
 import {
@@ -18,6 +17,7 @@ import {
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
+// import {SurveyAnswer} from "../../../app/domain/survey"; // answer
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import UIkit from "uikit";
@@ -31,16 +31,20 @@ import UIkit from "uikit";
 export class SurveyComponent implements OnInit, OnChanges {
 
   @Input() answer: any = null; // cant import specific project class in lib file
-  @Input() survey: Model = null;
-  @Input() tabsHeader : string = null;
+  @Input() model: Model = null;
+  @Input() vocabulariesMap: Map<string, object[]> = null;
+  @Input() tabsHeader: string = null;
+  @Input() mandatoryFieldsText: string = null;
+  @Input() downloadPDF: boolean = false;
   @Output() valid = new EventEmitter<boolean>();
+  @Output() submit = new EventEmitter<FormGroup>();
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
   currentChapter: Section = null;
   chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
-  vocabularies: Map<string, string[]>;
+  vocabularies: Map<string, object[]>;
   subVocabularies: UiVocabulary[] = [];
   editMode = false;
   bitset: Tabs = new Tabs;
@@ -68,20 +72,16 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.ready = false;
-    if (this.survey)
-      this.currentChapter = this.survey.sections[0];
     if (this.answer)
       this.editMode = true;
-    if (this.survey) {
+    if (this.model) {
+      this.currentChapter = this.model.sections[0];
       this.formControlService.getUiVocabularies().subscribe(res => {
         this.vocabularies = res;
-        // res[1].sections.sort((a, b) => a.order - b.order);
-        this.survey.sections = this.survey.sections.sort((a, b) => a.order - b.order);
-        // this.chapters = [];
-        for (const section of this.survey.sections) {
-          for (const surveyAnswer in this.answer.answer) {
-            if (section.id === this.answer.answer[surveyAnswer].chapterId) {
-              // this.chapters.push(section);
+        this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
+        for (const section of this.model.sections) {
+          for (const surveyAnswer in this.answer?.answer) {
+            if (section.id === this.answer.answer[surveyAnswer]?.chapterId) {
               this.chapterChangeMap.set(section.id, false);
               this.sortedSurveyAnswers[section.id] = this.answer.answer[surveyAnswer].answer;
               break;
@@ -93,15 +93,18 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.errorMessage = 'Something went bad while getting the data for page initialization. ' + JSON.stringify(error.error.error);
       },
       () => {
-        for (let i = 0; i < this.survey.sections.length; i++) {
-          this.form.addControl(this.survey.sections[i].name, this.formControlService.toFormGroup(this.survey.sections[i].subSections, true));
-          // this.form = this.formControlService.toFormGroup(this.survey.sections[i].subSections, true);
-          // this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.survey.sections[i].subSections)
-          this.prepareForm(this.answer.answer, this.survey.sections[i].subSections)
-          // this.form.get(this.survey.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
-          this.form.patchValue(this.answer.answer);
+        for (let i = 0; i < this.model.sections.length; i++) {
+          if (this.model.sections[i].subSections === null) {
+            this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
+            break;
+          }
+          this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
+          if (this.answer) {
+            this.prepareForm(this.answer.answer, this.model.sections[i].subSections)
+            this.form.patchValue(this.answer.answer);
+          }
         }
-        if (this.answer.validated) {
+        if (this.answer?.validated) {
           this.readonly = true;
           this.validate = false;
         } else if (this.validate) {
@@ -125,15 +128,15 @@ export class SurveyComponent implements OnInit, OnChanges {
           ).subscribe(
             res => {
               this.vocabularies = res[0];
-              this.survey = res[1].results[0];
+              this.model = res[1].results[0];
             },
             error => {console.log(error)},
             () => {
-              for (let i = 0; i < this.survey.sections.length; i++) {
-                if (this.survey.sections[i].subSections)
-                  this.form.addControl(this.survey.sections[i].name, this.formControlService.toFormGroup(this.survey.sections[i].subSections, true));
+              for (let i = 0; i < this.model.sections.length; i++) {
+                if (this.model.sections[i].subSections)
+                  this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
                 else {
-                  this.form.addControl(this.survey.name, this.formControlService.toFormGroup(this.survey.sections, true));
+                  this.form.addControl(this.model.name, this.formControlService.toFormGroup(this.model.sections, true));
                 }
                 // this.prepareForm(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]], this.surveyModel.sections[i].subSections)
                 // this.form.get(this.surveyModel.sections[i].name).patchValue(this.sortedSurveyAnswers[Object.keys(this.sortedSurveyAnswers)[i]]);
@@ -187,7 +190,11 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
-  onSubmit(e: any) {
+  parentSubmit() {
+    this.submit.emit(this.form);
+  }
+
+  onSubmit() { // FIXME
     window.scrollTo(0, 0);
     // this.showLoader = true;
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
@@ -198,9 +205,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       firstParam = this.answer.id;
     } else {
       postMethod = 'postGenericItem'
-      firstParam = this.survey.resourceType;
+      firstParam = this.model.resourceType;
     }
-    this.formControlService[postMethod](firstParam, this.form.getRawValue(), this.editMode).subscribe(
+    console.log(postMethod)
+    console.log(firstParam);
+    this.formControlService[postMethod](firstParam, this.form.value, this.editMode).subscribe(
       res => {
         this.successMessage = 'Updated successfully!';
         for (const key of this.chapterChangeMap.keys()) {
@@ -209,18 +218,13 @@ export class SurveyComponent implements OnInit, OnChanges {
         UIkit.modal('#unsaved-changes-modal').hide();
       },
       error => {
-        this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.error);
-        // this.showLoader = false;
+        this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.message);
         UIkit.modal('#unsaved-changes-modal').hide();
-        console.log(error);
+        // this.showLoader = false;
+        // console.log(error);
       },
       () => {
-        setTimeout(() => {
-          UIkit.alert('#successMessage').close();
-        }, 4000);
-        setTimeout(() => {
-          this.successMessage = '';
-        }, 4200);
+        this.closeSuccessAlert();
         // this.showLoader = false;
       }
     );
@@ -235,11 +239,11 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   getFormGroup(sectionIndex: number): FormGroup {
-    if (this.survey.sections[sectionIndex].subSections === null) {
-      return this.form.get(this.survey.name) as FormGroup;
+    if (this.model.sections[sectionIndex].subSections === null) {
+      return this.form.get(this.model.name) as FormGroup;
     } else
       // console.log(this.form.get(this.survey.sections[sectionIndex].name));
-      return this.form.get(this.survey.sections[sectionIndex].name) as FormGroup;
+      return this.form.get(this.model.sections[sectionIndex].name) as FormGroup;
   }
 
   setChapterChangesMap(chapterId: string[]) {
@@ -273,7 +277,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   pushToFormArray(name: string, length: number) {
-    let field = this.getModelData(this.survey.sections, name);
+    let field = this.getModelData(this.model.sections, name);
     for (let i = 0; i < length-1; i++) {
       this.getFormControl(this.form, name).push(this.formControlService.createField(field));
     }
@@ -339,8 +343,8 @@ export class SurveyComponent implements OnInit, OnChanges {
     let docDefinition: DocDefinition = new DocDefinition();
     // docDefinition.header.text = 'Header Text'
     // docDefinition.header.style = ['sectionHeader']
-    docDefinition.content.push(new Content(this.survey.name, ['sectionHeader']));
-    docDefinition.info = new PdfMetadata(this.survey.name);
+    docDefinition.content.push(new Content(this.model.name, ['sectionHeader']));
+    docDefinition.info = new PdfMetadata(this.model.name);
     docDefinition.styles = {
       sectionHeader: {
         bold: true,
@@ -377,13 +381,13 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
     this.createDocumentDefinition(this.form, docDefinition);
 
-    pdfMake.createPdf(docDefinition).download(this.survey.name);
+    pdfMake.createPdf(docDefinition).download(this.model.name);
   }
 
   createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition) {
     for (const key in group.controls) {
       let abstractControl = group.controls[key];
-      let field = this.getModelData(this.survey.sections, key);
+      let field = this.getModelData(this.model.sections, key);
       if (abstractControl instanceof FormGroup) {
         if (field){
           if (field.kind === 'question')
@@ -414,7 +418,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           docDefinition.content.push(columns);
         }
       } else {
-        let field = this.getModelData(this.survey.sections, key);
+        let field = this.getModelData(this.model.sections, key);
         if (field.kind === 'question')
           docDefinition.content.push(new Content(field.label.text,['marginTopBig']));
         else
@@ -422,7 +426,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         if (field.typeInfo.type === 'radio') {
           let values = field.typeInfo.values
           if (field.kind === 'conceal-reveal')
-            values = this.getModelData(this.survey.sections, field.parent).typeInfo.values;
+            values = this.getModelData(this.model.sections, field.parent).typeInfo.values;
           for (const value of values) {
             let content = new Columns();
             if (value === abstractControl.value){
@@ -459,12 +463,20 @@ export class SurveyComponent implements OnInit, OnChanges {
   /** <-- Generate PDF **/
 
   /** other stuff --> **/
-  closeAlert() {
-    this.errorMessage = '';
+  closeError() {
     UIkit.alert('#errorAlert').close();
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 550);
   }
 
-  trackByMethod(index:number) {
-    this.sectionIndex = index;
+  closeSuccessAlert() {
+    setTimeout(() => {
+      UIkit.alert('#successAlert').close();
+    }, 4000);
+    setTimeout(() => {
+      this.successMessage = '';
+    }, 4550);
   }
+
 }

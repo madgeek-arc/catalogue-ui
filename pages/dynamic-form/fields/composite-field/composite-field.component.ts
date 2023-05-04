@@ -10,7 +10,7 @@ import {FormControlService} from "../../../../services/form-control.service";
 
 export class CompositeFieldComponent implements OnInit {
   @Input() fieldData: Field;
-  @Input() vocabularies: Map<string, string[]>;
+  @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: UiVocabulary[];
   @Input() editMode: any;
   @Input() position?: number = null;
@@ -59,7 +59,7 @@ export class CompositeFieldComponent implements OnInit {
   }
 
   pushComposite(compositeField: Field) {
-    this.fieldAsFormArray().push(new FormGroup(this.formService.createCompositeField(compositeField)));
+    this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
   }
 
   /** <-- Handle Arrays **/
