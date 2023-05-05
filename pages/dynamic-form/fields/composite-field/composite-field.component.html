@@ -27,7 +27,7 @@
           <div *ngFor="let control of fieldData?.subFields; let j=index">
             <div class="">
               <div *ngIf="control.typeInfo.type === 'composite'">
-                <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies"
+                <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [readonly]="readonly"
                                      [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
                                      [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -75,7 +75,7 @@
               </div>
               <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
                 <app-radio-button-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                        (handleBitSets)="handleBitsetOfChildren($event)"
+                                        (handleBitSets)="handleBitsetOfChildren($event)" [readonly]="readonly"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-radio-button-field>
               </div>
@@ -112,9 +112,9 @@
         </div>
       </div>
     </div>
-    <div class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
+    <div *ngIf="form.enabled" class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
       <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
-        <span class="material-icons">add</span> Add {{fieldData.label.text}}
+        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
       </a>
     </div>
   </div>
@@ -169,7 +169,7 @@
           </div>
 
           <div *ngIf="control.typeInfo.type === 'largeText'" class="uk-form-controls">
-            <app-large-text-field [fieldData]="control" (hasChanges)="unsavedChangesPrompt()"
+            <app-large-text-field [fieldData]="control" [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
                                   (handleBitSets)="handleBitsetOfChildren($event)"
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-large-text-field>
@@ -183,7 +183,7 @@
           </div>
 
           <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
-            <app-radio-button-field [fieldData]="control" (hasChanges)="unsavedChangesPrompt()"
+            <app-radio-button-field [fieldData]="control" [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
                                     (handleBitSets)="handleBitsetOfChildren($event)"
                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-radio-button-field>

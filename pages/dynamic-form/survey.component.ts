@@ -1,23 +1,17 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs} from "../../domain/dynamic-form-model";
-import {
-  Columns,
-  Content,
-  DocDefinition,
-  PdfImage,
-  PdfMetadata,
-  PdfTable,
-  TableDefinition
-} from "../../domain/PDFclasses";
+import {Columns, Content, DocDefinition, PdfImage, PdfMetadata, PdfTable, TableDefinition} from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import UIkit from "uikit";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+declare var require: any;
+const seedRandom = require('seedrandom');
 
 @Component({
   selector: 'app-survey',
@@ -30,6 +24,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() payload: any = null; // can't import specific project class in lib file
   @Input() model: Model = null;
   @Input() subType: string = null;
+  @Input() activeUsers: any[] = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() tabsHeader: string = null;
@@ -46,22 +41,24 @@ export class SurveyComponent implements OnInit, OnChanges {
   editMode: boolean = false;
   bitset: Tabs = new Tabs;
 
-  ready = false;
-  readonly : boolean = false;
-  validate : boolean = false;
+  ready: boolean = false;
+  readonly: boolean = false;
+  freeView: boolean = false;
+  validate: boolean = false;
   errorMessage = '';
   successMessage = '';
 
   form: FormGroup;
 
-  constructor(private formControlService: FormControlService, private fb: FormBuilder, private router: Router,
-              private route: ActivatedRoute) {
+  constructor(private formControlService: FormControlService, private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({});
   }
 
   ngOnInit() {
     if (this.router.url.includes('/view')) {
       this.readonly = true;
+    } else if (this.router.url.includes('/freeView')) {
+      this.freeView = true;
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
     }
@@ -106,14 +103,22 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (this.validate) {
         UIkit.modal('#validation-modal').show();
       }
-
-      setTimeout(() => {
-        if (this.readonly) {
-          this.form.disable();
-          this.form.markAsUntouched();
-        }
-      }, 0);
+      if (this.readonly) {
+        this.form.disable();
+        this.form.markAsUntouched();
+      }
       this.ready = true;
+
+      if (this.activeUsers?.length > 0) {
+        setTimeout(()=> {
+          let users = [];
+          this.activeUsers.forEach(user => {
+            users.push(' '+user.fullname);
+          });
+          UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
+        }, 0);
+      }
+
     }
   }
 
@@ -186,6 +191,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesPrompt(chapter: Section) {
+    if (this.readonly || this.freeView)
+      return;
     if (this.chapterChangeMap.get(this.currentChapter.id)) {
       this.chapterForSubmission = this.currentChapter;
       UIkit.modal('#unsaved-changes-modal').show();
@@ -232,7 +239,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
-    for (let i = 0; i < length-1; i++) {
+    while (this.getFormControl(this.form, name, arrayIndex).length < length) {
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
@@ -278,10 +285,12 @@ export class SurveyComponent implements OnInit, OnChanges {
           return abstractControl as FormArray;
         } else if (key !== name) {
           if (abstractControl instanceof FormArray) {
-            if (abstractControl.value.length > position) {
+            if (abstractControl.controls.length > position) {
               abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
               if (abstractControl !== null)
                 return abstractControl;
+            } else {
+              abstractControl = null;
             }
           } else {
             abstractControl = this.getFormControl(abstractControl, name, position);
@@ -488,5 +497,45 @@ export class SurveyComponent implements OnInit, OnChanges {
       this.successMessage = '';
     }, 4550);
   }
+
+  getInitials(fullName: string) {
+    return fullName.split(" ").map((n)=>n[0]).join("")
+  }
+
+  actionIcon(action: string) {
+    switch (action) {
+      case 'view':
+        return 'visibility';
+      case 'validate':
+        return 'task_alt';
+      case 'edit':
+        return 'edit';
+      default:
+        return '';
+    }
+  }
+
+  actionTooltip(action: string) {
+    switch (action) {
+      case 'view':
+        return 'viewing';
+      case 'validate':
+        return 'validating';
+      case 'edit':
+        return 'editing';
+      default:
+        return '';
+    }
+  }
+
+  getRandomDarkColor(sessionId: string) { // (use for background with white/light font color)
+    const rng = seedRandom(sessionId);
+    const h = Math.floor(rng() * 360),
+      s = Math.floor(rng() * 100) + '%',
+      // max value of l is 100, but set it to 55 in order to generate dark colors
+      l = Math.floor(rng() * 55) + '%';
+
+    return `hsl(${h},${s},${l})`;
+  };
 
 }

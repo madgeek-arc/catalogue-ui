@@ -11,6 +11,7 @@ export class RadioButtonFieldComponent implements OnInit {
 
   @Input() fieldData: Field;
   @Input() editMode: any;
+  @Input() readonly : boolean = null;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();

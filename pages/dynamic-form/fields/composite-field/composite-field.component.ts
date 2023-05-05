@@ -13,6 +13,7 @@ export class CompositeFieldComponent implements OnInit {
   @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: any;
+  @Input() readonly : boolean = null;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
