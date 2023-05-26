@@ -18,4 +18,4 @@ import {SafeUrlPipe} from "./pipes/safeUrlPipe";
   ]
 })
 
-export class SharedModule { }
+export class CatalogueUiSharedModule { }
