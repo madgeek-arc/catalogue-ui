@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
+import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
+import {URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
   selector: 'app-vocabulary-field',
@@ -13,7 +13,7 @@ import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/gen
 export class VocabularyFieldComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() vocabularies: Map<string, object[]> = null;
-  @Input() subVocabularies: UiVocabulary[];
+  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: any;
   @Input() position?: number = null;
 
@@ -23,6 +23,8 @@ export class VocabularyFieldComponent implements OnInit {
 
   formControl!: FormControl;
   form!: FormGroup;
+
+  dynamicVoc: object[] = [];
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
   }
@@ -34,6 +36,15 @@ export class VocabularyFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
+
+    if(this.fieldData.form.dependsOn) {
+      // console.log(this.fieldData.form.dependsOn);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
+        this.enableDisableField(value);
+      });
+    }
     // console.log(this.vocabularies[this.fieldData.typeInfo.vocabulary]);
     // console.log(this.fieldData.name);
     // console.log(this.formControl);
@@ -92,6 +103,26 @@ export class VocabularyFieldComponent implements OnInit {
 
   timeOut(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  enableDisableField(value) {
+    this.dynamicVoc = [];
+
+    if (this.fieldData.form.dependsOn.value) {
+      if (value === this.fieldData.form.dependsOn.value) {
+        // this.dynamicVoc = this.subVocabularies[value];
+        this.formControl.enable();
+      } else {
+        this.formControl.disable();
+        this.formControl.reset();
+      }
+    } else if (value) {
+      this.dynamicVoc = this.subVocabularies[value];
+      this.formControl.enable();
+    } else {
+      this.formControl.disable();
+      this.formControl.reset();
+    }
   }
 
 }

@@ -2,8 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
-import {urlAsyncValidator, URLValidator} from "../../../../shared/validators/generic.validator";
-
 
 @Component({
   selector: 'app-number-field',
@@ -39,10 +37,10 @@ export class NumberFieldComponent implements OnInit {
 
     if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
-      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
-
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
+      // console.log(this.fieldData.name);
       this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value);
+        this.enableDisableField(value, this.fieldData.form.dependsOn.value);
       });
     }
 
@@ -57,17 +55,6 @@ export class NumberFieldComponent implements OnInit {
     return this.formControl as unknown as FormArray;
   }
 
-  push(field: string, required: boolean, type: string) {
-    switch (type) {
-      case 'url':
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.compose([Validators.required, URLValidator]), urlAsyncValidator(this.formControlService))
-          : new FormControl('', URLValidator, urlAsyncValidator(this.formControlService)));
-        break;
-      default:
-        this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
-    }
-  }
-
   remove(field: string, i: number) {
     this.fieldAsFormArray().removeAt(i);
   }
@@ -75,7 +62,7 @@ export class NumberFieldComponent implements OnInit {
   /** check fields validity--> **/
 
   checkFormValidity(): boolean {
-    return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
+    return !( this.formControl.valid || this.formControl.pristine);
   }
 
   checkFormArrayValidity(name: string, position: number, edit: boolean, groupName?: string): boolean {
@@ -101,9 +88,15 @@ export class NumberFieldComponent implements OnInit {
     this.hasChanges.emit(true);
   }
 
-  enableDisableField(value) {
-    // console.log(value);
-    if (value === true || value === 'Other, please specify') {
+  getNumberOfDecimals() {
+    if (this.fieldData.typeInfo.values) {
+      return this.fieldData.typeInfo.values[0].split('.')[1].length;
+    }
+    return 0
+  }
+
+  enableDisableField(value, enableValue) {
+    if (value?.toString() == enableValue) {
       this.formControl.enable();
       this.hideField = false;
 

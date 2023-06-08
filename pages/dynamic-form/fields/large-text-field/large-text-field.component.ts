@@ -10,6 +10,7 @@ import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 export class LargeTextFieldComponent implements OnInit {
   @Input() fieldData: Field;
   @Input() editMode: any;
+  @Input() readonly: boolean = null;
   @Input() position?: number = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
@@ -36,11 +37,14 @@ export class LargeTextFieldComponent implements OnInit {
 
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
-      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
 
-      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value);
-      });
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
+        value => {
+          this.enableDisableField(value, this.fieldData.form.dependsOn.value);
+        },
+        error => {console.log(error)}
+      );
     }
   }
 
@@ -70,19 +74,16 @@ export class LargeTextFieldComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  enableDisableField(value) {
-    // console.log(value);
-    if (value === true || value === 'Other, please specify') {
+  enableDisableField(value, enableValue) {
+    if (value?.toString() == enableValue) {
       this.formControl.enable();
       this.hideField = false;
-
     } else {
       this.formControl.disable();
       this.formControl.reset();
       this.hideField = true;
       // maybe add this if the remaining empty fields are a problem
       // (this.formControl as unknown as FormArray).clear();
-
     }
   }
 

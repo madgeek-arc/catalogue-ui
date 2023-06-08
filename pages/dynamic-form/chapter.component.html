@@ -6,7 +6,7 @@
         <div class="titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px">
           <div>
             <button *ngIf="!readonly" class="uk-button uk-button-secondary uk-margin-left"
-                    (click)="onSubmit(false)" type="submit"> Submit
+                    (click)="onSubmit(false)" type="submit"> Save
             </button>
           </div>
         </div>
@@ -95,7 +95,7 @@
                                    [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
                                 <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                            [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                            (hasChanges)="unsavedChangesPrompt($event)">
+                                           [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
 <!--                                           (handleBitSets)="handleBitSet($event)"-->
 <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
                                 </app-field>
@@ -105,7 +105,7 @@
                         </div>
 
                       </form>
-<!--                      <pre>{{form.getRawValue() | json}}</pre>-->
+<!--                      <pre>{{form.value | json}}</pre>-->
                     </div>
                   </div>
                 </div>

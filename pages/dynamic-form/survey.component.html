@@ -1,9 +1,28 @@
 <div *ngIf="model" class="uk-grid">
-  <h5 class="uk-width-1-2 uk-margin-bottom">{{model.name}}</h5>
-  <div class="uk-width-1-2">
+  <div class="uk-width-1-1 uk-flex uk-flex-middle uk-flex-right">
+    <div *ngIf="activeUsers === null; else users" class="uk-margin-large-right">
+      <div uk-spinner></div>
+    </div>
+    <ng-template #users id="concurrentEdit">
+      <div class="uk-margin-medium-right">
+        <a *ngFor="let user of activeUsers" class="uk-icon" title="{{user.fullname + ' currently ' + actionTooltip(user.action)}}"
+           aria-expanded="false">
+          <svg height="42" width="42">
+            <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="getRandomDarkColor(user.sessionId)"></circle>
+            <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">
+              {{getInitials(user.fullname)}} </text>
+            <circle cx="34" cy="34" r="7" stroke-width="1" fill="white"></circle>
+            <text x="28" y="40" fill="black" alignment-baseline="middle">
+              <tspan class="material-icons md-12"> {{actionIcon(user.action)}}</tspan>
+            </text>
+          </svg>
+        </a>
+      </div>
+    </ng-template>
     <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>
   </div>
-  <p class="uk-margin-bottom">{{model.notice}}</p>
+  <h5 class="uk-width-1-1 uk-margin-bottom">{{model.name}}</h5>
+  <p class="uk-margin-bottom" [innerHTML]="model.notice"></p>
 </div>
 
 <div *ngIf="downloadPDF" class="uk-flex uk-flex-right">
@@ -14,8 +33,9 @@
 <div *ngIf="model && ready" [ngClass]="{'uk-display-none': (model.sections.length === 1 || !model.sections[0].subSections)}">
   <ul class="chapter-tabs uk-tab" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
     <li class="" *ngFor="let section of model.sections">
-      <a (click)="showUnsavedChangesPrompt(section)">{{section.name}}
-        <span *ngIf="chapterChangeMap.get(section.id)" class="material-icons md-10 uk-margin-small-left">circle</span></a>
+      <a *ngIf="(!section.subType || section.subType===subType)" (click)="showUnsavedChangesPrompt(section)">{{section.name}}
+        <span *ngIf="chapterChangeMap.get(section.id)" class="material-icons md-10 uk-margin-small-left">circle</span>
+      </a>
     </li>
   </ul>
 </div>
@@ -32,11 +52,11 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
-      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate" [tabsHeader]="tabsHeader"
-                        [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
+      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly || freeView" [validate]="validate"
+                        [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [tabsHeader]="tabsHeader"
                         [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
-                        (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)"
-                        [mandatoryFieldsText]="mandatoryFieldsText">
+                        [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
+                        (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)">
       </app-chapter-edit>
     </li>
   </ul>
@@ -45,6 +65,12 @@
 <ng-template #showLoader class="whiteFilm">
   <i class="loader-big" aria-hidden="true"></i>
 </ng-template>
+
+<div class="uk-position-fixed" style="z-index: 100; top: 90vh; right: 0.5vw">
+  <a href="#" uk-totop uk-scroll style="padding: 25px;">
+<!--    <i class="fa fa-2x fa-plus"></i>-->
+  </a>
+</div>
 
 <!--<pre *ngIf="form">{{form.value | json}}</pre>-->
 

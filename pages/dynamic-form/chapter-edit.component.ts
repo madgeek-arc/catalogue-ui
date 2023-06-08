@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {FormControlService} from '../../services/form-control.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {Section, Field, GroupedFields, HandleBitSet, Tab, Tabs, UiVocabulary} from '../../domain/dynamic-form-model';
-import {PremiumSortPipe} from "../../shared/pipes/premium-sort.pipe";
+import {FormArray, FormBuilder} from '@angular/forms';
+import {Section, Field, HandleBitSet, Tab, Tabs} from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
 
 import UIkit from 'uikit';
@@ -15,21 +14,19 @@ import UIkit from 'uikit';
 })
 export class ChapterEditComponent implements OnChanges{
 
-  // @Input() answerValue: Object = null;
   @Input() form: any = null;
   @Input() tabsHeader: string;
   @Input() mandatoryFieldsText: string = null;
   @Input() readonly : boolean = null;
   @Input() validate : boolean = null;
   @Input() vocabularies: Map<string, object[]> = null;
+  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;
   @Input() fields: Section[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
   @Output() submit = new EventEmitter();
 
-
-  subVocabularies: UiVocabulary[] = [];
   editMode = true;
 
   bitset: Tabs = new Tabs;
@@ -45,22 +42,15 @@ export class ChapterEditComponent implements OnChanges{
   loaderPercentage = 0;
   tabIndex= 0;
 
-  premiumSort = new PremiumSortPipe();
-
   constructor(public route: ActivatedRoute,
-              protected formControlService: FormControlService,
               protected fb: FormBuilder,
               protected router: Router) {
   }
 
   ngOnInit() {
-    // super.ngOnInit();
   }
 
   ngOnChanges(changes:SimpleChanges) {
-    // remove later
-    // this.initializations();
-    // this.ready=true
     if (this.fields) {
       this.initializations();
       this.ready = true
@@ -71,35 +61,6 @@ export class ChapterEditComponent implements OnChanges{
     // if (this.form.valid) {
     window.scrollTo(0, 0);
     this.submit.emit(null);
-    // this.showLoader = true;
-    // this.formControlService.postGenericItem(this.resourceType, this.form.getRawValue(), this.editMode).subscribe(
-    //   res => {
-    //     // this.router.navigate(['/contributions/mySurveys']);
-    //   },
-    //   error => {
-    //     this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error.error.error);
-    //     this.showLoader = false;
-    //     console.log(error);
-    //   },
-    //   () => {
-    //     this.successMessage = 'Updated successfully!';
-    //     setTimeout( () => {
-    //       UIkit.alert('#successMessage').close();
-    //     }, 4000);
-    //     this.showLoader = false;
-    //     this.unsavedChangesPrompt(true, 'notNull');
-    //   }
-    // );
-    // } else {
-    //   this.errorMessage = 'Please check if all the required fields have a value.';
-    //   window.scrollTo(0, 0);
-    //   console.log('is service valid: ' + this.form.get('service').valid);
-    //   console.log('is extras valid: ' + this.form.get('extras').valid);
-    // for (let extrasKey in this.form.get('extras').value) {
-    //   console.log(this.form.get('extras.'+extrasKey));
-    //   console.log(extrasKey + ': '+ this.form.get('extras.'+extrasKey).valid);
-    // }
-    // }
   }
 
   initializations() {
@@ -124,54 +85,6 @@ export class ChapterEditComponent implements OnChanges{
     this.bitset.completedTabsBitSet = new BitSet;
     this.bitset.requiredTabs = requiredTabs;
     this.bitset.requiredTotal = requiredTotal;
-
-    /** Initialize and sort vocabulary arrays **/
-    // let voc: UiVocabulary[] = this.vocabularies['Subcategory'].concat(this.vocabularies['Scientific subdomain'].concat(this.vocabularies['Subusers']));
-    // this.subVocabularies = this.groupByKey(voc, 'parentId');
-    // for (const [key, value] of Object.entries(this.vocabularies)) {
-    //   this.premiumSort.transform(this.vocabularies[key], ['English', 'Europe', 'Worldwide']);
-    // }
-  }
-
-  validateForm() {
-    for (let control in this.form.controls) {
-      // console.log(control);
-      let tmp = this.form.controls[control] as FormGroup;
-      for (let key in tmp.controls) {
-        let formFieldData = this.getModelData(this.fields, key);
-        if (formFieldData?.form.mandatory){
-          // console.log(key);
-          if (formFieldData.typeInfo.type === 'composite') {
-            // console.log('composite: ' + key);
-            for (let i = 0; i < formFieldData.subFields.length; i++) {
-              if (formFieldData.subFields[i].form.mandatory) {
-                let data = new HandleBitSet();
-                data.field = formFieldData;
-                data.position = i;
-                this.handleBitSetOfComposite(data);
-              }
-            }
-          } else {
-            this.handleBitSet(formFieldData);
-          }
-        }
-
-        if (Array.isArray(tmp.controls[key].value)) {
-
-        }
-      }
-    }
-  }
-
-  getModelData(model: GroupedFields[], name: string): Field {
-    for (let i = 0; i < model.length; i++) {
-      for (let j = 0; j < model[i].fields.length; j++) {
-        if(model[i].fields[j].name === name) {
-          return model[i].fields[j];
-        }
-      }
-    }
-    return null;
   }
 
   /** Bitsets-->**/
@@ -239,7 +152,7 @@ export class ChapterEditComponent implements OnChanges{
   }
 
   handleBitSet(data: Field) {
-    console.log(data.name);
+    // console.log(data.name);
     if (data.typeInfo.multiplicity) {
       this.handleBitSetOfGroup(data);
       return;
@@ -333,16 +246,5 @@ export class ChapterEditComponent implements OnChanges{
     }
   }
   /** <--emit changes**/
-
-  /** Other stuff **/
-
-  groupByKey(array: any, key: any) {
-    return array.reduce((hash: any, obj: any) => {
-      if (obj[key] === undefined) {
-        return hash;
-      }
-      return Object.assign(hash, {[obj[key]]: (hash[obj[key]] || []).concat(obj)});
-    }, {});
-  }
 
 }

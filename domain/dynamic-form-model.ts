@@ -14,6 +14,7 @@ export class Required {
 export class Dependent {
   id: number;
   name: string;
+  value: string;
 }
 
 export class TypeInfo {
@@ -122,6 +123,7 @@ export class Section {
   id: string;
   name: string;
   description: string;
+  subType: string;
   order: number;
   subSections: Section[];
   fields: Field[];

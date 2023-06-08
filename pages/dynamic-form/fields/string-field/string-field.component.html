@@ -1,36 +1,42 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
+      [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
   <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
-       [attr.for]="fieldData.name" [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}"
-       style="{{fieldData.label.style}}">
-    {{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}
+       [attr.for]="fieldData.name" [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
+       [innerHTML]="fieldData.label.text">
+    {{fieldData.form.mandatory ? ' (*)' : ''}}
   </div>
   <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
+       [innerHTML]="fieldData.form.description.text | safeUrl: 'html'" style="{{fieldData.form.description.style}}">
   </div>
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">
+    <div uk-sortable="handle: .uk-sortable-handle" (moved)="movedElement($event)">
+      <div *ngFor="let input of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-margin-bottom uk-flex uk-flex-middle">
         <input [id]="fieldData.name" [formControlName]="i"
                class="uk-input uk-width-9-10 uk-animation-slide-top-small"
                [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
                [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
+        <div *ngIf="fieldAsFormArray().length > 1" class="">
+          <span class="uk-sortable-handle uk-text-center uk-margin-small-left" uk-icon="icon: move"></span>
+        </div>
         <a *ngIf="fieldAsFormArray().length > 1"
            (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()"
-           class="remove-element uk-animation-slide-top-small uk-margin-small-left">
+           class="remove-element uk-animation-slide-top-small uk-margin-left">
           <span class="material-icons">clear</span>
         </a>
       </div>
+    </div>
     <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
          [innerHTML]="fieldData.form.suggestion.text">
     </div>
 
-      <div class="uk-width-9-10 uk-text-center uk-margin-top">
-        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
-          <span class="material-icons">add</span>Add {{fieldData.label.text}}
-        </a>
-      </div>
+    <div *ngIf="form.enabled" class="uk-width-9-10 uk-text-center uk-margin-top">
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
+        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
+      </a>
     </div>
+  </div>
 
   <ng-template #noMultiplicity>
     <input [formControlName]="fieldData.name" [id]="fieldData.id" class="uk-input uk-width-9-10 uk-animation-scale-up"

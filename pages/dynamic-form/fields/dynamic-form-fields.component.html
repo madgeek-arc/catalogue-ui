@@ -6,7 +6,7 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'composite'">
           <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                               (hasChanges)="unsavedChangesPrompt()"
+                               [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-composite-field>
@@ -51,7 +51,7 @@
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'radio'">
-          <app-radio-button-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+          <app-radio-button-field [fieldData]="fieldData" [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
                                   (handleBitSets)="handleBitsetOfChildren($event)"
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-radio-button-field>
@@ -69,24 +69,6 @@
                           (handleBitSets)="handleBitsetOfChildren($event)"
                           (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-date-field>
-        </div>
-
-        <div *ngIf="fieldData.typeInfo.type === 'boolean'">
-          <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.name">
-            <!--To add multiplicity if needed-->
-          </div>
-          <ng-template #noMultiplicity>
-            <label>
-              <input class="uk-radio" type="radio" [formControlName]="fieldData.name" [value]="true"
-                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [name]="fieldData.name"
-                     [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode) }"/>&nbsp;Yes&nbsp;
-            </label>
-            <label>
-              <input class="uk-radio" type="radio"  [formControlName]="fieldData.name" [value]="false"
-                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [name]="fieldData.name"
-                     [ngClass]="{'uk-form-danger': checkFormValidity(fieldData.name, this.editMode) }"/>&nbsp;No&nbsp;
-            </label>
-          </ng-template>
         </div>
 
       </div>

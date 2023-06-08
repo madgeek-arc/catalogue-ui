@@ -19,7 +19,7 @@ export class DateFieldComponent implements OnInit {
 
   formControl!: FormControl;
   form!: FormGroup;
-  hideFields: boolean = null;
+  hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -32,15 +32,21 @@ export class DateFieldComponent implements OnInit {
     }
     this.formControl = this.form.get(this.fieldData.name) as FormControl;
 
-    if(this.fieldData.form.dependsOn) {
+    if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
-      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value);
+      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
 
-      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value);
-      });
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
+        value => {
+          this.enableDisableField(value, this.fieldData.form.dependsOn.value);
+        },
+        error => {console.log(error)}
+      );
     }
 
+    if (this.formControl.value?.includes('T')) { //parse Date
+      this.formControl.setValue(this.formControl.value.split('T')[0]);
+    }
     // console.log(this.fieldData);
     // console.log(this.form);
     // console.log(this.formControl);
@@ -82,17 +88,16 @@ export class DateFieldComponent implements OnInit {
     this.hasChanges.emit(true);
   }
 
-  enableDisableField(value: boolean) {
-    if (!value) {
-      this.formControl.reset(null);
-      this.formControl.disable();
-      this.hideFields = true;
-    } else {
+  enableDisableField(value, enableValue) {
+    if (value?.toString() == enableValue) {
       this.formControl.enable();
-      if (!this.formControl.value) {
-        this.formControl.setValue('');
-      }
-      this.hideFields = false;
+      this.hideField = false;
+    } else {
+      this.formControl.disable();
+      this.formControl.reset();
+      this.hideField = true;
+      // maybe add this if the remaining empty fields are a problem
+      // (this.formControl as unknown as FormArray).clear();
     }
   }
 

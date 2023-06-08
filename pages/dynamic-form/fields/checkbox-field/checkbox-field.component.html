@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.display.cssClasses}}">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}">
 
   <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-top uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
        [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
@@ -18,10 +18,10 @@
       </div>
       <div class="uk-width-9-10"><i><small>{{fieldData.form.suggestion.text}}</small></i></div>
 
-      <div class="uk-width-9-10 uk-text-center uk-margin-top">
+      <div *ngIf="form.enabled" class="uk-width-9-10 uk-text-center uk-margin-top">
         <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
            (click)="push(fieldData.name, fieldData.form.mandatory)">
-          <span class="material-icons">add</span>Add {{fieldData.label.text}}
+          <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
         </a>
       </div>
     </div>

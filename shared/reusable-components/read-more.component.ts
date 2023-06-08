@@ -31,8 +31,7 @@ export class ReadMoreComponent implements AfterContentInit {
   //@Input() text: string;
   //maximum height of the container
   @Input("maxHeight") maxHeight: number = 100;
-  @ViewChild("readMoreDiv", {static: true})
-  readMoreDiv: ElementRef;
+  @ViewChild("readMoreDiv", {static: true}) readMoreDiv: ElementRef;
   //set these to false to get the height of the expended container
   public isCollapsed: boolean = false;
   public isCollapsable: boolean = false;
@@ -69,8 +68,8 @@ export class ReadMoreComponent implements AfterContentInit {
   `]
 })
 export class ReadMoreTextComponent extends ReadMoreComponent implements OnChanges, AfterViewInit {
-  @Input()
-  text: string = "";
+
+  @Input() text: string = "";
 
   ngAfterViewInit(): void {
     this.ngAfterContentInit();

@@ -1,17 +1,20 @@
 import {NgModule} from "@angular/core";
 import {PremiumSortFacetsPipe, PremiumSortFacetValuesPipe, PremiumSortPipe} from "./pipes/premium-sort.pipe";
+import {SafeUrlPipe} from "./pipes/safeUrlPipe";
 
 @NgModule({
   declarations: [
     PremiumSortPipe,
     PremiumSortFacetsPipe,
-    PremiumSortFacetValuesPipe
+    PremiumSortFacetValuesPipe,
+    SafeUrlPipe
   ],
   imports: [],
   exports: [
     PremiumSortPipe,
     PremiumSortFacetsPipe,
-    PremiumSortFacetValuesPipe
+    PremiumSortFacetValuesPipe,
+    SafeUrlPipe
   ]
 })
 
