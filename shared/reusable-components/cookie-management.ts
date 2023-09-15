@@ -13,7 +13,8 @@ export function getCookie(name: string): string {
 }
 
 export function deleteCookie(name) {
-  setCookie(name, '', -1);
+  document.cookie = name+'=; Max-Age=-99999999;';
+  // setCookie(name, '', -1);
 }
 
 export function setCookie(name: string, value: string, expireDays: number, path: string = '') {
