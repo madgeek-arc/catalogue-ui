@@ -19,7 +19,7 @@ import {ReusableComponentsModule} from "../../shared/reusable-components/reusabl
 import {RichTextFieldComponent} from "./fields/rich-text-field/rich-text-field.component";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {ChooseOneComponent} from "./fields/choose-one-composite/choose-one.component";
-import {SharedModule} from "../../shared/shared.module";
+import {CatalogueUiSharedModule} from "../../shared/catalogue-ui-shared.module";
 
 @NgModule({
     declarations: [
@@ -46,7 +46,7 @@ import {SharedModule} from "../../shared/shared.module";
     DpDatePickerModule,
     ReusableComponentsModule,
     CKEditorModule,
-    SharedModule,
+    CatalogueUiSharedModule,
   ],
   exports: [
     ChapterEditComponent,
