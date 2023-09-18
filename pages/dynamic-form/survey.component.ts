@@ -30,8 +30,10 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() tabsHeader: string = null;
   @Input() mandatoryFieldsText: string = null;
   @Input() downloadPDF: boolean = false;
+  @Input() errorMessage = '';
+  @Input() successMessage = '';
   @Output() valid = new EventEmitter<boolean>();
-  @Output() submit = new EventEmitter<[FormGroup, boolean]>();
+  @Output() submit = new EventEmitter<[FormGroup, boolean, string?]>();
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
@@ -45,8 +47,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   readonly: boolean = false;
   freeView: boolean = false;
   validate: boolean = false;
-  errorMessage = '';
-  successMessage = '';
 
   form: FormGroup;
 
@@ -152,7 +152,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   parentSubmit() {
-    this.submit.emit([this.form, this.editMode]);
+    this.submit.emit([this.form, this.editMode, this.model.resourceType]);
   }
 
   onSubmit() { // FIXME
