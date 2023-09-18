@@ -538,4 +538,8 @@ export class SurveyComponent implements OnInit, OnChanges {
     return `hsl(${h},${s},${l})`;
   };
 
+  toTop() {
+    window.scrollTo(0,0);
+  }
+
 }
