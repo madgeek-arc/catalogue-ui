@@ -1,9 +1,11 @@
 <form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
       [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
-  <div *ngIf="fieldData.label.text" class="uk-form-label uk-margin-bottom {{fieldData.label.cssClasses}}"
-       [attr.for]="fieldData.name" [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
-       [innerHTML]="fieldData.label.text">
-    {{fieldData.form.mandatory ? ' (*)' : ''}}
+  <div class="uk-margin-bottom">
+    <span *ngIf="fieldData.label.text" class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
+          [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
+          [innerHTML]="fieldData.label.text">
+    </span>
+    <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
   </div>
   <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
        [innerHTML]="fieldData.form.description.text | safeUrl: 'html'" style="{{fieldData.form.description.style}}">
@@ -12,8 +14,7 @@
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
     <div uk-sortable="handle: .uk-sortable-handle" (moved)="movedElement($event)">
       <div *ngFor="let input of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-margin-bottom uk-flex uk-flex-middle">
-        <input [id]="fieldData.name" [formControlName]="i"
-               class="uk-input uk-width-9-10 uk-animation-slide-top-small"
+        <input [id]="fieldData.name" [formControlName]="i" class="uk-input uk-width-9-10 uk-animation-slide-top-small"
                [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
                [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()">

@@ -1,7 +1,9 @@
 <form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
-  <div *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 uk-margin-bottom {{fieldData.label.cssClasses}}"
-       [attr.for]="fieldData.name" style="{{fieldData.label.style}}" [innerHTML]="fieldData.label.text">
-    {{fieldData.form.mandatory ? ' (*)' : ''}}
+  <div class="uk-margin-bottom">
+    <span *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
+          [attr.for]="fieldData.name" style="{{fieldData.label.style}}" [innerHTML]="fieldData.label.text">
+    </span>
+    <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
   </div>
   <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
        [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
