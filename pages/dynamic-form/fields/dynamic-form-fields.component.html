@@ -71,6 +71,13 @@
           </app-date-field>
         </div>
 
+        <div *ngIf="fieldData.typeInfo.type === 'scale'">
+          <app-scale-field [fieldData]="fieldData" (hasChanges)="unsavedChangesPrompt()"
+                           (handleBitSets)="handleBitsetOfChildren($event)"
+                           (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+          </app-scale-field>
+        </div>
+
       </div>
     </div>
   </div>
