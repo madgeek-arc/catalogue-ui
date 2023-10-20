@@ -151,11 +151,13 @@ export class CompositeFieldComponent implements OnInit {
     if (value === 'Applicable' || value === 'Yes') {
       this.form.enable();
       this.hideField = false;
+      this.fieldData.form.display.visible = true;
 
     } else {
       this.form.disable();
       this.form.reset();
       this.hideField = true;
+      this.fieldData.form.display.visible = false;
       // maybe add this if the remaining empty fields are a problem
       // (this.formControl as unknown as FormArray).clear();
 
