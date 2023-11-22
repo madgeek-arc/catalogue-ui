@@ -97,6 +97,7 @@ export class Field {
   parent: string;
   label: StyledText;
   accessPath: string;
+  deprecated: boolean;
   kind: string;
   typeInfo: TypeInfo;
   includedInSnippet: boolean;
@@ -111,6 +112,7 @@ export class Field {
     this.parent = '';
     this.label = new StyledText();
     this.accessPath = '';
+    this.deprecated = false;
     this.typeInfo = new TypeInfo()
     this.includedInSnippet = false;
     this.form = new Form();

@@ -56,6 +56,9 @@ export class FormControlService implements OnInit{
       groups.fields.sort((a, b) => a.form.display?.order - b.form.display?.order)
       groups.required = new Required();
       groups.fields.forEach(formField => {
+        if (formField.deprecated)
+          return;
+
         if (formField.form.mandatory) {
           groups.required.topLevel++;
           groups.required.total++;
