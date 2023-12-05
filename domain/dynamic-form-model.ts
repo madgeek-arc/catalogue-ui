@@ -171,7 +171,14 @@ export class Model {
   createdBy: string;
   modifiedBy: string;
   sections: Section[];
+  configuration: Configuration;
   locked: boolean;
+  active: boolean;
+}
+
+export class Configuration {
+  prefillable: boolean;
+  importFrom: string[]
 }
 
 export class UiVocabulary {
