@@ -181,6 +181,13 @@ export class Configuration {
   importFrom: string[]
 }
 
+export interface ImportSurveyData {
+  importFrom: string[],
+  importFromNames: string[];
+  surveyAnswerId: string;
+  surveyId: string;
+}
+
 export class UiVocabulary {
   id: string;
   name: string;
