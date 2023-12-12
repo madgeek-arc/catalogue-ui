@@ -328,6 +328,8 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   documentDefinitionRecursion(fields: Field[], docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
+      if (field.deprecated)
+        continue;
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
       if (field.form.description.text
@@ -397,6 +399,9 @@ export class SurveyComponent implements OnInit, OnChanges {
         } else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
+      } else if (field.kind === 'external' && field.typeInfo.type === 'composite') {
+        docDefinition.content.push(new PdfTable(new TableDefinition([[{text: field.form.description, color: 'gray'}]],['*']), ['mt_1']));
+        continue;
       }
       if (field.subFields)
         this.documentDefinitionRecursion(field.subFields, docDefinition, description, descriptionAtEnd);
