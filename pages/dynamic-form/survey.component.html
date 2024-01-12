@@ -26,7 +26,9 @@
 </div>
 
 <div *ngIf="downloadPDF" class="uk-flex uk-flex-right">
-  <button class="uk-button uk-button-secondary" (click)="generatePDF()">Download as pdf</button>
+  <button class="uk-button uk-button-secondary" (click)="generatePDF()"
+          uk-tooltip="title:Unsaved changes will not be displayed to pdf; pos: bottom">Download as pdf
+  </button>
 </div>
 
 <!--Chapter Selection-->
