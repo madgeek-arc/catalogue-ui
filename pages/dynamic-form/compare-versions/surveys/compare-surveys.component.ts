@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, SimpleChanges} from "@angular/core";
-import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
 import {Field, Model, Section} from "../../../../domain/dynamic-form-model";
 import {FormControlService} from "../../../../services/form-control.service";
 
@@ -26,7 +26,7 @@ export class CompareSurveysComponent implements OnChanges{
   formA = this.fb.group({});
   formB = this.fb.group({});
 
-  constructor(private formControlService: FormControlService, private fb: FormBuilder,) {
+  constructor(private formControlService: FormControlService, private fb: UntypedFormBuilder,) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -44,7 +44,7 @@ export class CompareSurveysComponent implements OnChanges{
     }
   }
 
-  createForm(form: FormGroup) {
+  createForm(form: UntypedFormGroup) {
     this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
 
     for (let i = 0; i < this.model.sections.length; i++) {
@@ -59,7 +59,7 @@ export class CompareSurveysComponent implements OnChanges{
 
   }
 
-  patchForm(form: FormGroup, payload: Object) {
+  patchForm(form: UntypedFormGroup, payload: Object) {
     for (let i = 0; i < this.model.sections.length; i++) {
       if (payload[this.model.sections[i].name])
         this.prepareForm(form, payload[this.model.sections[i].name], this.model.sections[i].subSections);
@@ -71,17 +71,17 @@ export class CompareSurveysComponent implements OnChanges{
     // }, 0);
   }
 
-  getFormGroup(form: FormGroup, sectionIndex: number): FormGroup {
+  getFormGroup(form: UntypedFormGroup, sectionIndex: number): UntypedFormGroup {
     if (this.model.sections[sectionIndex].subSections === null) {
-      return form.get(this.model.name) as FormGroup;
+      return form.get(this.model.name) as UntypedFormGroup;
     } else
       // console.log(this.form.get(this.survey.sections[sectionIndex].name));
-      return form.get(this.model.sections[sectionIndex].name) as FormGroup;
+      return form.get(this.model.sections[sectionIndex].name) as UntypedFormGroup;
   }
 
 
   /** create additional fields for arrays if needed --> **/
-  prepareForm(form: FormGroup, answer: Object, fields: Section[], arrayIndex?: number) { // I don't think it will work with greater depth than 2 of array nesting
+  prepareForm(form: UntypedFormGroup, answer: Object, fields: Section[], arrayIndex?: number) { // I don't think it will work with greater depth than 2 of array nesting
     for (const [key, value] of Object.entries(answer)) {
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
         this.prepareForm(form, value, fields);
@@ -101,7 +101,7 @@ export class CompareSurveysComponent implements OnChanges{
     }
   }
 
-  pushToFormArray(form: FormGroup, name: string, length: number, arrayIndex?: number) {
+  pushToFormArray(form: UntypedFormGroup, name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
     while (this.getFormControl(form, name, arrayIndex).length < length) {
       // for (let i = 0; i < length-1; i++) {
@@ -141,17 +141,17 @@ export class CompareSurveysComponent implements OnChanges{
     return null;
   }
 
-  getFormControl(group: FormGroup | FormArray, name: string, position?: number): FormArray {
+  getFormControl(group: UntypedFormGroup | UntypedFormArray, name: string, position?: number): UntypedFormArray {
     let abstractControl = null;
     for (const key in group.controls) {
       abstractControl = group.controls[key];
-      if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
+      if (abstractControl instanceof UntypedFormGroup || abstractControl instanceof UntypedFormArray) {
         if (key === name) {
-          return abstractControl as FormArray;
+          return abstractControl as UntypedFormArray;
         } else if (key !== name) {
-          if (abstractControl instanceof FormArray) {
+          if (abstractControl instanceof UntypedFormArray) {
             if (abstractControl.controls.length > position) {
-              abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
+              abstractControl = this.getFormControl(abstractControl.controls[position] as UntypedFormGroup | UntypedFormArray, name, position);
               if (abstractControl !== null)
                 return abstractControl;
             } else {

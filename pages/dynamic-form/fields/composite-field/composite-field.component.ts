@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {UntypedFormArray, FormControl, UntypedFormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class CompositeFieldComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {
@@ -31,9 +31,9 @@ export class CompositeFieldComponent implements OnInit {
     if (this.position !== null) {
       // console.log(this.rootFormGroup.control.controls[this.position]);
       // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.name));
-      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as FormGroup;
+      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as UntypedFormGroup;
     } else {
-      this.form = this.rootFormGroup.control.get(this.fieldData.name) as FormGroup;
+      this.form = this.rootFormGroup.control.get(this.fieldData.name) as UntypedFormGroup;
       // console.log(this.form);
     }
     // console.log(this.form);
@@ -48,11 +48,11 @@ export class CompositeFieldComponent implements OnInit {
 
   /** Handle Arrays --> **/
   fieldAsFormArray() {
-    return this.form as unknown as FormArray;
+    return this.form as unknown as UntypedFormArray;
   }
 
   oldFieldAsFormArray(field: string) {
-    return this.form.get(field) as FormArray;
+    return this.form.get(field) as UntypedFormArray;
   }
 
   remove(i: number) {

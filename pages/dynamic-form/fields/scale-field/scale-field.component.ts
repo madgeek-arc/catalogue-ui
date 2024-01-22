@@ -1,6 +1,6 @@
 import {AfterContentInit, Component, EventEmitter, Input, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {FormControl, FormGroup, FormGroupDirective} from "@angular/forms";
+import {UntypedFormControl, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
@@ -20,8 +20,8 @@ export class ScaleFieldComponent implements AfterContentInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: FormControl;
-  form!: FormGroup;
+  formControl!: UntypedFormControl;
+  form!: UntypedFormGroup;
   hideField: boolean = null;
   iterationArr: any[];
 
@@ -29,15 +29,15 @@ export class ScaleFieldComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     if (this.position !== null) {
-      this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
+      this.form = this.rootFormGroup.control.controls[this.position] as UntypedFormGroup;
     } else {
       this.form = this.rootFormGroup.control;
     }
-    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
 
     this.iterationArr = new Array(+this.fieldData.typeInfo.values[0]);
 
-    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
     if(this.fieldData.form.dependsOn) {
       this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
       this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {

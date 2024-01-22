@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-date-field',
@@ -17,8 +17,8 @@ export class DateFieldComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: FormControl;
-  form!: FormGroup;
+  formControl!: UntypedFormControl;
+  form!: UntypedFormGroup;
   hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective) {
@@ -26,11 +26,11 @@ export class DateFieldComponent implements OnInit {
 
   ngOnInit() {
     if (this.position !== null) {
-      this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
+      this.form = this.rootFormGroup.control.controls[this.position] as UntypedFormGroup;
     } else {
       this.form = this.rootFormGroup.control;
     }
-    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
 
     if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
@@ -55,11 +55,11 @@ export class DateFieldComponent implements OnInit {
   /** Handle Arrays --> **/
 
   fieldAsFormArray() {
-    return this.formControl as unknown as FormArray;
+    return this.formControl as unknown as UntypedFormArray;
   }
 
   push(field: string, required: boolean, type?: string) {
-    this.fieldAsFormArray().push(required ? new FormControl('', Validators.required) : new FormControl(''));
+    this.fieldAsFormArray().push(required ? new UntypedFormControl('', Validators.required) : new UntypedFormControl(''));
   }
 
   remove(field: string, i: number) {

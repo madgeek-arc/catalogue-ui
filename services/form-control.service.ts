@@ -1,5 +1,5 @@
 import {Injectable, OnInit} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {Field, Model, Required, Section} from '../domain/dynamic-form-model';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
@@ -67,55 +67,55 @@ export class FormControlService implements OnInit{
           if (formField.typeInfo.multiplicity) {
             if (formField.typeInfo.type === 'url') {
               group[formField.name] = formField.form.mandatory ?
-                new FormArray([new FormControl(null, Validators.compose([Validators.required, Validators.pattern(this.urlRegEx)]))])
-                : new FormArray([new FormControl(null, Validators.pattern(this.urlRegEx))]);
+                new UntypedFormArray([new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern(this.urlRegEx)]))])
+                : new UntypedFormArray([new UntypedFormControl(null, Validators.pattern(this.urlRegEx))]);
             } else if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
-              group[formField.name] = formField.form.mandatory ? new FormArray([], Validators.required)
-                : new FormArray([]);
+              group[formField.name] = formField.form.mandatory ? new UntypedFormArray([], Validators.required)
+                : new UntypedFormArray([]);
               group[formField.name].push(this.createCompositeField(formField));
             } else {
               group[formField.name] = formField.form.mandatory ?
-                new FormArray([new FormControl(null, Validators.required)])
-                : new FormArray([new FormControl(null)]);
+                new UntypedFormArray([new UntypedFormControl(null, Validators.required)])
+                : new UntypedFormArray([new UntypedFormControl(null)]);
             }
           } else {
             if (formField.typeInfo.type === 'url') {
               group[formField.name] = formField.form.mandatory ?
-              new FormControl(null, [Validators.required, Validators.pattern(this.urlRegEx)])
-                : new FormControl(null, Validators.pattern(this.urlRegEx));
+              new UntypedFormControl(null, [Validators.required, Validators.pattern(this.urlRegEx)])
+                : new UntypedFormControl(null, Validators.pattern(this.urlRegEx));
             } else if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
               if (group.hasOwnProperty(formField.name)) { // merge the controls to one formGroup
-                (group[formField.name] as FormGroup).controls = {...(group[formField.name] as FormGroup).controls, ...this.createCompositeField(formField).controls}
+                (group[formField.name] as UntypedFormGroup).controls = {...(group[formField.name] as UntypedFormGroup).controls, ...this.createCompositeField(formField).controls}
               } else
                 group[formField.name] = this.createCompositeField(formField);
             } else if (formField.typeInfo.type === 'email') {
               group[formField.name] = formField.form.mandatory ?
-                new FormControl(null, Validators.compose([Validators.required, Validators.email]))
-                : new FormControl(null, Validators.email);
+                new UntypedFormControl(null, Validators.compose([Validators.required, Validators.email]))
+                : new UntypedFormControl(null, Validators.email);
             } else if (formField.typeInfo.type === 'phone') {
               group[formField.name] = formField.form.mandatory ?
-                new FormControl(null, Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
-                : new FormControl(null, Validators.pattern('[+]?\\d+$'));
+                new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
+                : new UntypedFormControl(null, Validators.pattern('[+]?\\d+$'));
             } else if (formField.typeInfo.type === 'number') {
               // if (formField.typeInfo.values) {
                 this.numberRegEx = this.calculateNumberOfDecimals(formField.typeInfo.values);
                 group[formField.name] = formField.form.mandatory ?
-                  new FormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
-                  : new FormControl(null, Validators.compose([Validators.pattern(this.numberRegEx)]));
+                  new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
+                  : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.numberRegEx)]));
               // } else {
               //   group[formField.name] = formField.form.mandatory ?
               //     new FormControl(null, Validators.required) : new FormControl(null);
               // }
 
             } else {
-              group[formField.name] = formField.form.mandatory ? new FormControl(null, Validators.required)
-                : new FormControl(null);
+              group[formField.name] = formField.form.mandatory ? new UntypedFormControl(null, Validators.required)
+                : new UntypedFormControl(null);
             }
           }
         // }
       });
     });
-    return new FormGroup(group);
+    return new UntypedFormGroup(group);
   }
 
   createCompositeField(formField: Field) {
@@ -125,73 +125,73 @@ export class FormControlService implements OnInit{
     formField.subFields?.forEach(subField => {
       if (subField.typeInfo.type === 'composite' || subField.typeInfo.type === 'radioGrid') {
         if (subField.typeInfo.multiplicity) {
-          subGroup[subField.name] = subField.form.mandatory ? new FormArray([], Validators.required)
-            : new FormArray([]);
+          subGroup[subField.name] = subField.form.mandatory ? new UntypedFormArray([], Validators.required)
+            : new UntypedFormArray([]);
           subGroup[subField.name].push(this.createCompositeField(subField));
         } else {
           subGroup[subField.name] = this.createCompositeField(subField);
         }
       } else if (subField.typeInfo.type === 'email') {
         subGroup[subField.name] = subField.form.mandatory ?
-          new FormControl(null, Validators.compose([Validators.required, Validators.email]))
-          : new FormControl(null, Validators.email);
+          new UntypedFormControl(null, Validators.compose([Validators.required, Validators.email]))
+          : new UntypedFormControl(null, Validators.email);
       } else if (subField.typeInfo.type === 'phone') {
         subGroup[subField.name] = subField.form.mandatory ?
-          new FormControl(null, Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
-          : new FormControl(null, Validators.pattern('[+]?\\d+$'));
+          new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
+          : new UntypedFormControl(null, Validators.pattern('[+]?\\d+$'));
       } else if (subField.typeInfo.multiplicity) { // add array inside composite element
         subGroup[subField.name] = subField.form.mandatory ?
-          new FormArray([new FormControl(null, Validators.required)])
-          : new FormArray([new FormControl(null)]);
+          new UntypedFormArray([new UntypedFormControl(null, Validators.required)])
+          : new UntypedFormArray([new UntypedFormControl(null)]);
       } else if (subField.typeInfo.type === 'url') {
         subGroup[subField.name] = subField.form.mandatory ?
-        new FormControl(null, [Validators.required, Validators.pattern(this.urlRegEx)])
-            : new FormControl(null, Validators.pattern(this.urlRegEx));
+        new UntypedFormControl(null, [Validators.required, Validators.pattern(this.urlRegEx)])
+            : new UntypedFormControl(null, Validators.pattern(this.urlRegEx));
       } else if (subField.typeInfo.type === 'number') {
         // if (subField.typeInfo.values) {
         subGroup[subField.name] = subField.form.mandatory ?
-          new FormControl(null, [Validators.required, Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))])
-          : new FormControl(null, Validators.compose([Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))]));
+          new UntypedFormControl(null, [Validators.required, Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))])
+          : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))]));
         // } else {
         //   subGroup[subField.name] = subField.form.mandatory ?
         //     new FormControl(null, Validators.required) : new FormControl(null);
         // }
       } else {
         subGroup[subField.name] = subField.form.mandatory ?
-          new FormControl(null, Validators.required)
-          : new FormControl(null);
+          new UntypedFormControl(null, Validators.required)
+          : new UntypedFormControl(null);
       }
     });
-    return new FormGroup(subGroup);
+    return new UntypedFormGroup(subGroup);
   }
 
-  createField (formField: Field): FormControl | FormGroup {
+  createField (formField: Field): UntypedFormControl | UntypedFormGroup {
     if (formField.typeInfo.type === 'url') {
       return formField.form.mandatory ?
-        new FormControl('', [Validators.required, Validators.pattern(this.urlRegEx)])
-        : new FormControl('', Validators.pattern(this.urlRegEx));
+        new UntypedFormControl('', [Validators.required, Validators.pattern(this.urlRegEx)])
+        : new UntypedFormControl('', Validators.pattern(this.urlRegEx));
     } else if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
       return this.createCompositeField(formField);
     } else if (formField.typeInfo.type === 'email') {
       return formField.form.mandatory ?
-        new FormControl('', Validators.compose([Validators.required, Validators.email]))
-        : new FormControl('', Validators.email);
+        new UntypedFormControl('', Validators.compose([Validators.required, Validators.email]))
+        : new UntypedFormControl('', Validators.email);
     } else if (formField.typeInfo.type === 'phone') {
       return formField.form.mandatory ?
-        new FormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
-        : new FormControl('', Validators.pattern('[+]?\\d+$'));
+        new UntypedFormControl('', Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
+        : new UntypedFormControl('', Validators.pattern('[+]?\\d+$'));
     } else if (formField.typeInfo.type === 'number') {
       // if (formField.typeInfo.values) {
         this.numberRegEx = this.calculateNumberOfDecimals(formField.typeInfo.values);
         return formField.form.mandatory ?
-          new FormControl('', Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
-          : new FormControl('', Validators.compose([Validators.pattern(this.numberRegEx)]));
+          new UntypedFormControl('', Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
+          : new UntypedFormControl('', Validators.compose([Validators.pattern(this.numberRegEx)]));
       // } else {
       //   return formField.form.mandatory ? new FormControl('', Validators.required) : new FormControl('');
       // }
 
     } else {
-      return new FormControl(null, Validators.required)
+      return new UntypedFormControl(null, Validators.required)
     }
   }
 

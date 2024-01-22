@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {Field, HandleBitSet} from '../../../domain/dynamic-form-model';
 
 @Component({
@@ -8,7 +8,7 @@ import {Field, HandleBitSet} from '../../../domain/dynamic-form-model';
 })
 export class DynamicFormFieldsComponent {
   @Input() fieldData: Field;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
   @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: any;

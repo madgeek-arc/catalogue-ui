@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {AbstractControl, FormArray, FormControl, FormGroup, FormGroupDirective} from "@angular/forms";
+import {AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
@@ -18,8 +18,8 @@ export class StringFieldComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: FormControl;
-  form!: FormGroup;
+  formControl!: UntypedFormControl;
+  form!: UntypedFormGroup;
   hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {
@@ -27,11 +27,11 @@ export class StringFieldComponent implements OnInit {
 
   ngOnInit() {
     if (this.position !== null) {
-      this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
+      this.form = this.rootFormGroup.control.controls[this.position] as UntypedFormGroup;
     } else {
       this.form = this.rootFormGroup.control;
     }
-    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
 
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
@@ -53,7 +53,7 @@ export class StringFieldComponent implements OnInit {
   /** Handle Arrays --> **/
 
   fieldAsFormArray() {
-    return this.formControl as unknown as FormArray;
+    return this.formControl as unknown as UntypedFormArray;
   }
 
   push() {
@@ -79,7 +79,7 @@ export class StringFieldComponent implements OnInit {
   }
 
   move(newIndex: number, currentIndex: number) {
-    const formArray: FormArray = this.fieldAsFormArray();
+    const formArray: UntypedFormArray = this.fieldAsFormArray();
     const currentControl: AbstractControl = formArray.at(currentIndex);
 
     formArray.removeAt(currentIndex);

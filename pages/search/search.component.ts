@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {Paging} from '../../domain/paging';
 import {URLParameter} from '../../domain/url-parameter';
@@ -24,7 +24,7 @@ export class SearchComponent implements OnInit {
   advanced = false;
   foundResults = true;
   errorMessage: string;
-  searchForm: FormGroup;
+  searchForm: UntypedFormGroup;
   itemPath = '/service/'
 
   searchResults: Paging<Object>;
@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit {
   searchFields: string[] = ['name', 'publisher', 'source'];
   filtersMobileShown = false;
 
-  constructor(public fb: FormBuilder, public route: ActivatedRoute, public searchService: SearchService,
+  constructor(public fb: UntypedFormBuilder, public route: ActivatedRoute, public searchService: SearchService,
               // public authenticationService: AuthenticationService,
               public router: Router) {
     this.searchForm = fb.group({'query': [''], 'searchFields': ['']});

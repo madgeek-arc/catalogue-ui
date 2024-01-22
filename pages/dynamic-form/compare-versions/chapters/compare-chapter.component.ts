@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {FormGroup} from "@angular/forms";
+import {UntypedFormGroup} from "@angular/forms";
 import {Section, Tab} from "../../../../domain/dynamic-form-model";
 import BitSet from "bitset";
 
@@ -10,8 +10,8 @@ import BitSet from "bitset";
 
 export class CompareChapterComponent implements OnChanges {
 
-  @Input() formA: FormGroup = null;
-  @Input() formB: FormGroup = null;
+  @Input() formA: UntypedFormGroup = null;
+  @Input() formB: UntypedFormGroup = null;
   @Input() entryA: any = null;
   @Input() entryB: any = null;
   @Input() tabsHeader: string;

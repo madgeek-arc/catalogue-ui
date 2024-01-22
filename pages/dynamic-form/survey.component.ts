@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
-import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {FormControlService} from "../../services/form-control.service";
 import {Section, Field, Model, Tabs} from "../../domain/dynamic-form-model";
@@ -33,7 +33,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() errorMessage = '';
   @Input() successMessage = '';
   @Output() valid = new EventEmitter<boolean>();
-  @Output() submit = new EventEmitter<[FormGroup, boolean, string?]>();
+  @Output() submit = new EventEmitter<[UntypedFormGroup, boolean, string?]>();
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
@@ -48,9 +48,9 @@ export class SurveyComponent implements OnInit, OnChanges {
   freeView: boolean = false;
   validate: boolean = false;
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
-  constructor(private formControlService: FormControlService, private fb: FormBuilder, private router: Router) {
+  constructor(private formControlService: FormControlService, private fb: UntypedFormBuilder, private router: Router) {
     this.form = this.fb.group({});
   }
 
@@ -200,12 +200,12 @@ export class SurveyComponent implements OnInit, OnChanges {
     this.currentChapter = chapter;
   }
 
-  getFormGroup(sectionIndex: number): FormGroup {
+  getFormGroup(sectionIndex: number): UntypedFormGroup {
     if (this.model.sections[sectionIndex].subSections === null) {
-      return this.form.get(this.model.name) as FormGroup;
+      return this.form.get(this.model.name) as UntypedFormGroup;
     } else
       // console.log(this.form.get(this.survey.sections[sectionIndex].name));
-      return this.form.get(this.model.sections[sectionIndex].name) as FormGroup;
+      return this.form.get(this.model.sections[sectionIndex].name) as UntypedFormGroup;
   }
 
   setChapterChangesMap(chapterId: string[]) {
@@ -276,17 +276,17 @@ export class SurveyComponent implements OnInit, OnChanges {
     return null;
   }
 
-  getFormControl(group: FormGroup | FormArray, name: string, position?: number): FormArray {
+  getFormControl(group: UntypedFormGroup | UntypedFormArray, name: string, position?: number): UntypedFormArray {
     let abstractControl = null;
     for (const key in group.controls) {
       abstractControl = group.controls[key];
-      if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
+      if (abstractControl instanceof UntypedFormGroup || abstractControl instanceof UntypedFormArray) {
         if (key === name) {
-          return abstractControl as FormArray;
+          return abstractControl as UntypedFormArray;
         } else if (key !== name) {
-          if (abstractControl instanceof FormArray) {
+          if (abstractControl instanceof UntypedFormArray) {
             if (abstractControl.controls.length > position) {
-              abstractControl = this.getFormControl(abstractControl.controls[position] as FormGroup | FormArray, name, position);
+              abstractControl = this.getFormControl(abstractControl.controls[position] as UntypedFormGroup | UntypedFormArray, name, position);
               if (abstractControl !== null)
                 return abstractControl;
             } else {
@@ -408,7 +408,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     }
   }
 
-  createDocumentDefinition(group: FormGroup | FormArray, docDefinition: DocDefinition, description: string) {
+  createDocumentDefinition(group: UntypedFormGroup | UntypedFormArray, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
 
     if (this.model.name === 'Survey on National Contributions to EOSC 2022') {

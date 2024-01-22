@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormGroup, FormGroupDirective} from "@angular/forms";
+import {UntypedFormArray, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class ChooseOneComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   hideField: boolean = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {
@@ -30,12 +30,12 @@ export class ChooseOneComponent implements OnInit {
     if (this.position !== null) {
       // console.log(this.rootFormGroup.control.controls[this.position]);
       // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.name));
-      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as FormGroup;
+      this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as UntypedFormGroup;
     } else {
-      this.form = this.rootFormGroup.control.get(this.fieldData.name) as FormGroup;
+      this.form = this.rootFormGroup.control.get(this.fieldData.name) as UntypedFormGroup;
     }
     if (this.fieldData.typeInfo.multiplicity){
-      this.chooseOne(Object.entries((this.form.controls[0] as FormGroup).controls)[0][0], 0);
+      this.chooseOne(Object.entries((this.form.controls[0] as UntypedFormGroup).controls)[0][0], 0);
     } else {
       this.chooseOne(Object.entries(this.form.controls)[0][0])
     }
@@ -43,9 +43,9 @@ export class ChooseOneComponent implements OnInit {
 
   /** Choose one to show **/
   chooseOne(name: string, index?: number) {
-    let tmpGroup: FormGroup;
+    let tmpGroup: UntypedFormGroup;
     if (index !== undefined) {
-      tmpGroup = this.form.controls[index] as FormGroup;
+      tmpGroup = this.form.controls[index] as UntypedFormGroup;
     } else {
       tmpGroup = this.form;
     }
@@ -61,11 +61,11 @@ export class ChooseOneComponent implements OnInit {
 
   /** Handle Arrays --> **/
   fieldAsFormArray() {
-    return this.form as unknown as FormArray;
+    return this.form as unknown as UntypedFormArray;
   }
 
   getGroupOfArray(index: number) {
-    return this.fieldAsFormArray().controls[index] as FormGroup;
+    return this.fieldAsFormArray().controls[index] as UntypedFormGroup;
   }
 
   remove(i: number) {
@@ -74,7 +74,7 @@ export class ChooseOneComponent implements OnInit {
 
   pushComposite(compositeField: Field) {
     this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField));
-    this.chooseOne(Object.entries((this.form.controls[this.fieldAsFormArray().length - 1] as FormGroup).controls)[0][0], this.fieldAsFormArray().length - 1);
+    this.chooseOne(Object.entries((this.form.controls[this.fieldAsFormArray().length - 1] as UntypedFormGroup).controls)[0][0], this.fieldAsFormArray().length - 1);
   }
 
   /** <-- Handle Arrays **/

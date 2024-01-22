@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {FormArray, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-checkbox-field',
@@ -16,8 +16,8 @@ export class CheckboxFieldComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: FormControl;
-  form!: FormGroup;
+  formControl!: UntypedFormControl;
+  form!: UntypedFormGroup;
 
   constructor(private rootFormGroup: FormGroupDirective) {
   }
@@ -25,24 +25,24 @@ export class CheckboxFieldComponent implements OnInit {
   ngOnInit() {
     // console.log(this.fieldData);
     if (this.position !== null) {
-      this.form = this.rootFormGroup.control.controls[this.position] as FormGroup;
+      this.form = this.rootFormGroup.control.controls[this.position] as UntypedFormGroup;
     } else {
       this.form = this.rootFormGroup.control;
     }
     // console.log(this.form);
 
-    this.formControl = this.form.get(this.fieldData.name) as FormControl;
+    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
     // console.log(this.formControl);
   }
 
   /** Handle Arrays --> **/
 
   fieldAsFormArray() {
-    return this.formControl as unknown as FormArray;
+    return this.formControl as unknown as UntypedFormArray;
   }
 
   push(field: string, required: boolean) {
-    this.fieldAsFormArray().push(required ? new FormControl(null, Validators.required) : new FormControl(null));
+    this.fieldAsFormArray().push(required ? new UntypedFormControl(null, Validators.required) : new UntypedFormControl(null));
   }
 
   remove(field: string, i: number) {
