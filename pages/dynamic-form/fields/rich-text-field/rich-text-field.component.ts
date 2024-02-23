@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
 import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({

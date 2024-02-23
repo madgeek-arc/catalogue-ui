@@ -1,6 +1,6 @@
 import {Component, Input} from "@angular/core";
 import {Section} from "../../../domain/dynamic-form-model";
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-chapter-builder',
