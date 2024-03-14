@@ -139,12 +139,12 @@ export class SurveyComponent implements OnInit, OnChanges {
       let str = '';
       for (let key in this.form.value) {
         // console.log(this.form.get('extras.'+key));
-        console.log(key + ': '+ this.form.get(key).valid);
+        // console.log(key + ': '+ this.form.get(key).valid);
         if (!this.form.get(key).valid) {
           str =  str + '\n\t-> ' + key;
         }
         for (const keyElement in this.form.get(key).value) {
-          console.log(keyElement + ': '+ this.form.get(key+'.'+keyElement).valid);
+          // console.log(keyElement + ': '+ this.form.get(key+'.'+keyElement).valid);
         }
       }
       this.errorMessage = 'There are missing fields at chapters ' + str;
@@ -346,7 +346,6 @@ export class SurveyComponent implements OnInit, OnChanges {
 
           if (this.model.id === 'm-eosc-sb-2023') {
             let strArray = [];
-            console.log(questionNumber);
             if (this.strip(field.form.description.text).includes('Instructions')) {
               if (this.strip(field.form.description.text).includes('Glossary'))
                 strArray[0] = this.string_between_strings('Instructions', 'Glossary', this.strip(field.form.description.text));
@@ -356,7 +355,6 @@ export class SurveyComponent implements OnInit, OnChanges {
             }
             if (field.form.description.text.split('Glossary').length > 1)
               strArray[1] = field.form.description.text.split('Glossary')[1];
-            console.log(strArray);
 
             let content = {
               style: ['mt_3'],
@@ -364,7 +362,6 @@ export class SurveyComponent implements OnInit, OnChanges {
             }
             content.text.push({text: questionNumber+' '});
             let terms = strArray[1]?.split('<br><br>')
-            console.log(terms);
             if (terms?.length > 0) {
               for (let i = 0; i < terms.length; i++) {
                 content.text.push({text:  this.strip(terms[i].split(':')[0])+': ', bold: true});
