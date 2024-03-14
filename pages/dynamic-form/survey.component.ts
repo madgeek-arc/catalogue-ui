@@ -318,7 +318,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     docDefinition.info = new PdfMetadata(this.model.name);
 
     let description = 'none';
-    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022' || this.model.id === 'm-eosc-sb-2023') {
       description = 'end'
     }
     this.createDocumentDefinition(this.form, docDefinition, description);
@@ -342,19 +342,59 @@ export class SurveyComponent implements OnInit, OnChanges {
             questionNumber = field.label.text.split('. ')[0];
           }
           // let term = field.form.description.text.split('-')[0]
-          let components = this.strip(field.form.description.text).split(' - ');
-          let content = {
-            style: ['mt_3'],
-            text: [
-              questionNumber,
-              ' ',
-              {text:  components.shift(), bold: true},
-              ' - ',
-              components.join('-')
-            ]
+          // console.log(this.strip(field.form.description.text));
+
+          if (this.model.id === 'm-eosc-sb-2023') {
+            let strArray = [];
+            console.log(questionNumber);
+            if (this.strip(field.form.description.text).includes('Instructions')) {
+              if (this.strip(field.form.description.text).includes('Glossary'))
+                strArray[0] = this.string_between_strings('Instructions', 'Glossary', this.strip(field.form.description.text));
+              else
+                strArray[0] = this.strip(field.form.description.text).split('Instructions')[1];
+              // console.log(this.strip(field.form.description.text));
+            }
+            if (field.form.description.text.split('Glossary').length > 1)
+              strArray[1] = field.form.description.text.split('Glossary')[1];
+            console.log(strArray);
+
+            let content = {
+              style: ['mt_3'],
+              text: []
+            }
+            content.text.push({text: questionNumber+' '});
+            let terms = strArray[1]?.split('<br><br>')
+            console.log(terms);
+            if (terms?.length > 0) {
+              for (let i = 0; i < terms.length; i++) {
+                content.text.push({text:  this.strip(terms[i].split(':')[0])+': ', bold: true});
+                content.text.push({text:  this.strip(terms[i].split(':')[1]).concat('\n')});
+              }
+            }
+            content.text.push({text:  strArray[0] ? 'Instructions' : '', bold: true});
+            content.text.push({text: strArray[0] ? ' - '+strArray[0] : ''});
+
+
+            // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
+            if (strArray.length)
+              descriptionAtEnd.content.push(content);
+
+          } else {
+            let components = this.strip(field.form.description.text).split(' - ');
+            let content = {
+              style: ['mt_3'],
+              text: [
+                questionNumber,
+                ' ',
+                {text:  components.shift(), bold: true},
+                ' - ',
+                components.join('-')
+              ]
+            }
+            // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
+            descriptionAtEnd.content.push(content);
           }
-          // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
-          descriptionAtEnd.content.push(content);
+
         }
         if (description === 'show')
           docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
@@ -411,7 +451,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   createDocumentDefinition(group: UntypedFormGroup | UntypedFormArray, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
 
-    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022'  || this.model.id === 'm-eosc-sb-2023') {
       docDefinition.content.push(new Content('Definitions of key terms can be found in Appendix A', ['mt_3']));
     }
 
@@ -432,7 +472,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
     }
 
-    if (this.model.name === 'Survey on National Contributions to EOSC 2022') {
+    if (this.model.name === 'Survey on National Contributions to EOSC 2022' || this.model.id === 'm-eosc-sb-2023') {
 
       docDefinition.content.push(new Content('Appendix A', ['title']));
       docDefinition.content.push(...descriptionsAtEnd.content);
@@ -443,9 +483,9 @@ export class SurveyComponent implements OnInit, OnChanges {
           style: ['mt_3'],
           text: ['Visit the ',
             {text: 'EOSC Observatory', link: 'https://eoscobservatory.eosc-portal.eu', color: 'cornflowerblue', decoration: 'underline'},
-            ' to explore the data from the first EOSC Steering Board survey on National Contributions to EOSC 2021 and visit the ',
+            ' to explore the data from the EOSC Steering Board surveys on National Contributions to EOSC and visit the ',
             {text: 'EOSC Observatory Zenodo Community', link: 'https://zenodo.org/communities/eoscobservatory', color: 'cornflowerblue', decoration: 'underline'},
-            ' to access all relevant documents for the surveys and EOSC Observatory.']
+            ' to access all key outputs related to the surveys and EOSC Observatory.']
         }
       ]
       docDefinition.content.push(content);
@@ -482,6 +522,11 @@ export class SurveyComponent implements OnInit, OnChanges {
   strip(html){
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
+  }
+
+  string_between_strings(startStr: string, endStr: any, str: string) {
+    let pos = str.indexOf(startStr) + startStr.length;
+    return str.substring(pos, str.indexOf(endStr, pos));
   }
 
   /** <-- Generate PDF **/
