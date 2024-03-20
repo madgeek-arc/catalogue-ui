@@ -17,8 +17,9 @@ export class ChapterEditComponent implements OnChanges{
   @Input() form: any = null;
   @Input() tabsHeader: string;
   @Input() mandatoryFieldsText: string = null;
-  @Input() readonly : boolean = null;
-  @Input() validate : boolean = null;
+  @Input() editMode: boolean = null;
+  @Input() readonly: boolean = null;
+  @Input() validate: boolean = null;
   @Input() vocabularies: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;
@@ -26,8 +27,6 @@ export class ChapterEditComponent implements OnChanges{
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
   @Output() submit = new EventEmitter();
-
-  editMode = true;
 
   bitset: Tabs = new Tabs;
   errorMessage = '';

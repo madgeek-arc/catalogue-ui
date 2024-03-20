@@ -40,10 +40,10 @@ export class SurveyComponent implements OnInit, OnChanges {
   currentChapter: Section = null;
   chapterForSubmission: Section = null;
   sortedSurveyAnswers: Object = {};
-  editMode: boolean = false;
   bitset: Tabs = new Tabs;
-
   ready: boolean = false;
+
+  editMode: boolean = false;
   readonly: boolean = false;
   freeView: boolean = false;
   validate: boolean = false;
@@ -65,10 +65,12 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.ready = false;
     if (this.payload)
       this.editMode = true;
-    if (this.model) {
+
+    if (changes.model) {
+      this.ready = false;
+
       this.currentChapter = this.model.sections[0];
       this.model.sections = this.model.sections.sort((a, b) => a.order - b.order);
       for (const section of this.model.sections) {
@@ -89,6 +91,7 @@ export class SurveyComponent implements OnInit, OnChanges {
           this.form.addControl(this.model.sections[i].name, this.formControlService.toFormGroup(this.model.sections[i].subSections, true));
         }
       }
+
       if (this.payload?.answer) {
         for (let i = 0; i < this.model.sections.length; i++) {
           if (this.payload.answer[this.model.sections[i].name])
@@ -97,6 +100,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.form.patchValue(this.payload.answer);
         this.form.markAllAsTouched();
       }
+
       if (this.payload?.validated) {
         this.readonly = true;
         this.validate = false;
@@ -109,16 +113,16 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
       this.ready = true;
 
-      if (this.activeUsers?.length > 0) {
-        setTimeout(()=> {
-          let users = [];
-          this.activeUsers.forEach(user => {
-            users.push(' '+user.fullname);
-          });
-          UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
-        }, 0);
-      }
+    }
 
+    if (this.activeUsers?.length > 0) {
+      setTimeout(()=> {
+        let users = [];
+        this.activeUsers.forEach(user => {
+          users.push(' '+user.fullname);
+        });
+        UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
+      }, 0);
     }
   }
 
@@ -155,7 +159,7 @@ export class SurveyComponent implements OnInit, OnChanges {
     this.submit.emit([this.form, this.editMode, this.model.resourceType]);
   }
 
-  onSubmit() { // FIXME
+  onSubmit() { // FIXME, or better yet remove me
     window.scrollTo(0, 0);
     // this.showLoader = true;
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(

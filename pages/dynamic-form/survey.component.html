@@ -58,6 +58,7 @@
                         [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [tabsHeader]="tabsHeader"
                         [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
                         [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
+                        [editMode] = editMode
                         (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)">
       </app-chapter-edit>
     </li>

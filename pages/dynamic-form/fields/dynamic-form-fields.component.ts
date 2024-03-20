@@ -11,7 +11,7 @@ export class DynamicFormFieldsComponent {
   @Input() form: UntypedFormGroup;
   @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: Map<string, object[]> = null;
-  @Input() editMode: any;
+  @Input() editMode: boolean;
   @Input() readonly : boolean = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();

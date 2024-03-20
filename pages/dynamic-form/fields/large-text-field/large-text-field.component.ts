@@ -1,15 +1,20 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {UntypedFormControl, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
-import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { UntypedFormControl, UntypedFormGroup, FormGroupDirective } from "@angular/forms";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { WebsocketService } from "../../../../../app/services/websocket.service";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { BaseFieldComponent } from "../base-field.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { setUser } from "@sentry/angular-ivy";
 
 @Component({
   selector: 'app-large-text-field',
   templateUrl: './large-text-field.component.html'
 })
 
-export class LargeTextFieldComponent implements OnInit {
+export class LargeTextFieldComponent extends BaseFieldComponent implements OnInit {
   @Input() fieldData: Field;
-  @Input() editMode: any;
+  @Input() editMode: boolean;
   @Input() readonly: boolean = null;
   @Input() position?: number = null;
 
@@ -20,8 +25,10 @@ export class LargeTextFieldComponent implements OnInit {
   formControl!: UntypedFormControl;
   form!: UntypedFormGroup;
   hideField: boolean = null;
+  active = false;
 
-  constructor(private rootFormGroup: FormGroupDirective) {
+  constructor(private rootFormGroup: FormGroupDirective, private wsService: WebsocketService) {
+    super();
   }
 
   ngOnInit() {
@@ -31,21 +38,44 @@ export class LargeTextFieldComponent implements OnInit {
       this.form = this.rootFormGroup.control;
     }
     // console.log(this.form);
-
     this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
-    // console.log(this.formControl);
+
+    // Subscribe and emit field value change
+    this.formControl.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      debounceTime(1000),
+      distinctUntilChanged()).subscribe({
+      next: value => {
+        console.log(this.editMode);
+        this.wsService.WsEdit('sa-nQqVpWzP', 'surveyAnswer', this.fieldData.name, value);
+      }
+    })
+
+    this.wsService.msg.subscribe({
+      next: value => {
+        value?.forEach(user => {
+          console.log(user.position);
+          if (this.fieldData.name === user.position)
+            this.active = true;
+        })
+        // console.log(value)
+      }
+    })
 
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
       this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
 
-      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
+      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
         value => {
           this.enableDisableField(value, this.fieldData.form.dependsOn.value);
         },
         error => {console.log(error)}
       );
     }
+  }
+
+  test(value: string) {
   }
 
   /** check fields validity--> **/
@@ -88,5 +118,4 @@ export class LargeTextFieldComponent implements OnInit {
   }
 
 }
-
 

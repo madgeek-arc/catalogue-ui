@@ -17,7 +17,7 @@
               [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
               [maxlength]="fieldData.typeInfo.values ? fieldData.typeInfo.values[0] : null"
               (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-              [ngClass]="{'uk-form-danger': checkFormValidity()}">
+              [ngClass]="{'uk-form-danger': checkFormValidity()}" [ngStyle]="{'border-color': active ? 'violet': ''}">
     </textarea>
     <div class="uk-width-9-10">
       <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values" style="float: right;">
