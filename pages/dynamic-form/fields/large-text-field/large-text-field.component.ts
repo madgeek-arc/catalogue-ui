@@ -55,8 +55,11 @@ export class LargeTextFieldComponent extends BaseFieldComponent implements OnIni
       next: value => {
         value?.forEach(user => {
           console.log(user.position);
-          if (this.fieldData.name === user.position)
+          if (this.fieldData.name === user.position) {
             this.active = true;
+            return;
+          }
+          this.active = false;
         })
         // console.log(value)
       }
