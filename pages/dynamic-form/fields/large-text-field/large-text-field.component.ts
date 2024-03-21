@@ -13,23 +13,11 @@ import { setUser } from "@sentry/angular-ivy";
 })
 
 export class LargeTextFieldComponent extends BaseFieldComponent implements OnInit {
-  @Input() fieldData: Field;
-  @Input() editMode: boolean;
-  @Input() readonly: boolean = null;
-  @Input() position?: number = null;
 
-  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: UntypedFormControl;
-  form!: UntypedFormGroup;
-  hideField: boolean = null;
   active = false;
-
-  constructor(private rootFormGroup: FormGroupDirective, private wsService: WebsocketService) {
-    super();
-  }
 
   ngOnInit() {
     if (this.position !== null) {
@@ -40,30 +28,31 @@ export class LargeTextFieldComponent extends BaseFieldComponent implements OnIni
     // console.log(this.form);
     this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
 
-    // Subscribe and emit field value change
-    this.formControl.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      debounceTime(1000),
-      distinctUntilChanged()).subscribe({
-      next: value => {
-        console.log(this.editMode);
-        this.wsService.WsEdit('sa-nQqVpWzP', 'surveyAnswer', this.fieldData.name, value);
-      }
-    })
 
-    this.wsService.msg.subscribe({
-      next: value => {
-        value?.forEach(user => {
-          console.log(user.position);
-          if (this.fieldData.name === user.position) {
-            this.active = true;
-            return;
-          }
-          this.active = false;
-        })
-        // console.log(value)
-      }
-    })
+    // Subscribe and emit field value change
+    // this.formControl.valueChanges.pipe(
+    //   takeUntilDestroyed(this.destroyRef),
+    //   debounceTime(1000),
+    //   distinctUntilChanged()).subscribe({
+    //   next: value => {
+    //     console.log(this.editMode);
+    //
+    //   }
+    // })
+
+    // this.wsService.msg.subscribe({
+    //   next: value => {
+    //     value?.forEach(user => {
+    //       console.log(user.position);
+    //       if (this.fieldData.name === user.position) {
+    //         this.active = true;
+    //         return;
+    //       }
+    //       this.active = false;
+    //     })
+    //     // console.log(value)
+    //   }
+    // })
 
     if(this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
@@ -76,9 +65,6 @@ export class LargeTextFieldComponent extends BaseFieldComponent implements OnIni
         error => {console.log(error)}
       );
     }
-  }
-
-  test(value: string) {
   }
 
   /** check fields validity--> **/

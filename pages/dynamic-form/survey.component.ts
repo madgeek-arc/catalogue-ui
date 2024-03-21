@@ -1,14 +1,34 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
-import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
-import {FormControlService} from "../../services/form-control.service";
-import {Section, Field, Model, Tabs} from "../../domain/dynamic-form-model";
-import {Columns, Content, DocDefinition, PdfImage, PdfMetadata, PdfTable, TableDefinition} from "../../domain/PDFclasses";
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from "@angular/core";
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
+import { FormControlService } from "../../services/form-control.service";
+import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model";
+import {
+  Columns,
+  Content,
+  DocDefinition,
+  PdfImage,
+  PdfMetadata,
+  PdfTable,
+  TableDefinition
+} from "../../domain/PDFclasses";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import BitSet from "bitset";
 
 import UIkit from "uikit";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 declare var require: any;
 const seedRandom = require('seedrandom');
@@ -20,6 +40,8 @@ const seedRandom = require('seedrandom');
 })
 
 export class SurveyComponent implements OnInit, OnChanges {
+
+  protected destroyRef = inject(DestroyRef);
 
   @Input() payload: any = null; // can't import specific project class in lib file
   @Input() model: Model = null;
@@ -49,6 +71,8 @@ export class SurveyComponent implements OnInit, OnChanges {
   validate: boolean = false;
 
   form: UntypedFormGroup;
+  previousValue: any = {};
+  changedField: string | null = null;
 
   constructor(private formControlService: FormControlService, private fb: UntypedFormBuilder, private router: Router) {
     this.form = this.fb.group({});
@@ -92,6 +116,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         }
       }
 
+      // Patch form
       if (this.payload?.answer) {
         for (let i = 0; i < this.model.sections.length; i++) {
           if (this.payload.answer[this.model.sections[i].name])
@@ -113,6 +138,15 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
       this.ready = true;
 
+      this.form.valueChanges.pipe(
+        takeUntilDestroyed(this.destroyRef),
+        debounceTime(1000),
+        distinctUntilChanged()).subscribe(changes => {
+        this.changedField = this.detectChanges(changes, this.previousValue, '');
+        console.log(this.changedField);
+        this.previousValue = { ...changes };
+      });
+
     }
 
     if (this.activeUsers?.length > 0) {
@@ -124,6 +158,43 @@ export class SurveyComponent implements OnInit, OnChanges {
         UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
       }, 0);
     }
+  }
+
+  detectChanges(currentValue: any, previousValue: any, path: string): string | null {
+    for (const field of Object.keys(currentValue)) {
+      const currentPath = path ? `${path}.${field}` : field;
+
+      if (Array.isArray(currentValue[field]) && Array.isArray(previousValue[field])) {
+        const nestedChanges = this.detectArrayChanges(currentValue[field], previousValue[field], currentPath);
+        if (nestedChanges !== null) {
+          return nestedChanges;
+        }
+      } else if (currentValue[field] instanceof Object && previousValue[field] instanceof Object) {
+        const nestedChanges = this.detectChanges(currentValue[field], previousValue[field], currentPath);
+        if (nestedChanges !== null) {
+          return nestedChanges;
+        }
+      } else if (previousValue[field] !== currentValue[field]) {
+        return currentPath;
+      }
+    }
+    return null;
+  }
+
+  detectArrayChanges(currentArray: any[], previousArray: any[], path: string): string | null {
+    for (let i = 0; i < Math.max(currentArray.length, previousArray.length); i++) {
+      const currentPath = `${path}[${i}]`;
+
+      if (currentArray[i] instanceof Object && previousArray[i] instanceof Object) {
+        const nestedChanges = this.detectChanges(currentArray[i], previousArray[i], currentPath);
+        if (nestedChanges !== null) {
+          return nestedChanges;
+        }
+      } else if (previousArray[i] !== currentArray[i]) {
+        return currentPath;
+      }
+    }
+    return null;
   }
 
   validateForm() {

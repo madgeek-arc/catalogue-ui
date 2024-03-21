@@ -16,7 +16,7 @@
     <textarea [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
               [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
               [maxlength]="fieldData.typeInfo.values ? fieldData.typeInfo.values[0] : null"
-              (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+              (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus(true)" (focusout)="focus(false)"
               [ngClass]="{'uk-form-danger': checkFormValidity()}" [ngStyle]="{'border-color': active ? 'violet': ''}">
     </textarea>
     <div class="uk-width-9-10">
