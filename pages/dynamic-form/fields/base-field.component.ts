@@ -33,12 +33,15 @@ export class BaseFieldComponent {
   }
 
   /** Field focus -------------------------------------------------------------------------------------------------> **/
-  focus(toggle: boolean) {
-    this.wsService.WsEdit('sa-nQqVpWzP', 'surveyAnswer', this.fieldData.name, this.fieldData.name);
+  focus() {
+    console.log('focus');
+    this.wsService.WsEdit( 'surveyAnswer', this.fieldData.name, this.fieldData.name);
   }
 
   focusOut() {
-
+    console.log('focusOut');
+    this.wsService.WsEdit('surveyAnswer');
+    this.wsService.WsRevision('surveyAnswer', this.fieldData.name, this.getPath(this.formControl).join('.'));
   }
   /** <------------------------------------------------------------------------------------------------- Field focus **/
 
