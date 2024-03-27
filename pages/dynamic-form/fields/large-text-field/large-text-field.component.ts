@@ -1,11 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { UntypedFormControl, UntypedFormGroup, FormGroupDirective } from "@angular/forms";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
-import { WebsocketService } from "../../../../../app/services/websocket.service";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { BaseFieldComponent } from "../base-field.component";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { setUser } from "@sentry/angular-ivy";
 
 @Component({
   selector: 'app-large-text-field',

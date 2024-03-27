@@ -1,14 +1,15 @@
 import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
-import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
-
+import { WebsocketService } from "../../../app/services/websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import UIkit from "uikit";
 import BitSet from "bitset";
+import { UserActivity } from "../../../app/domain/userInfo";
 
 declare var require: any;
 const seedRandom = require('seedrandom');
@@ -26,7 +27,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   @Input() payload: any = null; // can't import specific project class in lib file
   @Input() model: Model = null;
   @Input() subType: string = null;
-  @Input() activeUsers: any[] = null;
+  @Input() activeUsers: UserActivity[] = null;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() tabsHeader: string = null;
@@ -55,7 +56,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   changedField: string | null = null;
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
-              private fb: UntypedFormBuilder, private router: Router) {
+              private fb: UntypedFormBuilder, private router: Router, private wsService: WebsocketService) {
     this.form = this.fb.group({});
   }
 
@@ -67,6 +68,37 @@ export class SurveyComponent implements OnInit, OnChanges {
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
     }
+
+    this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+      next => {
+        this.removeClass(this.activeUsers);
+        this.activeUsers = next;
+        this.activeUsers?.forEach( user => {
+          if(user.position) {
+            let sheet = window.document.styleSheets[0];
+
+            let styleExists = false;
+            for (let i = 0; i < sheet.cssRules.length; i++) {
+              if(sheet.cssRules[i] instanceof CSSStyleRule) {
+                if((sheet.cssRules[i] as CSSStyleRule).selectorText === `user-${user.sessionId}`) {
+                  styleExists = true;
+                  break;
+                }
+              }
+            }
+            if (!styleExists)
+              sheet.insertRule(`.user-${user.sessionId} { border-color: ${this.getRandomDarkColor(user.sessionId)} !important}`, sheet.cssRules.length);
+
+            console.log(sheet);
+            // const flipCard = document.getElementById(user.position);
+            // const flipCardElement: HTMLElement = flipCard!;
+            // flipCard.classList.toggle(`user-${user.sessionId}`);
+          }
+        });
+        this.addClass(this.activeUsers);
+
+      }
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -126,7 +158,7 @@ export class SurveyComponent implements OnInit, OnChanges {
         this.changedField = this.detectChanges(changes, this.previousValue, '');
         console.log(this.changedField);
         console.log(this.getControlValue(this.changedField));
-        this.previousValue = { ...changes };
+        this.previousValue = {...changes};
       });
 
     }
@@ -141,6 +173,28 @@ export class SurveyComponent implements OnInit, OnChanges {
       }, 0);
     }
   }
+
+  /** Mark field as active --> **/
+  addClass(users: UserActivity[]) {
+    users?.forEach( user => {
+      if (!user.position)
+        return;
+
+      const htmlElement = document.getElementById(user.position);
+      htmlElement.classList.add(`user-${user.sessionId}`)
+    });
+  }
+
+  removeClass(users: UserActivity[]) {
+    users?.forEach( user => {
+      if (!user.position)
+        return;
+
+      const htmlElement = document.getElementById(user.position);
+      htmlElement.classList.remove(`user-${user.sessionId}`);
+    });
+  }
+  /** <-- Mark field as active **/
 
   /** Find changed field and get value --> **/
   detectChanges(currentValue: any, previousValue: any, path: string): string | null {
