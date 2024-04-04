@@ -11,6 +11,7 @@ import {
 import { Field, Model } from "../domain/dynamic-form-model";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { AbstractControl, FormArray, FormGroup } from "@angular/forms";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -18,7 +19,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export class PdfGenerateService {
 
-  generatePDF(model: Model, payload: any) {
+  generatePDF(model: Model, payload: any, form: FormGroup) {
     let docDefinition: DocDefinition = new DocDefinition();
     docDefinition.content.push(new Content(model.name, ['title']));
     if (model.notice)
@@ -29,12 +30,12 @@ export class PdfGenerateService {
     if (model.name === 'Survey on National Contributions to EOSC 2022' || model.id === 'm-eosc-sb-2023') {
       description = 'end'
     }
-    this.createDocumentDefinition(model, payload, docDefinition, description);
+    this.createDocumentDefinition(model, payload, form, docDefinition, description);
 
     pdfMake.createPdf(docDefinition).download(model.name);
   }
 
-  documentDefinitionRecursion(model: Model, fields: Field[], payload, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
+  documentDefinitionRecursion(model: Model, fields: Field[], payload, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
       if (field.deprecated)
         continue;
@@ -42,8 +43,8 @@ export class PdfGenerateService {
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
       if (field.form.description.text
         && !field.form.description.text.includes('Please add only new use cases as any use cases submitted in the previous survey will be imported here')
-        && !field.form.description.text.includes('For example on curricula for data stewardship')
-      ) {
+        && !field.form.description.text.includes('For example on curricula for data stewardship')) {
+
         if (description === 'end') {
           let questionNumber = null;
           if (field.label.text) {
@@ -104,7 +105,11 @@ export class PdfGenerateService {
         if (description === 'show')
           docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
       }
-      let answerValues = this.findVal(payload?.answer, field.name);
+      // console.log(field.name);
+      let formControl = this.findControlByName(form, field.name);
+      // console.log(formControl);
+      let answerValues = this.findVal(payload, field.name);
+      // console.log(answerValues);
       if (field.typeInfo.type === 'radio') {
         let values = field.typeInfo.values
         // if (field.kind === 'conceal-reveal')
@@ -131,12 +136,16 @@ export class PdfGenerateService {
         content.columns.push(new Content(field.label.text,['ms_1']));
         docDefinition.content.push(content);
       } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
-        if (answerValues?.[0]) {
+        if (answerValues?.[0] && answerValues?.[0]?.trim() !== '') {
           docDefinition.content.push(new PdfTable(new TableDefinition([[this.strip(answerValues[0])]], ['*']), ['mt_1']));
         } else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [48]), ['mt_1']));
         }
-      } else if (field.typeInfo.type !== 'composite') {
+      } else if (answerValues && field.typeInfo.type !== 'composite') {
+
+        if (answerValues?.[0] instanceof Array && answerValues[0].length === 1 && answerValues[0]?.[0] === null)
+          answerValues[0] = null;
+
         if (answerValues?.[0]) {
           docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
         } else if (field.form.placeholder) {
@@ -148,12 +157,22 @@ export class PdfGenerateService {
         docDefinition.content.push(new PdfTable(new TableDefinition([[{text: field.form.description, color: 'gray'}]],['*']), ['mt_1']));
         continue;
       }
-      if (field.subFields)
-        this.documentDefinitionRecursion(model, field.subFields, payload, docDefinition, description, descriptionAtEnd);
+      if (field.subFields) {
+        if (field.typeInfo.type === 'composite' && field.typeInfo.multiplicity) {
+          if (formControl.value instanceof Array) {
+            for (let i = 0; i < formControl.value.length; i++) {
+              // console.log(formControl.value[i]);
+              this.documentDefinitionRecursion(model, field.subFields, {...formControl.value[i]}, form, docDefinition, description, descriptionAtEnd);
+            }
+          }
+
+        } else
+          this.documentDefinitionRecursion(model, field.subFields, payload, form, docDefinition, description, descriptionAtEnd);
+      }
     }
   }
 
-  createDocumentDefinition(model: Model, payload, docDefinition: DocDefinition, description: string) {
+  createDocumentDefinition(model: Model, payload, form: FormGroup, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
 
     if (model.name === 'Survey on National Contributions to EOSC 2022'  || model.id === 'm-eosc-sb-2023') {
@@ -172,7 +191,7 @@ export class PdfGenerateService {
           docDefinition.content.push(new Content(subSection.name, ['tabHeader']));
         }
         if (subSection.fields)
-          this.documentDefinitionRecursion(model, subSection.fields, payload, docDefinition, description, descriptionsAtEnd);
+          this.documentDefinitionRecursion(model, subSection.fields, payload, form, docDefinition, description, descriptionsAtEnd);
       }
 
     }
@@ -200,19 +219,41 @@ export class PdfGenerateService {
 
   }
 
-  findVal(obj, key) {
+  private findControlByName(control: AbstractControl, name: string): AbstractControl | null {
+    if (control.get(name)) {
+      return control.get(name);
+    }
+
+    for (const key in control['controls']) {
+      const nestedControl = control.get(key);
+      if (nestedControl instanceof FormGroup || nestedControl instanceof FormArray) {
+        const foundControl = this.findControlByName(nestedControl, name);
+        if (foundControl) {
+          return foundControl;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  findVal(obj: any, key: string) {
     if (!obj)
       return null;
+
+    // console.log(obj);
     let seen = new Set, active = [obj];
     while (active.length) {
       let new_active = [], found = [];
-      for (let i=0; i<active.length; i++) {
+      for (let i=0; i < active.length; i++) {
         Object.keys(active[i]).forEach(function(k){
           let x = active[i][k];
           if (k === key) {
-            found.push(x);
-          } else if (x && typeof x === "object" &&
-            !seen.has(x)) {
+            if (x?.hasOwnProperty('text'))
+              found.push(x.text)
+            else
+              found.push(x);
+          } else if (x && typeof x === "object" && !seen.has(x)) {
             seen.add(x);
             new_active.push(x);
           }
@@ -224,7 +265,7 @@ export class PdfGenerateService {
     return null;
   }
 
-  strip(html){
+  strip(html: string){
     let doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   }

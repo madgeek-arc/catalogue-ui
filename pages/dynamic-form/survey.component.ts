@@ -351,6 +351,7 @@ export class SurveyComponent implements OnInit, OnChanges {
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
+        console.log(value);
         if (value?.length > 1) {
           this.pushToFormArray(key, value.length, arrayIndex);
         }
@@ -368,6 +369,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
+    console.log(name)
     while (this.getFormControl(this.form, name, arrayIndex).length < length) {
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
@@ -440,7 +442,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   /** Generate PDF --> **/
   generatePDF() {
-    this.pdfService.generatePDF(this.model, this.payload);
+    this.pdfService.generatePDF(this.model, this.payload?.answer, this.form);
   }
   /** <-- Generate PDF **/
 
