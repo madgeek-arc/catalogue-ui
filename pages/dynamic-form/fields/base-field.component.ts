@@ -34,14 +34,15 @@ export class BaseFieldComponent {
 
   /** Field focus -------------------------------------------------------------------------------------------------> **/
   focus() {
-    console.log('focus');
-    this.wsService.WsEdit( 'surveyAnswer', this.fieldData.name, this.fieldData.name);
+    // console.log('focus In');
+    // this.wsService.WsFocus( 'surveyAnswer', this.fieldData.name, this.fieldData.name);
   }
 
   focusOut() {
-    console.log('focusOut');
-    this.wsService.WsEdit('surveyAnswer');
-    this.wsService.WsRevision('surveyAnswer', this.fieldData.name, this.getPath(this.formControl).join('.'));
+    // console.log('focus Out');
+    // this.wsService.WsFocus('surveyAnswer', null, null);
+    // console.log(this.getPath(this.formControl).join('.'));
+    // this.wsService.WsRevision('surveyAnswer', this.fieldData.name, this.getPath(this.formControl).join('.'));
   }
   /** <------------------------------------------------------------------------------------------------- Field focus **/
 

@@ -69,36 +69,36 @@ export class SurveyComponent implements OnInit, OnChanges {
       this.validate = true;
     }
 
-    this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-      next => {
-        this.removeClass(this.activeUsers);
-        this.activeUsers = next;
-        this.activeUsers?.forEach( user => {
-          if(user.position) {
-            let sheet = window.document.styleSheets[0];
-
-            let styleExists = false;
-            for (let i = 0; i < sheet.cssRules.length; i++) {
-              if(sheet.cssRules[i] instanceof CSSStyleRule) {
-                if((sheet.cssRules[i] as CSSStyleRule).selectorText === `user-${user.sessionId}`) {
-                  styleExists = true;
-                  break;
-                }
-              }
-            }
-            if (!styleExists)
-              sheet.insertRule(`.user-${user.sessionId} { border-color: ${this.getRandomDarkColor(user.sessionId)} !important}`, sheet.cssRules.length);
-
-            console.log(sheet);
-            // const flipCard = document.getElementById(user.position);
-            // const flipCardElement: HTMLElement = flipCard!;
-            // flipCard.classList.toggle(`user-${user.sessionId}`);
-          }
-        });
-        this.addClass(this.activeUsers);
-
-      }
-    );
+    // this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+    //   next => {
+    //     this.removeClass(this.activeUsers);
+    //     this.activeUsers = next;
+    //     this.activeUsers?.forEach( user => {
+    //       if(user.position) {
+    //         let sheet = window.document.styleSheets[0];
+    //
+    //         let styleExists = false;
+    //         for (let i = 0; i < sheet.cssRules.length; i++) {
+    //           if(sheet.cssRules[i] instanceof CSSStyleRule) {
+    //             if((sheet.cssRules[i] as CSSStyleRule).selectorText === `user-${user.sessionId}`) {
+    //               styleExists = true;
+    //               break;
+    //             }
+    //           }
+    //         }
+    //         if (!styleExists)
+    //           sheet.insertRule(`.user-${user.sessionId} { border-color: ${this.getRandomDarkColor(user.sessionId)} !important}`, sheet.cssRules.length);
+    //
+    //         console.log(sheet);
+    //         // const flipCard = document.getElementById(user.position);
+    //         // const flipCardElement: HTMLElement = flipCard!;
+    //         // flipCard.classList.toggle(`user-${user.sessionId}`);
+    //       }
+    //     });
+    //     this.addClass(this.activeUsers);
+    //
+    //   }
+    // );
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -151,15 +151,15 @@ export class SurveyComponent implements OnInit, OnChanges {
       }
       this.ready = true;
 
-      this.form.valueChanges.pipe(
-        takeUntilDestroyed(this.destroyRef),
-        debounceTime(1000),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(changes => {
-        this.changedField = this.detectChanges(changes, this.previousValue, '');
-        console.log(this.changedField);
-        console.log(this.getControlValue(this.changedField));
-        this.previousValue = {...changes};
-      });
+      // this.form.valueChanges.pipe(
+      //   takeUntilDestroyed(this.destroyRef),
+      //   debounceTime(1000),
+      //   distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(changes => {
+      //   this.changedField = this.detectChanges(changes, this.previousValue, '');
+      //   console.log(this.changedField);
+      //   console.log(this.getControlValue(this.changedField));
+      //   this.previousValue = {...changes};
+      // });
 
     }
 
@@ -181,7 +181,10 @@ export class SurveyComponent implements OnInit, OnChanges {
         return;
 
       const htmlElement = document.getElementById(user.position);
-      htmlElement.classList.add(`user-${user.sessionId}`)
+      console.log(user);
+      console.log(htmlElement);
+      if (htmlElement)
+        htmlElement.classList.add(`user-${user.sessionId}`)
     });
   }
 
@@ -191,7 +194,8 @@ export class SurveyComponent implements OnInit, OnChanges {
         return;
 
       const htmlElement = document.getElementById(user.position);
-      htmlElement.classList.remove(`user-${user.sessionId}`);
+      if (htmlElement)
+        htmlElement.classList.remove(`user-${user.sessionId}`);
     });
   }
   /** <-- Mark field as active **/
@@ -351,7 +355,7 @@ export class SurveyComponent implements OnInit, OnChanges {
       if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
-        console.log(value);
+        // console.log(value);
         if (value?.length > 1) {
           this.pushToFormArray(key, value.length, arrayIndex);
         }
@@ -369,7 +373,7 @@ export class SurveyComponent implements OnInit, OnChanges {
 
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
-    console.log(name)
+    // console.log(name)
     while (this.getFormControl(this.form, name, arrayIndex).length < length) {
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
