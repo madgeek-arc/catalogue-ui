@@ -106,7 +106,7 @@ export class PdfGenerateService {
           docDefinition.content.push(new Content(field.form.description.text, ['mt_3']));
       }
       // console.log(field.name);
-      let formControl = this.findControlByName(form, field.name);
+      let formControlValue = this.findControlByName(form, field.name).value;
       // console.log(formControl);
       let answerValues = this.findVal(payload, field.name);
       // console.log(answerValues);
@@ -159,10 +159,11 @@ export class PdfGenerateService {
       }
       if (field.subFields) {
         if (field.typeInfo.type === 'composite' && field.typeInfo.multiplicity) {
-          if (formControl.value instanceof Array) {
-            for (let i = 0; i < formControl.value.length; i++) {
+          formControlValue = {...formControlValue}
+          if (formControlValue instanceof Array) {
+            for (let i = 0; i < formControlValue.length; i++) {
               // console.log(formControl.value[i]);
-              this.documentDefinitionRecursion(model, field.subFields, {...formControl.value[i]}, form, docDefinition, description, descriptionAtEnd);
+              this.documentDefinitionRecursion(model, field.subFields, formControlValue[i], form, docDefinition, description, descriptionAtEnd);
             }
           }
 

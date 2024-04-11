@@ -5,11 +5,9 @@ import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { UserActivity } from "../../../app/domain/userInfo";
 import UIkit from "uikit";
 import BitSet from "bitset";
-import { UserActivity } from "../../../app/domain/userInfo";
 
 declare var require: any;
 const seedRandom = require('seedrandom');
@@ -61,13 +59,6 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.router.url.includes('/view')) {
-      this.readonly = true;
-    } else if (this.router.url.includes('/freeView')) {
-      this.freeView = true;
-    } else if (this.router.url.includes('/validate')) {
-      this.validate = true;
-    }
 
     // this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
     //   next => {
@@ -102,6 +93,14 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (this.router.url.includes('/view')) {
+      this.readonly = true;
+    } else if (this.router.url.includes('/freeView')) {
+      this.freeView = true;
+    } else if (this.router.url.includes('/validate')) {
+      this.validate = true;
+    }
+
     if (this.payload)
       this.editMode = true;
 
@@ -145,10 +144,6 @@ export class SurveyComponent implements OnInit, OnChanges {
       } else if (this.validate) {
         UIkit.modal('#validation-modal').show();
       }
-      if (this.readonly) {
-        this.form.disable();
-        this.form.markAsUntouched();
-      }
       this.ready = true;
 
       // this.form.valueChanges.pipe(
@@ -161,6 +156,11 @@ export class SurveyComponent implements OnInit, OnChanges {
       //   this.previousValue = {...changes};
       // });
 
+    }
+
+    if (this.readonly) {
+      this.form.disable();
+      this.form.markAsUntouched();
     }
 
     if (this.activeUsers?.length > 0) {
