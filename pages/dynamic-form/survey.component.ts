@@ -1,4 +1,15 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from "@angular/core";
 import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
@@ -18,7 +29,7 @@ const seedRandom = require('seedrandom');
   providers: [FormControlService, PdfGenerateService]
 })
 
-export class SurveyComponent implements OnInit, OnChanges {
+export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   protected destroyRef = inject(DestroyRef);
 
@@ -43,6 +54,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   sortedSurveyAnswers: Object = {};
   bitset: Tabs = new Tabs;
   ready: boolean = false;
+  timeoutId: number = null;
 
   editMode: boolean = false;
   readonly: boolean = false;
@@ -172,6 +184,10 @@ export class SurveyComponent implements OnInit, OnChanges {
         UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
       }, 0);
     }
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.timeoutId);
   }
 
   /** Mark field as active --> **/
@@ -459,7 +475,7 @@ export class SurveyComponent implements OnInit, OnChanges {
   }
 
   closeSuccessAlert() {
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       UIkit.alert('#successAlert').close();
     }, 4000);
     setTimeout(() => {
