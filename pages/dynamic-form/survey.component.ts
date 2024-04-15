@@ -12,6 +12,7 @@ import {
 } from "@angular/core";
 import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
@@ -72,10 +73,10 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
 
-    // this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-    //   next => {
+    this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+      next => {
     //     this.removeClass(this.activeUsers);
-    //     this.activeUsers = next;
+        this.activeUsers = next;
     //     this.activeUsers?.forEach( user => {
     //       if(user.position) {
     //         let sheet = window.document.styleSheets[0];
@@ -100,8 +101,8 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     //     });
     //     this.addClass(this.activeUsers);
     //
-    //   }
-    // );
+      }
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
