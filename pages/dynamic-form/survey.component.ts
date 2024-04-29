@@ -149,6 +149,13 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         }
         this.form.patchValue(this.payload.answer);
         this.form.markAllAsTouched();
+
+        if (this.readonly) { // Used timeout because otherwise inner form parts weren't disabled
+          setTimeout(() => {
+            this.form.disable();
+            this.form.markAsUntouched();
+          }, 2000);
+        }
       }
 
       if (this.payload?.validated) {
@@ -169,11 +176,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       //   this.previousValue = {...changes};
       // });
 
-    }
-
-    if (this.readonly) {
-      this.form.disable();
-      this.form.markAsUntouched();
     }
 
     if (this.activeUsers?.length > 0) {
