@@ -15,7 +15,7 @@ import { DpDatePickerModule } from "ng2-date-picker";
 import { RadioGridFieldComponent } from "./fields/radio-grid-field/radio-grid-field.component";
 import { SurveyComponent } from "./survey.component";
 import { NumberFieldComponent } from "./fields/number-field/number-field.component";
-import { ReusableComponentsModule } from "../../shared/reusable-components/reusable-components.module";
+import { CatalogueUiReusableComponentsModule } from "../../shared/reusable-components/catalogue-ui-reusable-components.module";
 import { RichTextFieldComponent } from "./fields/rich-text-field/rich-text-field.component";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { ChooseOneComponent } from "./fields/choose-one-composite/choose-one.component";
@@ -48,7 +48,7 @@ import { BaseFieldComponent } from "./fields/base-field.component";
     ReactiveFormsModule,
     NgSelectModule,
     DpDatePickerModule,
-    ReusableComponentsModule,
+    CatalogueUiReusableComponentsModule,
     CKEditorModule,
     CatalogueUiSharedModule,
   ],

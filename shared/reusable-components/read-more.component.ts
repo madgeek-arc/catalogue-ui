@@ -1,16 +1,7 @@
 /**
  * Created by stefania on 4/6/17.
  */
-import {
-  AfterContentInit,
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ViewChild
-} from "@angular/core";
+import { AfterContentInit, AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core";
 
 @Component({
   selector: "read-more",
@@ -32,7 +23,7 @@ export class ReadMoreComponent implements AfterContentInit {
   //maximum height of the container
   @Input("maxHeight") maxHeight: number = 100;
   @ViewChild("readMoreDiv", {static: true}) readMoreDiv: ElementRef;
-  //set these to false to get the height of the expended container
+  //set these to false in order to get the height of the expended container
   public isCollapsed: boolean = false;
   public isCollapsable: boolean = false;
 
@@ -75,8 +66,7 @@ export class ReadMoreTextComponent extends ReadMoreComponent implements OnChange
     this.ngAfterContentInit();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.ngAfterContentInit();
   }
 }
-

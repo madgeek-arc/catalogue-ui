@@ -19,5 +19,5 @@ import {HttpClientJsonpModule, HttpClientModule} from "@angular/common/http";
     ],
     providers: []
 })
-export class ReusableComponentsModule {
+export class CatalogueUiReusableComponentsModule {
 }
