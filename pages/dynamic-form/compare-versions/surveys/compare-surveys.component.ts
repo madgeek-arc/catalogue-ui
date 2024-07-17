@@ -65,10 +65,10 @@ export class CompareSurveysComponent implements OnChanges{
         this.prepareForm(form, payload[this.model.sections[i].name], this.model.sections[i].subSections);
     }
     form.patchValue(payload);
-    // setTimeout(() => {
+    setTimeout(() => {
       form.disable();
       form.markAsUntouched();
-    // }, 0);
+    }, 2000);
   }
 
   getFormGroup(form: UntypedFormGroup, sectionIndex: number): UntypedFormGroup {

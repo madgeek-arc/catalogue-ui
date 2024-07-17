@@ -20,11 +20,12 @@
   <div *ngIf="fieldData.kind !== 'external'">
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
-    <div uk-sortable="handle: .uk-sortable-handle" (moved)="movedElement($event)">
-      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" class="uk-width-expand uk-grid">
+    <div appSortable (positionChanged)="onPositionChanged($event)" id="sortable-container">
+      <div *ngFor="let control of fieldAsFormArray().controls; let i=index" id="{{i}}" [attr.data-index]="i"
+           class="uk-width-expand uk-grid">
         <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
              [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
-          <div *ngIf="fieldAsFormArray().length > 1" class="uk-flex uk-flex-right">
+          <div *ngIf="fieldAsFormArray().length > 1 && !readonly" class="uk-flex uk-flex-right">
             <span class="uk-sortable-handle uk-text-center" uk-icon="icon: move"></span>
           </div>
           <div *ngFor="let control of fieldData?.subFields; let j=index">
@@ -54,13 +55,15 @@
                         control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
                         control.typeInfo.type === 'double'">
                 <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                            (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
+                                            [editMode]="editMode" [readonly]="readonly"
+                                            (handleBitSets)="handleBitsetOfChildren($event)"
                                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-string-url-email-field>
               </div>
               <div *ngIf="control.typeInfo.type === 'number'">
                 <app-number-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
+                                  [editMode]="editMode" [readonly]="readonly"
+                                  (handleBitSets)="handleBitsetOfChildren($event)"
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-number-field>
               </div>
@@ -72,6 +75,7 @@
               </div>
               <div *ngIf="control.typeInfo.type === 'largeText'">
                 <app-large-text-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                                      [readonly]="readonly"
                                       (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-large-text-field>
@@ -83,7 +87,7 @@
                 </app-radio-button-field>
               </div>
               <div *ngIf="control.typeInfo.type === 'richText'" class="uk-form-controls">
-                <app-rich-text-field [fieldData]="control" [position]="i" [editMode]="editMode"
+                <app-rich-text-field [fieldData]="control" [position]="i" [editMode]="editMode" [readonly]="readonly"
                                      (hasChanges)="unsavedChangesPrompt()"
                                      (handleBitSets)="handleBitsetOfChildren($event)"
                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -104,7 +108,8 @@
             </div>
           </div>
         </div>
-        <div *ngIf="fieldAsFormArray().length > 1" class="uk-width-expand uk-padding-remove uk-margin-small-top uk-grid uk-child-width-1-2">
+        <div *ngIf="fieldAsFormArray().length > 1 && !readonly"
+             class="uk-width-expand uk-padding-remove uk-margin-small-top uk-grid uk-child-width-1-2">
           <div class="">
             <div>
               <a (click)="move(i-1, i)"><span class="material-icons">north</span></a>
@@ -122,7 +127,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="form.enabled" class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
+    <div *ngIf="!readonly" class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
       <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
         <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
       </a>
@@ -135,8 +140,8 @@
         <div class="">
           <div *ngIf="control.typeInfo.type === 'composite'">
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                 [editMode]="editMode" (handleBitSets)="handleBitsetOfChildren($event)"
-                                 (hasChanges)="unsavedChangesPrompt()"
+                                 [editMode]="editMode" [readonly]="readonly"
+                                 (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-composite-field>
           </div>
@@ -160,14 +165,16 @@
           <div *ngIf="control.typeInfo.type === 'string' || control.typeInfo.type === 'url' ||
                     control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
                     control.typeInfo.type === 'double'">
-            <app-string-url-email-field [fieldData]="control" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
+            <app-string-url-email-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                        (hasChanges)="unsavedChangesPrompt()"
                                         (handleBitSets)="handleBitsetOfChildren($event)"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-string-url-email-field>
           </div>
 
           <div *ngIf="control.typeInfo.type === 'number'">
-            <app-number-field [fieldData]="control" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
+            <app-number-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                              (hasChanges)="unsavedChangesPrompt()"
                               (handleBitSets)="handleBitsetOfChildren($event)"
                               (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-number-field>
@@ -188,9 +195,10 @@
           </div>
 
           <div *ngIf="control.typeInfo.type === 'richText'" class="uk-form-controls">
-            <app-rich-text-field [fieldData]="control" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
-                                  (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            <app-rich-text-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                 (hasChanges)="unsavedChangesPrompt()"
+                                 (handleBitSets)="handleBitsetOfChildren($event)"
+                                 (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-rich-text-field>
           </div>
 
@@ -224,4 +232,4 @@
   </div>
 
 </form>
-<!--<pre>{{fieldData | json}}</pre>-->
+<!--<pre>{{ form.value | json }}</pre>-->

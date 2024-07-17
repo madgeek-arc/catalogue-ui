@@ -1,7 +1,9 @@
 import {
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   EventEmitter,
+  HostListener,
   inject,
   Input,
   OnChanges,
@@ -13,11 +15,13 @@ import {
 import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
 import { UserActivity } from "../../../app/domain/userInfo";
+import { cloneDeep, isEqual } from "lodash";
 import UIkit from "uikit";
 import BitSet from "bitset";
 
@@ -62,47 +66,129 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   freeView: boolean = false;
   validate: boolean = false;
 
-  form: UntypedFormGroup;
+  form = this.fb.group({});
   previousValue: any = {};
-  changedField: string | null = null;
+  changedField: string[] = [];
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
-              private fb: UntypedFormBuilder, private router: Router, private wsService: WebsocketService) {
-    this.form = this.fb.group({});
+              private fb: UntypedFormBuilder, private router: Router, private wsService: WebsocketService,
+              private cd: ChangeDetectorRef) {
+  }
+
+  @HostListener('document:focus', ['$event'])
+  onFocus(event: FocusEvent): void {
+    // console.log("Focus");
+  }
+
+  @HostListener('window:blur', ['$event'])
+  onBlur(event: FocusEvent): void {
+    // console.log('Blur');
   }
 
   ngOnInit() {
 
-    this.wsService.msg.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+    this.wsService.activeUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
       next => {
-    //     this.removeClass(this.activeUsers);
+        this.removeClass(this.activeUsers);
         this.activeUsers = next;
-    //     this.activeUsers?.forEach( user => {
-    //       if(user.position) {
-    //         let sheet = window.document.styleSheets[0];
-    //
-    //         let styleExists = false;
-    //         for (let i = 0; i < sheet.cssRules.length; i++) {
-    //           if(sheet.cssRules[i] instanceof CSSStyleRule) {
-    //             if((sheet.cssRules[i] as CSSStyleRule).selectorText === `user-${user.sessionId}`) {
-    //               styleExists = true;
-    //               break;
-    //             }
-    //           }
-    //         }
-    //         if (!styleExists)
-    //           sheet.insertRule(`.user-${user.sessionId} { border-color: ${this.getRandomDarkColor(user.sessionId)} !important}`, sheet.cssRules.length);
-    //
-    //         console.log(sheet);
-    //         // const flipCard = document.getElementById(user.position);
-    //         // const flipCardElement: HTMLElement = flipCard!;
-    //         // flipCard.classList.toggle(`user-${user.sessionId}`);
-    //       }
-    //     });
-    //     this.addClass(this.activeUsers);
-    //
+        this.activeUsers?.forEach( user => {
+          user.color = this.getRandomDarkColor(user.sessionId);
+          if(user.position) {
+            let sheet = window.document.styleSheets[0];
+
+            let styleExists = false;
+            for (let i = 0; i < sheet.cssRules.length; i++) {
+              if(sheet.cssRules[i] instanceof CSSStyleRule) {
+                if((sheet.cssRules[i] as CSSStyleRule).selectorText === `.user-${user.sessionId}`) {
+                  styleExists = true;
+                  break;
+                }
+              }
+            }
+            if (!styleExists)
+              sheet.insertRule(`.user-${user.sessionId} { border-color: ${this.getRandomDarkColor(user.sessionId)} !important}`, sheet.cssRules.length);
+
+            // console.log(sheet);
+          }
+        });
+        this.addClass(this.activeUsers);
       }
     );
+
+    this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: value => {
+        // console.log(value);
+        // console.log('User id: ' + this.wsService.userId);
+        // console.log('Message id: ' + value.sessionId);
+        if (value.sessionId === this.wsService.userId) { // Action made by me, ignore
+          console.log('It is I');
+          this.previousValue = cloneDeep(this.form.value);
+          return;
+        }
+        let ctrl = this.getControl(value.field);
+        let path = value.field.split('.');
+        if (value.action.type === 'DELETE') { // Remove at position
+          const position = path.pop().split('[')[1].split(']')[0];
+          if (!ctrl)
+            return;
+          console.log('Remove at position ' + position);
+          // console.log(ctrl.parent as FormArray);
+          (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
+          this.previousValue = cloneDeep(this.form.value);
+          return;
+        }
+        if (value.action.type === 'ADD') { // Push element
+          const position = path[path.length-1].split('[')[1].split(']')[0];
+          if ((position.match(/^-?\d+$/)).length === 1) {
+            console.log('add element at position ' + position);
+            let field = this.getModelData(this.model.sections, path[path.length - 2]);
+            path.pop();
+            ctrl = this.getControl(path.join('.'));
+            (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+            this.previousValue = cloneDeep(this.form.value);
+          }
+          return;
+        }
+        if (value.action.type === 'MOVE') { // Move element
+          const position = path.pop().split('[')[1].split(']')[0];
+          if (!ctrl)
+            return;
+          // console.log(ctrl.parent as FormArray);
+          const movedCtrl = (ctrl.parent as FormArray).at(+position);
+
+          console.log('Remove at position ' + position);
+          (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
+          console.log('Insert at position ' + +value.action.index);
+          (ctrl.parent as FormArray).insert(+value.action.index, movedCtrl, {emitEvent: false});
+          this.previousValue = cloneDeep(this.form.value);
+          return;
+        }
+        if (ctrl) {
+          console.log('Setting value from websocket change.');
+          // console.log(ctrl);
+          if (typeof value.value === 'object' && value.value !== null) {
+            console.log('value is object', value.value);
+            // handle object creation
+            return;
+          }
+          ctrl.setValue(value.value, {emitEvent: true});
+          this.previousValue = cloneDeep(this.form.value);
+        } else {
+          console.log('This case is redundant, this message should not be seen')
+          // console.log(path[path.length-1].split('[')[1].split(']')[0].match(/^-?\d+$/));
+          const position = path[path.length-1].split('[')[1].split(']')[0];
+          // console.log(position.match(/^-?\d+$*/));
+          if ((position.match(/^-?\d+$/)).length === 1) {
+            console.log('add element at position ' + position);
+            let field = this.getModelData(this.model.sections, path[path.length-2]);
+            path.pop();
+            ctrl = this.getControl(path.join('.'));
+            (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+            this.previousValue = cloneDeep(this.form.value);
+          }
+        }
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -114,8 +200,9 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.validate = true;
     }
 
-    if (this.payload)
+    if (this.payload && !(this.readonly || this.freeView)) {
       this.editMode = true;
+    }
 
     if (changes.model) {
       this.ready = false;
@@ -147,14 +234,44 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
           if (this.payload.answer[this.model.sections[i].name])
             this.prepareForm(this.payload.answer[this.model.sections[i].name], this.model.sections[i].subSections);
         }
-        this.form.patchValue(this.payload.answer);
+        this.form.patchValue(this.payload.answer, {onlySelf: false, emitEvent: false});
+        this.previousValue = cloneDeep(this.form.value);
         this.form.markAllAsTouched();
-
-        if (this.readonly) { // Used timeout because otherwise inner form parts weren't disabled
+        this.cd.detectChanges();
+        if (this.readonly) {
           setTimeout(() => {
             this.form.disable();
             this.form.markAsUntouched();
           }, 2000);
+        }
+
+        if (this.editMode) {
+          this.form.valueChanges.pipe(
+            takeUntilDestroyed(this.destroyRef),
+            // skip(1), // skip patch value change
+            debounceTime(1000),
+            distinctUntilChanged((a, b) => isEqual(a, b))
+          ).subscribe(changes => {
+            this.changedField = this.detectChanges(changes, this.previousValue, '');
+            // this.changedField.reverse();
+            this.changedField.forEach( change => {
+              console.log(change);
+              // console.log(this.getControl(change)?.value);
+              let value = this.getControl(change)?.value;
+              if (value === undefined) {
+                console.log('This message should not be displayed -> check #r3moveField!');
+                console.log((this.getControl(change)?.value === undefined));
+                value = '#r3moveField!'
+              }
+              this.wsService.WsEdit({field: change, value: value});
+            });
+            // if (this.changedField) {
+            //   console.log(this.changedField);
+            //   // console.log(this.getControl(this.changedField)?.value);
+            //   this.wsService.WsEdit({field: this.changedField, value: this.getControl(this.changedField)?.value})
+            // }
+            this.previousValue = cloneDeep(changes);
+          });
         }
       }
 
@@ -165,16 +282,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         UIkit.modal('#validation-modal').show();
       }
       this.ready = true;
-
-      // this.form.valueChanges.pipe(
-      //   takeUntilDestroyed(this.destroyRef),
-      //   debounceTime(1000),
-      //   distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))).subscribe(changes => {
-      //   this.changedField = this.detectChanges(changes, this.previousValue, '');
-      //   console.log(this.changedField);
-      //   console.log(this.getControlValue(this.changedField));
-      //   this.previousValue = {...changes};
-      // });
 
     }
 
@@ -200,8 +307,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         return;
 
       const htmlElement = document.getElementById(user.position);
-      console.log(user);
-      console.log(htmlElement);
       if (htmlElement)
         htmlElement.classList.add(`user-${user.sessionId}`)
     });
@@ -220,44 +325,37 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   /** <-- Mark field as active **/
 
   /** Find changed field and get value --> **/
-  detectChanges(currentValue: any, previousValue: any, path: string): string | null {
+  detectChanges(currentValue: any, previousValue: any, path: string): string[] {
+    const changedFields: string[] = [];
     for (const field of Object.keys(currentValue)) {
       const currentPath = path ? `${path}.${field}` : field;
 
       if (Array.isArray(currentValue[field]) && Array.isArray(previousValue[field])) {
-        const nestedChanges = this.detectArrayChanges(currentValue[field], previousValue[field], currentPath);
-        if (nestedChanges !== null) {
-          return nestedChanges;
-        }
+        changedFields.push(...this.detectArrayChanges(currentValue[field], previousValue[field], currentPath));
       } else if (currentValue[field] instanceof Object && previousValue[field] instanceof Object) {
-        const nestedChanges = this.detectChanges(currentValue[field], previousValue[field], currentPath);
-        if (nestedChanges !== null) {
-          return nestedChanges;
-        }
+        changedFields.push(...this.detectChanges(currentValue[field], previousValue[field], currentPath));
       } else if (previousValue[field] !== currentValue[field]) {
-        return currentPath;
+        changedFields.push(currentPath);
       }
     }
-    return null;
+    return changedFields;
   }
 
-  detectArrayChanges(currentArray: any[], previousArray: any[], path: string): string | null {
+  detectArrayChanges(currentArray: any[], previousArray: any[], path: string): string[] {
+    const changedFields: string[] = [];
     for (let i = 0; i < Math.max(currentArray.length, previousArray.length); i++) {
       const currentPath = `${path}.[${i}]`;
 
       if (currentArray[i] instanceof Object && previousArray[i] instanceof Object) {
-        const nestedChanges = this.detectChanges(currentArray[i], previousArray[i], currentPath);
-        if (nestedChanges !== null) {
-          return nestedChanges;
-        }
+        changedFields.push(...this.detectChanges(currentArray[i], previousArray[i], currentPath));
       } else if (previousArray[i] !== currentArray[i]) {
-        return currentPath;
+        changedFields.push(currentPath);
       }
     }
-    return null;
+    return changedFields;
   }
 
-  getControlValue(path: string): any {
+  getControl(path: string): AbstractControl | null {
     const segments = path.split('.');
     let control: AbstractControl | null = this.form;
     for (const segment of segments) {
@@ -270,7 +368,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         break;
       }
     }
-    return control ? control.value : null;
+    return control ? control : null;
   }
   /** <-- Find changed field and get value **/
 
@@ -518,11 +616,11 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   getRandomDarkColor(sessionId: string) { // (use for background with white/light font color)
     const rng = seedRandom(sessionId);
-    const h = Math.floor(rng() * 360),
-      s = Math.floor(rng() * 100) + '%',
-      // max value of l is 100, but set it to 55 in order to generate dark colors
-      l = Math.floor(rng() * 55) + '%';
-
+    const h = Math.floor(rng() * 1000 % 361),
+      s = Math.floor(rng() * 80 + 20) + '%', // set s above 20 to avoid similar grayish tones
+      // max value of l is 100, but limit it from 15 to 70 in order to generate darker colors
+      l = Math.floor(rng() * 55 + 15) + '%';
+    // console.log(`h= ${h}, s= ${s}, l= ${l}`);
     return `hsl(${h},${s},${l})`;
   };
 

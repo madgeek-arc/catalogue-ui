@@ -1,24 +1,26 @@
 <div *ngIf="model" class="uk-grid">
   <div class="uk-width-1-1 uk-flex uk-flex-middle uk-flex-right">
-    <div *ngIf="activeUsers === null; else users" class="uk-margin-large-right">
-      <div uk-spinner></div>
-    </div>
-    <ng-template #users id="concurrentEdit">
-      <div class="uk-margin-medium-right">
-        <a *ngFor="let user of activeUsers" class="uk-icon" title="{{user.fullname + ' currently ' + actionTooltip(user.action)}}"
-           aria-expanded="false">
-          <svg height="42" width="42">
-            <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="getRandomDarkColor(user.sessionId)"></circle>
-            <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">
-              {{getInitials(user.fullname)}} </text>
-            <circle cx="34" cy="34" r="7" stroke-width="1" fill="white"></circle>
-            <text x="28" y="40" fill="black" alignment-baseline="middle">
-              <tspan class="material-icons md-12"> {{actionIcon(user.action)}}</tspan>
-            </text>
-          </svg>
-        </a>
+    <ng-container *ngIf="!freeView">
+      <div *ngIf="activeUsers === null; else users" class="uk-margin-large-right">
+        <div uk-spinner></div>
       </div>
-    </ng-template>
+      <ng-template #users id="concurrentEdit">
+        <div class="uk-margin-medium-right">
+          <a *ngFor="let user of activeUsers" class="uk-icon" aria-expanded="false"
+             title="{{user.fullname + ' currently ' + actionTooltip(user.action)}}">
+            <svg height="42" width="42">
+              <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="user.color"></circle>
+              <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">
+                {{getInitials(user.fullname)}} </text>
+              <circle cx="34" cy="34" r="7" stroke-width="1" fill="white"></circle>
+              <text x="28" y="40" fill="black" alignment-baseline="middle">
+                <tspan class="material-icons md-12"> {{actionIcon(user.action)}}</tspan>
+              </text>
+            </svg>
+          </a>
+        </div>
+      </ng-template>
+    </ng-container>
     <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>
   </div>
   <h5 class="uk-width-1-1 uk-margin-bottom">{{model.name}}</h5>
@@ -54,7 +56,7 @@
 <div *ngIf="ready; else showLoader">
   <ul id="top-navigation-tabs" class="uk-switcher">
     <li *ngFor="let section of model.sections let i = index">
-      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly || freeView" [validate]="validate"
+      <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
                         [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [tabsHeader]="tabsHeader"
                         [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
                         [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
