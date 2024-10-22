@@ -1,0 +1,69 @@
+<div *ngIf="dataset !== null" class="uk-grid-margin-small">
+  <div class="uk-card-body">
+    <div class="uk-width-2-3@m">
+      <h5 class="uk-margin-remove uk-text-left@m uk-text-center uk-scrollspy-inview uk-animation-fade uk-inline" uk-scrollspy-class="" style="">
+        {{dataset['name'] || "Not Available"}}
+      </h5>
+      <div *ngIf="dataset['identifier']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="">
+        <span class="field-label">Identifier: {{dataset['identifier']['value'] + ' (' + dataset['identifier']['identifierType'] + ')'}}</span>
+      </div>
+      <div *ngIf="dataset['metadata']['publisher']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="">
+        <span class="field-label">Publisher: {{dataset['metadata']['publisher']}}</span>
+      </div>
+      <div *ngIf="dataset['metadata']['languages']['languages'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Language: </span>
+        <span *ngFor="let language of dataset['metadata']['languages']['languages']" class="field-value uk-margin-small-left">{{language}}</span>
+      </div>
+      <div class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade serviceDescription line-clamp" uk-scrollspy-class="" style="">
+        {{dataset['metadata']['descriptions']['descriptions'][0]['content'][0]['value']}}
+      </div>
+
+      <!-- subject -->
+      <div *ngIf="dataset['metadata']['subjects']['subjects'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Subjects: </span>
+        <span *ngFor="let item of dataset['metadata']['subjects']['subjects']" class="field-value uk-margin-small-left">{{item}}</span>
+      </div>
+      <!-- type -->
+      <div *ngIf="dataset['metadata']['type']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Type: {{dataset['metadata']['type']['clazz'] + ' ' + dataset['metadata']['type']['value']}}</span>
+      </div>
+      <!-- format -->
+      <div *ngIf="dataset['metadata']['formats']['formats'][0] !== ''" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Formats: </span>
+        <span *ngFor="let item of dataset['metadata']['formats']['formats']" class="field-value uk-margin-small-left">{{item}}</span>
+      </div>
+      <!-- webpage -->
+      <div *ngIf="dataset['metadata']['webpage']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="">
+        <span class="field-label">Webpage: </span> <a href="{{dataset['metadata']['webpage']}}" target="_blank">{{dataset['metadata']['webpage']}}</a>
+      </div>
+      <!-- source -->
+      <div *ngIf="dataset['metadata']['source']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Source: {{dataset['metadata']['source']}}</span>
+      </div>
+      <!-- related -->
+      <div *ngIf="dataset['metadata']['relatedIdentifiers']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Related Identifiers: {{dataset['metadata']['relatedIdentifiers']}}</span>
+      </div>
+      <!-- coverage -->
+      <div *ngIf="dataset['metadata']['geoLocations']" class="uk-margin-small-top uk-scrollspy-inview uk-animation-fade service-users" uk-scrollspy-class="" style="">
+        <span class="field-label">Coverage: {{dataset['metadata']['geoLocations']}}</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="uk-width-1-3@m">
+    <div class="uk-padding-remove uk-overlay uk-overlay-default service-image">
+      <img src="{{dataset['metadata']['logo']}}">
+    </div>
+
+    <!-- contact -->
+    <div *ngIf="dataset['metadata']['contact']">
+      <h6 class="field-label">Contact: </h6>
+      <span> {{dataset['metadata']['contact']['name']}} </span>
+      <a href="mailto:{{dataset['metadata']['contact']['email']}}" >{{dataset['metadata']['contact']['email']}}</a>
+    </div>
+
+  </div>
+
+</div>
