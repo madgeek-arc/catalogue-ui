@@ -29,7 +29,7 @@
             <span class="uk-sortable-handle uk-text-center" uk-icon="icon: move"></span>
           </div>
           <div *ngFor="let control of fieldData?.subFields; let j=index">
-            <div class="">
+            <div *ngIf="!control.deprecated" class="">
               <div *ngIf="control.typeInfo.type === 'composite'">
                 <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [readonly]="readonly"
                                      [vocabularies]="vocabularies" [editMode]="editMode" [position]="i"
@@ -137,7 +137,7 @@
   <ng-template #noMultiplicity>
     <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
       <div *ngFor="let control of fieldData?.subFields; let j=index">
-        <div class="">
+        <div *ngIf="!control.deprecated" class="">
           <div *ngIf="control.typeInfo.type === 'composite'">
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                  [editMode]="editMode" [readonly]="readonly"

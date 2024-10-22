@@ -123,6 +123,9 @@ export class FormControlService implements OnInit{
     // console.log(formField);
     formField.subFields?.sort((a, b) => a.form.display?.order - b.form.display?.order)
     formField.subFields?.forEach(subField => {
+      if (subField.deprecated)
+        return;
+
       if (subField.typeInfo.type === 'composite' || subField.typeInfo.type === 'radioGrid') {
         if (subField.typeInfo.multiplicity) {
           subGroup[subField.name] = subField.form.mandatory ? new UntypedFormArray([], Validators.required)
