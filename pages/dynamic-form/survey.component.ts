@@ -59,7 +59,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   sortedSurveyAnswers: Object = {};
   bitset: Tabs = new Tabs;
   ready: boolean = false;
-  timeoutId: number = null;
+  timeoutId: ReturnType<typeof setTimeout> = null;
 
   editMode: boolean = false;
   readonly: boolean = false;
