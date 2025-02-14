@@ -1,13 +1,25 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField}">
+<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}" [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible}">
   <div class="uk-margin-bottom">
     <span *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
           [attr.for]="fieldData.name" style="{{fieldData.label.style}}" [innerHTML]="fieldData.label.text">
     </span>
     <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
   </div>
-  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-  </div>
+  <ng-container *ngIf="fieldData.form.description?.showLess; else noReadMore">
+    <div class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+         *ngIf="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
+      <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
+    </div>
+  </ng-container>
+  <ng-template #noReadMore>
+    <div *ngIf="fieldData.form.description?.text" style="{{fieldData.form.description.style}}"
+         class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+         [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
+    </div>
+  </ng-template>
+<!--  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"-->
+<!--       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">-->
+<!--  </div>-->
 
   <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.name">
     <!--To add multiplicity if needed-->
