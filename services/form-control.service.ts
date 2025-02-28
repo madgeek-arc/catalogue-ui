@@ -1,36 +1,21 @@
-import {Injectable, OnInit} from '@angular/core';
-import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
-import {Field, Model, Required, Section} from '../domain/dynamic-form-model';
-import {environment} from '../../environments/environment';
-import {HttpClient} from '@angular/common/http';
-import {urlRegEx} from "../shared/validators/generic.validator";
-import {Paging} from "../domain/paging";
+import { Injectable, OnInit } from '@angular/core';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { Field, Model, Required, Section } from '../domain/dynamic-form-model';
+import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { urlRegEx } from "../shared/validators/generic.validator";
 
 @Injectable()
-export class FormControlService implements OnInit{
+export class FormControlService {
   constructor(public http: HttpClient) { }
 
-  base = environment.API_ENDPOINT;
   private options = {withCredentials: true};
+  base = environment.API_ENDPOINT;
   urlRegEx = urlRegEx;
   numbersOfDecimals = '1';
   numberRegEx = `^(\\d)*(\\.)?([0-9]{${this.numbersOfDecimals}})?$`;
   // numberRegEx = `^[0-9]*[\\.]?[0-9]{${this.numbersOfDecimals}}?$`;
 
-  ngOnInit() {
-  }
-
-  getFormModelById(id: string) {
-    return this.http.get<Model>(this.base + `/forms/models/${id}`);
-  }
-
-  getFormModelByResourceType(type: string) {
-    return this.http.get<Paging<Model>>(this.base + `/forms/models?resourceType=${type}`);
-  }
-
-  getFormModelByName(name: string) {
-    return this.http.get<Paging<Model>>(this.base + `/forms/models?name=${name}`);
-  }
 
   postItem(surveyId: string, item: any, edit:boolean) {
     return this.http[edit ? 'put' : 'post'](this.base + `/answers/${surveyId}/answer`, item, this.options);
@@ -39,10 +24,6 @@ export class FormControlService implements OnInit{
   postGenericItem(resourceType: string, item, edit?: boolean) {
     // console.log(item[Object.keys(item)[0]]);
     return this.http.post(this.base + `/items?resourceType=${resourceType}`, item[Object.keys(item)[0]]);
-  }
-
-  putGenericItem(id: string, resourceType: string, item: object) {
-    return this.http.put(this.base + `/items/${id}?resourceType=${resourceType}`, item[Object.keys(item)[0]]);
   }
 
   validateUrl(url: string) {
