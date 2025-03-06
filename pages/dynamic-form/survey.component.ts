@@ -87,34 +87,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
 
-    this.wsService.activeUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-      next => {
-        this.removeClass(this.activeUsers);
-        this.activeUsers = next;
-        this.activeUsers?.forEach( user => {
-          user.color = this.getRandomDarkColor(user.sessionId);
-          if(user.position) {
-            let sheet = window.document.styleSheets[0];
-
-            let styleExists = false;
-            for (let i = 0; i < sheet.cssRules.length; i++) {
-              if(sheet.cssRules[i] instanceof CSSStyleRule) {
-                if((sheet.cssRules[i] as CSSStyleRule).selectorText === `.user-${user.sessionId}`) {
-                  styleExists = true;
-                  break;
-                }
-              }
-            }
-            if (!styleExists)
-              sheet.insertRule(`.user-${user.sessionId} { border-color: ${this.getRandomDarkColor(user.sessionId)} !important}`, sheet.cssRules.length);
-
-            // console.log(sheet);
-          }
-        });
-        this.addClass(this.activeUsers);
-      }
-    );
-
     this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
         // console.log(value);
@@ -238,7 +210,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         this.previousValue = cloneDeep(this.form.value);
         this.form.markAllAsTouched();
         this.cd.detectChanges();
-        if (this.readonly) {
+        if (this.readonly) { // This is bad I should be ashamed
           setTimeout(() => {
             this.form.disable();
             this.form.markAsUntouched();
@@ -299,30 +271,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     clearTimeout(this.timeoutId);
   }
-
-  /** Mark field as active --> **/
-  addClass(users: UserActivity[]) {
-    users?.forEach( user => {
-      if (!user.position)
-        return;
-
-      const htmlElement = document.getElementById(user.position);
-      if (htmlElement)
-        htmlElement.classList.add(`user-${user.sessionId}`)
-    });
-  }
-
-  removeClass(users: UserActivity[]) {
-    users?.forEach( user => {
-      if (!user.position)
-        return;
-
-      const htmlElement = document.getElementById(user.position);
-      if (htmlElement)
-        htmlElement.classList.remove(`user-${user.sessionId}`);
-    });
-  }
-  /** <-- Mark field as active **/
 
   /** Find changed field and get value --> **/
   detectChanges(currentValue: any, previousValue: any, path: string): string[] {
@@ -613,16 +561,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         return '';
     }
   }
-
-  getRandomDarkColor(sessionId: string) { // (use for background with white/light font color)
-    const rng = seedRandom(sessionId);
-    const h = Math.floor(rng() * 1000 % 361),
-      s = Math.floor(rng() * 80 + 20) + '%', // set s above 20 to avoid similar grayish tones
-      // max value of l is 100, but limit it from 15 to 70 in order to generate darker colors
-      l = Math.floor(rng() * 55 + 15) + '%';
-    // console.log(`h= ${h}, s= ${s}, l= ${l}`);
-    return `hsl(${h},${s},${l})`;
-  };
 
   toTop() {
     window.scrollTo(0,0);

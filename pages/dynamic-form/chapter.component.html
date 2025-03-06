@@ -3,19 +3,6 @@
     <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
       <div class="uk-width-1-1@m uk-first-column">
 
-        <div class="titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px">
-          <div>
-            <button *ngIf="!readonly" class="uk-button uk-button-secondary uk-margin-left"
-                    (click)="onSubmit(false)" type="submit"> Save
-            </button>
-          </div>
-        </div>
-
-        <div *ngIf="successMessage" id="successMessage" class="uk-alert-success" uk-alert="animation: true; duration: 300;">
-          <a class="uk-alert-close" uk-close></a>
-          <p>{{successMessage}}</p>
-        </div>
-
         <div *ngIf="chapter" class="uk-margin-top chapter-description">
           <p [innerHtml]="chapter.description"></p>
         </div>

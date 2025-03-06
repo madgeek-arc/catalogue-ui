@@ -56,12 +56,6 @@ export class ChapterEditComponent implements OnChanges{
     }
   }
 
-  onSubmit(tempSave: boolean, pendingService?: boolean) {
-    // if (this.form.valid) {
-    window.scrollTo(0, 0);
-    this.submit.emit(null);
-  }
-
   initializations() {
     /** Initialize tab bitsets **/
     let requiredTabs = 0, requiredTotal = 0;
