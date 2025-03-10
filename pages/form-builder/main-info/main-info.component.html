@@ -1,0 +1,26 @@
+<div class="uk-card uk-card-body uk-card-default uk-margin-medium-bottom">
+  <div class="uk-margin">
+    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Title *</label>
+    <div class="uk-form-controls">
+      <input id="sectionName" class="uk-input" [(ngModel)]="title" placeholder="Untitled Section">
+    </div>
+  </div>
+  <div class="uk-margin">
+    <label (click)="focusEditor('descriptionEditor')" class="uk-form-label uk-margin-small-bottom">Description *</label>
+    <div class="uk-form-controls">
+      <ckeditor #descriptionEditor [editor]="editor"
+                [(ngModel)]="description"
+                [config]="{placeholder: 'A description about the form'}">
+      </ckeditor>
+    </div>
+  </div>
+  <div class="uk-margin">
+    <label (click)="focusEditor('noticeEditor')" class="uk-form-label uk-margin-small-bottom">Notice </label>
+    <div class="uk-form-controls">
+      <ckeditor #noticeEditor [editor]="editor"
+                [(ngModel)]="notice"
+                [config]="{placeholder: 'A small notice about the form'}">
+      </ckeditor>
+    </div>
+  </div>
+</div>

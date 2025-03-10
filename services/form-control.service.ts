@@ -1,6 +1,6 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { Field, Model, Required, Section } from '../domain/dynamic-form-model';
+import { Field, Required, Section } from '../domain/dynamic-form-model';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { urlRegEx } from "../shared/validators/generic.validator";

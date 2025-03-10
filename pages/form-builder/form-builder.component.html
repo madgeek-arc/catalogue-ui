@@ -1,26 +1,55 @@
+<a class="uk-button uk-button-default" href="#fb-modal-full" uk-toggle>Open form builder</a>
+
+
 <div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom">
   <div class="uk-container uk-container-expand">
-    <div class="uk-grid">
 
-      <app-side-menu class="uk-width-1-5" [chapterModel]="formBuilder" (showChapterOrSection)="updateView($event)"></app-side-menu>
-      <div class="uk-width-3-5">
-        <ul id="chapter-tabs" class="uk-switcher">
-          <li *ngFor="let chapter of formBuilder">
-            <app-chapter-builder [chapter]="chapter" [ngClass]="{'uk-display-none': show !== 'chapter'}"></app-chapter-builder>
-            <ul id="section-tabs" class="uk-switcher" [ngClass]="{'uk-display-none': show !== 'section'}">
-              <li *ngFor="let section of chapter.subSections">
-                <app-section-builder [section]="section"></app-section-builder>
-                <ng-container *ngFor="let field of section.fields; let i = index">
-                  <app-field-builder [field]="field"></app-field-builder>
-                </ng-container>
-              </li>
-            </ul>
-          </li>
-        </ul>
+    <div id="fb-modal-full" class="uk-modal-full" uk-modal style="min-height: 100vh">
+      <div class="uk-modal-dialog">
+
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+
+        <div class="uk-modal-header">
+          <h2 class="uk-modal-title">Title</h2>
+        </div>
+
+        <div class="uk-modal-body">
+          <div class="uk-grid">
+
+            <app-side-menu class="uk-width-1-5"
+                           [chapterModel]="model.sections"
+                           (showChapterOrSection)="updateView($event)">
+            </app-side-menu>
+
+            <div class="uk-width-3-5">
+              <div id="chapter-tabs" class="uk-switcher">
+                <div>
+                  <app-main-info></app-main-info>
+                </div>
+                <div *ngFor="let chapter of model.sections">
+                  <app-chapter-builder [chapter]="chapter" [ngClass]="{'uk-display-none': show !== 'chapter'}">
+                  </app-chapter-builder>
+                  <ul id="section-tabs" class="uk-switcher" [ngClass]="{'uk-display-none': show !== 'section'}">
+                    <li *ngFor="let section of chapter.subSections">
+                      <app-section-builder [section]="section"></app-section-builder>
+                      <ng-container *ngFor="let field of section.fields; let i = index">
+                        <app-field-builder [field]="field"></app-field-builder>
+                      </ng-container>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="uk-modal-footer">
+          Footer
+          <pre>{{ model | json }}</pre>
+        </div>
       </div>
-
     </div>
+
   </div>
 </div>
-
-<pre>{{formBuilder | json}}</pre>

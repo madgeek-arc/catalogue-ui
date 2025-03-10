@@ -1,18 +1,19 @@
-import {Component, OnInit} from "@angular/core";
-import {Section} from "../../domain/dynamic-form-model";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Model } from "../../domain/dynamic-form-model";
+import UIkit from 'uikit';
 
 @Component({
   selector: 'app-form-builder',
   templateUrl: 'form-builder.component.html'
 })
 
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent implements AfterViewInit {
 
-  formBuilder: Section[] = [];
+  model: Model = new Model();
   show: string = 'chapter';
 
-  ngOnInit() {
-    // this.formBuilder.push();
+  ngAfterViewInit() {
+    UIkit.modal('#fb-modal-full').show();
   }
 
   updateView(show: string) {

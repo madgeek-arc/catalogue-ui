@@ -133,9 +133,10 @@ export class Section {
 
   constructor() {
     this.id = null;
-    this.name = '';
+    this.name = null;
     this.description = null;
-    this.subSections = [];
+    this.subSections = null;
+    this.fields = null;
     this.order = 0;
   }
 }
@@ -161,9 +162,9 @@ export class GroupedFields {
 
 export class Model {
   id: string;
-  name: string;
-  description: string;
-  notice: string;
+  name: string | null;
+  description: string | null;
+  notice: string | null;
   type: string;
   subType: string;
   resourceType: string;
@@ -174,6 +175,17 @@ export class Model {
   configuration: Configuration;
   locked: boolean;
   active: boolean;
+
+
+  constructor() {
+    this.name = null;
+    this.description = null;
+    this.notice = null;
+    this.sections = [new Section()];
+    this.configuration = new Configuration();
+    this.locked = false;
+    this.active = false;
+  }
 }
 
 export class Configuration {

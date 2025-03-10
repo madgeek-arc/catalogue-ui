@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Section, Field, GroupedFields} from "../../../domain/dynamic-form-model";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Field, Section } from "../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-side-menu',
@@ -17,10 +17,16 @@ export class SideMenuComponent implements OnInit {
   }
 
   addSection(position) {
+    if (this.chapterModel[position].subSections === null)
+      this.chapterModel[position].subSections = [];
+    
     this.chapterModel[position].subSections.push(new Section());
   }
 
   addField(positionI, positionJ) {
+    if (this.chapterModel[positionI].subSections[positionJ].fields === null)
+      this.chapterModel[positionI].subSections[positionJ].fields = [];
+
     this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
   }
 
