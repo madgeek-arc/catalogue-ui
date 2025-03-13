@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditorComponent } from "@ckeditor/ckeditor5-angular";
 
@@ -13,13 +13,32 @@ export class MainInfoComponent {
 
   public editor = ClassicEditor;
 
-  @Input() title: string | null;
-  @Input() description: string | null;
-  @Input() notice: string | null;
+  @Input() formTitle: string | null = null;
+  @Input() description: string | null = null;
+  @Input() notice: string | null = null;
+
+  @Output() emitTitle: EventEmitter<string> = new EventEmitter();
+  @Output() emitDescription: EventEmitter<string> = new EventEmitter();
+  @Output() emitNotice: EventEmitter<string> = new EventEmitter();
 
   focusEditor(editor: string) {
     if (this[editor] && this[editor].editorInstance) {
       this[editor].editorInstance.editing.view.focus();
     }
+  }
+
+  titleChange(value: string) {
+    this.formTitle = value;
+    this.emitTitle.emit(value);
+  }
+
+  descriptionChange(value: string) {
+    this.description = value;
+    this.emitDescription.emit(value);
+  }
+
+  noticeChange(value: string) {
+    this.notice = value;
+    this.emitNotice.emit(value);
   }
 }

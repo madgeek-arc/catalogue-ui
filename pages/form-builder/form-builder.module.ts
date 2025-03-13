@@ -5,19 +5,23 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { FormsModule } from "@angular/forms";
 import { SideMenuComponent } from "./side-menu/side-menu.component";
 import { FieldBuilderComponent } from "./field-builder/field-builder.component";
-import { SectionBuilderComponent } from "./section-builder/section-builder.component";
-import { ChapterBuilderComponent } from "./chapter-builder/chapter-builder.component";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { TypeSelectorComponent } from "./type-selector-builder/type-selector.component";
 import { MainInfoComponent } from "./main-info/main-info.component";
+import { ChapterSettingsComponent } from "./settings-side-menu/chapter-settings/chapter-settings.component";
+import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
+import { SectionSettingsComponent } from "./settings-side-menu/section-settings/section-settings.component";
+import { FieldTypeSelectionComponent } from "./settings-side-menu/field-type-selection/field-type-selection.component";
 
 @NgModule({
   declarations: [
     FormBuilderComponent,
     SideMenuComponent,
+    SettingsSideMenuComponent,
     MainInfoComponent,
-    ChapterBuilderComponent,
-    SectionBuilderComponent,
+    ChapterSettingsComponent,
+    SectionSettingsComponent,
+    FieldTypeSelectionComponent,
     FieldBuilderComponent,
     TypeSelectorComponent
   ],

@@ -1,0 +1,13 @@
+<div>
+  <ng-container [ngSwitch]="type">
+    <section *ngSwitchCase="'chapter'">
+      <app-chapter-settings [chapter]="chapter"></app-chapter-settings>
+    </section>
+    <section *ngSwitchCase="'section'">
+      <app-section-settings [section]="section"></app-section-settings>
+    </section>
+    <section *ngSwitchCase="'field'">
+      <app-section-settings [section]="section"></app-section-settings>
+    </section>
+  </ng-container>
+</div>

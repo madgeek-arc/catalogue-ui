@@ -5,7 +5,7 @@
   <div class="uk-container uk-container-expand">
 
     <div id="fb-modal-full" class="uk-modal-full" uk-modal style="min-height: 100vh">
-      <div class="uk-modal-dialog">
+      <div class="uk-modal-dialog" >
 
         <button class="uk-modal-close-default" type="button" uk-close></button>
 
@@ -13,32 +13,45 @@
           <h2 class="uk-modal-title">Title</h2>
         </div>
 
-        <div class="uk-modal-body">
-          <div class="uk-grid">
+        <div class="uk-modal-body uk-padding-remove" >
+          <div class="uk-grid uk-grid-column-collapse">
 
-            <app-side-menu class="uk-width-1-5"
-                           [chapterModel]="model.sections"
-                           (showChapterOrSection)="updateView($event)">
-            </app-side-menu>
+            <div class="sidebar_active uk-width-1-6">
+              <aside class="sidebar sidebar_active">
 
-            <div class="uk-width-3-5">
-              <div id="chapter-tabs" class="uk-switcher">
-                <div>
-                  <app-main-info></app-main-info>
-                </div>
-                <div *ngFor="let chapter of model.sections">
-                  <app-chapter-builder [chapter]="chapter" [ngClass]="{'uk-display-none': show !== 'chapter'}">
-                  </app-chapter-builder>
-                  <ul id="section-tabs" class="uk-switcher" [ngClass]="{'uk-display-none': show !== 'section'}">
-                    <li *ngFor="let section of chapter.subSections">
-                      <app-section-builder [section]="section"></app-section-builder>
-                      <ng-container *ngFor="let field of section.fields; let i = index">
-                        <app-field-builder [field]="field"></app-field-builder>
-                      </ng-container>
-                    </li>
-                  </ul>
-                </div>
+                <app-side-menu [chapterModel]="model.sections"
+                               (showChapterOrSection)="updateView($event)"
+                               (userSelection)="setCurrentSection($event)">
+                </app-side-menu>
+
+              </aside>
+            </div>
+
+            <div class="uk-width-expand  uk-padding-small" style="min-height: 80vh">
+              <div *ngIf="type === 'main'">
+                <app-main-info [formTitle]="model.name" [description]="model.description" [notice]="model.notice"
+                               (emitTitle)="model.name = $event"
+                               (emitDescription)="model.description = $event"
+                               (emitNotice)="model.notice = $event">
+                </app-main-info>
               </div>
+              <div *ngIf="chapter">
+                <h3>{{ chapter.name ?? 'Untitled Chapter' }}</h3>
+              </div>
+              <div *ngIf="section">
+                <h5>{{ section.name ?? 'Untitled Section' }}</h5>
+                <ng-container *ngFor="let field of section.fields; let i = index">
+                  <app-field-builder [field]="field"></app-field-builder>
+                </ng-container>
+              </div>
+
+            </div>
+
+
+            <div class="sidebar_active uk-width-1-5">
+              <aside class="sidebar sidebar_active">
+                <app-settings-side-menu [chapter]="chapter" [section]="section" [type]="type" ></app-settings-side-menu>
+              </aside>
             </div>
 
           </div>

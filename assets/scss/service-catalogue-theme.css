@@ -11,6 +11,9 @@
   --button-secondary-background-color: #26C0E2;
   --button-secondary-hover-background-color: #1E95B0;
 
+  --catalogue-sidebar-width: 100%;
+  --catalogue-sidebar-width-invert: -100%;
+
   --main-font-family: 'Open Sans';
 }
 
@@ -365,55 +368,6 @@ a.remove-element {
   opacity: 1;
 }
 
-/*.ng-select {*/
-/*  display: inline-block !important;*/
-/*  vertical-align: middle;*/
-/*  height: 56px;*/
-/*  background: #FAFAFA 0% 0% no-repeat padding-box;*/
-/*  border: 1px solid #D1D1D1;*/
-/*  border-radius: 4px;*/
-/*  opacity: 1;*/
-/*}*/
-
-/*.ng-select .ng-select-container {*/
-/*  height: 56px;*/
-/*}*/
-
-/*.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {*/
-/*  height: 56px;*/
-/*}*/
-
-/*.ng-select .ng-select-container .ng-value-container .ng-input > input {*/
-/*  height: 56px;*/
-/*  font-size: 14px;*/
-/*  padding-left: 10px;*/
-/*}*/
-
-/*.ng-select .ng-clear-wrapper {*/
-/*  margin-top: 17px;*/
-/*}*/
-
-/*.ng-dropdown-panel {*/
-/*  background: #fff;*/
-/*  box-shadow: 0 2px 5px rgba(0,0,0,.25);*/
-/*  box-sizing: border-box;*/
-/*}*/
-
-/*.ng-dropdown-panel .ng-dropdown-panel-items {*/
-/*  padding: 15px;*/
-/*}*/
-
-/*.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {*/
-/*  padding-top: 10px;*/
-/*}*/
-
-/*.ng-select-container .ng-value-container .ng-value {*/
-/*  height: 56px;*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*  padding-left: 10px;*/
-/*}*/
-
 .uk-radio-label, .uk-checkbox-label {
   font-weight: normal;
   font-size: 16px;
@@ -436,27 +390,29 @@ a.remove-element {
   min-height: 150px;
 }
 
-/*!* ========================================================================*/
-/*   Dashboard sidebar*/
-/* ========================================================================== *!*/
+/* ========================================================================
+   Sidebar
+ ========================================================================== */
 
-/*#sidebar_main {*/
-/*  width: 320px;*/
-/*  border-right: 1px solid rgba(0,0,0,.12);*/
-/*  position: fixed;*/
-/*  height: 100%;*/
-/*  !*top: 0;*!*/
-/*  !*fixme this is for EOSC - we want top: 80 for general*!*/
-/*  top: 159px;  !* this is for EOSC *!*/
-/*  bottom: 0;*/
-/*  left: 0;*/
-/*  -webkit-transform: translate3d(-320px,0,0);*/
-/*  transform: translate3d(-320px,0,0);*/
-/*  z-index: 800;*/
-/*  background: #F0F5F5;*/
-/*  -webkit-transition: all 280ms cubic-bezier(.4,0,.2,1);*/
-/*  transition: all 280ms cubic-bezier(.4,0,.2,1);*/
-/*}*/
+.sidebar {
+
+  overflow: auto;
+  position: fixed;
+  /*top: var(--header-height) !important;*/
+  background: #fff;
+  width: var(--catalogue-sidebar-width);
+  transform: translate3d(var(--catalogue-sidebar-width-invert),0,0);
+  -webkit-transform: translate3d(var(--catalogue-sidebar-width-invert),0,0);
+  -webkit-transition: all 280ms cubic-bezier(.4,0,.2,1);
+  transition: all 280ms cubic-bezier(.4,0,.2,1);
+  height: 100%;
+  z-index: 800;
+}
+
+.sidebar_active {
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+}
 
 /*#sidebar_main, #sidebar_main *, #sidebar_main ::after, #sidebar_main ::before, #sidebar_main::after, #sidebar_main::before {*/
 /*  -webkit-box-sizing: border-box;*/
@@ -466,11 +422,6 @@ a.remove-element {
 /*.dashboard #sidebar_main {*/
 /*  display: flex;*/
 /*  flex-direction: column;*/
-/*}*/
-
-/*.sidebar_main_active #sidebar_main {*/
-/*  -webkit-transform: translate3d(0,0,0);*/
-/*  transform: translate3d(0,0,0);*/
 /*}*/
 
 /*.dashboard #sidebar_main {*/
