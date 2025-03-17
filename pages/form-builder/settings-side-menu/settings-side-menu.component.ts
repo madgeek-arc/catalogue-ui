@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { Section } from "../../../domain/dynamic-form-model";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Field, Section } from "../../../domain/dynamic-form-model";
 import { SelectedSection } from "../form-builder.component";
 
 @Component({
@@ -10,6 +10,13 @@ import { SelectedSection } from "../form-builder.component";
 export class SettingsSideMenuComponent {
   @Input() chapter: Section | null = null;
   @Input() section: Section | null = null;
-  @Input() type: typeof SelectedSection.prototype.type = 'main';
+  @Input() field: Field | null = null;
+  @Input() sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
+
+
+  fieldSettings(position: number) {
+    this.field = this.section.fields[position];
+    this.sideMenuSettingsType = 'field';
+  }
 
 }

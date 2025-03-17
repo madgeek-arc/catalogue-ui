@@ -17,13 +17,13 @@
       </ng-select>
     </div>
 
-    <div class="uk-width-1-1 uk-margin-bottom uk-form-controls uk-animation-scale-up" [ngClass]="{'uk-display-none' : !showDescription}">
+    <div class="uk-width-1-1 uk-margin-bottom uk-form-controls uk-animation-scale-up" [ngClass]="{'uk-hidden' : !showDescription}">
       <ckeditor [editor]="editor" [config]="{placeholder: 'Give a short description for the field'}"
                 [(ngModel)]="field.form.description.text">
       </ckeditor>
     </div>
 
-    <div class="uk-width-1-1 uk-margin-bottom uk-form-controls uk-animation-scale-up" [ngClass]="{'uk-display-none' : !showSuggestion}">
+    <div class="uk-width-1-1 uk-margin-bottom uk-form-controls uk-animation-scale-up" [ngClass]="{'uk-hidden' : !showSuggestion}">
       <ckeditor [editor]="editor" [config]="{placeholder: 'Give a short suggestion for the field'}"
                 [(ngModel)]="field.form.suggestion.text">
       </ckeditor>

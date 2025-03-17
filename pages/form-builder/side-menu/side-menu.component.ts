@@ -10,7 +10,6 @@ import { SelectedSection } from "../form-builder.component";
 export class SideMenuComponent implements OnInit {
 
   @Input() chapterModel: Section[];
-  @Output() showChapterOrSection = new EventEmitter<string>();
   @Output() userSelection = new EventEmitter<SelectedSection>();
   // groups: Group[] = []
 
@@ -21,21 +20,21 @@ export class SideMenuComponent implements OnInit {
   pushChapter() {
     this.chapterModel.push(new Section());
 
-    this.emitSelection(this.chapterModel[this.chapterModel.length-1], null, 'chapter');
+    this.emitSelection(this.chapterModel[this.chapterModel.length-1], null, null, 'chapter');
   }
 
   deleteChapter(position: number) {
     this.chapterModel.splice(position, 1);
 
     if (this.chapterModel[position]) {
-      this.emitSelection(this.chapterModel[position], null, 'chapter');
+      this.emitSelection(this.chapterModel[position], null, null, 'chapter');
       return;
     } else if (this.chapterModel[position-1]) {
-      this.emitSelection(this.chapterModel[position-1], null, 'chapter');
+      this.emitSelection(this.chapterModel[position-1], null, null, 'chapter');
       return;
     }
 
-    this.emitSelection(null, null, 'main');
+    this.emitSelection(null, null, null, 'main');
   }
 
   addSection(position) {
@@ -44,18 +43,20 @@ export class SideMenuComponent implements OnInit {
 
     this.chapterModel[position].subSections.push(new Section());
 
-    this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[this.chapterModel[position].subSections.length-1], 'section');
+    this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[this.chapterModel[position].subSections.length-1], null, 'section');
   }
 
-  addField(positionI, positionJ) {
+  addField(positionI: string | number, positionJ: string | number) {
     if (this.chapterModel[positionI].subSections[positionJ].fields === null)
       this.chapterModel[positionI].subSections[positionJ].fields = [];
 
     this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
+
+    this.emitSelection(this.chapterModel[positionI], this.chapterModel[positionI].subSections[positionJ], this.chapterModel[positionI].subSections[positionJ].fields[this.chapterModel[positionI].subSections[positionJ].fields.length-1], 'field');
   }
 
-  emitSelection(chapter: Section, section: Section | null, type: typeof SelectedSection.prototype.type) {
-    this.userSelection.emit({chapter: chapter, section: section, type: type});
+  emitSelection(chapter: Section, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
+    this.userSelection.emit({chapter: chapter, section: section, field, sideMenuSettingsType: type});
   }
 
 }

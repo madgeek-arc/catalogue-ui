@@ -2,13 +2,13 @@
   <ul uk-tab="animation: uk-animation-fade" class="uk-grid uk-child-width-1-1">
     <li>
       <div class="uk-flex uk-flex-middle uk-width-1-1">
-        <div class="uk-width-3-5"><a (click)="emitSelection(null, null, 'main')">Main Info</a></div>
+        <div class="uk-width-3-5"><a (click)="emitSelection(null, null, null, 'main')">Main Info</a></div>
       </div>
     </li>
     <li *ngFor="let chapter of chapterModel; let i=index" class="uk-width-1-1">
       <div class="uk-flex uk-flex-middle uk-width-1-1">
         <div class="uk-width-3-5">
-          <a (click)="emitSelection(chapter, null, 'chapter')">{{ (i + 1) + '. ' + (chapter.name ?? 'Untitled chapter') }}</a>
+          <a (click)="emitSelection(chapter, null, null, 'chapter')">{{ (i + 1) + '. ' + (chapter.name ?? 'Untitled chapter') }}</a>
         </div>
         <div class="uk-width-1-5">
           <a class="" (click)="deleteChapter(i)">
@@ -17,14 +17,14 @@
         </div>
       </div>
       <!--      <ul [attr.uk-tab]="'connect: #section-tabs-'+chapter.chapter.id">-->
-      <ul uk-tab="animation: uk-animation-fade">
+      <ul data-uk-tab="animation: uk-animation-fade">
         <li *ngFor="let section of chapter.subSections; let j=index"
             class="uk-margin-small uk-margin-small-left uk-width-1-1">
-          <span (click)="emitSelection(chapter, section, 'section')">
+          <span (click)="emitSelection(chapter, section, null, 'section')">
             {{ (i + 1) + '.' + (j + 1) + '. ' + (section.name ?? 'Untitled section') }}
           </span>
           <div *ngFor="let field of section.fields; let k=index" class="uk-margin-small">
-            <span class="uk-margin-small-left">
+            <span class="uk-margin-small-left" (click)="emitSelection(chapter, section, field, 'field')">
               {{ (i + 1) + '.' + (j + 1) + '.' + (k + 1) + ' ' + (field.label.text !== '' ? field.label.text : 'Untitled question') }}
             </span>
           </div>

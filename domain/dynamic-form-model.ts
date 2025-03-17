@@ -18,14 +18,17 @@ export class Dependent {
 }
 
 export class TypeInfo {
-  type: string;
+  type: 'composite' | 'string' | 'vocabulary' | 'select' | 'number' | 'double' | 'largeText' | 'richText' | 'radio' | 'checkbox' | 'scale' | 'date' | 'url' | 'email' | 'phone' | 'chooseOne' | 'radioGrid';
   values: string[];
   vocabulary: string;
   multiplicity: boolean
 
 
-  constructor() {
-    this.type = 'string';
+  constructor(type?: typeof TypeInfo.prototype.type) {
+    if (type)
+      this.type = type;
+    else
+      this.type = 'string';
     this.values = [];
     this.vocabulary = null;
     this.multiplicity = false;
@@ -105,7 +108,7 @@ export class Field {
   display: Display;
   subFields: Field[];
 
-  constructor() {
+  constructor(type?: typeof TypeInfo.prototype.type) {
     this.id = '';
     this.name = '';
     this.parentId = '';
@@ -113,7 +116,7 @@ export class Field {
     this.label = new StyledText();
     this.accessPath = '';
     this.deprecated = false;
-    this.typeInfo = new TypeInfo()
+    this.typeInfo = new TypeInfo(type)
     this.includedInSnippet = false;
     this.form = new Form();
     this.display = new Display();

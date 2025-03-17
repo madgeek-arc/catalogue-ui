@@ -20,15 +20,14 @@
               <aside class="sidebar sidebar_active">
 
                 <app-side-menu [chapterModel]="model.sections"
-                               (showChapterOrSection)="updateView($event)"
                                (userSelection)="setCurrentSection($event)">
                 </app-side-menu>
 
               </aside>
             </div>
 
-            <div class="uk-width-expand  uk-padding-small" style="min-height: 80vh">
-              <div *ngIf="type === 'main'">
+            <div class="uk-width-expand  uk-padding" style="min-height: 80vh">
+              <div *ngIf="sideMenuSettingsType === 'main'">
                 <app-main-info [formTitle]="model.name" [description]="model.description" [notice]="model.notice"
                                (emitTitle)="model.name = $event"
                                (emitDescription)="model.description = $event"
@@ -40,9 +39,18 @@
               </div>
               <div *ngIf="section">
                 <h5>{{ section.name ?? 'Untitled Section' }}</h5>
-                <ng-container *ngFor="let field of section.fields; let i = index">
+                <p [innerHTML]="section.description"></p>
+                <ng-container *ngFor="let field of section.fields; let i = index" (click)="currentField = field; sideMenuSettingsType = 'field'">
                   <app-field-builder [field]="field"></app-field-builder>
                 </ng-container>
+
+                <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                  <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+                    <a class="uk-flex uk-flex-center uk-padding-small" (click)="sideMenuSettingsType = 'fieldSelector'">
+                      Add Question <span class="material-icons">add</span>
+                    </a>
+                  </div>
+                </div>
               </div>
 
             </div>
@@ -50,7 +58,9 @@
 
             <div class="sidebar_active uk-width-1-5">
               <aside class="sidebar sidebar_active">
-                <app-settings-side-menu [chapter]="chapter" [section]="section" [type]="type" ></app-settings-side-menu>
+                <app-settings-side-menu [chapter]="chapter" [section]="section" [field]="currentField"
+                                        [sideMenuSettingsType]="sideMenuSettingsType">
+                </app-settings-side-menu>
               </aside>
             </div>
 

@@ -1,6 +1,6 @@
 
 <!--Chapter Selection-->
-<div *ngIf="ready && model" [ngClass]="{'uk-display-none': (model.sections.length === 1 || !model.sections[0].subSections)}">
+<div *ngIf="ready && model" [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
   <ul class="chapter-tabs uk-tab" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
     <li class="" *ngFor="let section of model.sections">
       <a *ngIf="(!section.subType || section.subType===subType)">{{section.name}}

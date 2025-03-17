@@ -12,6 +12,8 @@ import { ChapterSettingsComponent } from "./settings-side-menu/chapter-settings/
 import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
 import { SectionSettingsComponent } from "./settings-side-menu/section-settings/section-settings.component";
 import { FieldTypeSelectionComponent } from "./settings-side-menu/field-type-selection/field-type-selection.component";
+import { FieldSettingsComponent } from "./settings-side-menu/field-settings/field-settings.component";
+
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { FieldTypeSelectionComponent } from "./settings-side-menu/field-type-sel
     MainInfoComponent,
     ChapterSettingsComponent,
     SectionSettingsComponent,
+    FieldSettingsComponent,
     FieldTypeSelectionComponent,
     FieldBuilderComponent,
     TypeSelectorComponent

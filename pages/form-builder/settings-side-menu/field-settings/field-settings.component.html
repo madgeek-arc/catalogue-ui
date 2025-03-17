@@ -1,0 +1,35 @@
+<section>
+  <h6>Field settings</h6>
+  <div class="uk-margin">
+    <label for="label" class="uk-form-label uk-margin-small-bottom">Label</label>
+    <div class="uk-form-controls">
+      <ckeditor id="label" [editor]="editor"
+                [(ngModel)]="field.label.text"
+                [config]="{placeholder: 'Field label'}">
+      </ckeditor>
+    </div>
+  </div>
+
+  <div class="uk-margin">
+    <label for="description" class="uk-form-label uk-margin-small-bottom">Description</label>
+    <div class="uk-form-controls">
+      <ckeditor id="description" [editor]="editor"
+                [(ngModel)]="field.form.description.text"
+                [config]="{placeholder: 'Give a short description for the field'}">
+      </ckeditor>
+    </div>
+  </div>
+
+  <div class="uk-margin">
+    <input id="descriptionShowMore" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.description.showLess">
+    <label for="descriptionShowMore" class="uk-checkbox-label uk-margin-small-left">Show less</label>
+  </div>
+
+  <div class="uk-margin">
+    <label for="type" class="uk-form-label uk-text-muted">Type</label>
+    <select id="type" class="uk-select">
+<!--      <option *ngFor="let"></option>-->
+    </select>
+  </div>
+
+</section>

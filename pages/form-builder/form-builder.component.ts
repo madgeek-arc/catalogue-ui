@@ -1,11 +1,12 @@
 import { AfterViewInit, Component } from "@angular/core";
-import { Model, Section } from "../../domain/dynamic-form-model";
+import { Field, Model, Section } from "../../domain/dynamic-form-model";
 import UIkit from 'uikit';
 
 export class SelectedSection {
   chapter: Section | null = null;
   section: Section | null = null;
-  type: 'main' | 'chapter' | 'section' = 'main';
+  field: Field | null = null;
+  sideMenuSettingsType: 'main' | 'chapter' | 'section' | 'field' | 'fieldSelector' = 'main';
 }
 
 @Component({
@@ -18,25 +19,25 @@ export class FormBuilderComponent implements AfterViewInit {
   model: Model = new Model();
   chapter: Section | null = null;
   section: Section | null = null;
-  type: 'main' | 'chapter' | 'section' = 'main';
-  show: string = 'chapter';
+  currentField: Field | null = null;
+  sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
   ngAfterViewInit() {
     UIkit.modal('#fb-modal-full').show();
   }
 
-  updateView(show: string) {
-    this.show = show;
-  }
-
   setCurrentSection(selection: SelectedSection) {
-    this.chapter = this.section = null
+    this.chapter = this.section = this.currentField = null;
 
     this.chapter = selection.chapter;
     if (selection.section) {
       this.section = selection.section;
     }
-    this.type = selection.type;
+    if (selection.field) {
+      this.currentField = selection.field;
+    }
+
+    this.sideMenuSettingsType = selection.sideMenuSettingsType;
 
   }
 }
