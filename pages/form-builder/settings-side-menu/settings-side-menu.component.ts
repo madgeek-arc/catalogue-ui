@@ -13,10 +13,11 @@ export class SettingsSideMenuComponent {
   @Input() field: Field | null = null;
   @Input() sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
+  @Output() emitSideMenuSettingsChange = new EventEmitter<typeof SelectedSection.prototype.sideMenuSettingsType>();
 
   fieldSettings(position: number) {
     this.field = this.section.fields[position];
-    this.sideMenuSettingsType = 'field';
+    this.emitSideMenuSettingsChange.emit('field');
   }
 
 }

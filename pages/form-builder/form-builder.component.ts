@@ -22,6 +22,8 @@ export class FormBuilderComponent implements AfterViewInit {
   currentField: Field | null = null;
   sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
+  // mockForm: FormGroup = new FormGroup({});
+
   ngAfterViewInit() {
     UIkit.modal('#fb-modal-full').show();
   }
@@ -39,5 +41,10 @@ export class FormBuilderComponent implements AfterViewInit {
 
     this.sideMenuSettingsType = selection.sideMenuSettingsType;
 
+  }
+
+  fieldSelection(field: Field): void {
+    this.currentField = field;
+    this.sideMenuSettingsType = 'field'
   }
 }

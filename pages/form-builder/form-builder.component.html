@@ -19,8 +19,7 @@
             <div class="sidebar_active uk-width-1-6">
               <aside class="sidebar sidebar_active">
 
-                <app-side-menu [chapterModel]="model.sections"
-                               (userSelection)="setCurrentSection($event)">
+                <app-side-menu [chapterModel]="model.sections" (userSelection)="setCurrentSection($event)">
                 </app-side-menu>
 
               </aside>
@@ -36,12 +35,13 @@
               </div>
               <div *ngIf="chapter">
                 <h3>{{ chapter.name ?? 'Untitled Chapter' }}</h3>
+                <p [innerHTML]="chapter.description"></p>
               </div>
               <div *ngIf="section">
                 <h5>{{ section.name ?? 'Untitled Section' }}</h5>
                 <p [innerHTML]="section.description"></p>
-                <ng-container *ngFor="let field of section.fields; let i = index" (click)="currentField = field; sideMenuSettingsType = 'field'">
-                  <app-field-builder [field]="field"></app-field-builder>
+                <ng-container *ngFor="let field of section.fields; let i = index" >
+                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>
                 </ng-container>
 
                 <div class="uk-card uk-card-default uk-card-body uk-padding-small">
@@ -59,7 +59,7 @@
             <div class="sidebar_active uk-width-1-5">
               <aside class="sidebar sidebar_active">
                 <app-settings-side-menu [chapter]="chapter" [section]="section" [field]="currentField"
-                                        [sideMenuSettingsType]="sideMenuSettingsType">
+                                        [sideMenuSettingsType]="sideMenuSettingsType" (emitSideMenuSettingsChange)="sideMenuSettingsType = $event">
                 </app-settings-side-menu>
               </aside>
             </div>

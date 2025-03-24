@@ -6,7 +6,8 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'composite'">
           <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                               [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()" [editMode]="editMode"
+                               [readonly]="readonly" [editMode]="editMode"
+                               (hasChanges)="unsavedChangesPrompt()"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-composite-field>

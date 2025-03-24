@@ -12,7 +12,7 @@ export class DynamicFormFieldsComponent {
   @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: boolean;
-  @Input() readonly : boolean = null;
+  @Input() readonly: boolean = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();

@@ -13,6 +13,7 @@ import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-me
 import { SectionSettingsComponent } from "./settings-side-menu/section-settings/section-settings.component";
 import { FieldTypeSelectionComponent } from "./settings-side-menu/field-type-selection/field-type-selection.component";
 import { FieldSettingsComponent } from "./settings-side-menu/field-settings/field-settings.component";
+import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
 
 
 @NgModule({
@@ -32,8 +33,11 @@ import { FieldSettingsComponent } from "./settings-side-menu/field-settings/fiel
     CommonModule,
     NgSelectModule,
     FormsModule,
-    CKEditorModule
+    CKEditorModule,
+    DynamicFormModule
   ],
+  providers: [
+  ]
 })
 
 export class FormBuilderModule {}

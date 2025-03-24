@@ -14,4 +14,7 @@ export class FieldSettingsComponent {
 
   public editor = ClassicEditor;
 
+  setVisibility(event: boolean): void {
+    this.field.form.display.visible = !event;
+  }
 }
