@@ -1,6 +1,9 @@
 import { AfterViewInit, Component } from "@angular/core";
 import { Field, Model, Section } from "../../domain/dynamic-form-model";
 import UIkit from 'uikit';
+import { FormGroup } from "@angular/forms";
+import { FormControlService } from "../../services/form-control.service";
+import { WebsocketService } from "../../../app/services/websocket.service";
 
 export class SelectedSection {
   chapter: Section | null = null;
@@ -11,7 +14,8 @@ export class SelectedSection {
 
 @Component({
   selector: 'app-form-builder',
-  templateUrl: 'form-builder.component.html'
+  templateUrl: 'form-builder.component.html',
+  providers: [FormControlService, WebsocketService]
 })
 
 export class FormBuilderComponent implements AfterViewInit {
@@ -22,7 +26,7 @@ export class FormBuilderComponent implements AfterViewInit {
   currentField: Field | null = null;
   sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
-  // mockForm: FormGroup = new FormGroup({});
+  mockForm: FormGroup = new FormGroup({});
 
   ngAfterViewInit() {
     UIkit.modal('#fb-modal-full').show();

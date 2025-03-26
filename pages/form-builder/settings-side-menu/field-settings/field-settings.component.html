@@ -1,122 +1,89 @@
-<section>
+<section xmlns="http://www.w3.org/1999/html">
   <h6>Field settings</h6>
   <ul data-uk-accordion="multiple: true">
-    <li>
+    <li class="uk-open">
       <a class="uk-accordion-title" href>Label</a>
-      <div class="uk-accordion-content uk-padding-small uk-padding-remove-right uk-padding-remove-vertical">
-        <ul data-uk-accordion>
-          <li class="uk-open">
-            <a class="uk-accordion-title" href>Label text</a>
-            <div class="uk-accordion-content">
-              <div class="uk-margin">
-<!--                <label for="label" class="uk-form-label uk-margin-small-bottom"></label>-->
-                <div class="uk-form-controls">
-                  <ckeditor id="label" [editor]="editor"
-                            [(ngModel)]="field.label.text"
-                            [config]="{placeholder: 'Field label'}">
-                  </ckeditor>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>CSS classes</a>
-            <div class="uk-accordion-content">
-              <input type="text" class="uk-input" [(ngModel)]="field.label.cssClasses">
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>Styles</a>
-            <div class="uk-accordion-content">
-              <input type="text" class="uk-input" [(ngModel)]="field.label.style">
-            </div>
-          </li>
-        </ul>
+      <div class="uk-accordion-content">
+        <div class="uk-margin">
+          <label for="label" class="uk-text-muted uk-text-bold">Text</label>
+          <div class="uk-form-controls">
+            <ckeditor id="label" [editor]="editor" [(ngModel)]="field.label.text"
+                      [config]="{placeholder: 'Field label'}">
+            </ckeditor>
+          </div>
+        </div>
+        <div class="uk-margin">
+          <label for="labelCSS" class="uk-text-muted uk-text-bold">CSS classes</label>
+          <input id="labelCSS" type="text" class="uk-input" [(ngModel)]="field.label.cssClasses">
+        </div>
+        <div class="uk-margin">
+          <label for="labelStyles" class="uk-text-muted">Styles</label>
+          <input id="labelStyles" type="text" class="uk-input" [(ngModel)]="field.label.style">
+        </div>
       </div>
     </li>
     <li>
       <a class="uk-accordion-title" href>Description</a>
-      <div class="uk-accordion-content uk-padding-small uk-padding-remove-right uk-padding-remove-vertical">
-        <ul data-uk-accordion>
-          <li class="uk-open">
-            <a class="uk-accordion-title">Description text</a>
-            <div class="uk-accordion-content">
-<!--        <label for="description" class="uk-form-label uk-margin-small-bottom"></label>-->
-              <div class="uk-form-controls">
-                <ckeditor id="description" [editor]="editor"
-                          [(ngModel)]="field.form.description.text"
-                          [config]="{placeholder: 'Give a description for the field'}">
-                </ckeditor>
-              </div>
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>CSS classes</a>
-            <div class="uk-accordion-content">
-              <input type="text" class="uk-input" [(ngModel)]="field.form.description.cssClasses">
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>Styles</a>
-            <div class="uk-accordion-content">
-              <input type="text" class="uk-input" [(ngModel)]="field.form.description.style">
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>Collapse large description</a>
-            <div class="uk-accordion-content">
-<!--              <label><input class="uk-radio" type="radio" [value]="true" name="descriptionShowMore"> True</label>-->
-<!--              <label><input class="uk-radio" type="radio" [value]="true" name="descriptionShowMore" checked> False</label>-->
-              <input id="descriptionShowMore" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.description.showLess">
-              <label for="descriptionShowMore" class="uk-checkbox-label uk-margin-small-left">Show less</label>
-            </div>
-          </li>
-        </ul>
+      <div class="uk-accordion-content">
+        <div class="uk-margin">
+          <label for="descriptionText" class="uk-text-muted uk-text-bold">Text</label>
+          <div class="uk-form-controls">
+            <ckeditor id="descriptionText" [editor]="editor"
+                      [(ngModel)]="field.form.description.text"
+                      [config]="{placeholder: 'Give a description for the field'}">
+            </ckeditor>
+          </div>
+        </div>
+        <div class="uk-margin">
+          <input id="descriptionShowMore" class="uk-checkbox" type="checkbox"
+                 [(ngModel)]="field.form.description.showLess">
+          <label for="descriptionShowMore" class="uk-checkbox-label uk-margin-small-left">Show less</label>
+        </div>
+        <div class="uk-margin">
+          <label for="descriptionCSS" class="uk-text-muted uk-text-bold">CSS classes</label>
+          <input id="descriptionCSS" type="text" class="uk-input" [(ngModel)]="field.form.description.cssClasses">
+        </div>
+        <div class="uk-margin">
+          <label for="descriptionStyles" class="uk-text-muted uk-text-bold">Styles</label>
+          <input id="descriptionStyles" type="text" class="uk-input" [(ngModel)]="field.form.description.style">
+        </div>
       </div>
     </li>
     <li>
       <a class="uk-accordion-title" href>Suggestion</a>
-      <div class="uk-accordion-content uk-padding-small uk-padding-remove-right uk-padding-remove-vertical">
-        <ul data-uk-accordion>
-          <li class="uk-open">
-            <a class="uk-accordion-title">Suggestion text</a>
-            <div class="uk-accordion-content">
-              <!--        <label for="description" class="uk-form-label uk-margin-small-bottom"></label>-->
-              <div class="uk-form-controls">
-                <ckeditor id="suggestion" [editor]="editor"
-                          [(ngModel)]="field.form.suggestion.text"
-                          [config]="{placeholder: 'Give a short suggestion for the field'}">
-                </ckeditor>
-              </div>
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>CSS classes</a>
-            <div class="uk-accordion-content">
-              <input type="text" class="uk-input" [(ngModel)]="field.form.suggestion.cssClasses">
-            </div>
-          </li>
-          <li>
-            <a class="uk-accordion-title" href>Styles</a>
-            <div class="uk-accordion-content">
-              <input type="text" class="uk-input" [(ngModel)]="field.form.suggestion.style">
-            </div>
-          </li>
-        </ul>
+      <div class="uk-accordion-content">
+        <div class="uk-margin">
+          <label for="suggestionText" class="uk-text-muted uk-text-bold">Text</label>
+          <div class="uk-form-controls">
+            <ckeditor id="suggestionText" [editor]="editor"
+                      [(ngModel)]="field.form.suggestion.text"
+                      [config]="{placeholder: 'Give a short suggestion for the field'}">
+            </ckeditor>
+          </div>
+        </div>
+        <a class="uk-accordion-title" href>CSS classes</a>
+        <div class="uk-accordion-content">
+          <label for="suggestionCSS" class="uk-text-muted uk-text-bold">CSS classes</label>
+          <input id="suggestionCSS" type="text" class="uk-input" [(ngModel)]="field.form.suggestion.cssClasses">
+        </div>
+        <a class="uk-accordion-title" href>Styles</a>
+        <div class="uk-accordion-content">
+          <label for="suggestionStyles" class="uk-text-muted uk-text-bold">Styles</label>
+          <input id="suggestionStyles" type="text" class="uk-input" [(ngModel)]="field.form.suggestion.style">
+        </div>
       </div>
-    </li>
     <li>
       <a class="uk-accordion-title" href>Advanced</a>
-      <div class="uk-accordion-content uk-padding-small uk-padding-remove-right uk-padding-remove-bottom uk-grid uk-child-width-1-1">
-        <div class="uk-margin-small-bottom">
+      <div class="uk-accordion-content uk-grid uk-child-width-1-1">
+        <div class="uk-text-muted uk-text-bold">
           <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
           <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
         </div>
-        <div class="uk-margin-small-bottom">
+        <div class="uk-text-muted uk-text-bold">
           <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
           <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
         </div>
-        <div class="uk-margin-small-bottom">
+        <div class="uk-text-muted uk-text-bold">
           <input id="hidden" class="uk-checkbox" type="checkbox" [ngModel]="!field.form.display.visible"
                  (ngModelChange)="setVisibility($event)">
           <label for="hidden" class="uk-checkbox-label uk-margin-small-left">Hide field</label>
@@ -124,12 +91,5 @@
       </div>
     </li>
   </ul>
-
-  <div class="uk-margin">
-    <label for="type" class="uk-form-label uk-text-muted">Type</label>
-    <select id="type" class="uk-select">
-<!--      <option *ngFor="let"></option>-->
-    </select>
-  </div>
 
 </section>

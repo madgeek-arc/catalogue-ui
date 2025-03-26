@@ -40,9 +40,12 @@
               <div *ngIf="section">
                 <h5>{{ section.name ?? 'Untitled Section' }}</h5>
                 <p [innerHTML]="section.description"></p>
-                <ng-container *ngFor="let field of section.fields; let i = index" >
-                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>
-                </ng-container>
+                <div *ngFor="let field of section.fields; let i = index" class="uk-margin-bottom">
+<!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
+                  <div class="uk-card uk-card-body uk-card-default" (click)="fieldSelection(field)">
+                    <app-field [form]="mockForm" [fieldData]="field" [readonly]="true"></app-field>
+                  </div>
+                </div>
 
                 <div class="uk-card uk-card-default uk-card-body uk-padding-small">
                   <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
