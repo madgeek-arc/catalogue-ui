@@ -1,9 +1,10 @@
 import { AfterViewInit, Component } from "@angular/core";
 import { Field, Model, Section } from "../../domain/dynamic-form-model";
-import UIkit from 'uikit';
 import { FormGroup } from "@angular/forms";
 import { FormControlService } from "../../services/form-control.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
+import { cloneDeep } from 'lodash';
+import UIkit from 'uikit';
 
 export class SelectedSection {
   chapter: Section | null = null;
@@ -50,5 +51,15 @@ export class FormBuilderComponent implements AfterViewInit {
   fieldSelection(field: Field): void {
     this.currentField = field;
     this.sideMenuSettingsType = 'field'
+  }
+
+  deleteField(position: number): void {
+    this.section.fields.splice(position, 1);
+    this.sideMenuSettingsType = 'section';
+  }
+
+  duplicateField(field: Field): void {
+    this.section.fields.push(cloneDeep(field));
+    // this.currentField = this.section.fields[this.section.fields.length - 1];
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Field, Section } from "../../../domain/dynamic-form-model";
 import { SelectedSection } from "../form-builder.component";
 
@@ -7,15 +7,11 @@ import { SelectedSection } from "../form-builder.component";
   templateUrl: './side-menu.component.html'
 })
 
-export class SideMenuComponent implements OnInit {
+export class SideMenuComponent {
 
   @Input() chapterModel: Section[];
   @Output() userSelection = new EventEmitter<SelectedSection>();
-  // groups: Group[] = []
 
-  ngOnInit() {
-    // this.groups.push(new Group());
-  }
 
   pushChapter() {
     this.chapterModel.push(new Section());

@@ -42,7 +42,11 @@
                 <p [innerHTML]="section.description"></p>
                 <div *ngFor="let field of section.fields; let i = index" class="uk-margin-bottom">
 <!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
-                  <div class="uk-card uk-card-body uk-card-default" (click)="fieldSelection(field)">
+                  <div class="uk-card uk-card-body uk-card-default uk-padding-small" (click)="fieldSelection(field)">
+                    <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+                      <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
+                      <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
+                    </div>
                     <app-field [form]="mockForm" [fieldData]="field" [readonly]="true"></app-field>
                   </div>
                 </div>

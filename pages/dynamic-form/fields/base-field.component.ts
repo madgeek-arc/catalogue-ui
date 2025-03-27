@@ -1,4 +1,14 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from "@angular/core";
 import { AbstractControl, FormArray, FormGroup, FormGroupDirective, UntypedFormArray, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { Field } from "../../../domain/dynamic-form-model";
 import { WebsocketService } from "../../../../app/services/websocket.service";
@@ -221,6 +231,15 @@ export class BaseFieldComponent implements OnInit {
 
   unsavedChangesPrompt() {
     this.hasChanges.emit(true);
+  }
+
+  appendAsterisk(content: string): string {
+    const closingTag = '</p>';
+
+    if (content.trim().endsWith(closingTag)) // Insert (*) before the </p>
+      return content.replace(/<\/p>\s*$/, ' (*)</p>');
+    else // Just append (*) at the end
+      return content + ' (*)';
   }
 
   timeOut(ms: number) {
