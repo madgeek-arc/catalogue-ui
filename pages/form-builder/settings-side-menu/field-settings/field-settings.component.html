@@ -2,6 +2,16 @@
   <h6>Field settings</h6>
   <ul data-uk-accordion="multiple: true">
     <li class="uk-open">
+      <a class="uk-accordion-title" href>General</a>
+      <div class="uk-accordion-content ">
+        <div class="uk-margin">
+          <label for="placeholder" class="uk-text-muted uk-text-bold">Placeholder</label>
+          <input id="placeholder" type="text" class="uk-input" [(ngModel)]="field.form.placeholder"
+                 (ngModelChange)="setPlaceholderWithReferenceUpdate()">
+        </div>
+      </div>
+    </li>
+    <li class="uk-open">
       <a class="uk-accordion-title" href>Label</a>
       <div class="uk-accordion-content">
         <div class="uk-margin">
@@ -74,7 +84,7 @@
       </div>
     <li>
       <a class="uk-accordion-title" href>Advanced</a>
-      <div class="uk-accordion-content uk-grid uk-child-width-1-1">
+      <div class="uk-accordion-content ">
         <div class="uk-text-muted uk-text-bold">
           <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
           <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>

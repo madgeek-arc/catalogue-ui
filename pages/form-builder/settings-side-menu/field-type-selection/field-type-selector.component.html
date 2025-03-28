@@ -1,8 +1,14 @@
 <div>
   <h6 class="uk-flex uk-flex-middle"><span class="material-icons uk-margin-small-right">chat</span> Create New Question</h6>
   <p class="uk-text-muted">Text field</p>
+  <a class="uk-flex uk-flex-middle" (click)="addField('string')">
+    <span class="material-icons uk-margin-small-right">horizontal_rule</span>Simple input
+  </a>
   <a class="uk-flex uk-flex-middle" (click)="addField('richText')">
     <span class="material-icons uk-margin-small-right">data_object</span>Rich text
+  </a>
+  <a class="uk-flex uk-flex-middle" (click)="addField('largeText')">
+    <span class="material-icons uk-margin-small-right">dehaze</span>Text area
   </a>
 
 </div>

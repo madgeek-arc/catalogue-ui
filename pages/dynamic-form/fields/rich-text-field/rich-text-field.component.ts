@@ -1,19 +1,24 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
-import { BaseFieldComponent } from "../base-field.component";
+import { BaseFieldComponent } from "../utils/base-field.component";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import editor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
   selector: 'app-rich-text-field',
   templateUrl: './rich-text-field.component.html'
 })
 
-export class RichTextFieldComponent extends BaseFieldComponent implements OnInit {
+export class RichTextFieldComponent extends BaseFieldComponent implements OnInit, OnChanges {
 
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   public editor = ClassicEditor;
+
+  ngOnChanges(changes: SimpleChanges) {
+    // console.log(changes);
+  }
 
   /** Bitsets--> **/
 

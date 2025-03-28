@@ -14,10 +14,19 @@ export class SettingsSideMenuComponent {
   @Input() sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
   @Output() emitSideMenuSettingsChange = new EventEmitter<typeof SelectedSection.prototype.sideMenuSettingsType>();
+  @Output() emitFieldReferenceChange = new EventEmitter<void>();
 
   fieldSettings(position: number) {
     this.field = this.section.fields[position];
     this.emitSideMenuSettingsChange.emit('field');
+  }
+
+  updateFieldReference() {
+    if (this.field.typeInfo.type === 'richText') {
+      this.emitFieldReferenceChange.emit();
+    }
+
+    return;
   }
 
 }

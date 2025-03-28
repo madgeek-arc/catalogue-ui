@@ -1,5 +1,42 @@
+<!--<app-base-field-html [form]="form" [fieldData]="fieldData"-->
+<!--                     [editMode]="editMode" [readonly]="readonly"-->
+<!--                     [hideField]="hideField" (emitPush)="push()">-->
+<!--  <div *ngIf="fieldData.typeInfo.multiplicity" [formArrayName]="fieldData.name" class="multiplicity">-->
+<!--    <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">-->
+<!--      <div class="uk-margin-medium-top uk-width-9-10">-->
+<!--        <ckeditor [id]="inputId+'.['+i+']'" [formControlName]="i" [config]="{placeholder: fieldData.form.placeholder}"-->
+<!--                  (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"-->
+<!--                  [ngClass]="{'uk-form-danger': checkFormValidity()}">-->
+<!--        </ckeditor>-->
+<!--      </div>-->
+<!--      <a *ngIf="fieldAsFormArray().length > 1 && editMode"-->
+<!--         (click)="remove(i); updateBitSet(fieldData); unsavedChangesPrompt()"-->
+<!--         class="remove-element uk-animation-slide-top-small uk-margin-small-left">-->
+<!--        <span class="material-icons">clear</span>-->
+<!--      </a>-->
+<!--    </div>-->
+<!--    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"-->
+<!--         [innerHTML]="fieldData.form.suggestion.text">-->
+<!--    </div>-->
+
+<!--    <div *ngIf="editMode" class="uk-width-9-10 uk-text-center uk-margin-top">-->
+<!--      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">-->
+<!--        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>-->
+<!--      </a>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div class="uk-margin-medium-top uk-width-9-10 noMultiplicity">-->
+<!--    <ckeditor [id]="inputId" [editor]="editor" [formControlName]="fieldData.name"-->
+<!--              (ngModelChange)="updateBitSet(fieldData)" [config]="{placeholder: fieldData.form.placeholder}"-->
+<!--              [ngClass]="{'uk-form-danger': checkFormValidity()}">-->
+<!--    </ckeditor>-->
+<!--  </div>-->
+
+<!--</app-base-field-html>-->
+
 <form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-      [ngClass]="{'uk-hidden clear-style': hideField, 'uk-disabled': readonly}">
+      [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible, 'uk-disabled': readonly}">
 
   <div class="uk-margin-bottom">
     <span *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"

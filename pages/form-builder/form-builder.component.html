@@ -44,6 +44,14 @@
 <!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
                   <div class="uk-card uk-card-body uk-card-default uk-padding-small" (click)="fieldSelection(field)">
                     <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+                      <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                        <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
+                        <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
+                      </span>
+                      <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                        <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
+                        <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
+                      </span>
                       <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
                       <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
                     </div>
@@ -66,7 +74,9 @@
             <div class="sidebar_active uk-width-1-5">
               <aside class="sidebar sidebar_active">
                 <app-settings-side-menu [chapter]="chapter" [section]="section" [field]="currentField"
-                                        [sideMenuSettingsType]="sideMenuSettingsType" (emitSideMenuSettingsChange)="sideMenuSettingsType = $event">
+                                        [sideMenuSettingsType]="sideMenuSettingsType"
+                                        (emitFieldReferenceChange)="updateReference()"
+                                        (emitSideMenuSettingsChange)="sideMenuSettingsType = $event">
                 </app-settings-side-menu>
               </aside>
             </div>

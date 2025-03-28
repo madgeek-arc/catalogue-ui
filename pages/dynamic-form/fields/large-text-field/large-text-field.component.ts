@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
-import { BaseFieldComponent } from "../base-field.component";
+import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
   selector: 'app-large-text-field',

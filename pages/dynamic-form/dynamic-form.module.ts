@@ -21,11 +21,13 @@ import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { ChooseOneComponent } from "./fields/choose-one-composite/choose-one.component";
 import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module";
 import { ScaleFieldComponent } from "./fields/scale-field/scale-field.component";
-import { BaseFieldComponent } from "./fields/base-field.component";
+import { BaseFieldComponent } from "./fields/utils/base-field.component";
+import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component";
 
 @NgModule({
   declarations: [
     BaseFieldComponent,
+    BaseFieldHtmlComponent,
     StringFieldComponent,
     CompositeFieldComponent,
     DynamicFormFieldsComponent,

@@ -41,7 +41,7 @@
 
   <ng-template #noMultiplicity>
     <input [formControlName]="fieldData.name" [id]="inputId" class="uk-input uk-width-9-10 uk-animation-scale-up"
-           [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
+           [placeholder]="fieldData.form.placeholder ?? ''"
            (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(false)"
            [ngClass]="{'uk-form-danger': checkFormValidity() }">
 <!--      {{form.controls[fieldData.name].errors | json}}-->

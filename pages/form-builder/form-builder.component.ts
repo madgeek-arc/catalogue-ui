@@ -62,4 +62,12 @@ export class FormBuilderComponent implements AfterViewInit {
     this.section.fields.push(cloneDeep(field));
     // this.currentField = this.section.fields[this.section.fields.length - 1];
   }
+
+  updateReference(): void {
+    for (let i = 0; i < this.section.fields.length; i++) {
+      this.section.fields[i] = {...this.section.fields[i]};
+    }
+    // this.section.fields
+    console.log(this.section);
+  }
 }

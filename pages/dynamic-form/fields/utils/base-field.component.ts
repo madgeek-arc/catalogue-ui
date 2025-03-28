@@ -1,19 +1,11 @@
+import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import {
-  Component,
-  DestroyRef,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges
-} from "@angular/core";
-import { AbstractControl, FormArray, FormGroup, FormGroupDirective, UntypedFormArray, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
-import { Field } from "../../../domain/dynamic-form-model";
-import { WebsocketService } from "../../../../app/services/websocket.service";
-import { FormControlService } from "../../../services/form-control.service";
+  AbstractControl, FormArray, FormGroup, FormGroupDirective, UntypedFormArray, UntypedFormControl, UntypedFormGroup
+} from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Field } from "../../../../domain/dynamic-form-model";
+import { WebsocketService } from "../../../../../app/services/websocket.service";
+import { FormControlService } from "../../../../services/form-control.service";
 import { cloneDeep, isEqual } from 'lodash';
 
 interface PositionChange {
