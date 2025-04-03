@@ -36,13 +36,20 @@
               <div *ngIf="chapter">
                 <h3>{{ chapter.name ?? 'Untitled Chapter' }}</h3>
                 <p [innerHTML]="chapter.description"></p>
+                <div *ngIf="!currentSection">
+                  <div *ngFor="let section of chapter.subSections; let i=index" class="uk-margin-bottom">
+                    <a (click)="this.currentSection = section; sideMenuSettingsType = 'section'">
+                      {{ section.name ?? 'Untitled Section ' + (i+1) }}
+                    </a>
+                  </div>
+                </div>
               </div>
-              <div *ngIf="section">
-                <h5>{{ section.name ?? 'Untitled Section' }}</h5>
-                <p [innerHTML]="section.description"></p>
-                <div *ngFor="let field of section.fields; let i = index" class="uk-margin-bottom">
+              <div *ngIf="currentSection">
+                <h5>{{ currentSection.name ?? 'Untitled Section' }}</h5>
+                <p [innerHTML]="currentSection.description"></p>
+                <div *ngFor="let field of currentSection.fields; let i = index" class="uk-margin-bottom">
 <!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
-                  <div class="uk-card uk-card-body uk-card-default uk-padding-small" (click)="fieldSelection(field)">
+                  <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up" (click)="fieldSelection(field)">
                     <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
                       <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                         <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
@@ -55,8 +62,21 @@
                       <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
                       <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
                     </div>
-                    <app-field [form]="mockForm" [fieldData]="field" [readonly]="true"></app-field>
+
+                    <div class="uk-grid uk-grid-column-collapse">
+                      <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand">
+                      </app-field-templates>
+                      <div *ngIf="currentSection.fields.length > 1" class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
+                        <div *ngIf="i !==0" class="uk-margin-small" title="Move up">
+                          <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
+                        </div>
+                        <div *ngIf="i !== currentSection.fields.length-1" class="uk-margin-small" title="Move down" >
+                          <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
 
                 <div class="uk-card uk-card-default uk-card-body uk-padding-small">
@@ -73,7 +93,7 @@
 
             <div class="sidebar_active uk-width-1-5">
               <aside class="sidebar sidebar_active">
-                <app-settings-side-menu [chapter]="chapter" [section]="section" [field]="currentField"
+                <app-settings-side-menu [chapter]="chapter" [section]="currentSection" [field]="currentField"
                                         [sideMenuSettingsType]="sideMenuSettingsType"
                                         (emitFieldReferenceChange)="updateReference()"
                                         (emitSideMenuSettingsChange)="sideMenuSettingsType = $event">

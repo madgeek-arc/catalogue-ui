@@ -14,6 +14,11 @@ import { SectionSettingsComponent } from "./settings-side-menu/section-settings/
 import { FieldTypeSelectionComponent } from "./settings-side-menu/field-type-selection/field-type-selection.component";
 import { FieldSettingsComponent } from "./settings-side-menu/field-settings/field-settings.component";
 import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
+import { FieldTemplatesComponent } from "./field-templates/field-templates.component";
+import {
+  CatalogueUiReusableComponentsModule
+} from "../../shared/reusable-components/catalogue-ui-reusable-components.module";
+import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module";
 
 
 @NgModule({
@@ -26,6 +31,7 @@ import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
     SectionSettingsComponent,
     FieldSettingsComponent,
     FieldTypeSelectionComponent,
+    FieldTemplatesComponent,
     FieldBuilderComponent,
     TypeSelectorComponent
   ],
@@ -34,7 +40,9 @@ import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
     NgSelectModule,
     FormsModule,
     CKEditorModule,
-    DynamicFormModule
+    DynamicFormModule,
+    CatalogueUiReusableComponentsModule,
+    CatalogueUiSharedModule
   ],
   providers: [
   ]

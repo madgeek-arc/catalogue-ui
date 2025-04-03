@@ -1,4 +1,6 @@
 import BitSet from 'bitset/bitset';
+import jp from 'jsonpath';
+import { Utils } from "../shared/utils/utils";
 
 export class Required {
   topLevel: number;
@@ -189,6 +191,18 @@ export class Model {
     this.locked = false;
     this.active = false;
   }
+
+  get maxId(): number {
+    let maxId = 0;
+    const ids: string[] = jp.query(this, '$..sections..name');
+    ids.forEach(id => {
+      if (Utils.isNumeric(id) && (parseInt(id) > maxId))
+        maxId = parseInt(id);
+    });
+
+    return maxId;
+  }
+
 }
 
 export class Configuration {

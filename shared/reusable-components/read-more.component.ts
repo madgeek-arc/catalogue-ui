@@ -4,19 +4,16 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild } from "@angular/core";
 
 @Component({
-  selector: "read-more",
+  selector: 'read-more',
   template: `
     <div [class.collapsed]="isCollapsed" [style.height]="isCollapsed ? maxHeight+'px' : 'auto'" #readMoreDiv>
       <ng-content></ng-content>
     </div>
     <a *ngIf="isCollapsable" (click)="isCollapsed =! isCollapsed">View {{isCollapsed ? 'more' : 'less'}}...</a>
   `,
-  styles: [`
-    div.collapsed {
-      overflow: hidden;
-    }
-  `]
+  styles: [`div.collapsed {overflow: hidden;}`]
 })
+
 export class ReadMoreComponent implements AfterContentInit {
   //the text that need to be put in the container
   //@Input() text: string;
@@ -27,8 +24,7 @@ export class ReadMoreComponent implements AfterContentInit {
   public isCollapsed: boolean = false;
   public isCollapsable: boolean = false;
 
-  constructor(public elementRef: ElementRef) {
-  }
+  constructor(public elementRef: ElementRef) {}
 
   ngAfterContentInit() {
     setTimeout(_ => {
@@ -37,27 +33,22 @@ export class ReadMoreComponent implements AfterContentInit {
       if (currentHeight > this.maxHeight || currentHeight === 0) {
         this.isCollapsed = true;
         this.isCollapsable = true;
-      } else {
-      }
+      } else {}
     }, 200);
   }
 }
 
 @Component({
-  selector: "read-more-text",
+  selector: 'read-more-text',
   template: `
-    <div [innerHTML]="text" [class.collapsed]="isCollapsed" [style.height]="isCollapsed ? maxHeight+'px' : 'auto'"
-         #readMoreDiv>
+    <div [innerHTML]="text" [class.collapsed]="isCollapsed" [style.height]="isCollapsed ? maxHeight+'px' : 'auto'" #readMoreDiv>
       <!--{{text}}-->
     </div>
     <a *ngIf="isCollapsable" (click)="isCollapsed =! isCollapsed">View {{isCollapsed ? 'more' : 'less'}}...</a>
   `,
-  styles: [`
-    div.collapsed {
-      overflow: hidden;
-    }
-  `]
+  styles: [`div.collapsed {overflow: hidden;}`]
 })
+
 export class ReadMoreTextComponent extends ReadMoreComponent implements OnChanges, AfterViewInit {
 
   @Input() text: string = "";

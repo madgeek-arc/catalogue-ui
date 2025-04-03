@@ -33,13 +33,28 @@ export class SideMenuComponent {
     this.emitSelection(null, null, null, 'main');
   }
 
-  addSection(position) {
+  addSection(position: number) {
     if (this.chapterModel[position].subSections === null)
       this.chapterModel[position].subSections = [];
 
     this.chapterModel[position].subSections.push(new Section());
 
     this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[this.chapterModel[position].subSections.length-1], null, 'section');
+  }
+
+  deleteSection(position: number, index: number) {
+    this.chapterModel[position].subSections.splice(index, 1);
+
+    if (this.chapterModel[position].subSections[index]) {
+      this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[index], null, 'section');
+      return;
+    } else if (this.chapterModel[position].subSections[index-1]) {
+      this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[index-1], null, 'section');
+      return;
+    }
+
+    this.emitSelection(this.chapterModel[position], null, null, 'chapter');
+    return;
   }
 
   addField(positionI: string | number, positionJ: string | number) {

@@ -1,0 +1,47 @@
+<div [ngClass]="{'uk-disabled': readonly}">
+  <div class="uk-margin-bottom">
+    <span *ngIf="fieldData.label.text" class="uk-form-label {{fieldData.label.cssClasses}}"
+          [attr.for]="fieldData.name" style="{{fieldData.label.style}}"
+          [innerHTML]="fieldData.form.mandatory ? appendAsterisk(fieldData.label.text) : fieldData.label.text">
+    </span>
+  </div>
+
+  <ng-container *ngIf="fieldData.form.description?.showLess; else noReadMore">
+    <div class="uk-form-description uk-margin-bottom {{fieldData.form.description.cssClasses}}"
+         *ngIf="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
+      <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
+    </div>
+  </ng-container>
+  <ng-template #noReadMore>
+    <div *ngIf="fieldData.form.description?.text" style="{{fieldData.form.description.style}}"
+         class="uk-form-description uk-margin-bottom {{fieldData.form.description.cssClasses}}"
+         [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
+    </div>
+  </ng-template>
+
+  <ng-container [ngSwitch]="fieldData.typeInfo.type">
+    <ng-container *ngSwitchCase="'richText'">
+      <div class="uk-margin-medium-top uk-animation-scale-up">
+        <ckeditor [editor]="editor" [config]="{placeholder: fieldData.form.placeholder}"></ckeditor>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'string'">
+      <input class="uk-input uk-animation-scale-up" [placeholder]="fieldData.form.placeholder ?? ''">
+    </ng-container>
+    <ng-container *ngSwitchCase="'largeText'">
+    <textarea class="uk-textarea uk-animation-scale-up" [placeholder]="fieldData.form.placeholder ?? ''"></textarea>
+      <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values.length === 1" style="float: right;">
+        <span> 0/ {{fieldData.typeInfo.values[0]}}</span>
+      </div>
+    </ng-container>
+  </ng-container>
+
+
+  <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
+    <div class="uk-suggestion {{fieldData.form.suggestion.cssClasses}}"
+         style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">
+    </div>
+  </div>
+</div>
+
+<!--<pre>{{ fieldData | json }}</pre>-->

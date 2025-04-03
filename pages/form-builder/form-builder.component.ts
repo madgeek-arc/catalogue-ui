@@ -23,22 +23,24 @@ export class FormBuilderComponent implements AfterViewInit {
 
   model: Model = new Model();
   chapter: Section | null = null;
-  section: Section | null = null;
+  currentSection: Section | null = null;
   currentField: Field | null = null;
   sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
-  mockForm: FormGroup = new FormGroup({});
+  maxId = 0;
 
   ngAfterViewInit() {
     UIkit.modal('#fb-modal-full').show();
+    console.log(this.model.maxId);
+    this.maxId = this.model.maxId;
   }
 
   setCurrentSection(selection: SelectedSection) {
-    this.chapter = this.section = this.currentField = null;
+    this.chapter = this.currentSection = this.currentField = null;
 
     this.chapter = selection.chapter;
     if (selection.section) {
-      this.section = selection.section;
+      this.currentSection = selection.section;
     }
     if (selection.field) {
       this.currentField = selection.field;
@@ -53,21 +55,34 @@ export class FormBuilderComponent implements AfterViewInit {
     this.sideMenuSettingsType = 'field'
   }
 
+  /** Field manipulation **/
   deleteField(position: number): void {
-    this.section.fields.splice(position, 1);
+    this.currentSection.fields.splice(position, 1);
     this.sideMenuSettingsType = 'section';
   }
 
   duplicateField(field: Field): void {
-    this.section.fields.push(cloneDeep(field));
+    this.currentSection.fields.push(cloneDeep(field));
     // this.currentField = this.section.fields[this.section.fields.length - 1];
   }
 
+  move(from: number, to: number): void {
+    console.log('from: %d - to: %d',from, to);
+    if (from >= this.currentSection.fields.length || to >= this.currentSection.fields.length || from < 0 || to < 0) {
+      console.error('Invalid move position');
+      return;
+    }
+    this.currentSection.fields.splice(to, 0, this.currentSection.fields.splice(from, 1)[0]);
+
+    console.log(this.currentSection.fields);
+  }
+
+  /** Other **/
   updateReference(): void {
-    for (let i = 0; i < this.section.fields.length; i++) {
-      this.section.fields[i] = {...this.section.fields[i]};
+    for (let i = 0; i < this.currentSection.fields.length; i++) {
+      this.currentSection.fields[i] = {...this.currentSection.fields[i]};
     }
     // this.section.fields
-    console.log(this.section);
+    console.log(this.currentSection);
   }
 }
