@@ -5,6 +5,14 @@
       <a class="uk-accordion-title" href>General</a>
       <div class="uk-accordion-content ">
         <div class="uk-margin">
+          <label for="fieldType" class="uk-text-muted uk-text-bold">Input type</label>
+          <select id="fieldType" type="select" class="uk-select" [(ngModel)]="field.typeInfo.type">
+            <option value="string">Simple input</option>
+            <option value="richText">Rich text</option>
+            <option value="largeText">Text area</option>
+          </select>
+        </div>
+        <div class="uk-margin">
           <label for="placeholder" class="uk-text-muted uk-text-bold">Placeholder</label>
           <input id="placeholder" type="text" class="uk-input" [(ngModel)]="field.form.placeholder"
                  (ngModelChange)="setPlaceholderWithReferenceUpdate()">
@@ -71,13 +79,11 @@
             </ckeditor>
           </div>
         </div>
-        <a class="uk-accordion-title" href>CSS classes</a>
-        <div class="uk-accordion-content">
+        <div class="uk-margin">
           <label for="suggestionCSS" class="uk-text-muted uk-text-bold">CSS classes</label>
           <input id="suggestionCSS" type="text" class="uk-input" [(ngModel)]="field.form.suggestion.cssClasses">
         </div>
-        <a class="uk-accordion-title" href>Styles</a>
-        <div class="uk-accordion-content">
+        <div class="uk-margin">
           <label for="suggestionStyles" class="uk-text-muted uk-text-bold">Styles</label>
           <input id="suggestionStyles" type="text" class="uk-input" [(ngModel)]="field.form.suggestion.style">
         </div>
@@ -97,6 +103,10 @@
           <input id="hidden" class="uk-checkbox" type="checkbox" [ngModel]="!field.form.display.visible"
                  (ngModelChange)="setVisibility($event)">
           <label for="hidden" class="uk-checkbox-label uk-margin-small-left">Hide field</label>
+        </div>
+        <div class="uk-margin">
+          <label for="fieldName" class="uk-text-muted uk-text-bold">JSON model field name</label>
+          <input id="fieldName" type="text" class="uk-input" [(ngModel)]="field.name">
         </div>
       </div>
     </li>
