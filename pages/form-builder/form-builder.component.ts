@@ -16,6 +16,7 @@ export class SelectedSection {
 @Component({
   selector: 'app-form-builder',
   templateUrl: 'form-builder.component.html',
+  styleUrls: ['form-builder.component.scss'],
   providers: [FormControlService, WebsocketService]
 })
 

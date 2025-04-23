@@ -105,7 +105,12 @@
           <label for="hidden" class="uk-checkbox-label uk-margin-small-left">Hide field</label>
         </div>
         <div class="uk-margin">
-          <label for="fieldName" class="uk-text-muted uk-text-bold">JSON model field name</label>
+          <div class="uk-flex uk-flex-middle">
+            <label for="fieldName" class="uk-text-muted uk-text-bold uk-flex uk-flex-middle">JSON model field name
+              <span class="material-symbols-sharp"
+                    data-uk-tooltip="Define the property name in the answer JSON object. If none provided the field id will be used instead. (A unique name is recommended).">info</span>
+            </label>
+          </div>
           <input id="fieldName" type="text" class="uk-input" [(ngModel)]="field.name">
         </div>
       </div>

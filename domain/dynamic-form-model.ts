@@ -110,8 +110,8 @@ export class Field {
   display: Display;
   subFields: Field[];
 
-  constructor(type?: typeof TypeInfo.prototype.type) {
-    this.id = '';
+  constructor(id: string, type?: typeof TypeInfo.prototype.type) {
+    this.id = id;
     this.name = '';
     this.parentId = '';
     this.parent = '';
@@ -192,7 +192,7 @@ export class Model {
     this.active = false;
   }
 
-  get maxId(): number {
+  static get maxId(): number {
     let maxId = 0;
     const ids: string[] = jp.query(this, '$..sections..name');
     ids.forEach(id => {
