@@ -57,14 +57,14 @@ export class SideMenuComponent {
     return;
   }
 
-  addField(positionI: string | number, positionJ: string | number) {
-    if (this.chapterModel[positionI].subSections[positionJ].fields === null)
-      this.chapterModel[positionI].subSections[positionJ].fields = [];
-
-    this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
-
-    this.emitSelection(this.chapterModel[positionI], this.chapterModel[positionI].subSections[positionJ], this.chapterModel[positionI].subSections[positionJ].fields[this.chapterModel[positionI].subSections[positionJ].fields.length-1], 'field');
-  }
+  // addField(positionI: string | number, positionJ: string | number) {
+  //   if (this.chapterModel[positionI].subSections[positionJ].fields === null)
+  //     this.chapterModel[positionI].subSections[positionJ].fields = [];
+  //
+  //   this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
+  //
+  //   this.emitSelection(this.chapterModel[positionI], this.chapterModel[positionI].subSections[positionJ], this.chapterModel[positionI].subSections[positionJ].fields[this.chapterModel[positionI].subSections[positionJ].fields.length-1], 'field');
+  // }
 
   emitSelection(chapter: Section, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
     this.userSelection.emit({chapter: chapter, section: section, field, sideMenuSettingsType: type});

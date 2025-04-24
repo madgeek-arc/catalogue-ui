@@ -192,7 +192,7 @@ export class Model {
     this.active = false;
   }
 
-  static get maxId(): number {
+  get maxId(): number {
     let maxId = 0;
     const ids: string[] = jp.query(this, '$..sections..name');
     ids.forEach(id => {

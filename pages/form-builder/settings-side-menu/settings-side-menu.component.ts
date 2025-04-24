@@ -14,11 +14,14 @@ export class SettingsSideMenuComponent {
   @Input() sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
   @Output() emitSideMenuSettingsChange = new EventEmitter<typeof SelectedSection.prototype.sideMenuSettingsType>();
+  @Output() emitField = new EventEmitter<Field>();
   @Output() emitFieldReferenceChange = new EventEmitter<void>();
 
   fieldSettings(position: number) {
     this.field = this.section.fields[position];
+    console.log(this.field.id);
     this.emitSideMenuSettingsChange.emit('field');
+    this.emitField.emit(this.field);
   }
 
   updateFieldReference() {

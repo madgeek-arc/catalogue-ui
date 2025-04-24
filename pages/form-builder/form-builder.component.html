@@ -50,7 +50,7 @@
                 <div *ngFor="let field of currentSection.fields; let i = index" class="uk-margin-bottom">
 <!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
                   <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
-                       [ngClass]="{'highlight-field': currentField.id === field.id}" (click)="fieldSelection(field)">
+                       [ngClass]="{'highlight-field': currentField?.id === field.id}" (click)="fieldSelection(field)">
                     <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
                       <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                         <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
@@ -97,9 +97,11 @@
                 <app-settings-side-menu [chapter]="chapter" [section]="currentSection" [field]="currentField"
                                         [sideMenuSettingsType]="sideMenuSettingsType"
                                         (emitFieldReferenceChange)="updateReference()"
-                                        (emitSideMenuSettingsChange)="sideMenuSettingsType = $event">
+                                        (emitSideMenuSettingsChange)="sideMenuSettingsType = $event"
+                                        (emitField)="currentField = $event">
                 </app-settings-side-menu>
               </aside>
+
             </div>
 
           </div>
@@ -107,7 +109,7 @@
 
         <div class="uk-modal-footer">
           Footer
-          <pre>{{ model | json }}</pre>
+          <pre>{{ currentField | json }}</pre>
         </div>
       </div>
     </div>

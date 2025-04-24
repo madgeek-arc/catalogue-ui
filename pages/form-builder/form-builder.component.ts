@@ -5,6 +5,7 @@ import { FormControlService } from "../../services/form-control.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
 import { cloneDeep } from 'lodash';
 import UIkit from 'uikit';
+import { IdGenerationService } from "../../services/id-generation.service";
 
 export class SelectedSection {
   chapter: Section | null = null;
@@ -28,12 +29,11 @@ export class FormBuilderComponent implements AfterViewInit {
   currentField: Field | null = null;
   sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
 
-  maxId = 0;
+  constructor(private idService: IdGenerationService) {}
 
   ngAfterViewInit() {
     UIkit.modal('#fb-modal-full').show();
-    console.log(this.model.maxId);
-    this.maxId = this.model.maxId;
+    this.idService.findMaxId(this.model);
   }
 
   setCurrentSection(selection: SelectedSection) {
