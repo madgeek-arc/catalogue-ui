@@ -272,7 +272,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     clearTimeout(this.timeoutId);
   }
 
-  /** Find changed field and get value --> **/
+  /** Find if any field has changes and get value --> **/
   detectChanges(currentValue: any, previousValue: any, path: string): string[] {
     const changedFields: string[] = [];
     for (const field of Object.keys(currentValue)) {
@@ -318,7 +318,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     }
     return control ? control : null;
   }
-  /** <-- Find changed field and get value **/
+  /** <-- Find if any field has and get value **/
 
   validateForm() {
     for (const chapterChangeMapElement of this.chapterChangeMap) {
@@ -337,7 +337,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       let str = '';
       for (let key in this.form.value) {
         // console.log(this.form.get('extras.'+key));
-        // console.log(key + ': '+ this.form.get(key).valid);
+        console.log(key + ': '+ this.form.get(key).valid);
         if (!this.form.get(key).valid) {
           str =  str + '\n\t-> ' + key;
         }

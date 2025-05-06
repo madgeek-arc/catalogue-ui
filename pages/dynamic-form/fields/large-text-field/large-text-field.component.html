@@ -34,7 +34,7 @@
               [ngClass]="{'uk-form-danger': checkFormValidity()}">
     </textarea>
     <div class="uk-width-9-10">
-      <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values.length === 1" style="float: right;">
+      <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values?.length === 1" style="float: right;">
         <span> {{form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0}}</span>
         <span>/ {{fieldData.typeInfo.values[0]}}</span>
       </div>
