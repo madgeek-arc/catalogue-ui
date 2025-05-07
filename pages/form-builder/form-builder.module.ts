@@ -19,6 +19,7 @@ import {
   CatalogueUiReusableComponentsModule
 } from "../../shared/reusable-components/catalogue-ui-reusable-components.module";
 import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module";
+import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module
     CKEditorModule,
     DynamicFormModule,
     CatalogueUiReusableComponentsModule,
-    CatalogueUiSharedModule
+    CatalogueUiSharedModule,
+    SafeUrlPipe
   ],
   providers: [
   ]

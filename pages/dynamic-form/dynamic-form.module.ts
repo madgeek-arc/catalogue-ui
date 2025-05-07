@@ -23,6 +23,7 @@ import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module
 import { ScaleFieldComponent } from "./fields/scale-field/scale-field.component";
 import { BaseFieldComponent } from "./fields/utils/base-field.component";
 import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component";
+import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component
     CatalogueUiReusableComponentsModule,
     CKEditorModule,
     CatalogueUiSharedModule,
+    SafeUrlPipe,
   ],
   exports: [
     ChapterEditComponent,
