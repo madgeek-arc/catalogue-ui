@@ -46,8 +46,10 @@ import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
     CatalogueUiSharedModule,
     SafeUrlPipe
   ],
-  providers: [
-  ]
+  exports: [
+    SideMenuComponent
+  ],
+  providers: []
 })
 
 export class FormBuilderModule {}
