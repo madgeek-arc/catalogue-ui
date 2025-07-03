@@ -4,7 +4,7 @@ import { FormGroup } from "@angular/forms";
 import { FormControlService } from "../../services/form-control.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
 import { cloneDeep } from 'lodash';
-import UIkit from 'uikit';
+import * as UIkit from 'uikit';
 import { IdGenerationService } from "../../services/id-generation.service";
 
 export class SelectedSection {

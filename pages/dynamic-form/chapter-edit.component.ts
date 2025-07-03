@@ -5,7 +5,7 @@ import {UntypedFormArray, UntypedFormBuilder} from '@angular/forms';
 import {Section, Field, HandleBitSet, Tab, Tabs} from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
 
-import UIkit from 'uikit';
+import * as UIkit from 'uikit';
 
 @Component({
   selector: 'app-chapter-edit',

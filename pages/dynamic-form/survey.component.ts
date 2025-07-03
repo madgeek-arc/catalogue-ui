@@ -22,7 +22,7 @@ import { PdfGenerateService } from "../../services/pdf-generate.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
 import { UserActivity } from "../../../app/domain/userInfo";
 import { cloneDeep, isEqual } from "lodash";
-import UIkit from "uikit";
+import * as UIkit from 'uikit';
 import BitSet from "bitset";
 
 declare var require: any;

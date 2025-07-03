@@ -1,5 +1,5 @@
 import { AfterViewInit, Directive, ElementRef, EventEmitter, Output } from '@angular/core';
-import UIkit from 'uikit';
+import * as UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 
 UIkit.use(Icons);
@@ -21,7 +21,7 @@ export class SortableDirective implements AfterViewInit {
   ngAfterViewInit(): void {
     const container = this.el.nativeElement as HTMLElement;
 
-    UIkit.sortable(container, {'cls-custom': '', handle: '.uk-sortable-handle'});
+    UIkit.sortable(container, {clsCustom: '', handle: '.uk-sortable-handle'});
     container.addEventListener('moved', (event: any) => {
       event.stopPropagation(); // Prevent the event from propagating to the outer container
 
