@@ -3,8 +3,9 @@ import {Field} from "../../../domain/dynamic-form-model";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
-  selector: 'app-field-builder',
-  templateUrl: './field-builder.component.html'
+    selector: 'app-field-builder',
+    templateUrl: './field-builder.component.html',
+    standalone: false
 })
 
 export class FieldBuilderComponent implements OnInit {

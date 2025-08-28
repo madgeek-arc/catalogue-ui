@@ -3,8 +3,9 @@ import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
-  selector: 'app-radio-button-field',
-  templateUrl: './radio-button-field.component.html'
+    selector: 'app-radio-button-field',
+    templateUrl: './radio-button-field.component.html',
+    standalone: false
 })
 
 export class RadioButtonFieldComponent extends BaseFieldComponent implements OnInit {

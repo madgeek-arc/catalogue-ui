@@ -3,8 +3,9 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditorComponent } from "@ckeditor/ckeditor5-angular";
 
 @Component({
-  selector: 'app-main-info',
-  templateUrl: './main-info.component.html',
+    selector: 'app-main-info',
+    templateUrl: './main-info.component.html',
+    standalone: false
 })
 
 export class MainInfoComponent {

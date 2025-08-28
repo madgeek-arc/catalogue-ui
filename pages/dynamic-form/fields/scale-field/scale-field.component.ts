@@ -4,10 +4,11 @@ import {UntypedFormControl, UntypedFormGroup, FormGroupDirective} from "@angular
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
-  selector: 'app-scale-field',
-  templateUrl: 'scale-field.component.html',
-  styleUrls: ['scale-field.component.scss'],
-  styles: ['.clear-style { height: 0 !important;}']
+    selector: 'app-scale-field',
+    templateUrl: 'scale-field.component.html',
+    styleUrls: ['scale-field.component.scss'],
+    styles: ['.clear-style { height: 0 !important;}'],
+    standalone: false
 })
 
 export class ScaleFieldComponent implements AfterContentInit {

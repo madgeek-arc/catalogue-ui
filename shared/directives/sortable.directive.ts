@@ -11,7 +11,8 @@ interface PositionChange {
 }
 
 @Directive({
-  selector: '[appSortable]'
+    selector: '[appSortable]',
+    standalone: false
 })
 export class SortableDirective implements AfterViewInit {
   @Output() positionChanged = new EventEmitter<PositionChange>();

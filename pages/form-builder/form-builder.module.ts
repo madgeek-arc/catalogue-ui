@@ -28,11 +28,11 @@ import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
     SideMenuComponent,
     SettingsSideMenuComponent,
     MainInfoComponent,
-    ChapterSettingsComponent,
+    // ChapterSettingsComponent,
     SectionSettingsComponent,
     FieldSettingsComponent,
     FieldTypeSelectionComponent,
-    FieldTemplatesComponent,
+    // FieldTemplatesComponent,
     FieldBuilderComponent,
     TypeSelectorComponent
   ],
@@ -44,7 +44,9 @@ import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
     DynamicFormModule,
     CatalogueUiReusableComponentsModule,
     CatalogueUiSharedModule,
-    SafeUrlPipe
+    SafeUrlPipe,
+    ChapterSettingsComponent,
+    FieldTemplatesComponent
   ],
   exports: [
     SideMenuComponent

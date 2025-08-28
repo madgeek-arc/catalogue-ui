@@ -4,8 +4,9 @@ import {Section, Tab} from "../../../../domain/dynamic-form-model";
 import BitSet from "bitset";
 
 @Component({
-  selector: 'app-chapter-compare',
-  templateUrl: 'compare-chapter.component.html'
+    selector: 'app-chapter-compare',
+    templateUrl: 'compare-chapter.component.html',
+    standalone: false
 })
 
 export class CompareChapterComponent implements OnChanges {
