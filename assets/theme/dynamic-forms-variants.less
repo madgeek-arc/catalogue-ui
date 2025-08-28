@@ -1,0 +1,47 @@
+.form-tabs.uk-tab > * > a,
+.chapter-tabs.uk-tab > * > a {
+  text-transform: none;
+  font-weight: 300;
+  font-size: 16px;
+  letter-spacing: 0;
+  color: #212121 !important;
+  opacity: 0.6;
+  padding: 10px 15px;
+}
+
+.form-tabs.uk-tab > .uk-active > a,
+.chapter-tabs.uk-tab > .uk-active > a {
+  color: #fff !important;
+  background: @global-primary;
+  opacity: 1;
+  border-radius: 4px;
+  font-weight: normal;
+}
+
+.form-tabs.uk-tab-left::before,
+.chapter-tabs.uk-tab-left::before {
+  border-left: none;
+}
+
+.form-tabs.uk-tab-left > li {
+  margin-bottom: 15px;
+}
+
+.uk-tab > * > a .circle-number {
+  width: 25px;
+  line-height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  background: #F0F5F5;
+  letter-spacing: 0;
+  color: #4D4D4D;
+  opacity: 1;
+}
+
+.uk-tab > .uk-active > a .circle-number {
+  opacity: 0.6;
+}
+
+.circle-number .fa.fa-check {
+  color: @global-primary;
+}

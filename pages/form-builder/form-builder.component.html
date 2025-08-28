@@ -16,8 +16,8 @@
         <div class="uk-modal-body uk-padding-remove" >
           <div class="uk-grid uk-grid-column-collapse">
 
-            <div class="sidebar_active uk-width-1-6">
-              <aside class="sidebar sidebar_active">
+            <div class="uk-width-1-6 uk-section-primary uk-preserve-color">
+              <aside class="">
 
                 <app-side-menu [chapterModel]="model.sections" (userSelection)="setCurrentSection($event)">
                 </app-side-menu>
@@ -92,8 +92,8 @@
             </div>
 
 
-            <div class="sidebar_active uk-width-1-5">
-              <aside class="sidebar sidebar_active">
+            <div class="uk-width-1-5 uk-section-primary uk-preserve-color">
+              <aside class="">
                 <app-settings-side-menu [chapter]="chapter" [section]="currentSection" [field]="currentField"
                                         [sideMenuSettingsType]="sideMenuSettingsType"
                                         (emitFieldReferenceChange)="updateReference()"
