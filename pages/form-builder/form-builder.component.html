@@ -65,8 +65,7 @@
                     </div>
 
                     <div class="uk-grid uk-grid-column-collapse">
-                      <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand">
-                      </app-field-templates>
+                      <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
                       <div *ngIf="currentSection.fields.length > 1" class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
                         <div *ngIf="i !==0" class="uk-margin-small" data-uk-tooltip="Move up">
                           <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>

@@ -3,8 +3,9 @@ import { Field, Section, TypeInfo } from "../../../../domain/dynamic-form-model"
 import { IdGenerationService } from "../../../../services/id-generation.service";
 
 @Component({
-  selector: 'app-field-type-selections',
-  templateUrl: './field-type-selector.component.html'
+    selector: 'app-field-type-selections',
+    templateUrl: './field-type-selector.component.html',
+    standalone: false
 })
 
 export class FieldTypeSelectionComponent {

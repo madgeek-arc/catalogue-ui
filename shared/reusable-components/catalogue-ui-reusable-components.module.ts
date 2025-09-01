@@ -1,23 +1,20 @@
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {ReadMoreComponent, ReadMoreTextComponent} from './read-more.component';
-import {HttpClientJsonpModule, HttpClientModule} from "@angular/common/http";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReadMoreComponent, ReadMoreTextComponent } from './read-more.component';
+import { provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from "@angular/common/http";
 
 @NgModule({
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        HttpClientJsonpModule
-    ],
-    declarations: [
-        ReadMoreComponent,
-        ReadMoreTextComponent,
-    ],
-    exports: [
-        ReadMoreComponent,
-        ReadMoreTextComponent,
-    ],
-    providers: []
+  declarations: [
+    ReadMoreComponent,
+    ReadMoreTextComponent,
+  ],
+  exports: [
+    ReadMoreComponent,
+    ReadMoreTextComponent,
+  ],
+  imports: [CommonModule],
+  providers: [provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())]
 })
+
 export class CatalogueUiReusableComponentsModule {
 }

@@ -5,9 +5,10 @@ import {FormControlService} from "../../../../services/form-control.service";
 import {URLValidator} from "../../../../shared/validators/generic.validator";
 
 @Component({
-  selector: 'app-vocabulary-field',
-  templateUrl: './vocabulary-field.component.html',
-  styleUrls: ['./vocabulary-field.component.scss']
+    selector: 'app-vocabulary-field',
+    templateUrl: './vocabulary-field.component.html',
+    styleUrls: ['./vocabulary-field.component.scss'],
+    standalone: false
 })
 
 export class VocabularyFieldComponent implements OnInit {

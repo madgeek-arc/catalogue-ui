@@ -4,9 +4,10 @@ import {Field, Model, Section} from "../../../../domain/dynamic-form-model";
 import {FormControlService} from "../../../../services/form-control.service";
 
 @Component({
-  selector: 'app-compare-surveys',
-  templateUrl: 'compare-surveys.component.html',
-  providers: [FormControlService]
+    selector: 'app-compare-surveys',
+    templateUrl: 'compare-surveys.component.html',
+    providers: [FormControlService],
+    standalone: false
 })
 
 export class CompareSurveysComponent implements OnChanges{

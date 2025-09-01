@@ -3,8 +3,9 @@ import {Field} from "../../../../domain/dynamic-form-model";
 import {UntypedFormGroup, FormGroupDirective} from "@angular/forms";
 
 @Component({
-  selector: 'app-radio-grid',
-  templateUrl: './radio-grid-field.component.html'
+    selector: 'app-radio-grid',
+    templateUrl: './radio-grid-field.component.html',
+    standalone: false
 })
 
 export class RadioGridFieldComponent implements OnInit {

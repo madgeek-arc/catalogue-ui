@@ -3,8 +3,9 @@ import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
-  selector: 'app-string-url-email-field',
-  templateUrl: './string-field.component.html'
+    selector: 'app-string-url-email-field',
+    templateUrl: './string-field.component.html',
+    standalone: false
 })
 
 export class StringFieldComponent extends BaseFieldComponent {
