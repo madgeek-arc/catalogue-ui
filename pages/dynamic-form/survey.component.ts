@@ -147,7 +147,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
           ctrl.setValue(value.value, {emitEvent: true});
           this.previousValue = cloneDeep(this.form.value);
         } else {
-          console.log('This case is redundant, this message should not be seen')
+          console.log('This case is redundant, this message should not be seen');
           // console.log(path[path.length-1].split('[')[1].split(']')[0].match(/^-?\d+$/));
           const position = path[path.length-1].split('[')[1].split(']')[0];
           // console.log(position.match(/^-?\d+$*/));
@@ -440,7 +440,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   pushToFormArray(name: string, length: number, arrayIndex?: number) {
     let field = this.getModelData(this.model.sections, name);
     // console.log(name)
-    while (this.getFormControl(this.form, name, arrayIndex).length < length) {
+    while (this.getFormControl(this.form, name, arrayIndex)?.length < length) {
       this.getFormControl(this.form, name, arrayIndex).push(this.formControlService.createField(field));
     }
   }
