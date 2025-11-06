@@ -5,6 +5,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 @Component(({
   selector: 'app-field-templates',
   templateUrl: './field-templates.component.html',
+  standalone: false
 }))
 
 export class FieldTemplatesComponent {

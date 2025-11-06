@@ -3,8 +3,9 @@ import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'app-date-field',
-  templateUrl: 'date-field.component.html'
+    selector: 'app-date-field',
+    templateUrl: 'date-field.component.html',
+    standalone: false
 })
 
 export class DateFieldComponent implements OnInit {

@@ -3,8 +3,9 @@ import { Field } from "../../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
-  selector: 'app-field-settings',
-  templateUrl: './field-settings.component.html',
+    selector: 'app-field-settings',
+    templateUrl: './field-settings.component.html',
+    standalone: false
 })
 
 export class FieldSettingsComponent {

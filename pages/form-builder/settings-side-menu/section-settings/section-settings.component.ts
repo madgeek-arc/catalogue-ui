@@ -3,8 +3,9 @@ import { Section } from "../../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
-  selector: 'app-section-settings',
-  templateUrl: './section-settings.component.html'
+    selector: 'app-section-settings',
+    templateUrl: './section-settings.component.html',
+    standalone: false
 })
 
 export class SectionSettingsComponent {

@@ -3,8 +3,9 @@ import { Field } from "../../../../domain/dynamic-form-model";
 import { UntypedFormGroup } from "@angular/forms";
 
 @Component({
-  selector: 'app-base-field-html',
-  templateUrl: './base-field-html.component.html',
+    selector: 'app-base-field-html',
+    templateUrl: './base-field-html.component.html',
+    standalone: false
 })
 
 export class BaseFieldHtmlComponent {

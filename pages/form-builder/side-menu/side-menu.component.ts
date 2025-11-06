@@ -3,8 +3,9 @@ import { Field, Section } from "../../../domain/dynamic-form-model";
 import { SelectedSection } from "../form-builder.component";
 
 @Component({
-  selector: 'app-side-menu',
-  templateUrl: './side-menu.component.html'
+    selector: 'app-side-menu',
+    templateUrl: './side-menu.component.html',
+    standalone: false
 })
 
 export class SideMenuComponent {

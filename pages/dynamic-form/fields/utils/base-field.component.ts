@@ -15,8 +15,9 @@ interface PositionChange {
 }
 
 @Component({
-  template: ``,
-  styles: ['.clear-style { height: 0 !important;}'],
+    template: ``,
+    styles: ['.clear-style { height: 0 !important;}'],
+    standalone: false
 })
 
 export class BaseFieldComponent implements OnInit {

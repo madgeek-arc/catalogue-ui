@@ -3,8 +3,9 @@ import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'app-checkbox-field',
-  templateUrl: './checkbox-field.component.html'
+    selector: 'app-checkbox-field',
+    templateUrl: './checkbox-field.component.html',
+    standalone: false
 })
 
 export class CheckboxFieldComponent implements OnInit {

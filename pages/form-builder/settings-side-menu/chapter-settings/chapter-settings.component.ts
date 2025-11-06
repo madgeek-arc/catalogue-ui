@@ -5,6 +5,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 @Component(({
   selector: 'app-chapter-settings',
   templateUrl: './chapter-settings.component.html',
+  standalone: false
 }))
 
 export class ChapterSettingsComponent {

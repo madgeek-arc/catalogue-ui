@@ -3,8 +3,9 @@ import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
-  selector: 'app-number-field',
-  templateUrl: './number-field.component.html'
+    selector: 'app-number-field',
+    templateUrl: './number-field.component.html',
+    standalone: false
 })
 
 export class NumberFieldComponent extends BaseFieldComponent implements OnInit {

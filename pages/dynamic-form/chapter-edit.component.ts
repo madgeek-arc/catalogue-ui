@@ -8,9 +8,10 @@ import BitSet from "bitset";
 import UIkit from 'uikit';
 
 @Component({
-  selector: 'app-chapter-edit',
-  templateUrl: './chapter.component.html',
-  providers: [FormControlService]
+    selector: 'app-chapter-edit',
+    templateUrl: './chapter.component.html',
+    providers: [FormControlService],
+    standalone: false
 })
 export class ChapterEditComponent implements OnChanges{
 
