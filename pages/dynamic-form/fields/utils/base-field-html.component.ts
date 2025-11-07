@@ -1,11 +1,22 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
-import { UntypedFormGroup } from "@angular/forms";
+import { ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
+import { NgClass, NgIf } from "@angular/common";
+import { SafeUrlPipe } from "../../../../shared/pipes/safeUrlPipe";
+import {
+  CatalogueUiReusableComponentsModule
+} from "../../../../shared/reusable-components/catalogue-ui-reusable-components.module";
 
 @Component({
-    selector: 'app-base-field-html',
-    templateUrl: './base-field-html.component.html',
-    standalone: false
+  selector: 'app-base-field-html',
+  templateUrl: './base-field-html.component.html',
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    NgIf,
+    SafeUrlPipe,
+    CatalogueUiReusableComponentsModule
+  ]
 })
 
 export class BaseFieldHtmlComponent {

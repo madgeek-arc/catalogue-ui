@@ -1,0 +1,33 @@
+import { Component, EventEmitter, Output } from "@angular/core";
+import { BaseFieldComponent } from "../utils/base-field.component";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { ReactiveFormsModule } from "@angular/forms";
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { NgClass } from "@angular/common";
+
+@Component({
+  selector: 'app-boolean-field',
+  imports: [
+    ReactiveFormsModule,
+    BaseFieldHtmlComponent,
+    NgClass
+  ],
+  templateUrl: './boolean-field.component.html'
+})
+
+export class BooleanFieldComponent extends BaseFieldComponent {
+
+  @Output() handleBitSets = new EventEmitter<Field>();
+  @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
+
+  /** Bitsets--> **/
+
+  updateBitSet(fieldData: Field) {
+    this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
+      if (fieldData.form.mandatory) {
+        this.handleBitSets.emit(fieldData);
+      }
+    });
+  }
+
+}

@@ -1,0 +1,16 @@
+<ng-container [formGroup]="form">
+
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly" [hideField]="hideField"
+                       (emitPush)="push()">
+    <div multiplicity></div>
+    <div noMultiplicity>
+      <label class="uk-form-label">
+        <input class="uk-checkbox" type="checkbox" [formControlName]="fieldData.name" [id]="inputId"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(true)"
+               [ngClass]="{'uk-form-danger': checkFormValidity()}">
+        <span class="uk-checkbox-label">{{ fieldData.typeInfo.values[0] }}</span>
+      </label>
+    </div>
+  </app-base-field-html>
+
+</ng-container>

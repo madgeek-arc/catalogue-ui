@@ -1,46 +1,25 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-      [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible}">
+<ng-container [formGroup]="form">
 
-  <div class="uk-margin-bottom">
-    <span *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
-          [attr.for]="fieldData.name" style="{{fieldData.label.style}}" [innerHTML]="fieldData.label.text">
-    </span>
-    <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
-  </div>
-  <ng-container *ngIf="fieldData.form.description?.showLess; else noReadMore">
-    <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-         *ngIf="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-      <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
-    </div>
-  </ng-container>
-  <ng-template #noReadMore>
-    <div *ngIf="fieldData.form.description?.text" style="{{fieldData.form.description.style}}"
-         class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-         [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
-    </div>
-  </ng-template>
-<!--  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"-->
-<!--       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">-->
-<!--  </div>-->
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly" [hideField]="hideField"
+                       (emitPush)="push()">
 
-  <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity;" [formArrayName]="fieldData.name">
-    <!--To add multiplicity if needed-->
-  </div>
-  <ng-template #noMultiplicity>
-    <textarea [formControlName]="fieldData.name" [id]="inputId" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
-              [placeholder]="fieldData.form.placeholder ?? ''"
-              [maxlength]="fieldData.typeInfo.values ? fieldData.typeInfo.values[0] : null"
-              (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(false)"
-              [ngClass]="{'uk-form-danger': checkFormValidity()}">
-    </textarea>
-    <div class="uk-width-9-10">
-      <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values?.length === 1" style="float: right;">
-        <span> {{form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0}}</span>
-        <span>/ {{fieldData.typeInfo.values[0]}}</span>
+    <div multiplicity></div>
+
+    <ng-container noMultiplicity>
+      <textarea [formControlName]="fieldData.name" [id]="inputId" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
+                [placeholder]="fieldData.form.placeholder ?? ''"
+                [maxlength]="fieldData.typeInfo.values ? fieldData.typeInfo.values[0] : null"
+                (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(false)"
+                [ngClass]="{'uk-form-danger': checkFormValidity()}">
+      </textarea>
+      <div class="uk-width-9-10">
+        <div class="uk-animation-scale-up" *ngIf="fieldData.typeInfo.values?.length === 1" style="float: right;">
+          <span> {{form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0}}</span>
+          <span>/ {{fieldData.typeInfo.values[0]}}</span>
+        </div>
       </div>
-    </div>
-    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
-    </div>
-  </ng-template>
-</form>
+    </ng-container>
+
+  </app-base-field-html>
+
+</ng-container>

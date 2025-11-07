@@ -67,6 +67,13 @@
                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-number-field>
               </div>
+              <div *ngIf="control.typeInfo.type === 'boolean'">
+                <app-boolean-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
+                                  [editMode]="editMode" [readonly]="readonly"
+                                  (handleBitSets)="handleBitsetOfChildren($event)"
+                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                </app-boolean-field>
+              </div>
               <div *ngIf="control.typeInfo.type === 'checkbox'" class="uk-form-controls">
                 <app-checkbox-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
                                     (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
@@ -178,6 +185,14 @@
                               (handleBitSets)="handleBitsetOfChildren($event)"
                               (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-number-field>
+          </div>
+
+          <div *ngIf="control.typeInfo.type === 'boolean'">
+            <app-boolean-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                              (hasChanges)="unsavedChangesPrompt()"
+                              (handleBitSets)="handleBitsetOfChildren($event)"
+                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+            </app-boolean-field>
           </div>
 
           <div *ngIf="control.typeInfo.type === 'checkbox'" class="uk-form-controls">

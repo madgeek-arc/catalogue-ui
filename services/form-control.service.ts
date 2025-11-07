@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Field, Required, Section } from '../domain/dynamic-form-model';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -78,16 +78,14 @@ export class FormControlService {
                 new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern('[+]?\\d+$')]))
                 : new UntypedFormControl(null, Validators.pattern('[+]?\\d+$'));
             } else if (formField.typeInfo.type === 'number') {
-              // if (formField.typeInfo.values) {
-                this.numberRegEx = this.calculateNumberOfDecimals(formField.typeInfo.values);
-                group[formField.name] = formField.form.mandatory ?
-                  new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
-                  : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.numberRegEx)]));
-              // } else {
-              //   group[formField.name] = formField.form.mandatory ?
-              //     new FormControl(null, Validators.required) : new FormControl(null);
-              // }
-
+              this.numberRegEx = this.calculateNumberOfDecimals(formField.typeInfo.values);
+              group[formField.name] = formField.form.mandatory ?
+                new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
+                : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.numberRegEx)]));
+            } else if (formField.typeInfo.type === 'boolean') {
+              group[formField.name] = new FormControl<boolean | null>(null);
+              if (formField.form.mandatory) // Todo: maybe check once at the end of the if else chain and set/add validator there
+                group[formField.name].setValidators(Validators.required);
             } else {
               group[formField.name] = formField.form.mandatory ? new UntypedFormControl(null, Validators.required)
                 : new UntypedFormControl(null);
@@ -132,14 +130,13 @@ export class FormControlService {
         new UntypedFormControl(null, [Validators.required, Validators.pattern(this.urlRegEx)])
             : new UntypedFormControl(null, Validators.pattern(this.urlRegEx));
       } else if (subField.typeInfo.type === 'number') {
-        // if (subField.typeInfo.values) {
         subGroup[subField.name] = subField.form.mandatory ?
           new UntypedFormControl(null, [Validators.required, Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))])
           : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))]));
-        // } else {
-        //   subGroup[subField.name] = subField.form.mandatory ?
-        //     new FormControl(null, Validators.required) : new FormControl(null);
-        // }
+      } else if (subField.typeInfo.type === 'boolean') {
+        subGroup[subField.name] = new FormControl<boolean | null>(null);
+        if (subField.form.mandatory)
+          subGroup[subField.name].setValidators(Validators.required);
       } else {
         subGroup[subField.name] = subField.form.mandatory ?
           new UntypedFormControl(null, Validators.required)

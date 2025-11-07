@@ -24,11 +24,11 @@ import { ScaleFieldComponent } from "./fields/scale-field/scale-field.component"
 import { BaseFieldComponent } from "./fields/utils/base-field.component";
 import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component";
 import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
+import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.component";
 
 @NgModule({
   declarations: [
     BaseFieldComponent,
-    BaseFieldHtmlComponent,
     StringFieldComponent,
     CompositeFieldComponent,
     DynamicFormFieldsComponent,
@@ -55,6 +55,8 @@ import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
     CKEditorModule,
     CatalogueUiSharedModule,
     SafeUrlPipe,
+    BaseFieldHtmlComponent,
+    BooleanFieldComponent,
   ],
   exports: [
     ChapterEditComponent,

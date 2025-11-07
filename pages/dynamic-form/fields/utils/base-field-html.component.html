@@ -1,5 +1,5 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-      [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible, 'uk-disabled': readonly}">
+<div class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
+     [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible, 'uk-disabled': readonly}">
 
   <div class="uk-margin-bottom">
     <span *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
@@ -22,15 +22,24 @@
   </ng-template>
 
   <ng-container *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
-    <ng-content select=".multiplicity"></ng-content>
+    <ng-content select="[multiplicity]"></ng-content>
+    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+         [innerHTML]="fieldData.form.suggestion.text">
+    </div>
+
+    <div *ngIf="!readonly" class="uk-width-9-10 uk-text-center uk-margin-top">
+      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
+        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
+      </a>
+    </div>
   </ng-container>
 
   <ng-template #noMultiplicity>
-    <ng-content select=".noMultiplicity"></ng-content>
+    <ng-content select="[noMultiplicity]"></ng-content>
     <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}"
-           style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" [innerHTML]="fieldData.form.suggestion.text"
+           style="{{fieldData.form.suggestion.style}}">
       </div>
     </div>
   </ng-template>
-</form>
+</div>
