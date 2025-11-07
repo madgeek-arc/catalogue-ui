@@ -209,8 +209,18 @@ export class BaseFieldComponent implements OnInit {
   }
 
   /** Other -------------------------------------------------------------------------------------------------------> **/
-  enableDisableField(value: string | number, enableValue: string) {
-    if (value?.toString() == enableValue) {
+  enableDisableField(value: string | number, enableValue: string | string[] | number[]) {
+    if (enableValue instanceof Array) {
+      const index = enableValue.findIndex((v: string | number) => v == value)
+      if (index >= 0) {
+        this.formControl.enable();
+        this.hideField = false;
+      } else {
+        this.formControl.disable();
+        this.formControl.reset();
+        this.hideField = true;
+      }
+    } else if (value?.toString() == enableValue) {
       this.formControl.enable();
       this.hideField = false;
     } else {
