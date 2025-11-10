@@ -52,7 +52,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() errorMessage = '';
   @Input() successMessage = '';
   @Output() valid = new EventEmitter<boolean>();
-  @Output() submit = new EventEmitter<[UntypedFormGroup, boolean, string?]>();
+  @Output() submit = new EventEmitter<UntypedFormGroup>();
 
   sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
@@ -231,7 +231,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
             this.changedField = this.detectChanges(changes, this.previousValue, '');
             // this.changedField.reverse();
             this.changedField.forEach( change => {
-              console.log(change);
+              // console.log(change);
               // console.log(this.getControl(change)?.value);
               let value = this.getControl(change)?.value;
               if (value === undefined) {
@@ -354,11 +354,11 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   parentSubmit() {
-    this.submit.emit([this.form, this.editMode, this.model.resourceType]);
+    this.submit.emit(this.form);
   }
 
   onSubmit() { // FIXME, or better yet remove me
-    window.scrollTo(0, 0);
+    window.scrollTo({top: 0, behavior: 'smooth'});
     // this.showLoader = true;
     // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
     let postMethod = '';
@@ -415,6 +415,12 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.chapterChangeMap.set(chapterId[0], true);
     } else {
       this.chapterChangeMap.set(chapterId[0], false);
+    }
+  }
+
+  clearChapterChangesMap() {
+    for (const key of this.chapterChangeMap.keys()) {
+      this.chapterChangeMap.set(key, false);
     }
   }
 
@@ -536,38 +542,8 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     }, 4550);
   }
 
-  getInitials(fullName: string) {
-    return fullName.split(" ").map((n)=>n[0]).join("")
-  }
-
-  actionIcon(action: string) {
-    switch (action) {
-      case 'view':
-        return 'visibility';
-      case 'validate':
-        return 'task_alt';
-      case 'edit':
-        return 'edit';
-      default:
-        return '';
-    }
-  }
-
-  actionTooltip(action: string) {
-    switch (action) {
-      case 'view':
-        return 'viewing';
-      case 'validate':
-        return 'validating';
-      case 'edit':
-        return 'editing';
-      default:
-        return '';
-    }
-  }
-
   toTop() {
-    window.scrollTo(0,0);
+    window.scroll({top: 0, behavior: 'smooth'});
   }
 
 }
