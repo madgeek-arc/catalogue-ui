@@ -8,7 +8,7 @@
         <input class="uk-checkbox" type="checkbox" [formControlName]="fieldData.name" [id]="inputId"
                (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(true)"
                [ngClass]="{'uk-form-danger': checkFormValidity()}">
-        <span class="uk-checkbox-label">{{ fieldData.typeInfo.values[0] }}</span>
+        <span class="uk-checkbox-label uk-margin-xsmall-left">{{ fieldData.typeInfo.values[0] }}</span>
       </label>
     </div>
   </app-base-field-html>

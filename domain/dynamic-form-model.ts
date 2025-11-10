@@ -20,7 +20,7 @@ export class Dependent {
 }
 
 export class TypeInfo {
-  type: 'composite' | 'string' | 'vocabulary' | 'select' | 'number' | 'boolean' | 'double' | 'largeText' | 'richText' | 'radio' | 'checkbox' | 'scale' | 'date' | 'url' | 'email' | 'phone' | 'chooseOne' | 'radioGrid';
+  type: 'composite' | 'string' | 'vocabulary' | 'select' | 'number' | 'double' | 'boolean' | 'largeText' | 'richText' | 'radio' | 'checkbox' | 'scale' | 'date' | 'url' | 'email' | 'phone' | 'chooseOne' | 'radioGrid';
   values: string[];
   vocabulary: string;
   multiplicity: boolean

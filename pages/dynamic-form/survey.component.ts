@@ -43,6 +43,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: Model = null;
   @Input() subType: string = null;
   @Input() activeUsers: UserActivity[] = null;
+  @Input() enableWebsocket = false;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() tabsHeader: string = null;
@@ -88,80 +89,82 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
 
-    this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: value => {
-        // console.log(value);
-        // console.log('User id: ' + this.wsService.userId);
-        // console.log('Message id: ' + value.sessionId);
-        if (value.sessionId === this.wsService.userId) { // Action made by me, ignore
-          console.log('It is I');
-          this.previousValue = cloneDeep(this.form.value);
-          return;
-        }
-        let ctrl = this.getControl(value.field);
-        let path = value.field.split('.');
-        if (value.action.type === 'DELETE') { // Remove at position
-          const position = path.pop().split('[')[1].split(']')[0];
-          if (!ctrl)
-            return;
-          console.log('Remove at position ' + position);
-          // console.log(ctrl.parent as FormArray);
-          (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
-          this.previousValue = cloneDeep(this.form.value);
-          return;
-        }
-        if (value.action.type === 'ADD') { // Push element
-          const position = path[path.length-1].split('[')[1].split(']')[0];
-          if ((position.match(/^-?\d+$/)).length === 1) {
-            console.log('add element at position ' + position);
-            let field = this.getModelData(this.model.sections, path[path.length - 2]);
-            path.pop();
-            ctrl = this.getControl(path.join('.'));
-            (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+    if (this.enableWebsocket) {
+      this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: value => {
+          // console.log(value);
+          // console.log('User id: ' + this.wsService.userId);
+          // console.log('Message id: ' + value.sessionId);
+          if (value.sessionId === this.wsService.userId) { // Action made by me, ignore
+            console.log('It is I');
             this.previousValue = cloneDeep(this.form.value);
-          }
-          return;
-        }
-        if (value.action.type === 'MOVE') { // Move element
-          const position = path.pop().split('[')[1].split(']')[0];
-          if (!ctrl)
             return;
-          // console.log(ctrl.parent as FormArray);
-          const movedCtrl = (ctrl.parent as FormArray).at(+position);
+          }
+          let ctrl = this.getControl(value.field);
+          let path = value.field.split('.');
+          if (value.action.type === 'DELETE') { // Remove at position
+            const position = path.pop().split('[')[1].split(']')[0];
+            if (!ctrl)
+              return;
+            console.log('Remove at position ' + position);
+            // console.log(ctrl.parent as FormArray);
+            (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
+            this.previousValue = cloneDeep(this.form.value);
+            return;
+          }
+          if (value.action.type === 'ADD') { // Push element
+            const position = path[path.length - 1].split('[')[1].split(']')[0];
+            if ((position.match(/^-?\d+$/)).length === 1) {
+              console.log('add element at position ' + position);
+              let field = this.getModelData(this.model.sections, path[path.length - 2]);
+              path.pop();
+              ctrl = this.getControl(path.join('.'));
+              (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+              this.previousValue = cloneDeep(this.form.value);
+            }
+            return;
+          }
+          if (value.action.type === 'MOVE') { // Move element
+            const position = path.pop().split('[')[1].split(']')[0];
+            if (!ctrl)
+              return;
+            // console.log(ctrl.parent as FormArray);
+            const movedCtrl = (ctrl.parent as FormArray).at(+position);
 
-          console.log('Remove at position ' + position);
-          (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
-          console.log('Insert at position ' + +value.action.index);
-          (ctrl.parent as FormArray).insert(+value.action.index, movedCtrl, {emitEvent: false});
-          this.previousValue = cloneDeep(this.form.value);
-          return;
-        }
-        if (ctrl) {
-          console.log('Setting value from websocket change.');
-          // console.log(ctrl);
-          if (typeof value.value === 'object' && value.value !== null) {
-            console.log('value is object', value.value);
-            // handle object creation
+            console.log('Remove at position ' + position);
+            (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
+            console.log('Insert at position ' + +value.action.index);
+            (ctrl.parent as FormArray).insert(+value.action.index, movedCtrl, {emitEvent: false});
+            this.previousValue = cloneDeep(this.form.value);
             return;
           }
-          ctrl.setValue(value.value, {emitEvent: true});
-          this.previousValue = cloneDeep(this.form.value);
-        } else {
-          console.log('This case is redundant, this message should not be seen');
-          // console.log(path[path.length-1].split('[')[1].split(']')[0].match(/^-?\d+$/));
-          const position = path[path.length-1].split('[')[1].split(']')[0];
-          // console.log(position.match(/^-?\d+$*/));
-          if ((position.match(/^-?\d+$/)).length === 1) {
-            console.log('add element at position ' + position);
-            let field = this.getModelData(this.model.sections, path[path.length-2]);
-            path.pop();
-            ctrl = this.getControl(path.join('.'));
-            (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+          if (ctrl) {
+            console.log('Setting value from websocket change.');
+            // console.log(ctrl);
+            if (typeof value.value === 'object' && value.value !== null) {
+              console.log('value is object', value.value);
+              // handle object creation
+              return;
+            }
+            ctrl.setValue(value.value, {emitEvent: true});
             this.previousValue = cloneDeep(this.form.value);
+          } else {
+            console.log('This case is redundant, this message should not be seen');
+            // console.log(path[path.length-1].split('[')[1].split(']')[0].match(/^-?\d+$/));
+            const position = path[path.length - 1].split('[')[1].split(']')[0];
+            // console.log(position.match(/^-?\d+$*/));
+            if ((position.match(/^-?\d+$/)).length === 1) {
+              console.log('add element at position ' + position);
+              let field = this.getModelData(this.model.sections, path[path.length - 2]);
+              path.pop();
+              ctrl = this.getControl(path.join('.'));
+              (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+              this.previousValue = cloneDeep(this.form.value);
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

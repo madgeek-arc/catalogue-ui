@@ -1,25 +1,33 @@
-<div [formGroup]="form" class="uk-margin-small-bottom" [ngClass]="{'uk-hidden clear-style': hideField}">
-  <div class="uk-margin-bottom">
-    <span *ngIf="fieldData.label.text" class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
-          [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
-          [innerHTML]="fieldData.label.text">
-    </span>
-    <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
-  </div>
-  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-  </div>
-  <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-    <!--To add multiplicity if needed-->
-  </div>
+<ng-container [formGroup]="form">
 
-  <ng-template #noMultiplicity>
-    <dp-date-picker [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-width-9-10"
-                    [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
-                    (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [config]="{format: 'YYYY-MM-DD'}"
-                    [ngClass]="{'uk-form-danger': checkFormValidity() }"></dp-date-picker>
-    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
-    </div>
-  </ng-template>
-</div>
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" (emitPush)="push()">
+
+    <div multiplicity></div>
+    <ng-container noMultiplicity>
+<!--      {{ formControl.value }}-->
+      <div class="input-wrapper">
+        <div class="input-box">
+          <div class="uk-flex uk-flex-middle">
+            <div *ngIf="!formControl.getRawValue()" class="input uk-text-truncate">
+              {{ fieldData.form.placeholder ?? 'Select Date' }}
+            </div>
+            <div *ngIf="formControl.getRawValue()" class="input uk-text-truncate">
+              {{ formControl.getRawValue() | date: 'dd-MM-yyyy' }}
+            </div>
+            <div class="uk-margin-small-left icon">
+              <span class="uk-flex">
+                <span class="material-symbols-outlined" style="font-size: 20px;">today</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="uk-dropdown" uk-dropdown="mode: click; flip: false ; shift: false" (click)="$event.stopPropagation()">
+        <mat-calendar [selected]="selectedDate" [startAt]="selectedDate" (selectedChange)="dateChanged($event)">
+        </mat-calendar>
+      </div>
+    </ng-container>
+
+  </app-base-field-html>
+</ng-container>

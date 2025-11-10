@@ -1,76 +1,52 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { ReactiveFormsModule } from "@angular/forms";
+import { DatePipe, NgIf } from "@angular/common";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { BaseFieldComponent } from "../utils/base-field.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
-    selector: 'app-date-field',
-    templateUrl: 'date-field.component.html',
-    standalone: false
+  selector: 'app-date-field',
+  templateUrl: 'date-field.component.html',
+  imports: [
+    MatDatepickerModule,
+    BaseFieldHtmlComponent,
+    DatePipe,
+    NgIf,
+    ReactiveFormsModule
+  ],
+  providers: [
+    provideNativeDateAdapter(),
+  ],
 })
 
-export class DateFieldComponent implements OnInit {
+export class DateFieldComponent extends BaseFieldComponent implements OnInit {
 
-  @Input() fieldData: Field;
-  @Input() editMode: any;
-  @Input() position?: number = null;
-
-  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: UntypedFormControl;
-  form!: UntypedFormGroup;
-  hideField: boolean = null;
-
-  constructor(private rootFormGroup: FormGroupDirective) {
-  }
+  selectedDate: Date;
 
   ngOnInit() {
-    if (this.position !== null) {
-      this.form = this.rootFormGroup.control.controls[this.position] as UntypedFormGroup;
-    } else {
-      this.form = this.rootFormGroup.control;
+    super.ngOnInit();
+    this.formControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value: Date | string | null) => {
+      this.selectedDate = value ? new Date(value) : null;
+    });
+    this.selectedDate = this.formControl.getRawValue() ? new Date(this.formControl.getRawValue()) : null;
+    // If formControl initially has a Date, normalize it too
+  }
+
+
+
+  dateChanged(event: Date) {
+    if (this.fieldData.typeInfo.values?.[0] === 'formatDateToString') {
+      this.formControl.setValue(event.toISOString().split('T')[0]);
+      return;
     }
-    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
-
-    if (this.fieldData.form.dependsOn) {
-      // console.log(this.fieldData.form.dependsOn);
-      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
-
-      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(
-        value => {
-          this.enableDisableField(value, this.fieldData.form.dependsOn.value);
-        },
-        error => {console.log(error)}
-      );
-    }
-
-    if (this.formControl.value?.includes('T')) { //parse Date
-      this.formControl.setValue(this.formControl.value.split('T')[0]);
-    }
-    // console.log(this.fieldData);
-    // console.log(this.form);
-    // console.log(this.formControl);
-  }
-
-  /** Handle Arrays --> **/
-
-  fieldAsFormArray() {
-    return this.formControl as unknown as UntypedFormArray;
-  }
-
-  push(field: string, required: boolean, type?: string) {
-    this.fieldAsFormArray().push(required ? new UntypedFormControl('', Validators.required) : new UntypedFormControl(''));
-  }
-
-  remove(field: string, i: number) {
-    this.fieldAsFormArray().removeAt(i);
-  }
-
-  /** check fields validity--> **/
-
-  checkFormValidity(): boolean {
-    return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
+    this.formControl.setValue(event.getTime());
   }
 
   /** Bitsets--> **/
@@ -81,29 +57,6 @@ export class DateFieldComponent implements OnInit {
         this.handleBitSets.emit(fieldData);
       }
     });
-  }
-
-
-  /** other stuff--> **/
-  unsavedChangesPrompt() {
-    this.hasChanges.emit(true);
-  }
-
-  enableDisableField(value, enableValue) {
-    if (value?.toString() == enableValue) {
-      this.formControl.enable();
-      this.hideField = false;
-    } else {
-      this.formControl.disable();
-      this.formControl.reset();
-      this.hideField = true;
-      // maybe add this if the remaining empty fields are a problem
-      // (this.formControl as unknown as FormArray).clear();
-    }
-  }
-
-  timeOut(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 }

@@ -36,7 +36,6 @@ import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.comp
     VocabularyFieldComponent,
     CheckboxFieldComponent,
     RadioButtonFieldComponent,
-    DateFieldComponent,
     LargeTextFieldComponent,
     RichTextFieldComponent,
     RadioGridFieldComponent,
@@ -57,6 +56,7 @@ import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.comp
     SafeUrlPipe,
     BaseFieldHtmlComponent,
     BooleanFieldComponent,
+    DateFieldComponent,
   ],
   exports: [
     ChapterEditComponent,
