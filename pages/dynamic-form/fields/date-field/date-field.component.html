@@ -1,25 +1,32 @@
 <div [formGroup]="form" class="uk-margin-small-bottom" [ngClass]="{'uk-hidden clear-style': hideField}">
   <div class="uk-margin-bottom">
-    <span *ngIf="fieldData.label.text" class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
-          [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
-          [innerHTML]="fieldData.label.text">
-    </span>
+    @if (fieldData.label.text) {
+      <span class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
+        [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
+        [innerHTML]="fieldData.label.text">
+      </span>
+    }
     <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
   </div>
-  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-  </div>
-  <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-    <!--To add multiplicity if needed-->
-  </div>
-
-  <ng-template #noMultiplicity>
-    <dp-date-picker [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-width-9-10"
-                    [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
-                    (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [config]="{format: 'YYYY-MM-DD'}"
-                    [ngClass]="{'uk-form-danger': checkFormValidity() }"></dp-date-picker>
-    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
+  @if (fieldData.form.description.text) {
+    <div class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+      [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
     </div>
-  </ng-template>
+  }
+  @if (fieldData.typeInfo.multiplicity) {
+    <div [formArrayName]="fieldData.name">
+      <!--To add multiplicity if needed-->
+    </div>
+  } @else {
+    <dp-date-picker [formControlName]="fieldData.name" [id]="fieldData.name" class="uk-width-9-10"
+      [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
+      (input)="updateBitSet(fieldData); unsavedChangesPrompt()" [config]="{format: 'YYYY-MM-DD'}"
+    [ngClass]="{'uk-form-danger': checkFormValidity() }"></dp-date-picker>
+    @if (fieldData.form.suggestion.text) {
+      <div class="uk-margin-top">
+        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
+      </div>
+    }
+  }
+
 </div>

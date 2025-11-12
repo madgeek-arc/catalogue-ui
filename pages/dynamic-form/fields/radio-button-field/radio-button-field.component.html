@@ -1,35 +1,43 @@
-<form *ngIf="formControl" [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-      [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible}">
-  <div class="uk-margin-bottom">
-    <span *ngIf="fieldData.label.text" class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
+@if (formControl) {
+  <form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
+    [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible}">
+    <div class="uk-margin-bottom">
+      @if (fieldData.label.text) {
+        <span class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
           [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
           [innerHTML]="fieldData.label.text">
-    </span>
-    <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
-  </div>
-  <div *ngIf="fieldData.form.description.text" class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-       [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-  </div>
-
-  <div *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity" [formArrayName]="fieldData.name">
-  <!--Add Multiplicity here if needed-->
-  </div>
-
-  <ng-template #noMultiplicity >
-    <div *ngFor="let value of fieldData.typeInfo.values; let i=index" class="uk-margin-small-top">
-      <label class="uk-form-label">
-        <input class="uk-radio uk-margin-small-right " type="radio" onchange="this.setAttribute('value', this.value)"
-               [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value" [id]="inputId+'['+i+']'"
-               (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(true)"
-               [ngClass]="{'uk-form-danger': checkFormValidity()}">
-        <span class="uk-radio-label">{{ value }}</span>
-      </label>
+        </span>
+      }
+      <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
     </div>
-
-    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-           [innerHTML]="fieldData.form.suggestion.text">
+    @if (fieldData.form.description.text) {
+      <div class="uk-form-description uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+        [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
       </div>
-    </div>
-  </ng-template>
-</form>
+    }
+    @if (fieldData.typeInfo.multiplicity) {
+      <div [formArrayName]="fieldData.name">
+        <!--Add Multiplicity here if needed-->
+      </div>
+    } @else {
+      @for (value of fieldData.typeInfo.values; track value; let i = $index) {
+        <div class="uk-margin-small-top">
+          <label class="uk-form-label">
+            <input class="uk-radio uk-margin-small-right " type="radio" onchange="this.setAttribute('value', this.value)"
+              [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value" [id]="inputId+'['+i+']'"
+              (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(true)"
+              [ngClass]="{'uk-form-danger': checkFormValidity()}">
+            <span class="uk-radio-label">{{ value }}</span>
+          </label>
+        </div>
+      }
+      @if (fieldData.form.suggestion.text) {
+        <div class="uk-margin-top">
+          <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
+            [innerHTML]="fieldData.form.suggestion.text">
+          </div>
+        </div>
+      }
+    }
+  </form>
+}

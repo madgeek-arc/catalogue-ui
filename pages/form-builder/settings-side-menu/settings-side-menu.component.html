@@ -1,16 +1,24 @@
 <div class="uk-padding-small">
-  <ng-container [ngSwitch]="sideMenuSettingsType">
-    <div *ngSwitchCase="'chapter'">
-      <app-chapter-settings [chapter]="chapter"></app-chapter-settings>
-    </div>
-    <div *ngSwitchCase="'section'">
-      <app-section-settings [section]="section"></app-section-settings>
-    </div>
-    <div *ngSwitchCase="'field'">
-      <app-field-settings [field]="field" (emitField)="updateFieldReference()"></app-field-settings>
-    </div>
-    <div *ngSwitchCase="'fieldSelector'">
-      <app-field-type-selections [section]="section" (emitField)="fieldSettings($event)"></app-field-type-selections>
-    </div>
-  </ng-container>
+  @switch (sideMenuSettingsType) {
+    @case ('chapter') {
+      <div>
+        <app-chapter-settings [chapter]="chapter"></app-chapter-settings>
+      </div>
+    }
+    @case ('section') {
+      <div>
+        <app-section-settings [section]="section"></app-section-settings>
+      </div>
+    }
+    @case ('field') {
+      <div>
+        <app-field-settings [field]="field" (emitField)="updateFieldReference()"></app-field-settings>
+      </div>
+    }
+    @case ('fieldSelector') {
+      <div>
+        <app-field-type-selections [section]="section" (emitField)="fieldSettings($event)"></app-field-type-selections>
+      </div>
+    }
+  }
 </div>
