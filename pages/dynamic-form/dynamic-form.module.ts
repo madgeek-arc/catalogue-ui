@@ -11,7 +11,6 @@ import { CheckboxFieldComponent } from "./fields/checkbox-field/checkbox-field.c
 import { LargeTextFieldComponent } from "./fields/large-text-field/large-text-field.component";
 import { RadioButtonFieldComponent } from "./fields/radio-button-field/radio-button-field.component";
 import { DateFieldComponent } from "./fields/date-field/date-field.component";
-import { DpDatePickerModule } from "ng2-date-picker";
 import { RadioGridFieldComponent } from "./fields/radio-grid-field/radio-grid-field.component";
 import { SurveyComponent } from "./survey.component";
 import { NumberFieldComponent } from "./fields/number-field/number-field.component";
@@ -49,7 +48,6 @@ import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.comp
     FormsModule,
     ReactiveFormsModule,
     NgSelectModule,
-    DpDatePickerModule,
     CatalogueUiReusableComponentsModule,
     CKEditorModule,
     CatalogueUiSharedModule,
