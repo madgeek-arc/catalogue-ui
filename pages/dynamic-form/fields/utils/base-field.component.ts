@@ -37,6 +37,8 @@ export class BaseFieldComponent implements OnInit {
   inputId!: string;
   hideField: boolean = null;
 
+  focused = false;
+
   constructor(protected rootFormGroup: FormGroupDirective, protected formControlService: FormControlService,
               private wsService: WebsocketService) {}
 
@@ -69,6 +71,7 @@ export class BaseFieldComponent implements OnInit {
       return;
 
     // console.log('Field focus In');
+    this.focused = true;
     this.previousValue = cloneDeep(this.formControl.value);
     if (this.formControl instanceof FormArray) {
       this.wsService.WsFocus(this.getPath(this.formControl.controls[position]).join('.'), null);
@@ -81,12 +84,13 @@ export class BaseFieldComponent implements OnInit {
       return;
 
     // console.log('Field focus Out');
+    this.focused = false;
     this.wsService.WsFocus(null, null);
     if (isEqual(this.previousValue, this.formControl.value) || skip)
       return;
 
     if (this.formControl instanceof FormArray) {
-      // send full array or single input?
+      // send a full array or single input?
       // this.wsService.WsEdit({field: this.getPath(this.formControl.controls[position]).join('.'), value: this.formControl.value});
       this.wsService.WsEdit({field: this.getPath(this.formControl.controls[position]).join('.'), value: this.formControl.controls[position].value});
     } else
