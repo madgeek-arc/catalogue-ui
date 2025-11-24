@@ -24,6 +24,8 @@ import { UserActivity } from "../../../app/domain/userInfo";
 import { cloneDeep, isEqual } from "lodash";
 import * as UIkit from 'uikit';
 import BitSet from "bitset";
+import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
+import { Subscription } from "rxjs";
 
 declare var require: any;
 const seedRandom = require('seedrandom');
@@ -31,7 +33,7 @@ const seedRandom = require('seedrandom');
 @Component({
     selector: 'app-survey',
     templateUrl: 'survey.component.html',
-    providers: [FormControlService, PdfGenerateService],
+    providers: [FormControlService, PdfGenerateService, CommentingWebsocketService],
     standalone: false
 })
 
@@ -72,9 +74,12 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   previousValue: any = {};
   changedField: string[] = [];
 
+  private sub!: Subscription;
+  messages: any[] = [];
+
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
               private fb: UntypedFormBuilder, private router: Router, private wsService: WebsocketService,
-              private cd: ChangeDetectorRef) {
+              private cd: ChangeDetectorRef, private wsComments: CommentingWebsocketService) {
   }
 
   @HostListener('document:focus', ['$event'])
@@ -88,6 +93,9 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
+
+    this.wsComments.initializeWebSocketConnection(this.payload.id);
+    this.wsComments.addThread('test');
 
     if (this.enableWebsocket) {
       this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
