@@ -4,6 +4,11 @@ export interface Thread {
   messages: Comment[];
 }
 
+export interface CreateThread {
+  fieldId: string;
+  message: Comment;
+}
+
 export class Comment {
   id?: string;
   body?: string;

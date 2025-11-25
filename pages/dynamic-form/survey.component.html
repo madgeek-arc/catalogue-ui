@@ -47,6 +47,7 @@
 </div>
 
 <ng-content select=".form-action-bar"></ng-content>
+<button (click)="addThread()">Do it</button>
 
 <pre *ngIf="errorMessage" id="errorAlert" class="uk-alert uk-alert-danger" uk-alert="duration: 500" style="border-width: 0">
   <a (click)="closeError()" class="uk-alert-close" uk-close></a>

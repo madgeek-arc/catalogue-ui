@@ -12,20 +12,27 @@ import {
   Output,
   SimpleChanges
 } from "@angular/core";
-import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
+import {
+  AbstractControl,
+  FormArray,
+  FormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { Section, Field, Model, Tabs } from "../../domain/dynamic-form-model"
+import { Field, Model, Section, Tabs } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
 import { UserActivity } from "../../../app/domain/userInfo";
 import { cloneDeep, isEqual } from "lodash";
 import * as UIkit from 'uikit';
-import BitSet from "bitset";
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
 import { Subscription } from "rxjs";
+import { CreateThread } from "../../domain/comment.model";
 
 declare var require: any;
 const seedRandom = require('seedrandom');
@@ -40,6 +47,7 @@ const seedRandom = require('seedrandom');
 export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   protected destroyRef = inject(DestroyRef);
+  private wsComments = inject(CommentingWebsocketService);
 
   @Input() payload: any = null; // can't import specific project class in lib file
   @Input() model: Model = null;
@@ -79,7 +87,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
               private fb: UntypedFormBuilder, private router: Router, private wsService: WebsocketService,
-              private cd: ChangeDetectorRef, private wsComments: CommentingWebsocketService) {
+              private cd: ChangeDetectorRef) {
   }
 
   @HostListener('document:focus', ['$event'])
@@ -92,10 +100,19 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     // console.log('Blur');
   }
 
-  ngOnInit() {
+  addThread() {
+    const thread: CreateThread = {
+      fieldId: '20',
+      message: {
+        body: 'test',
+        mentions: ['j.balasis92@gmail.com']
+      }
+    };
+    this.wsComments.addThread(thread);
+  }
 
+  ngOnInit() {
     this.wsComments.initializeWebSocketConnection(this.payload.id);
-    this.wsComments.addThread('test');
 
     if (this.enableWebsocket) {
       this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -282,6 +299,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     clearTimeout(this.timeoutId);
+    this.wsComments.closeWs();
   }
 
   /** Find if any field has changes and get value --> **/
