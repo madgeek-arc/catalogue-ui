@@ -1,5 +1,9 @@
-<div class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-     [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible, 'uk-disabled': readonly}">
+<div class="uk-margin-small-bottom"
+     [ngClass]="[
+        fieldData.form.display?.cssClasses || '',
+        (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '',
+        readonly ? 'uk-disabled' : ''
+     ]">
 
   <div class="uk-margin-bottom">
     <span *ngIf="fieldData.label.text" class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
