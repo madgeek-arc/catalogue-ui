@@ -1,4 +1,4 @@
-import BitSet from 'bitset/bitset';
+import BitSet from 'bitset';
 import jp from 'jsonpath';
 import { Utils } from "../shared/utils/utils";
 
