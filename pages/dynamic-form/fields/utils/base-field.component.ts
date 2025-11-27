@@ -137,6 +137,11 @@ export class BaseFieldComponent implements OnInit {
   /** <------------------------------------------------------------------------------------------- Form control path **/
 
   /** Handle Arrays --> **/
+  get formArrayControls() {
+    // Ensure this returns the existing FormArray reference, do not use .filter() or .map() here
+    return (this.form.get(this.fieldData.name) as FormArray).controls;
+  }
+
   fieldAsFormArray() {
     return this.formControl as unknown as UntypedFormArray;
   }
