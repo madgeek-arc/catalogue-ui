@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
+import { Thread } from "../domain/comment.model";
 
 declare var SockJS;
 declare var Stomp;
@@ -28,10 +29,10 @@ export class CommentingWebsocketService {
           if (stomp.connected) {
             clearInterval(timer);
             that.count = 0;
-            stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}`, (message) => {
-              if (message.body) {
+            stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}`, (message: Thread) => {
+              if (message) {
                 console.log(message);
-                console.log('ws event, with body: ' + message.body);
+                console.log('ws event, with body: ' + message);
               }
             });
             resolve(stomp);

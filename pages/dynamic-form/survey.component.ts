@@ -12,14 +12,7 @@ import {
   Output,
   SimpleChanges
 } from "@angular/core";
-import {
-  AbstractControl,
-  FormArray,
-  FormGroup,
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup
-} from "@angular/forms";
+import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
@@ -29,13 +22,10 @@ import { PdfGenerateService } from "../../services/pdf-generate.service";
 import { WebsocketService } from "../../../app/services/websocket.service";
 import { UserActivity } from "../../../app/domain/userInfo";
 import { cloneDeep, isEqual } from "lodash";
-import * as UIkit from 'uikit';
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
-import { Subscription } from "rxjs";
 import { CreateThread } from "../../domain/comment.model";
+import * as UIkit from 'uikit';
 
-declare var require: any;
-const seedRandom = require('seedrandom');
 
 @Component({
     selector: 'app-survey',
@@ -49,7 +39,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   protected destroyRef = inject(DestroyRef);
   private wsComments = inject(CommentingWebsocketService);
 
-  @Input() payload: any = null; // can't import specific project class in lib file
+  @Input() payload: any = null; // can't import the specific project class in the lib file
   @Input() model: Model = null;
   @Input() subType: string = null;
   @Input() activeUsers: UserActivity[] = null;
@@ -64,7 +54,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Output() valid = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<UntypedFormGroup>();
 
-  sectionIndex = 0;
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
   currentChapter: Section = null;
   chapterForSubmission: Section = null;
@@ -78,15 +67,13 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   freeView: boolean = false;
   validate: boolean = false;
 
-  form = this.fb.group({});
+  form = new FormGroup({});
   previousValue: any = {};
   changedField: string[] = [];
 
-  private sub!: Subscription;
-  messages: any[] = [];
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
-              private fb: UntypedFormBuilder, private router: Router, private wsService: WebsocketService,
+              private router: Router, private wsService: WebsocketService,
               private cd: ChangeDetectorRef) {
   }
 
@@ -371,9 +358,9 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         if (!this.form.get(key).valid) {
           str =  str + '\n\t-> ' + key;
         }
-        for (const keyElement in this.form.get(key).value) {
+        // for (const keyElement in this.form.get(key).value) {
           // console.log(keyElement + ': '+ this.form.get(key+'.'+keyElement).valid);
-        }
+        // }
       }
       this.errorMessage = 'There are missing fields at chapters ' + str;
     }
@@ -381,41 +368,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   parentSubmit() {
     this.submit.emit(this.form);
-  }
-
-  onSubmit() { // FIXME, or better yet remove me
-    window.scrollTo({top: 0, behavior: 'smooth'});
-    // this.showLoader = true;
-    // this.formControlService.postItem(this.surveyAnswers.id, this.form.get(this.chapterForSubmission.name).value, this.editMode).subscribe(
-    let postMethod = '';
-    let firstParam = '';
-    if (this.payload?.id) {
-      postMethod = 'postItem';
-      firstParam = this.payload.id;
-    } else {
-      postMethod = 'postGenericItem'
-      firstParam = this.model.resourceType;
-    }
-    this.formControlService[postMethod](firstParam, this.form.value, this.editMode).subscribe(
-      res => {
-        this.successMessage = 'Updated successfully!';
-        for (const key of this.chapterChangeMap.keys()) {
-          this.chapterChangeMap.set(key, false);
-        }
-        UIkit.modal('#unsaved-changes-modal').hide();
-        this.payload = res;
-      },
-      error => {
-        this.errorMessage = 'Something went bad, server responded: ' + JSON.stringify(error?.error?.message);
-        UIkit.modal('#unsaved-changes-modal').hide();
-        // this.showLoader = false;
-        // console.log(error);
-      },
-      () => {
-        this.closeSuccessAlert();
-        // this.showLoader = false;
-      }
-    );
   }
 
   showUnsavedChangesPrompt(chapter: Section) {
@@ -457,7 +409,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
         this.prepareForm(value, fields);
       } else if (Array.isArray(value)) {
         // console.log(value);
-        if (value?.length > 1) {
+        if (value && value?.length > 1) {
           this.pushToFormArray(key, value.length, arrayIndex);
         }
         for (let i = 0 ;i < value?.length; i++) {
@@ -498,7 +450,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     return field;
   }
 
-  searchSubFields(fields: Field[], name): Field | null {
+  searchSubFields(fields: Field[], name: string): Field | null {
     let field = null;
     for (let j = 0; j < fields.length; j++) {
       if(fields[j].name === name) {
