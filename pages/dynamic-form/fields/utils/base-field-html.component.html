@@ -1,4 +1,4 @@
-<div class="uk-margin-small-bottom"
+<div #refEl class="reference-item uk-margin-small-bottom"
      [ngClass]="[
         fieldData.form.display?.cssClasses || '',
         (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '',
@@ -46,4 +46,22 @@
       </div>
     </div>
   </ng-template>
+</div>
+<div #floatingEl class="fixed-right-toolbox uk-width-1-6">
+  <div class="">
+    <div>Field id: {{ fieldData.id }}</div>
+<!--    {{ threads | json }}-->
+    @for (thread of threads; track thread.id) {
+      <div class="uk-margin-xsmall-bottom">
+        <div class="uk-card uk-card-default uk-card-body uk-card-small">
+<!--          <span>Thread id: {{ thread.id }}</span>-->
+          @for (comment of thread.messages; track comment.id) {
+            <p>->{{ comment.body }}</p>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+
 </div>

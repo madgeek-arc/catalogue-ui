@@ -26,7 +26,6 @@ import { CommentingWebsocketService } from "../../services/commenting-websocket.
 import { CreateThread } from "../../domain/comment.model";
 import * as UIkit from 'uikit';
 
-
 @Component({
     selector: 'app-survey',
     templateUrl: 'survey.component.html',
@@ -49,8 +48,10 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() tabsHeader: string = null;
   @Input() mandatoryFieldsText: string = null;
   @Input() downloadPDF: boolean = false;
+  @Input() enableCommenting: boolean = false;
   @Input() errorMessage = '';
   @Input() successMessage = '';
+
   @Output() valid = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<UntypedFormGroup>();
 
@@ -71,6 +72,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   previousValue: any = {};
   changedField: string[] = [];
 
+  commentingInitialized = false;
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
               private router: Router, private wsService: WebsocketService,
@@ -89,6 +91,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   addThread() {
     const thread: CreateThread = {
+      targetId: this.payload.id,
       fieldId: '20',
       message: {
         body: 'test',
@@ -99,7 +102,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    this.wsComments.initializeWebSocketConnection(this.payload.id);
+    this.initializeCommenting();
 
     if (this.enableWebsocket) {
       this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -180,6 +183,8 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.initializeCommenting();
+
     if (this.router.url.includes('/view')) {
       this.readonly = true;
     } else if (this.router.url.includes('/freeView')) {
@@ -287,6 +292,13 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     clearTimeout(this.timeoutId);
     this.wsComments.closeWs();
+  }
+
+  initializeCommenting() {
+    if (this.enableCommenting && this.payload?.id && !this.commentingInitialized) {
+      this.wsComments.initializeWebSocketConnection(this.payload.id);
+      this.commentingInitialized = true;
+    }
   }
 
   /** Find if any field has changes and get value --> **/
