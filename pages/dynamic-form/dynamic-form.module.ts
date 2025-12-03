@@ -24,6 +24,7 @@ import { BaseFieldComponent } from "./fields/utils/base-field.component";
 import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component";
 import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
 import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.component";
+import { CommentsPanelComponent } from "./comments-pannel/comments-panel.component";
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.comp
     BaseFieldHtmlComponent,
     BooleanFieldComponent,
     DateFieldComponent,
+    CommentsPanelComponent,
   ],
   exports: [
     ChapterEditComponent,

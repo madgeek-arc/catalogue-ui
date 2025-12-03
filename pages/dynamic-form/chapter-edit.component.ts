@@ -13,7 +13,7 @@ import * as UIkit from 'uikit';
     providers: [FormControlService],
     standalone: false
 })
-export class ChapterEditComponent implements OnChanges{
+export class ChapterEditComponent implements OnChanges {
 
   @Input() form: any = null;
   @Input() tabsHeader: string;
@@ -35,20 +35,12 @@ export class ChapterEditComponent implements OnChanges{
   ready = false;
   showLoader = false;
   hasChanges = false;
-  pendingService = false;
 
   showBitsets = false;
   loaderBitSet = new BitSet;
   loaderPercentage = 0;
   tabIndex= 0;
 
-  constructor(public route: ActivatedRoute,
-              protected fb: UntypedFormBuilder,
-              protected router: Router) {
-  }
-
-  ngOnInit() {
-  }
 
   ngOnChanges(changes:SimpleChanges) {
     if (this.fields) {

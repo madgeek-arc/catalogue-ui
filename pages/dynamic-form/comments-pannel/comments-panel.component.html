@@ -1,0 +1,16 @@
+<div class="comments-panel">
+
+  @if (positions$ | async; as positions) {
+    @for (thread of sectionThreads; track thread.id) {
+<!--      <div [style.top]="getTop(thread.fieldId, positions)">-->
+        <div class="uk-card uk-card-default">
+          <div class="uk-card-body">
+            @for (comment of thread.messages; track comment.id) {
+              <p>{{ comment.body }}</p>
+            }
+          </div>
+        </div>
+<!--      </div>-->
+    }
+  }
+</div>

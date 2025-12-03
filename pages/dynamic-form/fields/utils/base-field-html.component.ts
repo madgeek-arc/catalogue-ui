@@ -1,16 +1,20 @@
 import {
   AfterViewInit,
-  Component, DestroyRef,
+  Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
-  HostListener, inject,
-  Input, NgZone, OnDestroy, OnInit,
+  inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
   Output,
   ViewChild
 } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
-import { JsonPipe, NgClass, NgIf } from "@angular/common";
+import { NgClass, NgIf } from "@angular/common";
 import { SafeUrlPipe } from "../../../../shared/pipes/safeUrlPipe";
 import {
   CatalogueUiReusableComponentsModule
@@ -18,6 +22,7 @@ import {
 import { CommentingWebsocketService } from "../../../../services/commenting-websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Thread } from "../../../../domain/comment.model";
+import { CommentAnchorDirective } from "../../../../shared/directives/comment-anchor.directive";
 
 @Component({
   selector: 'app-base-field-html',
@@ -27,8 +32,8 @@ import { Thread } from "../../../../domain/comment.model";
     NgClass,
     NgIf,
     SafeUrlPipe,
-    CatalogueUiReusableComponentsModule,
-    JsonPipe
+    CommentAnchorDirective,
+    CatalogueUiReusableComponentsModule
   ]
 })
 
