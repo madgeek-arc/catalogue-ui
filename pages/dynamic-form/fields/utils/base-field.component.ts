@@ -28,6 +28,7 @@ export class BaseFieldComponent implements OnInit {
   @Input() editMode: boolean;
   @Input() readonly: boolean = null;
   @Input() position?: number = null;
+  @Input() scrollContainer: HTMLElement | null = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
 
@@ -182,7 +183,7 @@ export class BaseFieldComponent implements OnInit {
   move(newIndex: number, oldIndex: number) {
     const formArray: UntypedFormArray = this.fieldAsFormArray();
     const currentControl: AbstractControl = formArray.at(oldIndex);
-    let path;
+    let path: string;
     if (this.formControl instanceof FormArray) {
       path = this.getPath(this.formControl.controls[oldIndex]).join('.');
     }

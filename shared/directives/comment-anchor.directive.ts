@@ -32,7 +32,8 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
     });
 
     // Initial position
-    this.updatePosition();
+    setTimeout(() => this.updatePosition(), 200);
+    // this.updatePosition();
   }
 
   private updatePosition() {

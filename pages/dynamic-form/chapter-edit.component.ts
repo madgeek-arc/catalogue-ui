@@ -1,11 +1,8 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {FormControlService} from '../../services/form-control.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UntypedFormArray, UntypedFormBuilder} from '@angular/forms';
-import {Section, Field, HandleBitSet, Tab, Tabs} from '../../domain/dynamic-form-model';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { FormControlService } from '../../services/form-control.service';
+import { UntypedFormArray } from '@angular/forms';
+import { Field, HandleBitSet, Section, Tab, Tabs } from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
-
-import * as UIkit from 'uikit';
 
 @Component({
     selector: 'app-chapter-edit',
@@ -31,7 +28,6 @@ export class ChapterEditComponent implements OnChanges {
 
   bitset: Tabs = new Tabs;
   errorMessage = '';
-  successMessage = '';
   ready = false;
   showLoader = false;
   hasChanges = false;
@@ -74,7 +70,7 @@ export class ChapterEditComponent implements OnChanges {
   }
 
   /** Bitsets-->**/
-  timeOut(ms) {
+  timeOut(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 

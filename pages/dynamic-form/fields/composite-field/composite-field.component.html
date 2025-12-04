@@ -33,6 +33,7 @@
               <div *ngIf="control.typeInfo.type === 'composite'">
                 <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [readonly]="readonly"
                                      [vocabularies]="vocabularies" [editMode]="editMode" [position]="i"
+                                     [scrollContainer]="scrollContainer"
                                      (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-composite-field>
@@ -55,7 +56,7 @@
                         control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
                         control.typeInfo.type === 'double'">
                 <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                            [editMode]="editMode" [readonly]="readonly"
+                                            [editMode]="editMode" [readonly]="readonly" [scrollContainer]="scrollContainer"
                                             (handleBitSets)="handleBitsetOfChildren($event)"
                                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-string-url-email-field>
@@ -147,7 +148,7 @@
         <div *ngIf="!control.deprecated" class="">
           <div *ngIf="control.typeInfo.type === 'composite'">
             <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                 [editMode]="editMode" [readonly]="readonly"
+                                 [editMode]="editMode" [readonly]="readonly" [scrollContainer]="scrollContainer"
                                  (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-composite-field>
@@ -173,6 +174,7 @@
                     control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
                     control.typeInfo.type === 'double'">
             <app-string-url-email-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                        [scrollContainer]="scrollContainer"
                                         (hasChanges)="unsavedChangesPrompt()"
                                         (handleBitSets)="handleBitsetOfChildren($event)"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">

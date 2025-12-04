@@ -14,6 +14,7 @@ export class DynamicFormFieldsComponent {
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: boolean;
   @Input() readonly: boolean = null;
+  @Input() scrollContainer: HTMLElement | null = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();

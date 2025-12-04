@@ -1,7 +1,7 @@
-import {AbstractControl, PatternValidator, ValidationErrors, ValidatorFn} from '@angular/forms';
-import {Observable, timer} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
-import {FormControlService} from '../../services/form-control.service';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Observable, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { FormControlService } from '../../services/form-control.service';
 
 export const urlRegEx = /^(https?:\/\/.+){0,1}$/;       // http// or https//
 export const oneDecimal = /^(\d)*(\.)?([0-9]{1})?$/;    //Only digits and one decimal

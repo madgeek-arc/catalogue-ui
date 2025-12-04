@@ -89,6 +89,7 @@
                                        [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
                                     <app-field *ngIf="!fieldsData.deprecated"
                                                [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                                               [scrollContainer]="scrollContainer"
                                                [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                                [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
                                       <!--                                           (handleBitSets)="handleBitSet($event)"-->
@@ -98,8 +99,8 @@
                                 </div>
                               </div>
 
-                              <div class="uk-width-1-5">
-                                <app-comments-panel [scrollContainer]="scrollContainer"></app-comments-panel>
+                              <div class="uk-width-expand">
+                                <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"></app-comments-panel>
 <!--                                <pre>{{ group | json}}</pre>-->
                               </div>
 

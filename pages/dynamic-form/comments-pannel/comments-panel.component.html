@@ -1,16 +1,22 @@
-<div class="comments-panel">
+<div class="uk-position-relative ">
 
-  @if (positions$ | async; as positions) {
+  @let positions = positions$ | async;
+  @let heights = heights$ | async;
+
+  @if (positions && heights) {
     @for (thread of sectionThreads; track thread.id) {
-<!--      <div [style.top]="getTop(thread.fieldId, positions)">-->
-        <div class="uk-card uk-card-default">
+<!--      <div #threadEl [style.top.px]="getTop(thread.fieldId, positions)" class="uk-position-absolute uk-width-expand">-->
+      <div [style.top.px]="getTop(thread, positions, heights)" class="uk-position-absolute uk-width-expand">
+        <div measureComment [threadId]="thread.id" (sizeChange)="onCommentSizeChange(thread.id, $event)"
+             class="uk-card uk-card-default uk-card-small uk-animation-slide-top-medium">
+          {{ thread.fieldId + ' - ' + getTop(thread, positions, heights) }}
           <div class="uk-card-body">
             @for (comment of thread.messages; track comment.id) {
-              <p>{{ comment.body }}</p>
+              <p class="uk-margin-remove">{{ comment.body }}</p>
             }
           </div>
         </div>
-<!--      </div>-->
+      </div>
     }
   }
 </div>

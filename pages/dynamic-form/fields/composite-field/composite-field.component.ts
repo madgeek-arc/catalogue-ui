@@ -28,6 +28,7 @@ export class CompositeFieldComponent implements OnInit {
   @Input() editMode: any;
   @Input() readonly: boolean = null;
   @Input() position?: number = null;
+  @Input() scrollContainer: HTMLElement | null = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();

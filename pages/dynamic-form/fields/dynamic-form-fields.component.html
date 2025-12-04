@@ -6,7 +6,7 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'composite'">
           <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                               [readonly]="readonly" [editMode]="editMode"
+                               [readonly]="readonly" [editMode]="editMode" [scrollContainer]="scrollContainer"
                                (hasChanges)="unsavedChangesPrompt()"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -24,6 +24,7 @@
                     fieldData.typeInfo.type === 'email' || fieldData.typeInfo.type === 'phone' ||
                     fieldData.typeInfo.type === 'double'">
           <app-string-url-email-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                                      [scrollContainer]="scrollContainer"
                                       (hasChanges)="unsavedChangesPrompt()"
                                       (handleBitSets)="handleBitsetOfChildren($event)"
                                       (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
