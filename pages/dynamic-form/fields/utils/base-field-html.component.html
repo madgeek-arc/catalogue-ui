@@ -6,6 +6,7 @@
      ]">
 
   <div class="uk-margin-bottom">
+<!--    {{ fieldData.id }}-->
     <div class="uk-flex-middle" uk-grid>
       <div *ngIf="fieldData.label.text" class="uk-form-label uk-width-expand {{fieldData.label.cssClasses}}"
             [attr.for]="fieldData.name" style="{{fieldData.label.style}}"
@@ -14,8 +15,6 @@
       <div class="uk-width-auto">
         <ul class="uk-invisible-hover uk-iconnav">
           <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
-<!--          <li><a href="#" uk-icon="icon: copy"></a></li>-->
-<!--          <li><a href="#" uk-icon="icon: trash"></a></li>-->
         </ul>
       </div>
     </div>

@@ -23,25 +23,25 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       // Recalculate on resize and scroll (of the window)
       fromEvent(window, 'resize')
-        .pipe(debounceTime(50), takeUntil(this.destroy$))
+        .pipe(debounceTime(100), takeUntil(this.destroy$))
         .subscribe(() => this.updatePosition());
 
       fromEvent(window, 'scroll')
-        .pipe(debounceTime(50), takeUntil(this.destroy$))
+        .pipe(debounceTime(100), takeUntil(this.destroy$))
         .subscribe(() => this.updatePosition());
     });
 
     // Initial position
-    setTimeout(() => this.updatePosition(), 200);
+    setTimeout(() => this.updatePosition(), 0);
     // this.updatePosition();
   }
 
   private updatePosition() {
-    const element = this.el.nativeElement;
-    const rect = element.getBoundingClientRect();
+    // const element = this.el.nativeElement;
+    const rect = this.el.nativeElement.getBoundingClientRect();
     const containerRect = (this.anchorContainer ?? document.body).getBoundingClientRect();
-
     const relativeTop = rect.top - containerRect.top;
+    // console.log('rect top: ', rect.top, ' container top: ', containerRect.top, ' offset: ', relativeTop);
 
     this.anchorService.updatePosition(this.anchorId, relativeTop);
   }

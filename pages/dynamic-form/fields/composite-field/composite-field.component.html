@@ -90,6 +90,7 @@
               </div>
               <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
                 <app-radio-button-field [fieldData]="control" [position]="i" [editMode]="editMode" [readonly]="readonly"
+                                        [scrollContainer]="scrollContainer"
                                         (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
                                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                 </app-radio-button-field>
@@ -220,7 +221,8 @@
           </div>
 
           <div *ngIf="control.typeInfo.type === 'radio'" class="uk-form-controls">
-            <app-radio-button-field [fieldData]="control" [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
+            <app-radio-button-field [fieldData]="control" [readonly]="readonly" [scrollContainer]="scrollContainer"
+                                    (hasChanges)="unsavedChangesPrompt()"
                                     (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
             </app-radio-button-field>
