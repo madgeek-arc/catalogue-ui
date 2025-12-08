@@ -1,7 +1,7 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Thread } from "../domain/comment.model";
+import { CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -68,7 +68,16 @@ export class CommentingWebsocketService {
     });
   }
 
-  addThread(thread: any) {
+  addThread(fieldId: string, body: string) {
+    console.log(this.surveyAnswerId);
+    const thread: CreateThread = {
+      targetId: this.surveyAnswerId,
+      fieldId: fieldId,
+      message: {
+        body: body,
+        mentions: []
+      }
+    }
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}`, {}, JSON.stringify(thread)));
   }
 

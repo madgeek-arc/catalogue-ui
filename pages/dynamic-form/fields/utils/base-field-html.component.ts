@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
-import { ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
 import { NgClass, NgIf } from "@angular/common";
 import { SafeUrlPipe } from "../../../../shared/pipes/safeUrlPipe";
 import {
@@ -8,6 +8,7 @@ import {
 } from "../../../../shared/reusable-components/catalogue-ui-reusable-components.module";
 import { CommentAnchorDirective } from "../../../../shared/directives/comment-anchor.directive";
 import { CommentingWebsocketService } from "../../../../services/commenting-websocket.service";
+import * as UIkit from 'uikit';
 
 @Component({
   selector: 'app-base-field-html',
@@ -18,7 +19,8 @@ import { CommentingWebsocketService } from "../../../../services/commenting-webs
     NgIf,
     SafeUrlPipe,
     CommentAnchorDirective,
-    CatalogueUiReusableComponentsModule
+    CatalogueUiReusableComponentsModule,
+    FormsModule
   ]
 })
 
@@ -34,6 +36,8 @@ export class BaseFieldHtmlComponent {
 
   @Output() emitPush: EventEmitter<void> = new EventEmitter();
 
+  comment: string = '';
+
   appendAsterisk(content: string): string {
     const closingTag = '</p>';
 
@@ -47,9 +51,15 @@ export class BaseFieldHtmlComponent {
     this.emitPush.emit();
   }
 
-  createThread() {
+  createThread(fieldId: string) {
+    if (!this.comment) {
+      UIkit.notification({message: 'Please enter a comment', status: 'warning'});
+      return;
+    }
     console.log('createThread');
-    console.log(this.fieldData.id);
+    console.log(fieldId);
+    this.commentingService.addThread('1602', this.comment);
+    UIkit.modal('#comment-modal').hide();
   }
 
 }

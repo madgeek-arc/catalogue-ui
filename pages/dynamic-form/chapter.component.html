@@ -32,14 +32,21 @@
                       <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
                       <ul id="{{chapter.name}}" class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
                           [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
-                        <li *ngFor="let tab of fields; let i=index"  (click)="setTabIndex(i)">
-                          <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration uk-flex uk-flex-between"
+                        <li *ngFor="let tab of fields; let i=index" (click)="setTabIndex(i)">
+                          <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration "
                              [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
-                            <span>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</span>
-                            <span *ngIf="bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets" class="circle-number">
-                              <i *ngIf="bitset.tabs.get(tab.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>
-                              {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}
-                            </span>
+                            <div class="uk-width-expand uk-flex uk-flex-between">
+                              <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
+                              <div *ngIf="commentsPerSubSection.get(tab.id)" class="uk-flex uk-flex-middle" data-uk-tooltip="title: Active comments">
+                                {{ commentsPerSubSection.get(tab.id) }}
+                                <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                              </div>
+                            <!-- Old Bitset -->
+<!--                            <span *ngIf="bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets" class="circle-number">-->
+<!--                              <i *ngIf="bitset.tabs.get(tab.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>-->
+<!--                              {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}-->
+<!--                            </span>-->
+                            </div>
                           </a>
                         </li>
                       </ul>
@@ -100,7 +107,10 @@
                               </div>
 
                               <div class="uk-width-expand">
-                                <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"></app-comments-panel>
+                                <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
+                                                    (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
+
+                                </app-comments-panel>
 <!--                                <pre>{{ group | json}}</pre>-->
                               </div>
 

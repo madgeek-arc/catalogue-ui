@@ -3,7 +3,8 @@
   @let positions = positions$ | async;
   @let heights = heights$ | async;
 
-  @if (positions && heights) {
+
+  @if (positions && heights && observablesReady) {
     @for (thread of sectionThreads; track thread.id) {
       <div
         class="thread-wrapper uk-position-absolute uk-width-expand"
@@ -15,16 +16,27 @@
              class="uk-card uk-card-default uk-card-small uk-animation-slide-top-medium comment-card">
           <div class="uk-card-body">
             <div class="comment-header">
-              <strong>{{ thread.fieldId }}</strong>
+              <strong>{{ thread.fieldId }}</strong><br>
+              <strong>{{ thread.id }}</strong>
             </div>
             <div class="comment-messages">
-              @for (comment of thread.messages; track comment.id) {
-                <p class="uk-margin-remove">{{ comment.body }}</p>
+              @for (comment of thread.messages; let i=$index; track comment.id) {
+                <div class="uk-visible-toggle" tabindex="{{i}}">
+                  <p class="uk-margin-remove-top">->{{ comment.body }}</p>
+
+                  <div class=" uk-flex uk-flex-right">
+                    <ul class="uk-hidden-hover uk-iconnav">
+                      <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px">reply</a>
+                    </ul>
+                  </div>
+                </div>
               }
             </div>
           </div>
         </div>
       </div>
     }
+  } @else {
+    <div class="uk-text-center">Loading...</div>
   }
 </div>

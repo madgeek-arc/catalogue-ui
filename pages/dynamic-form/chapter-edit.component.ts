@@ -36,6 +36,7 @@ export class ChapterEditComponent implements OnChanges {
   loaderBitSet = new BitSet;
   loaderPercentage = 0;
   tabIndex= 0;
+  commentsPerSubSection: Map<string, number> = new Map();
 
 
   ngOnChanges(changes:SimpleChanges) {
@@ -67,6 +68,10 @@ export class ChapterEditComponent implements OnChanges {
     this.bitset.completedTabsBitSet = new BitSet;
     this.bitset.requiredTabs = requiredTabs;
     this.bitset.requiredTotal = requiredTotal;
+  }
+
+  setCommentCount(subSectionId: string, count: number) {
+    this.commentsPerSubSection.set(subSectionId, count);
   }
 
   /** Bitsets-->**/

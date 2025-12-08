@@ -89,18 +89,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     // console.log('Blur');
   }
 
-  addThread() {
-    const thread: CreateThread = {
-      targetId: this.payload.id,
-      fieldId: '20',
-      message: {
-        body: 'test',
-        mentions: ['j.balasis92@gmail.com']
-      }
-    };
-    this.wsComments.addThread(thread);
-  }
-
   ngOnInit() {
     this.initializeCommenting();
 
