@@ -12,9 +12,14 @@ export class CommentAnchorService {
   positions$ = this._positions$.asObservable();
   heights$ = this._heights$.asObservable();
 
-  updatePosition(id: string, top: number) {
+  updatePosition(id: string, top: number, arrayPosition: number) {
+    if (arrayPosition && arrayPosition > 0) { // ignore the all array elements beyond the first one.
+      return;
+    }
+
     this._positions.set(id, top);
     // emit a new Map so OnPush components see a new reference
+    // console.log(this._positions);
     this._positions$.next(new Map(this._positions));
   }
 

@@ -17,20 +17,46 @@
           <div class="uk-card-body">
             <div class="comment-header">
               <strong>{{ thread.fieldId }}</strong><br>
-              <strong>{{ thread.id }}</strong>
+<!--              <strong>{{ thread.id }}</strong><br>-->
+              top - {{ layoutMap.get(thread.id)?.top}}
             </div>
             <div class="comment-messages">
-              @for (comment of thread.messages; let i=$index; track comment.id) {
-                <div class="uk-visible-toggle" tabindex="{{i}}">
-                  <p class="uk-margin-remove-top">->{{ comment.body }}</p>
+              @for (comment of thread.messages; track comment.id) {
+                <p class="uk-margin-remove-top">->{{ comment.body }}</p>
+              }
 
-                  <div class=" uk-flex uk-flex-right">
-                    <ul class="uk-hidden-hover uk-iconnav">
-                      <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px">reply</a>
-                    </ul>
+              @if (!showInputMap.get(thread.id)) {
+                <div class="uk-flex uk-flex-right">
+                  <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px"
+                     (click)="toggleInput(thread.id)">reply
+                  </a>
+                </div>
+              } @else {
+                <div class="uk-flex uk-flex-middle">
+                  <div class="uk-width-auto uk-margin-xsmall-right">
+                    <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply" [(ngModel)]="inputMessage">
+                  </div>
+                  <div class="uk-width-auto">
+                    <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px"
+                       (click)="sendComment(thread.id)">send
+                    </a>
                   </div>
                 </div>
               }
+
+<!--                <div class=" uk-hidden-hover uk-iconnav">-->
+<!--                  <div class="uk-flex uk-flex-middle">-->
+<!--                    <div class="uk-width-auto uk-margin-xsmall-right">-->
+<!--                      <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply" (focusin)="onInputFocus(thread.id)"-->
+<!--                             [(ngModel)]="inputMessage">-->
+<!--                    </div>-->
+<!--                    <div class="uk-width-auto">-->
+<!--                      <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px">send</a>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+
             </div>
           </div>
         </div>

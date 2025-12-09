@@ -1,6 +1,7 @@
 <ng-container [formGroup]="form">
 
-  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly" [hideField]="hideField"
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
 
     <div multiplicity></div>

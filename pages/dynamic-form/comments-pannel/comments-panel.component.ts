@@ -1,69 +1,3 @@
-// import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
-// import { CommentAnchorService } from "../../../services/comment-anchor.service";
-// import { Observable } from 'rxjs';
-// import { AsyncPipe } from "@angular/common";
-// import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
-// import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-// import { Thread } from "../../../domain/comment.model";
-// import { collectIdsRecursive } from "../../../shared/utils/utils";
-// import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
-//
-//
-// @Component({
-//   selector: 'app-comments-panel',
-//   templateUrl: './comments-panel.component.html',
-//   styleUrls: ['./comments-panel.component.less'],
-//   imports: [
-//     AsyncPipe,
-//     MeasureCommentDirective,
-//   ]
-// })
-//
-// export class CommentsPanelComponent implements OnInit {
-//   private commentingService = inject(CommentingWebsocketService);
-//   private anchorService = inject(CommentAnchorService);
-//   private destroyRef = inject(DestroyRef);
-//
-//   @Input() scrollContainer?: HTMLElement;
-//   @Input() subSection: object = {};
-//   @Input() gap = 8; // px between stacked comments
-//
-//   positions$!: Observable<Map<string, number>>;
-//   heights$!: Observable<Map<string, number>>;
-//   sectionThreads: Thread[] = [];
-//
-//   ngOnInit() {
-//     // console.log(this.subSection);
-//     this.positions$ = this.anchorService.positions$;
-//     this.heights$ = this.anchorService.heights$;
-//
-//     const ids: string[] = collectIdsRecursive(this.subSection['fields']);
-//     this.commentingService.threadSubject.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-//       next: value => {
-//         this.sectionThreads = value.filter(threadId => ids.includes(threadId.fieldId));
-//       }
-//     });
-//   }
-//
-//   getTop(comment: Thread, positions: Map<string, number>, heights: Map<string, number>): number {
-//     // console.log(heights);
-//     const anchorTop = positions.get(comment.fieldId) ?? 0;
-//     // get all comments for this field in the same order as `comments` input
-//     const sameField = this.sectionThreads.filter(t => t.fieldId === comment.fieldId);
-//     let topOffset = anchorTop;
-//     for (const c of sameField) {
-//       if (c.id === comment.id) break;
-//       const h = heights.get(c.id) ?? 80; // fallback estimated height
-//       topOffset += h + this.gap;
-//     }
-//     return topOffset;
-//   }
-//
-//   onCommentSizeChange(threadId: string, size: number) {
-//     this.anchorService.updateCommentHeight(threadId, size);
-//   }
-// }
-
 import {
   Component,
   DestroyRef,
@@ -79,10 +13,11 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { AsyncPipe } from "@angular/common";
 import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Thread } from "../../../domain/comment.model";
+import { Comment, Thread } from "../../../domain/comment.model";
 import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { debounceTime } from "rxjs/operators";
+import { FormsModule } from "@angular/forms";
 
 type SubSectionComments = {
   subSectionId: string;
@@ -96,8 +31,10 @@ type SubSectionComments = {
   imports: [
     AsyncPipe,
     MeasureCommentDirective,
+    FormsModule,
   ]
 })
+
 export class CommentsPanelComponent implements OnInit {
   private commentingService = inject(CommentingWebsocketService);
   private anchorService = inject(CommentAnchorService);
@@ -119,6 +56,10 @@ export class CommentsPanelComponent implements OnInit {
   sectionThreads: Thread[] = [];
   observablesReady = false;
 
+  // Comment message
+  showInputMap = new Map<string, boolean>();
+  inputMessage = '';
+
   // layout state
   layoutMap = new Map<string, { top: number }>();
   focusedThreadId?: string;
@@ -128,19 +69,20 @@ export class CommentsPanelComponent implements OnInit {
   private lastHeights = new Map<string, number>();
 
   // trigger recomputing when the thread list changes
-  private threadsChanged$ = new Subject<void>();
+  // private threadsChanged$ = new Subject<void>();
 
   ngOnInit() {
     this.positions$ = this.anchorService.positions$;
     this.heights$ = this.anchorService.heights$;
 
     const ids: string[] = collectIdsRecursive(this.subSection['fields'] ?? []);
-    this.commentingService.threadSubject.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.commentingService.threadSubject.pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
         // filter threads relevant to this subsection
         this.sectionThreads = value.filter((t: Thread) => ids.includes(t.fieldId));
         this.commentCount.emit({subSectionId: this.subSection.id, comments: this.sectionThreads.length});
-        this.threadsChanged$.next();
+        // this.threadsChanged$.next();
+        this.recomputeLayout(this.lastPositions, this.lastHeights); // Recompute when the thread list changes
       }
     });
 
@@ -156,9 +98,29 @@ export class CommentsPanelComponent implements OnInit {
       });
 
     // Also recompute when threads list changes (debounced)
-    this.threadsChanged$.pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.recomputeLayout(this.lastPositions, this.lastHeights);
-    });
+    // this.threadsChanged$.pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+    //   this.recomputeLayout(this.lastPositions, this.lastHeights);
+    // });
+  }
+
+  toggleInput(id: string) {
+    for (const [key, value] of this.showInputMap) {
+      if (value === true && key !== id)
+      this.showInputMap.set(key, false);
+      // console.log(`Key: ${key}, Value: ${value}`);
+    }
+    this.inputMessage = '';
+    this.showInputMap.set(id, !this.showInputMap.get(id));
+  }
+
+  sendComment(threadId: string) {
+    let comment: Comment = {
+      body: this.inputMessage,
+      mentions: []
+    }
+
+    this.commentingService.addMessage(threadId, comment);
+    this.toggleInput(threadId);
   }
 
   onCommentSizeChange(threadId: string, size: number) {
@@ -170,6 +132,12 @@ export class CommentsPanelComponent implements OnInit {
 
   // click/focus a thread
   onThreadClick(thread: Thread) {
+    for (const [key, value] of this.showInputMap) {
+      if (key !== thread.id)
+        this.showInputMap.set(key, false);
+      // console.log(`Key: ${key}, Value: ${value}`);
+    }
+
     this.focusedThreadId = thread.id;
     // recompute layout immediately using last-known maps
     this.recomputeLayout(this.lastPositions, this.lastHeights);
@@ -248,7 +216,7 @@ export class CommentsPanelComponent implements OnInit {
         if (focusedThread) {
           const targetGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
           if (targetGroupIdx !== -1) {
-            // 5a) set focused group top to its anchor (align)
+            // 5a) set the focused group top to its anchor (align)
             const focusedGroup = groups[targetGroupIdx];
             focusedGroup.finalTop = focusedGroup.desiredTop;
 
@@ -266,7 +234,7 @@ export class CommentsPanelComponent implements OnInit {
               }
             }
 
-            // 5c) push following groups down if they overlap
+            // 5c) push the following groups down if they overlap
             for (let i = targetGroupIdx + 1; i < groups.length; i++) {
               const prev = groups[i - 1];
               const cur = groups[i];
@@ -300,105 +268,6 @@ export class CommentsPanelComponent implements OnInit {
       });
     });
   }
-
-
-  // main layout algorithm (resolves collisions inside the comments column)
-  // private recomputeLayout(positions: Map<string, number>, heights: Map<string, number>) {
-  //   // run layout off-Angular for CPU work, then write results inside Angular
-  //   this.ngZone.runOutsideAngular(() => {
-  //     const panelEl = this.panelRef?.nativeElement;
-  //     if (!panelEl) return;
-  //     // const containerHeight = Math.round(panelEl.clientHeight);
-  //
-  //     type Item = {
-  //       id: string;
-  //       fieldId: string;
-  //       height: number;
-  //       desiredTop: number;
-  //       finalTop?: number;
-  //     };
-  //
-  //     // Build items with the desiredTop (stack same-field threads)
-  //     const items: Item[] = [];
-  //     const fieldOffsets = new Map<string, number>();
-  //
-  //     for (const thread of this.sectionThreads) {
-  //       const anchorTop = positions.get(thread.fieldId) ?? 0;
-  //       const currentFieldOffset = fieldOffsets.get(thread.fieldId) ?? 0;
-  //       const h = heights.get(thread.id) ?? 80; // fallback
-  //       const desired = anchorTop + currentFieldOffset;
-  //       items.push({
-  //         id: thread.id,
-  //         fieldId: thread.fieldId,
-  //         height: Math.round(h),
-  //         desiredTop: Math.round(desired)
-  //       });
-  //       fieldOffsets.set(thread.fieldId, currentFieldOffset + Math.round(h) + this.gap);
-  //     }
-  //
-  //     // Sort by desiredTop
-  //     items.sort((a, b) => a.desiredTop - b.desiredTop);
-  //
-  //     // 1) push-down collision resolution inside the panel
-  //     let prevBottom = -Infinity;
-  //     for (const it of items) {
-  //       let top = it.desiredTop;
-  //       if (top <= prevBottom + this.gap) {
-  //         top = prevBottom + this.gap;
-  //       }
-  //       it.finalTop = Math.round(top);
-  //       prevBottom = it.finalTop + it.height;
-  //     }
-  //
-  //     // 2) If a focused thread exists, try to align it to its anchor desiredTop and push/pull neighbors
-  //     if (this.focusedThreadId) {
-  //       const idx = items.findIndex(i => i.id === this.focusedThreadId);
-  //       if (idx !== -1) {
-  //         const focused = items[idx];
-  //         // Put focused at its desired top (align to input)
-  //         focused.finalTop = focused.desiredTop;
-  //
-  //         // Pull previous threads up if overlap
-  //         for (let j = idx - 1; j >= 0; j--) {
-  //           const cur = items[j];
-  //           const next = items[j + 1];
-  //           const desiredBottomForCur = (next.finalTop ?? next.desiredTop) - this.gap;
-  //           const candidateTop = desiredBottomForCur - cur.height;
-  //           if (candidateTop < cur.finalTop!) {
-  //             cur.finalTop = Math.max(0, Math.round(candidateTop));
-  //           } else {
-  //             break;
-  //           }
-  //         }
-  //
-  //         // Push next threads down if overlap
-  //         for (let j = idx + 1; j < items.length; j++) {
-  //           const prev = items[j - 1];
-  //           const cur = items[j];
-  //           const neededTop = (prev.finalTop ?? prev.desiredTop) + prev.height + this.gap;
-  //           if ((cur.finalTop ?? cur.desiredTop) < neededTop) {
-  //             cur.finalTop = Math.round(neededTop);
-  //           } else {
-  //             break;
-  //           }
-  //         }
-  //       }
-  //     }
-  //
-  //     // 3) Clamp layout so nothing gets negative top and let overflow be scrollable (no floating)
-  //     //    We will simply produce finalTop values and let the comments panel scroll when content exceeds panel height
-  //     const newMap = new Map<string, { top: number }>();
-  //     for (const it of items) {
-  //       const top = Math.max(0, Math.round(it.finalTop ?? it.desiredTop));
-  //       newMap.set(it.id, { top });
-  //     }
-  //
-  //     // Write results back to Angular zone (as a new Map reference).
-  //     this.ngZone.run(() => {
-  //       this.layoutMap = newMap;
-  //     });
-  //   });
-  // }
 
   // Make the focused thread visible and align form input with the thread if possible.
   // Two things:

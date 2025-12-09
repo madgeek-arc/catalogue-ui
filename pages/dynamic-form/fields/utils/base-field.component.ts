@@ -187,8 +187,8 @@ export class BaseFieldComponent implements OnInit {
     if (this.formControl instanceof FormArray) {
       path = this.getPath(this.formControl.controls[oldIndex]).join('.');
     }
-    console.log(this.formControl);
-    console.log(path);
+    // console.log(this.formControl);
+    // console.log(path);
 
     formArray.removeAt(oldIndex, {emitEvent: false});
     formArray.insert(newIndex, currentControl, {emitEvent: false})

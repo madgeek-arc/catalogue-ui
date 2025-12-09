@@ -15,8 +15,8 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'chooseOne'">
           <app-choose-one [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                         (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
-                         (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)" [editMode]="editMode">
+                          (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
+                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)" [editMode]="editMode">
           </app-choose-one>
         </div>
 
@@ -33,6 +33,7 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'number'">
           <app-number-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                            [scrollContainer]="scrollContainer"
                             (hasChanges)="unsavedChangesPrompt()"
                             (handleBitSets)="handleBitsetOfChildren($event)"
                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -41,14 +42,16 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'boolean'">
           <app-boolean-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                            (hasChanges)="unsavedChangesPrompt()"
-                            (handleBitSets)="handleBitsetOfChildren($event)"
-                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                             [scrollContainer]="scrollContainer"
+                             (hasChanges)="unsavedChangesPrompt()"
+                             (handleBitSets)="handleBitsetOfChildren($event)"
+                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-boolean-field>
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'vocabulary' || fieldData.typeInfo.type === 'select'">
-          <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+          <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies"
+                                [vocabularies]="vocabularies"
                                 (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
                                 (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)" [editMode]="editMode">
           </app-vocabulary-field>
@@ -56,6 +59,7 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'largeText'">
           <app-large-text-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                                [scrollContainer]="scrollContainer"
                                 (hasChanges)="unsavedChangesPrompt()"
                                 (handleBitSets)="handleBitsetOfChildren($event)"
                                 (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -73,6 +77,7 @@
 
         <div *ngIf="fieldData.typeInfo.type === 'richText'">
           <app-rich-text-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                               [scrollContainer]="scrollContainer"
                                (hasChanges)="unsavedChangesPrompt()"
                                (handleBitSets)="handleBitsetOfChildren($event)"
                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -80,14 +85,17 @@
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'date'">
-          <app-date-field [fieldData]="fieldData" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
+          <app-date-field [fieldData]="fieldData" [editMode]="editMode" [readonly]=readonly
+                          [scrollContainer]="scrollContainer"
+                          (hasChanges)="unsavedChangesPrompt()"
                           (handleBitSets)="handleBitsetOfChildren($event)"
                           (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-date-field>
         </div>
 
         <div *ngIf="fieldData.typeInfo.type === 'scale'">
-          <app-scale-field [fieldData]="fieldData" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
+          <app-scale-field [fieldData]="fieldData" [editMode]="editMode"
+                           (hasChanges)="unsavedChangesPrompt()"
                            (handleBitSets)="handleBitsetOfChildren($event)"
                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
           </app-scale-field>

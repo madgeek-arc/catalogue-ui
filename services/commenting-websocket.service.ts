@@ -1,7 +1,7 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { CreateThread, Thread } from "../domain/comment.model";
+import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -21,7 +21,7 @@ interface IMessage {
 
 @Injectable()
 export class CommentingWebsocketService {
-  private http = inject(HttpClient)
+  private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
 
   private readonly base = environment.API_ENDPOINT;
@@ -49,6 +49,9 @@ export class CommentingWebsocketService {
             that.count = 0;
             stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}`, (message: IMessage) => {
               console.log(message);
+              console.log(JSON.parse(message.body));
+              if (message.body)
+                that.upsertThread(JSON.parse(message.body))
               // if (message.body) {
               //   console.log('ws event, with body: ' + message.body);
               // }
@@ -81,7 +84,7 @@ export class CommentingWebsocketService {
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}`, {}, JSON.stringify(thread)));
   }
 
-  addMessage(threadId: string, message: any) {
+  addMessage(threadId: string, message: Comment) {
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages`, {}, JSON.stringify(message)));
   }
 
@@ -91,6 +94,21 @@ export class CommentingWebsocketService {
 
   closeWs() {
     this.stompClient?.then(client => client.ws.close());
+  }
+
+  upsertThread(thread: Thread) {
+    const current = this.threadSubject.value;
+    const index = current.findIndex(t => t.id === thread.id);
+
+    if (index === -1) {
+      // ➕ Add if not found
+      this.threadSubject.next([...current, thread]);
+    } else {
+      // Replace it if exists
+      const updated = [...current];
+      updated[index] = thread;
+      this.threadSubject.next(updated);
+    }
   }
 
   getSAComments(status: 'ACTIVE' | 'RESOLVED' | 'DELETED' | 'HIDDEN' = 'ACTIVE') {

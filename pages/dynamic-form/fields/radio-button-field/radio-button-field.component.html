@@ -1,7 +1,7 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" [scrollContainer]="scrollContainer">
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId">
     <div multiplicity></div>
     <div noMultiplicity>
       <div *ngFor="let value of fieldData.typeInfo.values; let i=index" class="uk-margin-small-top">

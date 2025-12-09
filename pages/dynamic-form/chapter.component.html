@@ -1,129 +1,125 @@
 <div *ngIf="ready" class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom" style="min-height: 325px">
   <div class="uk-container uk-container-expand">
-    <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
-      <div class="uk-width-1-1@m uk-first-column">
 
-        <div *ngIf="chapter" class="uk-margin-top chapter-description">
-          <p [innerHtml]="chapter.description"></p>
-        </div>
+    <div *ngIf="chapter" class="uk-margin-top chapter-description">
+      <p [innerHtml]="chapter.description"></p>
+    </div>
 
-        <div class="uk-margin-medium-bottom">
-          <div class="uk-grid">
-            <!-- MIDDLE -->
-            <div class="uk-width-expand@m uk-margin-top">
-              <div>
+    <div class="uk-margin-medium-bottom">
+      <div class="uk-grid">
+        <!-- MIDDLE -->
+        <div class="uk-width-expand@m uk-margin-top">
+          <div>
 
-                <div *ngIf="bitset.requiredTotal !== 0 && mandatoryFieldsText" class="requiredFields">
-                  {{mandatoryFieldsText}}
-                </div>
+            <div *ngIf="bitset.requiredTotal !== 0 && mandatoryFieldsText" class="requiredFields">
+              {{mandatoryFieldsText}}
+            </div>
 
-                <div id="serviceForm">
+            <div id="serviceForm">
 
-                  <div *ngIf="errorMessage" class="uk-alert uk-alert-danger">
-                    <p>{{errorMessage}}</p>
-                  </div>
+              <div *ngIf="errorMessage" class="uk-alert uk-alert-danger">
+                <p>{{errorMessage}}</p>
+              </div>
 
-                  <div *ngIf="showLoader" class="whiteFilm">
-                    <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
-                  </div>
+              <div *ngIf="showLoader" class="whiteFilm">
+                <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
+              </div>
 
-                  <div class="uk-grid">
-                    <div class="uk-width-1-5" [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
-                      <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
-                      <ul id="{{chapter.name}}" class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
-                          [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
-                        <li *ngFor="let tab of fields; let i=index" (click)="setTabIndex(i)">
-                          <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration "
-                             [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
-                            <div class="uk-width-expand uk-flex uk-flex-between">
-                              <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
-                              <div *ngIf="commentsPerSubSection.get(tab.id)" class="uk-flex uk-flex-middle" data-uk-tooltip="title: Active comments">
-                                {{ commentsPerSubSection.get(tab.id) }}
-                                <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
-                              </div>
-                            <!-- Old Bitset -->
+              <div class="uk-grid">
+                <div class="uk-width-1-5" [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
+                  <div *ngIf="tabsHeader" class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
+                  <ul id="{{chapter.name}}" class="uk-width-1-1 uk-margin-remove uk-tab uk-tab-left form-tabs"
+                      [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
+                    <li *ngFor="let tab of fields; let i=index" (click)="setTabIndex(i)">
+                      <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration"
+                         [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
+                        <div class="uk-width-expand uk-flex uk-flex-between">
+                          <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
+                          <div *ngIf="commentsPerSubSection.get(tab.id)" class="uk-flex uk-flex-middle"
+                               data-uk-tooltip="title: Active comments">
+                            {{ commentsPerSubSection.get(tab.id) }}
+                            <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                          </div>
+                        <!-- Bitsets, to be removed -->
 <!--                            <span *ngIf="bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets" class="circle-number">-->
 <!--                              <i *ngIf="bitset.tabs.get(tab.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>-->
 <!--                              {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}-->
 <!--                            </span>-->
-                            </div>
-                          </a>
-                        </li>
-                      </ul>
-
-                      <div *ngIf="bitset.requiredTotal !== 0" class="requiredFields uk-text-right">*Required fields</div>
-                      <div *ngIf="bitset?.tabs" class="uk-margin-small-top uk-flex uk-flex-center">
-                        <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
-                                (click)="goToTab(tabIndex-1)"
-                                [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'">
-                          <span class="uk-flex uk-flex-middle">
-                            <span class="material-symbols-outlined">chevron_left</span> PREVIOUS
-                          </span>
-                        </button>
-                        <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"
-                                (click)="goToTab(tabIndex+1)"
-                                [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-secondary' : 'uk-button-primary'">
-                          <span class="uk-flex uk-flex-middle">NEXT
-                            <span class="material-symbols-outlined">chevron_right</span>
-                          </span>
-                        </button>
-                      </div>
-
-                      <div *ngIf="showBitsets">
-                        <div class="stepsCompleted uk-margin-top uk-text-center">
-                          {{bitset.completedTabs}} of {{bitset.requiredTabs}}
                         </div>
-                        <div class="uk-margin-small-top">
-                          <progress id="js-progressbar" class="uk-progress uk-margin-remove-bottom"
-                                    value="{{loaderPercentage}}"
-                                    max="100"></progress>
-                          <div [ngStyle]="{'margin-left.%': (loaderPercentage*0.9).toLocaleString()}"
-                               class="percentageNumber">{{loaderPercentage}}%
-                          </div>
-                        </div>
-                      </div>
+                      </a>
+                    </li>
+                  </ul>
+
+                  <div *ngIf="bitset.requiredTotal !== 0" class="requiredFields uk-text-right">*Required fields</div>
+                  <div *ngIf="bitset?.tabs" class="uk-margin-small-top uk-flex uk-flex-center">
+                    <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
+                            style="padding-left: 10px; padding-right: 12px"
+                            (click)="goToTab(tabIndex-1)"
+                            [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'">
+                      <span class="uk-flex uk-flex-middle">
+                        <span class="material-symbols-outlined" style="font-size: 24px">chevron_left</span> PREVIOUS
+                      </span>
+                    </button>
+                    <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"
+                            style="padding-left: 12px; padding-right: 10px"
+                            (click)="goToTab(tabIndex+1)"
+                            [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-secondary' : 'uk-button-primary'">
+                      <span class="uk-flex uk-flex-middle">NEXT
+                        <span class="material-symbols-outlined" style="font-size: 24px">chevron_right</span>
+                      </span>
+                    </button>
+                  </div>
+
+                  <div *ngIf="showBitsets">
+                    <div class="stepsCompleted uk-margin-top uk-text-center">
+                      {{bitset.completedTabs}} of {{bitset.requiredTabs}}
                     </div>
-
-                    <div *ngIf="form && ready" [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
-                      <form [formGroup]="form">
-                        <div class="formContainer">
-                          <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
-                            <li *ngFor="let group of fields" uk-grid>
-
-                              <div class="uk-width-4-5" #scrollContainer>
-                                <div *ngFor="let fieldsData of group.fields" >
-                                  <div *ngIf="!fieldsData.deprecated"
-                                       [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
-                                    <app-field *ngIf="!fieldsData.deprecated"
-                                               [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
-                                               [scrollContainer]="scrollContainer"
-                                               [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                               [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
-                                      <!--                                           (handleBitSets)="handleBitSet($event)"-->
-                                      <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
-                                    </app-field>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="uk-width-expand">
-                                <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
-                                                    (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
-
-                                </app-comments-panel>
-<!--                                <pre>{{ group | json}}</pre>-->
-                              </div>
-
-                            </li>
-                          </ul>
-                        </div>
-
-                      </form>
-<!--                      <pre>{{form.value | json}}</pre>-->
+                    <div class="uk-margin-small-top">
+                      <progress id="js-progressbar" class="uk-progress uk-margin-remove-bottom"
+                                value="{{loaderPercentage}}"
+                                max="100"></progress>
+                      <div [ngStyle]="{'margin-left.%': (loaderPercentage*0.9).toLocaleString()}"
+                           class="percentageNumber">{{loaderPercentage}}%
+                      </div>
                     </div>
                   </div>
                 </div>
 
+                <div *ngIf="form && ready" [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
+                  <form [formGroup]="form">
+                    <div class="">
+                      <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
+                        <li *ngFor="let group of fields" data-uk-grid>
+
+                          <div class="uk-width-3-4" #scrollContainer>
+                            <div *ngFor="let fieldsData of group.fields" >
+                              <div *ngIf="!fieldsData.deprecated"
+                                   [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
+                                <app-field *ngIf="!fieldsData.deprecated"
+                                           [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                                           [scrollContainer]="scrollContainer"
+                                           [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                                           [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
+                                  <!--                                           (handleBitSets)="handleBitSet($event)"-->
+                                  <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
+                                </app-field>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="uk-width-expand">
+                            <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
+                                                (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
+                            </app-comments-panel>
+                          </div>
+
+                        </li>
+                      </ul>
+                    </div>
+
+                  </form>
+<!--                      <pre>{{form.value | json}}</pre>-->
+                </div>
               </div>
             </div>
 
@@ -132,6 +128,7 @@
 
       </div>
     </div>
+
   </div>
 </div>
 <div *ngIf="!ready" class="whiteFilm">

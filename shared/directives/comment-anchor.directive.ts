@@ -4,12 +4,13 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 import { CommentAnchorService } from "../../services/comment-anchor.service";
 
 @Directive({
-  standalone: true,
   selector: '[commentAnchor]'
 })
+
 export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
   @Input('commentAnchor') anchorId!: string;
   @Input() anchorContainer?: HTMLElement; // optional explicit container
+  @Input() arrayPosition?: string;
 
   private destroy$ = new Subject<void>();
 
@@ -23,11 +24,11 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       // Recalculate on resize and scroll (of the window)
       fromEvent(window, 'resize')
-        .pipe(debounceTime(100), takeUntil(this.destroy$))
+        .pipe(debounceTime(50), takeUntil(this.destroy$))
         .subscribe(() => this.updatePosition());
 
       fromEvent(window, 'scroll')
-        .pipe(debounceTime(100), takeUntil(this.destroy$))
+        .pipe(debounceTime(50), takeUntil(this.destroy$))
         .subscribe(() => this.updatePosition());
     });
 
@@ -43,7 +44,8 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
     const relativeTop = rect.top - containerRect.top;
     // console.log('rect top: ', rect.top, ' container top: ', containerRect.top, ' offset: ', relativeTop);
 
-    this.anchorService.updatePosition(this.anchorId, relativeTop);
+    let pos = Number.parseInt(this.arrayPosition);
+    this.anchorService.updatePosition(this.anchorId, relativeTop, pos);
   }
 
   ngOnDestroy() {

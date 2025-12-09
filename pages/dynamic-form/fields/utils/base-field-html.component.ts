@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, input, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
 import { NgClass, NgIf } from "@angular/common";
@@ -24,7 +24,7 @@ import * as UIkit from 'uikit';
   ]
 })
 
-export class BaseFieldHtmlComponent {
+export class BaseFieldHtmlComponent implements OnChanges {
   private commentingService = inject(CommentingWebsocketService);
 
   @Input() form!: UntypedFormGroup;
@@ -33,10 +33,20 @@ export class BaseFieldHtmlComponent {
   @Input() readonly = false;
   @Input() hideField: boolean;
   @Input() scrollContainer: HTMLElement | null = null;
+  @Input() inputId?: string;
 
   @Output() emitPush: EventEmitter<void> = new EventEmitter();
 
   comment: string = '';
+
+  position?: string;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['inputId']) {
+      let matches = this.inputId?.match(/\[(.*?)\]/g);  // all matches
+      this.position = matches ? matches[matches.length - 1].replace(/[\[\]]/g, "") : null;
+    }
+  }
 
   appendAsterisk(content: string): string {
     const closingTag = '</p>';
@@ -57,9 +67,10 @@ export class BaseFieldHtmlComponent {
       return;
     }
     console.log('createThread');
-    console.log(fieldId);
-    this.commentingService.addThread('1602', this.comment);
-    UIkit.modal('#comment-modal').hide();
+    console.log(this.fieldData.id);
+    this.commentingService.addThread(this.fieldData.id, this.comment);
+    UIkit.modal(`#comment-modal-${this.fieldData.id}`).hide();
   }
 
+  protected readonly input = input;
 }

@@ -1,8 +1,8 @@
-<div class="reference-item uk-margin-small-bottom uk-visible-toggle" [anchorContainer]="scrollContainer" commentAnchor="{{fieldData.id}}"
+<div class="reference-item uk-margin-small-bottom uk-visible-toggle" [anchorContainer]="scrollContainer"
+     commentAnchor="{{fieldData.id}}" [arrayPosition]="position"
      [ngClass]="[
         fieldData.form.display?.cssClasses || '',
-        (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '',
-        readonly ? 'uk-disabled' : ''
+        (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '', readonly ? 'uk-disabled' : ''
      ]">
 
   <div class="uk-margin-bottom">
@@ -14,7 +14,7 @@
       </div>
       <div class="uk-width-auto">
         <ul class="uk-invisible-hover uk-iconnav">
-          <li><a href="#comment-modal" class="material-symbols-outlined" data-uk-toggle>add_comment</a></li>
+          <li><a href="#comment-modal-{{fieldData.id}}" class="material-symbols-outlined" data-uk-toggle>add_comment</a></li>
         </ul>
       </div>
     </div>
@@ -57,7 +57,7 @@
 </div>
 
 <!-- This is the modal -->
-<div id="comment-modal" data-uk-modal>
+<div id="comment-modal-{{fieldData.id}}" data-uk-modal>
   <div class="uk-modal-dialog uk-modal-body">
     <h2 class="uk-modal-title">New thread</h2>
     <label for="comment-body">Comment message</label>
