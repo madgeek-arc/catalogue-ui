@@ -73,6 +73,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   changedField: string[] = [];
 
   commentingInitialized = false;
+  commentsPerSection: Map<string, number> = new Map();
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
               private router: Router, private wsService: WebsocketService,
@@ -287,6 +288,10 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.wsComments.initializeWebSocketConnection(this.payload.id);
       this.commentingInitialized = true;
     }
+  }
+
+  setCommentCount(sectionId: string, count: number) {
+    this.commentsPerSection.set(sectionId, count);
   }
 
   /** Find if any field has changes and get value --> **/

@@ -1,16 +1,22 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FormControlService } from '../../services/form-control.service';
 import { UntypedFormArray } from '@angular/forms';
 import { Field, HandleBitSet, Section, Tab, Tabs } from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
 
+type SectionComments = {
+  sectionId: string;
+  comments: number;
+}
+
 @Component({
-    selector: 'app-chapter-edit',
+    selector: 'app-chapter',
     templateUrl: './chapter.component.html',
     providers: [FormControlService],
     standalone: false
 })
-export class ChapterEditComponent implements OnChanges {
+
+export class ChapterComponent implements OnChanges {
 
   @Input() form: any = null;
   @Input() tabsHeader: string;
@@ -18,13 +24,14 @@ export class ChapterEditComponent implements OnChanges {
   @Input() editMode: boolean = null;
   @Input() readonly: boolean = null;
   @Input() validate: boolean = null;
+  @Input() enableCommenting: boolean = false;
   @Input() vocabularies: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;
   @Input() fields: Section[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
-  @Output() submit = new EventEmitter();
+  @Output() totalComments = new EventEmitter<SectionComments>();
 
   bitset: Tabs = new Tabs;
   errorMessage = '';
@@ -39,7 +46,7 @@ export class ChapterEditComponent implements OnChanges {
   commentsPerSubSection: Map<string, number> = new Map();
 
 
-  ngOnChanges(changes:SimpleChanges) {
+  ngOnChanges() {
     if (this.fields) {
       this.initializations();
       this.ready = true
@@ -72,6 +79,11 @@ export class ChapterEditComponent implements OnChanges {
 
   setCommentCount(subSectionId: string, count: number) {
     this.commentsPerSubSection.set(subSectionId, count);
+    let sum = 0;
+    this.commentsPerSubSection.forEach((value) => {
+      sum += value;
+    });
+    this.totalComments.emit({sectionId: this.chapter.id, comments: sum});
   }
 
   /** Bitsets-->**/
@@ -221,7 +233,7 @@ export class ChapterEditComponent implements OnChanges {
       return;
     }
     this.tabIndex = i;
-    let element: HTMLElement = document.getElementById(this.chapter.id + '-tab' + i) as HTMLElement
+    let element: HTMLElement = document.getElementById(this.chapter.id + '-tab' + i) as HTMLElement;
     element.click();
     // console.log(element)
   }

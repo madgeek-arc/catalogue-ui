@@ -2,14 +2,16 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  ViewChild,
+  EventEmitter,
   inject,
   Input,
+  NgZone,
   OnInit,
-  NgZone, Output, EventEmitter
+  Output,
+  ViewChild
 } from '@angular/core';
 import { CommentAnchorService } from "../../../services/comment-anchor.service";
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AsyncPipe } from "@angular/common";
 import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -132,7 +134,7 @@ export class CommentsPanelComponent implements OnInit {
 
   // click/focus a thread
   onThreadClick(thread: Thread) {
-    for (const [key, value] of this.showInputMap) {
+    for (const [key] of this.showInputMap) {
       if (key !== thread.id)
         this.showInputMap.set(key, false);
       // console.log(`Key: ${key}, Value: ${value}`);
@@ -190,7 +192,7 @@ export class CommentsPanelComponent implements OnInit {
       const groups: FieldGroup[] = Array.from(groupsMap.values())
         .sort((a, b) => a.anchorTop - b.anchorTop);
 
-      // 3) compute each group's height (sum thread heights + gaps)
+      // 3) compute each group's height (sum thread heights and gaps)
       for (const g of groups) {
         const totalHeights = g.threads.reduce((sum, t) => sum + t.height, 0);
         const gapsBetween = Math.max(0, g.threads.length - 1) * this.gap;
@@ -249,7 +251,7 @@ export class CommentsPanelComponent implements OnInit {
         }
       }
 
-      // 6) finalize per-thread positions: each thread's top = group.finalTop + offset within group
+      // 6) finalize per-thread positions: each thread's top = group.finalTop + offset within a group
       const newMap = new Map<string, { top: number }>();
       for (const g of groups) {
         const groupTop = Math.max(0, Math.round(g.finalTop ?? g.desiredTop));

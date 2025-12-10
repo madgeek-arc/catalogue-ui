@@ -91,7 +91,8 @@
                       <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
                         <li *ngFor="let group of fields" data-uk-grid>
 
-                          <div class="uk-width-3-4" #scrollContainer>
+                          <div #scrollContainer
+                               [ngClass]="(!enableCommenting || commentsPerSubSection.get(group.id) === 0) ? 'uk-width-1-1' : 'uk-width-3-4'">
                             <div *ngFor="let fieldsData of group.fields" >
                               <div *ngIf="!fieldsData.deprecated"
                                    [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
@@ -107,7 +108,7 @@
                             </div>
                           </div>
 
-                          <div class="uk-width-expand">
+                          <div [ngClass]="enableCommenting ? 'uk-width-expand' : 'uk-hidden'">
                             <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
                                                 (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
                             </app-comments-panel>

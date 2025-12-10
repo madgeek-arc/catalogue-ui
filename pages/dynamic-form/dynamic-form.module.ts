@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DynamicFormFieldsComponent } from "./fields/dynamic-form-fields.component";
-import { ChapterEditComponent } from "./chapter-edit.component";
+import { ChapterComponent } from "./chapter.component";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { CompositeFieldComponent } from "./fields/composite-field/composite-field.component";
 import { StringFieldComponent } from "./fields/string-field/string-field.component";
@@ -32,7 +32,7 @@ import { CommentsPanelComponent } from "./comments-pannel/comments-panel.compone
     StringFieldComponent,
     CompositeFieldComponent,
     DynamicFormFieldsComponent,
-    ChapterEditComponent,
+    ChapterComponent,
     VocabularyFieldComponent,
     CheckboxFieldComponent,
     RadioButtonFieldComponent,
@@ -59,7 +59,7 @@ import { CommentsPanelComponent } from "./comments-pannel/comments-panel.compone
     CommentsPanelComponent,
   ],
   exports: [
-    ChapterEditComponent,
+    ChapterComponent,
     SurveyComponent,
     DynamicFormFieldsComponent
   ]
