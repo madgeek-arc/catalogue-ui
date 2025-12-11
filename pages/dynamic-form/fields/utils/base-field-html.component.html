@@ -1,17 +1,16 @@
 <div class="reference-item uk-margin-small-bottom uk-visible-toggle" [anchorContainer]="scrollContainer"
      commentAnchor="{{fieldData.id}}" [arrayPosition]="position"
-     [ngClass]="[
-        fieldData.form.display?.cssClasses || '',
-        (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '', readonly ? 'uk-disabled' : ''
+     [ngClass]="[fieldData.form.display?.cssClasses || '',
+       (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '', readonly ? 'uk-disabled' : ''
      ]">
 
   <div class="uk-margin-bottom">
     {{ fieldData.id }}
-    <div class="uk-flex-middle" uk-grid>
-      <div *ngIf="fieldData.label.text" class="uk-form-label uk-width-expand {{fieldData.label.cssClasses}}"
-            [attr.for]="fieldData.name" style="{{fieldData.label.style}}"
-            [innerHTML]="fieldData.form.mandatory ? appendAsterisk(fieldData.label.text) : fieldData.label.text">
-      </div>
+    <div class="uk-flex-middle" data-uk-grid>
+      <label *ngIf="fieldData.label.text" [attr.for]="inputId" class="uk-form-label uk-width-expand"
+           [ngClass]="[fieldData.label.cssClasses || '']" style="{{fieldData.label.style}}"
+           [innerHTML]="label">
+      </label>
       <div class="uk-width-auto">
         <ul class="uk-invisible-hover uk-iconnav">
           <li><a href="#comment-modal-{{fieldData.id}}" class="material-symbols-outlined" data-uk-toggle>add_comment</a></li>
@@ -64,7 +63,7 @@
     <textarea id="comment-body" class="uk-textarea" [(ngModel)]="comment" rows="5"></textarea>
     <p class="uk-text-right">
       <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-      <button class="uk-button uk-button-primary" type="button" (click)="createThread(fieldData.id)">Create comment</button>
+      <button class="uk-button uk-button-primary" type="button" (click)="createThread()">Create comment</button>
     </p>
   </div>
 </div>

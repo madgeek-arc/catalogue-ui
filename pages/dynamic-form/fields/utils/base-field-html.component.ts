@@ -1,4 +1,15 @@
-import { Component, EventEmitter, inject, input, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  input,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
 import { NgClass, NgIf } from "@angular/common";
@@ -9,6 +20,7 @@ import {
 import { CommentAnchorDirective } from "../../../../shared/directives/comment-anchor.directive";
 import { CommentingWebsocketService } from "../../../../services/commenting-websocket.service";
 import * as UIkit from 'uikit';
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-base-field-html',
@@ -24,7 +36,8 @@ import * as UIkit from 'uikit';
   ]
 })
 
-export class BaseFieldHtmlComponent implements OnChanges {
+export class BaseFieldHtmlComponent implements OnInit, OnChanges {
+  private destroyRef = inject(DestroyRef);
   private commentingService = inject(CommentingWebsocketService);
 
   @Input() form!: UntypedFormGroup;
@@ -37,14 +50,52 @@ export class BaseFieldHtmlComponent implements OnChanges {
 
   @Output() emitPush: EventEmitter<void> = new EventEmitter();
 
+  label: string = '';
   comment: string = '';
-
   position?: string;
+  hasComment: boolean = false;
+  commentFocused: boolean = false;
+
+  ngOnInit(): void {
+
+    this.commentingService.threadSubject.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: value => {
+        if (this.hasComment)
+          return;
+
+        if (value.some((item) => item.fieldId === this.fieldData.id)) {
+          this.hasComment = true;
+          this.label = this.highlight();
+        } else {
+          this.hasComment = false;
+        }
+      }
+    });
+
+    this.commentingService.focusedField.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: value => {
+       if (value === this.fieldData.id) {
+         this.label = this.strongHighlightToggle(true);
+         this.commentFocused = true;
+       } else {
+         this.label = this.strongHighlightToggle(false);
+         this.commentFocused = false;
+       }
+      }
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['inputId']) {
       let matches = this.inputId?.match(/\[(.*?)\]/g);  // all matches
       this.position = matches ? matches[matches.length - 1].replace(/[\[\]]/g, "") : null;
+    }
+
+    if (changes['fieldData']) {
+      if (this.fieldData.form.mandatory)
+        this.label = this.appendAsterisk(this.fieldData.label.text);
+      else
+        this.label = this.fieldData.label.text;
     }
   }
 
@@ -57,11 +108,32 @@ export class BaseFieldHtmlComponent implements OnChanges {
       return content + ' (*)';
   }
 
+  highlight() {
+    const openingTag = '<p>';
+    const closingTag = '</p>';
+    if (this.label.trim().startsWith(openingTag)) {
+      let tmp = this.label.replace(openingTag, `${openingTag}<span class="label-highlight">`);
+      return tmp.replace(closingTag, `</span>${closingTag}`);
+    } else {
+      return `<span class="label-highlight">${this.label}</span>`;
+    }
+  }
+
+  strongHighlightToggle(strong: boolean) {
+    if (strong) {
+      if (this.commentFocused)
+        return this.label;
+
+      return this.label.replace('label-highlight', 'label-highlight-strong');
+    } else
+      return this.label?.replace('label-highlight-strong', 'label-highlight');
+  }
+
   push() {
     this.emitPush.emit();
   }
 
-  createThread(fieldId: string) {
+  createThread() {
     if (!this.comment) {
       UIkit.notification({message: 'Please enter a comment', status: 'warning'});
       return;

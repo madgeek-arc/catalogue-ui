@@ -134,6 +134,7 @@ export class CommentsPanelComponent implements OnInit {
 
   // click/focus a thread
   onThreadClick(thread: Thread) {
+    this.commentingService.focusedField.next(thread.fieldId);
     for (const [key] of this.showInputMap) {
       if (key !== thread.id)
         this.showInputMap.set(key, false);

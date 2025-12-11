@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 declare var SockJS;
@@ -27,6 +27,7 @@ export class CommentingWebsocketService {
   private readonly base = environment.API_ENDPOINT;
   private surveyAnswerId: string | null = null;
   threadSubject: BehaviorSubject<Thread[]> = new BehaviorSubject<Thread[]>([]);
+  focusedField: Subject<string> = new Subject();
 
   stompClient: Promise<typeof Stomp>;
 

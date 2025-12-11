@@ -18,7 +18,7 @@ export class CommentAnchorService {
     }
 
     this._positions.set(id, top);
-    // emit a new Map so OnPush components see a new reference
+    // emit a new Map, so OnPush components see a new reference
     // console.log(this._positions);
     this._positions$.next(new Map(this._positions));
   }
