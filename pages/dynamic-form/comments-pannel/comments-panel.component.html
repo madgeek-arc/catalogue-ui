@@ -1,18 +1,15 @@
 <div #panel class="uk-position-relative comments-panel">
 
-  @let positions = positions$ | async;
-  @let heights = heights$ | async;
+  <!-- top spacer to create scrollable negative area when needed -->
+  <div class="top-spacer" [style.height.px]="topOffset"></div>
 
-
-  @if (positions && heights && observablesReady) {
+  @if (observablesReady) {
     @for (thread of sectionThreads; track thread.id) {
-      <div
-        class="thread-wrapper uk-position-absolute uk-width-expand"
+      <div class="thread-wrapper uk-position-absolute uk-width-expand"
         [class.thread--focused]="thread.id === focusedThreadId"
         [style.top.px]="layoutMap.get(thread.id)?.top ?? 0"
         (click)="onThreadClick(thread)">
-        <div measureComment [threadId]="thread.id"
-             (sizeChange)="onCommentSizeChange(thread.id, $event)"
+        <div measureComment [threadId]="thread.id" (sizeChange)="onCommentSizeChange(thread.id, $event)"
              class="uk-card uk-card-default uk-card-small uk-animation-slide-top-medium comment-card">
           <div class="uk-card-body">
             <div class="comment-header">

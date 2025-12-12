@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { CommentAnchorService } from "../../../services/comment-anchor.service";
 import { combineLatest, Observable } from 'rxjs';
-import { AsyncPipe } from "@angular/common";
 import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Comment, Thread } from "../../../domain/comment.model";
@@ -31,7 +30,6 @@ type SubSectionComments = {
   templateUrl: './comments-panel.component.html',
   styleUrls: ['./comments-panel.component.less'],
   imports: [
-    AsyncPipe,
     MeasureCommentDirective,
     FormsModule,
   ]
@@ -63,6 +61,7 @@ export class CommentsPanelComponent implements OnInit {
   inputMessage = '';
 
   // layout state
+  topOffset = 0; // number of pixels added as top spacer when some items go negative
   layoutMap = new Map<string, { top: number }>();
   focusedThreadId?: string;
 
@@ -82,6 +81,8 @@ export class CommentsPanelComponent implements OnInit {
       next: value => {
         // filter threads relevant to this subsection
         this.sectionThreads = value.filter((t: Thread) => ids.includes(t.fieldId));
+        // console.log('Got the threads!')
+        // this.observablesReady = true;
         this.commentCount.emit({subSectionId: this.subSection.id, comments: this.sectionThreads.length});
         // this.threadsChanged$.next();
         this.recomputeLayout(this.lastPositions, this.lastHeights); // Recompute when the thread list changes
@@ -152,7 +153,6 @@ export class CommentsPanelComponent implements OnInit {
     this.ngZone.runOutsideAngular(() => {
       const panelEl = this.panelRef?.nativeElement;
       if (!panelEl) return;
-      // const panelHeight = Math.round(panelEl.clientHeight);
 
       type ThreadItem = {
         id: string;
@@ -190,8 +190,7 @@ export class CommentsPanelComponent implements OnInit {
 
       // If there are fields with no threads, they are irrelevant here.
       // 2) create an array of groups ordered by field anchorTop (top-to-bottom)
-      const groups: FieldGroup[] = Array.from(groupsMap.values())
-        .sort((a, b) => a.anchorTop - b.anchorTop);
+      const groups: FieldGroup[] = Array.from(groupsMap.values()).sort((a, b) => a.anchorTop - b.anchorTop);
 
       // 3) compute each group's height (sum thread heights and gaps)
       for (const g of groups) {
@@ -214,23 +213,23 @@ export class CommentsPanelComponent implements OnInit {
 
       // 5) if focusedThreadId exists, align its group to its anchor and pull/push neighbor groups
       if (this.focusedThreadId) {
-        // find which group contains the focused thread
         const focusedThread = this.sectionThreads.find(t => t.id === this.focusedThreadId);
         if (focusedThread) {
-          const targetGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
-          if (targetGroupIdx !== -1) {
+          const focusedGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
+          if (focusedGroupIdx !== -1) {
             // 5a) set the focused group top to its anchor (align)
-            const focusedGroup = groups[targetGroupIdx];
+            const focusedGroup = groups[focusedGroupIdx];
             focusedGroup.finalTop = focusedGroup.desiredTop;
 
             // 5b) pull previous groups up if overlapping
-            for (let i = targetGroupIdx - 1; i >= 0; i--) {
+            for (let i = focusedGroupIdx - 1; i >= 0; i--) {
               const cur = groups[i];
               const next = groups[i + 1];
               const desiredBottomForCur = (next.finalTop ?? next.desiredTop) - this.gap;
               const candidateTop = desiredBottomForCur - cur.groupHeight;
               if (candidateTop < (cur.finalTop ?? cur.desiredTop)) {
-                cur.finalTop = Math.max(0, Math.round(candidateTop));
+                // NOTE: DO NOT clamp to 0 here — allow negative finalTop
+                cur.finalTop = Math.round(candidateTop);
               } else {
                 // no more conflicts upward
                 break;
@@ -238,7 +237,7 @@ export class CommentsPanelComponent implements OnInit {
             }
 
             // 5c) push the following groups down if they overlap
-            for (let i = targetGroupIdx + 1; i < groups.length; i++) {
+            for (let i = focusedGroupIdx + 1; i < groups.length; i++) {
               const prev = groups[i - 1];
               const cur = groups[i];
               const neededTop = (prev.finalTop ?? prev.desiredTop) + prev.groupHeight + this.gap;
@@ -253,21 +252,38 @@ export class CommentsPanelComponent implements OnInit {
       }
 
       // 6) finalize per-thread positions: each thread's top = group.finalTop + offset within a group
-      const newMap = new Map<string, { top: number }>();
+      const rawMap = new Map<string, { top: number }>();
       for (const g of groups) {
-        const groupTop = Math.max(0, Math.round(g.finalTop ?? g.desiredTop));
+        const groupTop = Math.round(g.finalTop ?? g.desiredTop);
         let offset = 0;
         for (let i = 0; i < g.threads.length; i++) {
           const t = g.threads[i];
           const threadTop = groupTop + offset;
-          newMap.set(t.id, { top: threadTop });
+          rawMap.set(t.id, { top: threadTop });
           offset += t.height + this.gap;
         }
       }
 
-      // 7) write back to Angular zone
+      // compute minimum top among all threads
+      let minTop = Infinity;
+      for (const v of rawMap.values()) {
+        if (v.top < minTop) minTop = v.top;
+      }
+
+      // if minTop < 0, we will create a top spacer of height = -minTop
+      // and shift every final top by that spacer so nothing has negative 'top' in the DOM.
+      // This gives the user "scrollable overflow above the panel".
+      const shift = minTop < 0 ? -minTop : 0;
+
+      const adjustedMap = new Map<string, { top: number }>();
+      for (const [id, v] of rawMap.entries()) {
+        adjustedMap.set(id, { top: Math.round(v.top + shift) });
+      }
+
+      // 7) write back to Angular zone: new layoutMap + topOffset value
       this.ngZone.run(() => {
-        this.layoutMap = newMap;
+        this.topOffset = shift;
+        this.layoutMap = adjustedMap;
       });
     });
   }
