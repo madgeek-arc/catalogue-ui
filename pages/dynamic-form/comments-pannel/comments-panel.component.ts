@@ -19,6 +19,8 @@ import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { debounceTime } from "rxjs/operators";
 import { FormsModule } from "@angular/forms";
+import { NgClass } from "@angular/common";
+import UIkit from "uikit";
 
 type SubSectionComments = {
   subSectionId: string;
@@ -32,6 +34,7 @@ type SubSectionComments = {
   imports: [
     MeasureCommentDirective,
     FormsModule,
+    NgClass,
   ]
 })
 
@@ -69,8 +72,7 @@ export class CommentsPanelComponent implements OnInit {
   private lastPositions = new Map<string, number>();
   private lastHeights = new Map<string, number>();
 
-  // trigger recomputing when the thread list changes
-  // private threadsChanged$ = new Subject<void>();
+  editingComment?: Comment;
 
   ngOnInit() {
     this.positions$ = this.anchorService.positions$;
@@ -124,6 +126,30 @@ export class CommentsPanelComponent implements OnInit {
 
     this.commentingService.addMessage(threadId, comment);
     this.toggleInput(threadId);
+  }
+
+  updateComment(threadId: string, comment: Comment) {
+    this.commentingService.updateMessage(threadId, comment.id, comment);
+    this.editingComment = null;
+  }
+
+  copyComment(comment: Comment) {
+    this.editingComment = new Comment();
+    this.editingComment.body = comment.body;
+    this.editingComment.mentions = comment.mentions;
+    this.editingComment.id = comment.id;
+
+    setTimeout(() => {
+      const textarea = document.getElementById(`text-area-${comment.id}`) as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.focus();
+      }
+    }, 0);
+
+    const dropdown = UIkit.dropdown(`#kebab-menu-${comment.id}`);
+    if (dropdown) {
+      dropdown.hide(false);
+    }
   }
 
   onCommentSizeChange(threadId: string, size: number) {

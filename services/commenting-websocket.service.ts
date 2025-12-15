@@ -89,7 +89,7 @@ export class CommentingWebsocketService {
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages`, {}, JSON.stringify(message)));
   }
 
-  updateMessage(threadId: string, messageId: string, message: any) {
+  updateMessage(threadId: string, messageId: string, message: Comment) {
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages/${messageId}`, {}, JSON.stringify(message)));
   }
 
