@@ -23,7 +23,6 @@ import { WebsocketService } from "../../../app/services/websocket.service";
 import { UserActivity } from "../../../app/domain/userInfo";
 import { cloneDeep, isEqual } from "lodash";
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
-import { CreateThread } from "../../domain/comment.model";
 import * as UIkit from 'uikit';
 
 @Component({

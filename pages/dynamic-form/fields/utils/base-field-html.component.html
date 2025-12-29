@@ -7,10 +7,12 @@
   <div class="uk-margin-bottom">
     {{ fieldData.id }}
     <div class="uk-flex-middle" data-uk-grid>
-      <label *ngIf="fieldData.label.text" [attr.for]="inputId" class="uk-form-label uk-width-expand"
-           [ngClass]="[fieldData.label.cssClasses || '']" style="{{fieldData.label.style}}"
-           [innerHTML]="label">
-      </label>
+      @if (fieldData.label.text) {
+        <label [attr.for]="inputId" class="uk-form-label uk-width-expand"
+               [ngClass]="[fieldData.label.cssClasses || '']" style="{{fieldData.label.style}}"
+               [innerHTML]="label">
+        </label>
+      }
       <div class="uk-width-auto">
         <ul class="uk-invisible-hover uk-iconnav">
           <li><a href="#comment-modal-{{fieldData.id}}" class="material-symbols-outlined" data-uk-toggle>add_comment</a></li>

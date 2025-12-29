@@ -36,17 +36,23 @@
                           [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
                           @for (tab of fields; track tab; let i = $index) {
                             <li  (click)="setTabIndex(i)">
-                              <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration uk-flex uk-flex-between"
-                                [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
-                                <span>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</span>
-                                @if (bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets) {
-                                  <span class="circle-number">
-                                    @if (bitset.tabs.get(tab.id).remainingOnTab === 0) {
-                                      <i aria-hidden="true" class="fa fa-check"></i>
-                                    }
-                                    {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}
-                                  </span>
-                                }
+                              <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration"
+                                 [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
+                                <div class="uk-width-expand uk-flex uk-flex-between">
+                                  <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
+                                  @if (commentsPerSubSection.get(tab.id)) {
+                                    <div class="uk-flex uk-flex-middle"
+                                         data-uk-tooltip="title: Active comments">
+                                      {{ commentsPerSubSection.get(tab.id) }}
+                                      <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                                    </div>
+                                  }
+                                  <!-- Bitsets, to be removed -->
+                                  <!--                            <span *ngIf="bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets" class="circle-number">-->
+                                  <!--                              <i *ngIf="bitset.tabs.get(tab.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>-->
+                                  <!--                              {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}-->
+                                  <!--                            </span>-->
+                                </div>
                               </a>
                             </li>
                           }
@@ -95,24 +101,24 @@
                           <form [formGroup]="form">
                             <div class="formContainer">
                               <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
-                                @for (group of fields; track group) {
-                                  <li>
-                                    @for (fieldsData of group.fields; track fieldsData) {
+                                @for (group of fields; track group.id) {
+                                  <li data-uk-grid>
+                                    @for (fieldsData of group.fields; track fieldsData.id) {
                                       <div #scrollContainer
                                            [ngClass]="(!enableCommenting || commentsPerSubSection.get(group.id) === 0) ? 'uk-width-1-1' : 'uk-width-3-4'">
-                                        <div *ngFor="let fieldsData of group.fields" >
-                                          <div *ngIf="!fieldsData.deprecated"
-                                               [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
-                                            <app-field *ngIf="!fieldsData.deprecated"
-                                                       [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                                        @if (!fieldsData.deprecated) {
+                                          <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
+<!--                                              @if (!fieldsData.deprecated) {-->
+                                            <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                                        [scrollContainer]="scrollContainer"
                                                        [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
                                                        [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
                                               <!--                                           (handleBitSets)="handleBitSet($event)"-->
                                               <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
                                             </app-field>
+<!--                                              }-->
                                           </div>
-                                        </div>
+                                        }
                                       </div>
 
                                       <div [ngClass]="enableCommenting ? 'uk-width-expand' : 'uk-hidden'">
