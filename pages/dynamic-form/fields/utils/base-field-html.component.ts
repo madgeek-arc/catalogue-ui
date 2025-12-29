@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
-import { NgClass, NgIf } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { SafeUrlPipe } from "../../../../shared/pipes/safeUrlPipe";
 import {
   CatalogueUiReusableComponentsModule
@@ -13,10 +13,9 @@ import {
   imports: [
     ReactiveFormsModule,
     NgClass,
-    NgIf,
     SafeUrlPipe,
     CatalogueUiReusableComponentsModule
-  ]
+]
 })
 
 export class BaseFieldHtmlComponent {

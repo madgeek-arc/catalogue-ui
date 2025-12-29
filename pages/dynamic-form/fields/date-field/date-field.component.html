@@ -1,22 +1,26 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" (emitPush)="push()">
+    [hideField]="hideField" (emitPush)="push()">
 
     <div multiplicity></div>
     <ng-container noMultiplicity>
-<!--      {{ formControl.value }}-->
+      <!--      {{ formControl.value }}-->
       <div class="input-wrapper flat uk-width-9-10" [class.focused]="focused"
-           [class.danger]="(formControl.invalid && formControl.touched)">
+        [class.danger]="(formControl.invalid && formControl.touched)">
         <div class="input-box" tabindex="0">
 
           <div class="uk-flex uk-flex-middle" tabindex="0" (focusin)="focus()" (focusout)="focusOut(true)">
-          <div *ngIf="!formControl.getRawValue()" class="input uk-text-truncate">
-              {{ fieldData.form.placeholder ?? 'Select Date' }}
-            </div>
-            <div *ngIf="formControl.getRawValue()" class="input uk-text-truncate">
-              {{ formControl.getRawValue() | date: 'dd-MM-yyyy' }}
-            </div>
+            @if (!formControl.getRawValue()) {
+              <div class="input uk-text-truncate">
+                {{ fieldData.form.placeholder ?? 'Select Date' }}
+              </div>
+            }
+            @if (formControl.getRawValue()) {
+              <div class="input uk-text-truncate">
+                {{ formControl.getRawValue() | date: 'dd-MM-yyyy' }}
+              </div>
+            }
             <div class="uk-margin-small-left icon">
               <span class="uk-flex">
                 <span class="material-symbols-outlined" style="font-size: 20px;">today</span>

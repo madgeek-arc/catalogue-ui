@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
-import { DatePipe, NgIf } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
@@ -15,9 +15,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatDatepickerModule,
     BaseFieldHtmlComponent,
     DatePipe,
-    NgIf,
     ReactiveFormsModule
-  ],
+],
   providers: [
     provideNativeDateAdapter(),
   ],
