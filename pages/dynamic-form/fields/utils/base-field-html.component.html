@@ -19,40 +19,45 @@
     </div>
   </div>
 
-  <ng-container *ngIf="fieldData.form.description?.showLess; else noReadMore">
-    <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-         *ngIf="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-      <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
-    </div>
-  </ng-container>
-  <ng-template #noReadMore>
-    <div *ngIf="fieldData.form.description?.text" style="{{fieldData.form.description.style}}"
-         class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-         [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
-    </div>
-  </ng-template>
+  @if (fieldData.form.description?.showLess) {
+    @if (fieldData.form.description.text) {
+      <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+        style="{{fieldData.form.description.style}}">
+        <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
+      </div>
+    }
+  } @else {
+    @if (fieldData.form.description?.text) {
+      <div style="{{fieldData.form.description.style}}"
+        class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+        [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
+      </div>
+    }
+  }
 
-  <ng-container *ngIf="fieldData.typeInfo.multiplicity; else noMultiplicity">
+  @if (fieldData.typeInfo.multiplicity) {
     <ng-content select="[multiplicity]"></ng-content>
     <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-         [innerHTML]="fieldData.form.suggestion.text">
+      [innerHTML]="fieldData.form.suggestion.text">
     </div>
-
-    <div *ngIf="!readonly" class="uk-width-9-10 uk-text-center uk-margin-top">
-      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
-        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
-      </a>
-    </div>
-  </ng-container>
-
-  <ng-template #noMultiplicity>
-    <ng-content select="[noMultiplicity]"></ng-content>
-    <div *ngIf="fieldData.form.suggestion.text" class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" [innerHTML]="fieldData.form.suggestion.text"
-           style="{{fieldData.form.suggestion.style}}">
+    @if (!readonly) {
+      <div class="uk-width-9-10 uk-text-center uk-margin-top">
+        <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
+          <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
+        </a>
       </div>
-    </div>
-  </ng-template>
+    }
+  } @else {
+    <ng-content select="[noMultiplicity]"></ng-content>
+    @if (fieldData.form.suggestion.text) {
+      <div class="uk-margin-top">
+        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" [innerHTML]="fieldData.form.suggestion.text"
+          style="{{fieldData.form.suggestion.style}}">
+        </div>
+      </div>
+    }
+  }
+
 </div>
 
 <!-- This is the modal -->

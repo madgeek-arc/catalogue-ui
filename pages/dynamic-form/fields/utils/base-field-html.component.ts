@@ -12,7 +12,7 @@ import {
 } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
-import { NgClass, NgIf } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { SafeUrlPipe } from "../../../../shared/pipes/safeUrlPipe";
 import {
   CatalogueUiReusableComponentsModule
@@ -28,7 +28,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   imports: [
     ReactiveFormsModule,
     NgClass,
-    NgIf,
     SafeUrlPipe,
     CommentAnchorDirective,
     CatalogueUiReusableComponentsModule,

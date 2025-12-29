@@ -26,67 +26,82 @@
             </div>
 
             <div class="uk-width-expand  uk-padding" style="min-height: 80vh">
-              <div *ngIf="sideMenuSettingsType === 'main'">
-                <app-main-info [formTitle]="model.name" [description]="model.description" [notice]="model.notice"
-                               (emitTitle)="model.name = $event"
-                               (emitDescription)="model.description = $event"
-                               (emitNotice)="model.notice = $event">
-                </app-main-info>
-              </div>
-              <div *ngIf="chapter">
-                <h3>{{ chapter.name ?? 'Untitled Chapter' }}</h3>
-                <p [innerHTML]="chapter.description"></p>
-                <div *ngIf="!currentSection">
-                  <div *ngFor="let section of chapter.subSections; let i=index" class="uk-margin-bottom">
-                    <a (click)="this.currentSection = section; sideMenuSettingsType = 'section'">
-                      {{ section.name ?? 'Untitled Section ' + (i+1) }}
-                    </a>
-                  </div>
+              @if (sideMenuSettingsType === 'main') {
+                <div>
+                  <app-main-info [formTitle]="model.name" [description]="model.description" [notice]="model.notice"
+                    (emitTitle)="model.name = $event"
+                    (emitDescription)="model.description = $event"
+                    (emitNotice)="model.notice = $event">
+                  </app-main-info>
                 </div>
-              </div>
-              <div *ngIf="currentSection">
-                <h5>{{ currentSection.name ?? 'Untitled Section' }}</h5>
-                <p [innerHTML]="currentSection.description"></p>
-                <div *ngFor="let field of currentSection.fields; let i = index" class="uk-margin-bottom">
-<!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
-                  <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
-                       [ngClass]="{'highlight-field': currentField?.id === field.id}" (click)="fieldSelection(field)">
-                    <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
-                      <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
-                        <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
-                        <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
-                      </span>
-                      <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
-                        <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
-                        <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
-                      </span>
-                      <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
-                      <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
-                    </div>
-
-                    <div class="uk-grid uk-grid-column-collapse">
-                      <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
-                      <div *ngIf="currentSection.fields.length > 1" class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
-                        <div *ngIf="i !==0" class="uk-margin-small" data-uk-tooltip="Move up">
-                          <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
+              }
+              @if (chapter) {
+                <div>
+                  <h3>{{ chapter.name ?? 'Untitled Chapter' }}</h3>
+                  <p [innerHTML]="chapter.description"></p>
+                  @if (!currentSection) {
+                    <div>
+                      @for (section of chapter.subSections; track section; let i = $index) {
+                        <div class="uk-margin-bottom">
+                          <a (click)="this.currentSection = section; sideMenuSettingsType = 'section'">
+                            {{ section.name ?? 'Untitled Section ' + (i+1) }}
+                          </a>
                         </div>
-                        <div *ngIf="i !== currentSection.fields.length-1" class="uk-margin-small" data-uk-tooltip="Move down" >
-                          <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              @if (currentSection) {
+                <div>
+                  <h5>{{ currentSection.name ?? 'Untitled Section' }}</h5>
+                  <p [innerHTML]="currentSection.description"></p>
+                  @for (field of currentSection.fields; track field; let i = $index) {
+                    <div class="uk-margin-bottom">
+                      <!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
+                      <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
+                        [ngClass]="{'highlight-field': currentField?.id === field.id}" (click)="fieldSelection(field)">
+                        <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+                          <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                            <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
+                            <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
+                          </span>
+                          <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                            <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
+                            <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
+                          </span>
+                          <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
+                          <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
+                        </div>
+                        <div class="uk-grid uk-grid-column-collapse">
+                          <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
+                          @if (currentSection.fields.length > 1) {
+                            <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
+                              @if (i !==0) {
+                                <div class="uk-margin-small" data-uk-tooltip="Move up">
+                                  <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
+                                </div>
+                              }
+                              @if (i !== currentSection.fields.length-1) {
+                                <div class="uk-margin-small" data-uk-tooltip="Move down" >
+                                  <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
+                                </div>
+                              }
+                            </div>
+                          }
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                </div>
-
-                <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-                  <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
-                    <a class="uk-flex uk-flex-center uk-padding-small" (click)="sideMenuSettingsType = 'fieldSelector'">
-                      Add Question <span class="material-icons">add</span>
-                    </a>
+                  }
+                  <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                    <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+                      <a class="uk-flex uk-flex-center uk-padding-small" (click)="sideMenuSettingsType = 'fieldSelector'">
+                        Add Question <span class="material-icons">add</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
+              }
 
             </div>
 
@@ -94,10 +109,10 @@
             <div class="uk-width-1-5 uk-section-primary uk-preserve-color">
               <aside class="">
                 <app-settings-side-menu [chapter]="chapter" [section]="currentSection" [field]="currentField"
-                                        [sideMenuSettingsType]="sideMenuSettingsType"
-                                        (emitFieldReferenceChange)="updateReference()"
-                                        (emitSideMenuSettingsChange)="sideMenuSettingsType = $event"
-                                        (emitField)="currentField = $event">
+                  [sideMenuSettingsType]="sideMenuSettingsType"
+                  (emitFieldReferenceChange)="updateReference()"
+                  (emitSideMenuSettingsChange)="sideMenuSettingsType = $event"
+                  (emitField)="currentField = $event">
                 </app-settings-side-menu>
               </aside>
 

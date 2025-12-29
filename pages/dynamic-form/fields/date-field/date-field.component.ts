@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
-import { DatePipe, NgIf } from "@angular/common";
+import { DatePipe } from "@angular/common";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
@@ -15,9 +15,8 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatDatepickerModule,
     BaseFieldHtmlComponent,
     DatePipe,
-    NgIf,
     ReactiveFormsModule
-  ],
+],
   providers: [
     provideNativeDateAdapter(),
   ],
@@ -38,8 +37,6 @@ export class DateFieldComponent extends BaseFieldComponent implements OnInit {
     // If formControl initially has a Date, normalize it too
     this.selectedDate = this.parseLocalDate(this.formControl.getRawValue());
   }
-
-
 
   dateChanged(event: Date) {
     if (this.fieldData.typeInfo.values?.[0] === 'formatDateToString') {
@@ -81,6 +78,10 @@ export class DateFieldComponent extends BaseFieldComponent implements OnInit {
       return new Date(Number(value));
     }
 
+    // strip time from ISO strings to handle partial date values
+    if(value.includes('T')){
+      value = value.split('T')[0];
+    }
     // 3. Handle partial date: "YYYY-MM-DD"
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
       const [year, month, day] = value.split('-').map(Number);
