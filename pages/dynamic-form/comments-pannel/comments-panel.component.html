@@ -48,7 +48,9 @@
                   @if (comment.id !== editingComment?.id) {
                     <p class="uk-margin-remove-top">->{{ comment.body }}</p>
                   } @else {
-                    <textarea id="text-area-{{comment.id}}" class="uk-textarea" [(ngModel)]="editingComment.body"></textarea>
+                    <textarea id="text-area-{{comment.id}}" class="uk-textarea" [(ngModel)]="editingComment.body"
+                              [ngModelOptions]="{standalone: true}">
+                    </textarea>
                     <div>
                       <button class="uk-button uk-button-default" (click)="editingComment = null">Cancel</button>
                       <button class="uk-button uk-button-primary" (click)="updateComment(thread.id, editingComment)"
@@ -73,7 +75,8 @@
                        This is standard HTML behavior as per HTML5 spec for backward compatibility. -->
                   <div class="uk-width-expand uk-margin-xsmall-right">
                     <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply"
-                           [(ngModel)]="inputMessage" (keydown.enter)="$event.preventDefault()">
+                           [(ngModel)]="inputMessage" [ngModelOptions]="{standalone: true}"
+                           (keydown.enter)="$event.preventDefault()">
                   </div>
                   <div class="uk-width-auto">
                     <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px"
