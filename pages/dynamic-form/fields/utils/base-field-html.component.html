@@ -37,8 +37,9 @@
     }
   }
 
+  <ng-content></ng-content>
   @if (fieldData.typeInfo.multiplicity) {
-    <ng-content select="[multiplicity]"></ng-content>
+<!--    <ng-content select="[multiplicity]"></ng-content>-->
     <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
       [innerHTML]="fieldData.form.suggestion.text">
     </div>
@@ -50,7 +51,7 @@
       </div>
     }
   } @else {
-    <ng-content select="[noMultiplicity]"></ng-content>
+<!--    <ng-content select="[noMultiplicity]"></ng-content>-->
     @if (fieldData.form.suggestion.text) {
       <div class="uk-margin-top">
         <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" [innerHTML]="fieldData.form.suggestion.text"
