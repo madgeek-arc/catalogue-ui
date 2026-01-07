@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReadMoreComponent, ReadMoreTextComponent } from './read-more.component';
-import { provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from "@angular/common/http";
+import {
+  provideHttpClient,
+  withRequestsMadeViaParent
+} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -13,7 +16,7 @@ import { provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from "@an
     ReadMoreTextComponent,
   ],
   imports: [CommonModule],
-  providers: [provideHttpClient(withInterceptorsFromDi(), withJsonpSupport())]
+  providers: [provideHttpClient(withRequestsMadeViaParent())]
 })
 
 export class CatalogueUiReusableComponentsModule {

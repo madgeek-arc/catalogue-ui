@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import {XsrfTokenExtractor} from "./xsrf-token-extractor.service";
 
 declare var SockJS;
 declare var Stomp;
@@ -23,6 +24,7 @@ interface IMessage {
 export class CommentingWebsocketService {
   private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
+  private xsrf = inject(XsrfTokenExtractor);
 
   private readonly base = environment.API_ENDPOINT;
   private surveyAnswerId: string | null = null;
@@ -43,7 +45,7 @@ export class CommentingWebsocketService {
     this.stompClient = new Promise((resolve, reject) => {
       let stomp = Stomp.over(ws);
       stomp.debug = null;
-      stomp.connect({}, function(frame) {
+      stomp.connect(this.xsrf.getHeader(), function (frame) {
         const timer = setInterval(() => {
           if (stomp.connected) {
             clearInterval(timer);
