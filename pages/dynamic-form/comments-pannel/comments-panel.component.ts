@@ -46,7 +46,7 @@ export class CommentsPanelComponent implements OnInit {
 
   @Input() scrollContainer?: HTMLElement; // form scroll container (passed from parent)
   @Input() subSection: any = {};
-  @Input() gap = 8; // px between stacked comments
+  @Input() userId: string | null = null;
 
   @Output() commentCount = new EventEmitter<SubSectionComments>();
 
@@ -58,6 +58,7 @@ export class CommentsPanelComponent implements OnInit {
   heights$!: Observable<Map<string, number>>;
   sectionThreads: Thread[] = [];
   observablesReady = false;
+  gap = 8; // px between stacked comments
 
   // Comment message
   showInputMap = new Map<string, boolean>();

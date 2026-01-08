@@ -25,6 +25,7 @@ export class ChapterComponent implements OnChanges {
   @Input() readonly: boolean = null;
   @Input() validate: boolean = null;
   @Input() enableCommenting: boolean = false;
+  @Input() userId: string | null = null;
   @Input() vocabularies: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;

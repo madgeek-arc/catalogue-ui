@@ -40,6 +40,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() payload: any = null; // can't import the specific project class in the lib file
   @Input() model: Model = null;
   @Input() subType: string = null;
+  @Input() userId: string | null = null;
   @Input() activeUsers: UserActivity[] = null;
   @Input() enableWebsocket = false;
   @Input() vocabulariesMap: Map<string, object[]> = null;

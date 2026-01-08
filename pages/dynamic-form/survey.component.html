@@ -57,7 +57,7 @@
                        [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [tabsHeader]="tabsHeader"
                        [fields]="model.sections[i].subSections ?? model.sections"
                        [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
-                       [editMode]=editMode [enableCommenting]="enableCommenting"
+                       [editMode]=editMode [enableCommenting]="enableCommenting" [userId]="userId"
                        (totalComments)="setCommentCount($event.sectionId, $event.comments)"
                        (chapterHasChanges)="setChapterChangesMap($event)">
           </app-chapter>

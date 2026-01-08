@@ -25,24 +25,26 @@
                     <div class="uk-width-expand">
                       <p class="">{{ comment.authorId }}</p>
                     </div>
-                    <div class="uk-width-auto">
-                      <ul class="uk-hidden-hover uk-iconnav">
-                        <li>
-                          <div class="uk-inline">
-                            <!--                          <button class="uk-button">-->
-                            <a><span class="material-symbols-outlined" style="font-size: 22px">more_vert</span></a>
-                            <!--                          </button>-->
-                            <div id="kebab-menu-{{comment.id}}" class="comment-dropdown"
-                                 uk-dropdown="mode: click; animation: reveal-top; animate-out: true; duration: 250">
-                              <ul class="uk-nav uk-dropdown-nav">
-                                <li><a (click)="copyComment(comment)">Edit</a></li>
-                                <li><a>Delete</a></li>
-                              </ul>
+                    @if (userId === comment.authorId) {
+                      <div class="uk-width-auto">
+                        <ul class="uk-hidden-hover uk-iconnav">
+                          <li>
+                            <div class="uk-inline">
+                              <!--                          <button class="uk-button">-->
+                              <a><span class="material-symbols-outlined" style="font-size: 22px">more_vert</span></a>
+                              <!--                          </button>-->
+                              <div id="kebab-menu-{{comment.id}}" class="comment-dropdown"
+                                   uk-dropdown="mode: click; animation: reveal-top; animate-out: true; duration: 250">
+                                <ul class="uk-nav uk-dropdown-nav">
+                                  <li><a (click)="copyComment(comment)">Edit</a></li>
+                                  <li><a>Delete</a></li>
+                                </ul>
+                              </div>
                             </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
+                          </li>
+                        </ul>
+                      </div>
+                    }
                   </div>
 
                   @if (comment.id !== editingComment?.id) {
