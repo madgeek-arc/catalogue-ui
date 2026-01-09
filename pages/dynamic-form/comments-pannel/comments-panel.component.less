@@ -48,10 +48,24 @@
   width: max-content;
 }
 
-
 .top-spacer {
   width: 100%;
   height: 0;
   pointer-events: none;
   background: transparent;
+}
+
+.comment-wrapper {
+  position: relative;
+}
+
+/* Film layer */
+.comment-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 50;
+
+  /* block interaction with the comment */
+  pointer-events: all;
 }

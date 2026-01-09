@@ -4,7 +4,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import {XsrfTokenExtractor} from "./xsrf-token-extractor.service";
+import { XsrfTokenExtractor } from "./xsrf-token-extractor.service";
 
 declare var SockJS;
 declare var Stomp;
@@ -12,7 +12,7 @@ declare var Stomp;
 const URL = environment.WS_ENDPOINT;
 
 interface IMessage {
-  command: string;            // e.g. "MESSAGE"
+  command: string;
   headers: { [key: string]: string };
   body: string;               // raw string payload
   binaryBody?: Uint8Array;    // if binary
@@ -64,7 +64,7 @@ export class CommentingWebsocketService {
         }, 1000);
       }, function (error) {
         let timeout = 1000;
-        that.count > 20 ? timeout = 10000 : that.count++ ;
+        that.count > 20 ? timeout = 10_000 : that.count++ ;
         setTimeout( () => {
           // stomp.close();
           that.initializeWebSocketConnection(that.surveyAnswerId);
@@ -95,6 +95,10 @@ export class CommentingWebsocketService {
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages/${messageId}`, {}, JSON.stringify(message)));
   }
 
+  deleteMessage(threadId: string, messageId: string) {
+    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages/${messageId}/delete`, {}));
+  }
+
   closeWs() {
     this.stompClient?.then(client => client.ws.close());
   }
@@ -104,7 +108,7 @@ export class CommentingWebsocketService {
     const index = current.findIndex(t => t.id === thread.id);
 
     if (index === -1) {
-      // ➕ Add if not found
+      // Add if not found
       this.threadSubject.next([...current, thread]);
     } else {
       // Replace it if exists

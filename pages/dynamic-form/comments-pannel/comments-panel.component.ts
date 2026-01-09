@@ -74,6 +74,7 @@ export class CommentsPanelComponent implements OnInit {
   private lastHeights = new Map<string, number>();
 
   editingComment?: Comment;
+  overlayCommentId: string | null = null;
 
   ngOnInit() {
     this.positions$ = this.anchorService.positions$;
@@ -134,6 +135,23 @@ export class CommentsPanelComponent implements OnInit {
     this.editingComment = null;
   }
 
+  deleteComment(threadId: string, commentId: string) {
+    this.commentingService.deleteMessage(threadId, commentId);
+  }
+
+  openOverlay(commentId: string) {
+    this.overlayCommentId = commentId;
+
+    const dropdown = UIkit.dropdown(`#kebab-menu-${commentId}`);
+    if (dropdown) {
+      dropdown.hide(false);
+    }
+  }
+
+  closeOverlay() {
+    this.overlayCommentId = null;
+  }
+
   copyComment(comment: Comment) {
     this.editingComment = new Comment();
     this.editingComment.body = comment.body;
@@ -168,6 +186,9 @@ export class CommentsPanelComponent implements OnInit {
         this.showInputMap.set(key, false);
       // console.log(`Key: ${key}, Value: ${value}`);
     }
+
+    if (this.focusedThreadId !== thread.id)
+      this.closeOverlay(); // Clear any open overlay.
 
     this.focusedThreadId = thread.id;
     // recompute layout immediately using last-known maps
