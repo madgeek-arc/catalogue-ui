@@ -52,7 +52,6 @@ export class CommentingWebsocketService {
             that.count = 0;
             stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}`, (message: IMessage) => {
               console.log(message);
-              console.log(JSON.parse(message.body));
               if (message.body)
                 that.upsertThread(JSON.parse(message.body))
               // if (message.body) {
@@ -75,7 +74,7 @@ export class CommentingWebsocketService {
   }
 
   addThread(fieldId: string, body: string) {
-    console.log(this.surveyAnswerId);
+    // console.log(this.surveyAnswerId);
     const thread: CreateThread = {
       targetId: this.surveyAnswerId,
       fieldId: fieldId,
@@ -85,6 +84,10 @@ export class CommentingWebsocketService {
       }
     }
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}`, {}, JSON.stringify(thread)));
+  }
+
+  deleteThread(threadId: string) {
+    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/delete`, {}));
   }
 
   addMessage(threadId: string, message: Comment) {
@@ -104,6 +107,7 @@ export class CommentingWebsocketService {
   }
 
   upsertThread(thread: Thread) {
+    console.log(thread);
     const current = this.threadSubject.value;
     const index = current.findIndex(t => t.id === thread.id);
 

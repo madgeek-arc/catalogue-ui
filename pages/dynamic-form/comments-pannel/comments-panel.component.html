@@ -31,12 +31,14 @@
                           <ul class="uk-hidden-hover uk-iconnav">
                             <li>
                               <div class="uk-inline">
-                                <a><span class="material-symbols-outlined uk-margin-small-top" style="font-size: 22px">more_vert</span></a>
+                                <a (click)="closeOverlay()">
+                                  <span class="material-symbols-outlined uk-margin-small-top" style="font-size: 22px">more_vert</span>
+                                </a>
                                 <div id="kebab-menu-{{comment.id}}" class="comment-dropdown"
                                      uk-dropdown="mode: click; animation: reveal-top; animate-out: true; duration: 250">
                                   <ul class="uk-nav uk-dropdown-nav">
                                     <li><a (click)="copyComment(comment)">Edit</a></li>
-                                    <li><a (click)="openOverlay(comment.id)">Delete</a></li>
+                                    <li><a (click)="openOverlay(comment.id, thread)">Delete</a></li>
                                   </ul>
                                 </div>
                               </div>
@@ -64,9 +66,9 @@
 
                   <!-- COMMENT OVERLAY -->
                   @if (overlayCommentId === comment.id) {
-                    <div class="comment-overlay uk-animation-fade uk-flex uk-flex-center uk-flex-middle">
+                    <div class="comment-overlay uk-animation-fade" >
 
-                      <div>
+                      <div class="uk-margin-xsmall" (click)="$event.stopPropagation()">
                         <p class="uk-light uk-margin-remove">Delete this comment?</p>
 
                         <button class="uk-button uk-button-small uk-button-danger uk-margin-small-right"
@@ -107,6 +109,26 @@
               }
             </div>
           </div>
+
+          <!-- OVERLAY FOR DELETING ENTIRE THREAD -->
+          @if (overlayThreadId === thread.id) {
+            <div class="card-overlay uk-animation-fade" (click)="closeOverlay()">
+              <div class="uk-margin-xsmall" (click)="$event.stopPropagation()">
+                <p class="uk-light uk-margin-remove">Delete entire thread?</p>
+
+                <div class="uk-margin-small-top">
+                  <button class="uk-button uk-button-danger uk-button-small uk-margin-small-right"
+                          (click)="deleteThread(thread.id)">Ok
+                  </button>
+
+                  <button class="uk-button uk-button-default uk-button-small" (click)="closeOverlay()">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
         </div>
       </div>
     }

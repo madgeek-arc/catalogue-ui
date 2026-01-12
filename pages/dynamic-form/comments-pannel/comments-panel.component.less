@@ -37,11 +37,6 @@
   transition: transform 180ms ease, opacity 160ms ease;
 }
 
-/* ensure long comment stacks look OK */
-.comment-messages p {
-  margin-bottom: 8px;
-}
-
 /* auto-size dropdown to content width */
 .comment-dropdown {
   min-width: auto;
@@ -55,17 +50,41 @@
   background: transparent;
 }
 
+.film-card { position: relative; }
+
+/* wrapper for each comment */
 .comment-wrapper {
   position: relative;
 }
 
-/* Film layer */
-.comment-overlay {
+/* overlay */
+.comment-overlay, .card-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 50;
-
-  /* block interaction with the comment */
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;       /* keep it high so it covers UIkit dropdowns */
   pointer-events: all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* card-level overlay */
+//.card-overlay {
+//  position: absolute;  /* must be absolute inside .film-card */
+//  inset: 0;
+//  background: rgba(0,0,0,0.45);
+//  z-index: 1100;       /* slightly higher for card-wide */
+//  pointer-events: all;
+//  display: flex;
+//  align-items: center;
+//  justify-content: center;
+//}
+
+/* center the inner dialog in both overlays */
+//.card-overlay > div,
+//.comment-overlay > div {
+//  /* optional: small card-like panel */
+//  background: transparent; /* keep background transparent if you prefer film look */
+//  text-align: center;
+//}

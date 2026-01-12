@@ -74,7 +74,9 @@ export class CommentsPanelComponent implements OnInit {
   private lastHeights = new Map<string, number>();
 
   editingComment?: Comment;
-  overlayCommentId: string | null = null;
+  // overlay state
+  overlayCommentId: string | null = null;   // comment-level overlay
+  overlayThreadId: string | null = null;    // card-level overlay (delete whole thread)
 
   ngOnInit() {
     this.positions$ = this.anchorService.positions$;
@@ -139,8 +141,23 @@ export class CommentsPanelComponent implements OnInit {
     this.commentingService.deleteMessage(threadId, commentId);
   }
 
-  openOverlay(commentId: string) {
-    this.overlayCommentId = commentId;
+  deleteThread(threadId: string) {
+    console.log('deleting thread');
+    this.commentingService.deleteThread(threadId);
+  }
+
+  openOverlay(commentId: string, thread: Thread) {
+    const isFirstComment = thread.messages?.length && thread.messages[0]?.id === commentId;
+
+    if (isFirstComment) {
+      // show overlay for the whole thread
+      this.overlayThreadId = thread.id;
+      this.overlayCommentId = null;
+    } else {
+      // show overlay only for the comment
+      this.overlayCommentId = commentId;
+      this.overlayThreadId = null;
+    }
 
     const dropdown = UIkit.dropdown(`#kebab-menu-${commentId}`);
     if (dropdown) {
@@ -150,6 +167,7 @@ export class CommentsPanelComponent implements OnInit {
 
   closeOverlay() {
     this.overlayCommentId = null;
+    this.overlayThreadId = null;
   }
 
   copyComment(comment: Comment) {
