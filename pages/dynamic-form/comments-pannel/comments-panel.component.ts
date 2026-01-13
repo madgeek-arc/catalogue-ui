@@ -391,4 +391,37 @@ export class CommentsPanelComponent implements OnInit {
       container.scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
     }
   }
+
+  // private ensureFocusedVisible(threadId: string) {
+  //   const panelEl = this.panelRef?.nativeElement;
+  //   if (!panelEl) return;
+  //
+  //   const thread = this.sectionThreads.find(t => t.id === threadId);
+  //   if (!thread) return;
+  //
+  //   const layout = this.layoutMap.get(threadId);
+  //   if (!layout) return;
+  //
+  //   const focusedTop = layout.top;
+  //
+  //   // Anchor position inside the form scroll container (your measured coordinate space)
+  //   const anchorTop = this.lastPositions.get(thread.fieldId) ?? 0;
+  //
+  //   // Because the panel adds a top spacer and shifts all thread tops by `topOffset`,
+  //   // the equivalent "anchor line" inside panel scroll coordinates is:
+  //   const panelAnchorY = anchorTop + this.topOffset;
+  //
+  //   // Scroll panel so focused thread's top lands exactly on the anchor line
+  //   const targetPanelScrollTop = Math.max(0, Math.round(focusedTop - panelAnchorY));
+  //
+  //   panelEl.scrollTo({ top: targetPanelScrollTop, behavior: 'smooth' });
+  //
+  //   // Keep the form container behavior as-is (optional), but this is independent.
+  //   if (this.scrollContainer) {
+  //     const container = this.scrollContainer;
+  //     const containerClientHeight = container.clientHeight;
+  //     const desiredScrollTop = Math.max(0, Math.round(anchorTop - (containerClientHeight / 2)));
+  //     container.scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
+  //   }
+  // }
 }
