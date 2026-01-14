@@ -58,6 +58,11 @@ export class CommentingWebsocketService {
               //   console.log('ws event, with body: ' + message.body);
               // }
             });
+
+            stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}/delete`, (message: IMessage) => {
+              if (message.body)
+                that.threadDeleted(JSON.parse(message.body))
+            })
             resolve(stomp);
           }
         }, 1000);
@@ -118,6 +123,17 @@ export class CommentingWebsocketService {
       // Replace it if exists
       const updated = [...current];
       updated[index] = thread;
+      this.threadSubject.next(updated);
+    }
+  }
+
+  threadDeleted(thread: Thread) {
+    const current = this.threadSubject.value;
+    const index = current.findIndex(t => t.id === thread.id);
+    console.log(thread)
+    if (index !== -1) {
+      const updated = [...current];
+      updated.splice(index, 1);
       this.threadSubject.next(updated);
     }
   }
