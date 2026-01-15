@@ -1,19 +1,7 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-  [ngClass]="{'uk-hidden clear-style': hideField}">
-  <div class="uk-margin-bottom">
-    @if (fieldData.label.text) {
-      <span class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
-        [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
-        [innerHTML]="fieldData.label.text">
-      </span>
-    }
-    <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
-  </div>
-  @if (fieldData.form.description.text) {
-    <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}} "
-      [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-    </div>
-  }
+<ng-container [formGroup]="form">
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="push()">
 
   @if (fieldData.typeInfo.multiplicity) {
     <div [formArrayName]="fieldData.name">
@@ -25,17 +13,10 @@
       class="uk-input uk-width-9-10 uk-animation-scale-up" [ngClass]="{'uk-form-danger': checkFormValidity()}">
     @if (checkFormValidity()) {
       <p class="uk-form-danger uk-animation-fade uk-text-italic">
-        Value should be numeric{{getNumberOfDecimals() ? ' with up to ' + getNumberOfDecimals() + ' decimals seperated with \'.\'' : ''}}
+        Value should be numeric{{getNumberOfDecimals() ? ' with up to ' + getNumberOfDecimals() + ' decimals separated with \'.\'' : ''}}
       </p>
-    }
-    @if (fieldData.form.suggestion.text) {
-      <div class="uk-margin-top">
-        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-          [innerHTML]="fieldData.form.suggestion.text">
-        </div>
-      </div>
     }
   }
 
-
-</form>
+  </app-base-field-html>
+</ng-container>

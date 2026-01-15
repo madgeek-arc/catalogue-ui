@@ -59,14 +59,13 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
     this.commentingService.threadSubject.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
-        if (this.hasComment)
-          return;
-
         if (value.some((item) => item.fieldId === this.fieldData.id)) {
           this.hasComment = true;
           this.label = this.highlight();
         } else {
           this.hasComment = false;
+          if (this.label)
+            this.label = this.removeHighlight();
         }
       }
     });
@@ -105,6 +104,15 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
       return content.replace(/<\/p>\s*$/, ' (*)</p>');
     else // Just append (*) at the end
       return content + ' (*)';
+  }
+
+  removeHighlight() {
+    if (this.label.includes('label-highlight-strong')) {
+      return this.label.replace(/<span class="label-highlight-strong">(.*?)<\/span>/g, '$1');
+    } else if (this.label.includes('label-highlight')) {
+      return this.label.replace(/<span class="label-highlight">(.*?)<\/span>/g, '$1');
+    }
+    return this.label;
   }
 
   highlight() {

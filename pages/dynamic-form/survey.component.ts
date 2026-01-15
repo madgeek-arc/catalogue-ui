@@ -53,7 +53,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() successMessage = '';
 
   @Output() valid = new EventEmitter<boolean>();
-  @Output() submit = new EventEmitter<UntypedFormGroup>();
+  @Output() submitForm = new EventEmitter<UntypedFormGroup>();
 
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
   currentChapter: Section = null;
@@ -372,7 +372,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   parentSubmit() {
-    this.submit.emit(this.form);
+    this.submitForm.emit(this.form);
   }
 
   showUnsavedChangesPrompt(chapter: Section) {
