@@ -42,7 +42,7 @@
                 </app-number-field>
               </div>
             }
-            @if (fieldData.typeInfo.type === 'boolean') {
+            @if (fieldData.typeInfo.type === 'bool') {
               <div>
                 <app-boolean-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
                   (hasChanges)="unsavedChangesPrompt()"
