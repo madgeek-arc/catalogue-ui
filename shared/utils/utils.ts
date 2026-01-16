@@ -33,5 +33,6 @@ export function collectIdsRecursive(node: any[], out: string[] = []): string[] {
     }
   }
 
+  console.log('finished collecting ids.')
   return out;
 }

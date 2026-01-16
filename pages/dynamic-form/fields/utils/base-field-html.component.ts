@@ -3,7 +3,6 @@ import {
   DestroyRef,
   EventEmitter,
   inject,
-  input,
   Input,
   OnChanges,
   OnInit,
@@ -19,7 +18,6 @@ import {
 } from "../../../../shared/reusable-components/catalogue-ui-reusable-components.module";
 import { CommentAnchorDirective } from "../../../../shared/directives/comment-anchor.directive";
 import { CommentingWebsocketService } from "../../../../services/commenting-websocket.service";
-import * as UIkit from 'uikit';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
@@ -72,13 +70,13 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
     this.commentingService.focusedField.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
-       if (value === this.fieldData.id) {
-         this.label = this.strongHighlightToggle(true);
-         this.commentFocused = true;
-       } else {
-         this.label = this.strongHighlightToggle(false);
-         this.commentFocused = false;
-       }
+        if (value === this.fieldData.id) {
+          this.label = this.strongHighlightToggle(true);
+          this.commentFocused = true;
+        } else {
+          this.label = this.strongHighlightToggle(false);
+          this.commentFocused = false;
+        }
       }
     });
   }
@@ -141,15 +139,15 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
   }
 
   createThread() {
-    if (!this.comment) {
-      UIkit.notification({message: 'Please enter a comment', status: 'warning'});
-      return;
-    }
-    console.log('createThread');
-    console.log(this.fieldData.id);
-    this.commentingService.addThread(this.fieldData.id, this.comment);
-    UIkit.modal(`#comment-modal-${this.fieldData.id}`).hide();
+    // if (!this.comment) {
+    //   UIkit.notification({message: 'Please enter a comment', status: 'warning'});
+    //   return;
+    // }
+    // console.log('createThread');
+    // console.log(this.fieldData.id);
+    this.commentingService.temporaryThreadAdd(this.fieldData.id);
+    // this.commentingService.addThread(this.fieldData.id, this.comment);
+    // UIkit.modal(`#comment-modal-${this.fieldData.id}`).hide();
   }
 
-  protected readonly input = input;
 }

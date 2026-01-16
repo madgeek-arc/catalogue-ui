@@ -19,8 +19,9 @@ import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { debounceTime } from "rxjs/operators";
 import { FormsModule } from "@angular/forms";
-import { NgClass } from "@angular/common";
+import { JsonPipe, NgClass } from "@angular/common";
 import UIkit from "uikit";
+import { Section } from "../../../domain/dynamic-form-model";
 
 type SubSectionComments = {
   subSectionId: string;
@@ -45,7 +46,7 @@ export class CommentsPanelComponent implements OnInit {
   private ngZone = inject(NgZone);
 
   @Input() scrollContainer?: HTMLElement; // form scroll container (passed from parent)
-  @Input() subSection: any = {};
+  @Input() subSection?: Section;
   @Input() userId: string | null = null;
 
   @Output() commentCount = new EventEmitter<SubSectionComments>();
@@ -74,6 +75,7 @@ export class CommentsPanelComponent implements OnInit {
   private lastHeights = new Map<string, number>();
 
   editingComment?: Comment;
+  createThreadComment: Comment = new Comment();
   // overlay state
   overlayCommentId: string | null = null;   // comment-level overlay
   overlayThreadId: string | null = null;    // card-level overlay (delete whole thread)
@@ -87,7 +89,7 @@ export class CommentsPanelComponent implements OnInit {
       next: value => {
         // filter threads relevant to this subsection
         this.sectionThreads = value.filter((t: Thread) => ids.includes(t.fieldId));
-        // console.log('Got the threads!')
+        console.log('Got the comments for this subsection: ', this.subSection.id)
         // this.observablesReady = true;
         this.commentCount.emit({subSectionId: this.subSection.id, comments: this.sectionThreads.length});
         // this.threadsChanged$.next();
@@ -122,6 +124,16 @@ export class CommentsPanelComponent implements OnInit {
     this.showInputMap.set(id, !this.showInputMap.get(id));
   }
 
+  createThread(fieldId: string, comment: string) {
+    this.commentingService.addThread(fieldId, comment);
+    this.commentingService.clearTmpThread();
+    this.createThreadComment = new Comment();
+  }
+
+  clearTemporaryThread() {
+    this.commentingService.clearTmpThread();
+  }
+
   sendComment(threadId: string) {
     let comment: Comment = {
       body: this.inputMessage,
@@ -142,7 +154,6 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   deleteThread(threadId: string) {
-    console.log('deleting thread');
     this.commentingService.deleteThread(threadId);
   }
 

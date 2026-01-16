@@ -5,6 +5,7 @@ import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { XsrfTokenExtractor } from "./xsrf-token-extractor.service";
+import { threadId } from "node:worker_threads";
 
 declare var SockJS;
 declare var Stomp;
@@ -78,6 +79,41 @@ export class CommentingWebsocketService {
     });
   }
 
+  temporaryThreadAdd(fieldId: string) {
+    const thread: Thread = {
+      id: 'tmpThreadId',
+      fieldId: fieldId,
+      messages: [
+        {
+        body: '',
+        mentions: []
+      }
+      ]
+    }
+
+    let current = this.threadSubject.value;
+    const index = this.threadSubject.value.findIndex(t => t.id === thread.id);
+    if (index !== -1) {
+      current = [...current];
+      current.splice(index, 1);
+    }
+
+    this.threadSubject.next([...current, thread])
+
+    // Maybe set the focus to the new thread?
+
+  }
+
+  clearTmpThread() {
+    let current = this.threadSubject.value;
+    const index = this.threadSubject.value.findIndex(t => t.id === 'tmpThreadId');
+    if (index !== -1) {
+      current = [...current];
+      current.splice(index, 1);
+    }
+    this.threadSubject.next(current);
+  }
+
   addThread(fieldId: string, body: string) {
     // console.log(this.surveyAnswerId);
     const thread: CreateThread = {
@@ -143,7 +179,7 @@ export class CommentingWebsocketService {
 
     return this.http.get<Thread[]>(`${this.base}/survey-answer-comments`, {params}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
-        // console.log(value);
+        console.log('Just got the comments.');
         this.threadSubject.next(value);
       }, error: error => {
         console.error(error);
