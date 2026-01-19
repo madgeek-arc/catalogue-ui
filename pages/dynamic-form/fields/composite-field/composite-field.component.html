@@ -91,7 +91,7 @@
                                 </app-number-field>
                               </div>
                             }
-                            @if (control.typeInfo.type === 'boolean') {
+                            @if (control.typeInfo.type === 'bool') {
                               <div>
                                 <app-boolean-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
                                                    [editMode]="editMode" [readonly]="readonly"
@@ -246,7 +246,7 @@
                         </app-number-field>
                       </div>
                     }
-                    @if (control.typeInfo.type === 'boolean') {
+                    @if (control.typeInfo.type === 'bool') {
                       <div>
                         <app-boolean-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
                                            [scrollContainer]="scrollContainer"
