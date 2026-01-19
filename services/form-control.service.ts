@@ -82,7 +82,7 @@ export class FormControlService {
               group[formField.name] = formField.form.mandatory ?
                 new UntypedFormControl(null, Validators.compose([Validators.required, Validators.pattern(this.numberRegEx)]))
                 : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.numberRegEx)]));
-            } else if (formField.typeInfo.type === 'boolean') {
+            } else if (formField.typeInfo.type === 'bool') {
               group[formField.name] = new FormControl<boolean | null>(null);
               if (formField.form.mandatory) // Todo: maybe check once at the end of the if else chain and set/add validator there
                 group[formField.name].setValidators(Validators.required);
@@ -133,7 +133,7 @@ export class FormControlService {
         subGroup[subField.name] = subField.form.mandatory ?
           new UntypedFormControl(null, [Validators.required, Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))])
           : new UntypedFormControl(null, Validators.compose([Validators.pattern(this.calculateNumberOfDecimals(subField.typeInfo.values))]));
-      } else if (subField.typeInfo.type === 'boolean') {
+      } else if (subField.typeInfo.type === 'bool') {
         subGroup[subField.name] = new FormControl<boolean | null>(null);
         if (subField.form.mandatory)
           subGroup[subField.name].setValidators(Validators.required);
