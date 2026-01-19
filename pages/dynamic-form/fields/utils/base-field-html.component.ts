@@ -114,6 +114,9 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
   }
 
   highlight() {
+    if (this.label.includes('label-highlight'))
+      return this.label;
+
     const openingTag = '<p>';
     const closingTag = '</p>';
     if (this.label.trim().startsWith(openingTag)) {
