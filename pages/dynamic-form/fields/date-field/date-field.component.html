@@ -1,7 +1,7 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" (emitPush)="push()">
+                       [hideField]="hideField" [inputId]="inputId" (emitPush)="push()">
 
     @if (fieldData.typeInfo.multiplicity) {
 

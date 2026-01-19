@@ -1,0 +1,90 @@
+/* container: make column scrollable. Height will follow parent's available height.
+   Adjust the fixed height if you want a fixed pixel height. */
+.comments-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;        /* parent must constrain height; in your layout the column will fit */
+  overflow-y: auto;    /* enable vertical scrolling inside this column */
+  -webkit-overflow-scrolling: touch;
+  padding-right: 8px;  /* small gap for scrollbar */
+}
+
+/* each thread is absolutely positioned within the panel */
+.thread-wrapper {
+  left: 0;
+  right: 0;
+  transition: top 180ms cubic-bezier(.2,.8,.2,1), transform 180ms;
+  will-change: top, transform;
+  padding-bottom: 6px;
+  box-sizing: border-box;
+}
+
+/* the comment card visual */
+.comment-card {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+/* focused thread highlight */
+.thread--focused .comment-card {
+  box-shadow: 0 6px 18px rgba(30, 135, 240, 0.12);
+  border-left: 3px solid var(--primary-color);
+  transform: translateZ(0);
+}
+
+/* small animation class (optional) */
+.uk-animation-slide-top-medium {
+  transition: transform 180ms ease, opacity 160ms ease;
+}
+
+/* auto-size dropdown to content width */
+.comment-dropdown {
+  min-width: auto;
+  width: max-content;
+}
+
+.top-spacer {
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+  background: transparent;
+}
+
+.film-card { position: relative; }
+
+/* wrapper for each comment */
+.comment-wrapper {
+  position: relative;
+}
+
+/* overlay */
+.comment-overlay, .card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;       /* keep it high so it covers UIkit dropdowns */
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* card-level overlay */
+//.card-overlay {
+//  position: absolute;  /* must be absolute inside .film-card */
+//  inset: 0;
+//  background: rgba(0,0,0,0.45);
+//  z-index: 1100;       /* slightly higher for card-wide */
+//  pointer-events: all;
+//  display: flex;
+//  align-items: center;
+//  justify-content: center;
+//}
+
+/* center the inner dialog in both overlays */
+//.card-overlay > div,
+//.comment-overlay > div {
+//  /* optional: small card-like panel */
+//  background: transparent; /* keep background transparent if you prefer film look */
+//  text-align: center;
+//}

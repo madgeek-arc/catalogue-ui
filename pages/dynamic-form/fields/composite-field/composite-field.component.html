@@ -44,27 +44,28 @@
                             @if (control.typeInfo.type === 'composite') {
                               <div>
                                 <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [readonly]="readonly"
-                                  [vocabularies]="vocabularies" [editMode]="editMode" [position]="i"
-                                  (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                     [vocabularies]="vocabularies" [editMode]="editMode" [position]="i"
+                                                     [scrollContainer]="scrollContainer"
+                                                     (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
+                                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-composite-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'chooseOne') {
                               <div>
                                 <app-choose-one [fieldData]="control" [subVocabularies]="subVocabularies" [editMode]="editMode"
-                                  [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                  [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                                                [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-choose-one>
                               </div>
                             }
                             @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
                               <div class="uk-form-controls uk-margin-medium-top">
                                 <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies" [editMode]="editMode"
-                                  [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                  [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                      [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                                                      [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
+                                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-vocabulary-field>
                               </div>
                             }
@@ -72,78 +73,85 @@
                               control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
                               control.typeInfo.type === 'double') {
                               <div>
-                                <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  [editMode]="editMode" [readonly]="readonly"
-                                  (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                <app-string-url-email-field [fieldData]="control" [position]="i" [editMode]="editMode"
+                                                            [readonly]="readonly" [scrollContainer]="scrollContainer"
+                                                            (hasChanges)="unsavedChangesPrompt()"
+                                                            (handleBitSets)="handleBitsetOfChildren($event)"
+                                                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-string-url-email-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'number') {
                               <div>
-                                <app-number-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  [editMode]="editMode" [readonly]="readonly"
-                                  (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                <app-number-field [fieldData]="control" [position]="i" [editMode]="editMode" [readonly]="readonly"
+                                                  [scrollContainer]="scrollContainer"
+                                                  (hasChanges)="unsavedChangesPrompt()"
+                                                  (handleBitSets)="handleBitsetOfChildren($event)"
+                                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-number-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'bool') {
                               <div>
                                 <app-boolean-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  [editMode]="editMode" [readonly]="readonly"
-                                  (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                   [editMode]="editMode" [readonly]="readonly"
+                                                   (handleBitSets)="handleBitsetOfChildren($event)"
+                                                   (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-boolean-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'checkbox') {
                               <div class="uk-form-controls">
                                 <app-checkbox-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                    (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
+                                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-checkbox-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'largeText') {
                               <div>
-                                <app-large-text-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  [readonly]="readonly"
-                                  (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                <app-large-text-field [fieldData]="control" [position]="i" [readonly]="readonly" [editMode]="editMode"
+                                                      [scrollContainer]="scrollContainer"
+                                                      (hasChanges)="unsavedChangesPrompt()"
+                                                      (handleBitSets)="handleBitsetOfChildren($event)"
+                                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-large-text-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'radio') {
                               <div class="uk-form-controls">
                                 <app-radio-button-field [fieldData]="control" [position]="i" [editMode]="editMode" [readonly]="readonly"
-                                  (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                        [scrollContainer]="scrollContainer"
+                                                        (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
+                                                        (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-radio-button-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'richText') {
                               <div class="uk-form-controls">
                                 <app-rich-text-field [fieldData]="control" [position]="i" [editMode]="editMode" [readonly]="readonly"
-                                  (hasChanges)="unsavedChangesPrompt()"
-                                  (handleBitSets)="handleBitsetOfChildren($event)"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                     [scrollContainer]="scrollContainer"
+                                                     (hasChanges)="unsavedChangesPrompt()"
+                                                     (handleBitSets)="handleBitsetOfChildren($event)"
+                                                     (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-rich-text-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'date') {
                               <div>
-                                <app-date-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                <app-date-field [fieldData]="control" [position]="i" [editMode]="editMode" [readonly]="readonly"
+                                                [scrollContainer]="scrollContainer"
+                                                (hasChanges)="unsavedChangesPrompt()"
+                                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-date-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'scale') {
                               <div>
                                 <app-scale-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                                  (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
-                                  (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                 (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
+                                                 (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                                 </app-scale-field>
                               </div>
                             }
@@ -191,27 +199,28 @@
                     @if (control.typeInfo.type === 'composite') {
                       <div>
                         <app-composite-field [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                          [editMode]="editMode" [readonly]="readonly"
-                          (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                             [editMode]="editMode" [readonly]="readonly" [scrollContainer]="scrollContainer"
+                                             (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
+                                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-composite-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'chooseOne') {
                       <div>
                         <app-choose-one [fieldData]="control" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                          [editMode]="editMode" (handleBitSets)="handleBitsetOfChildren($event)"
-                          (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                        [editMode]="editMode"
+                                        (handleBitSets)="handleBitsetOfChildren($event)"
+                                        (hasChanges)="unsavedChangesPrompt()"
+                                        (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-choose-one>
                       </div>
                     }
                     @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
                       <div class="uk-form-controls uk-margin-medium-top">
                         <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies" [editMode]="editMode"
-                          [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                              [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
+                                              (handleBitSets)="handleBitsetOfChildren($event)"
+                                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-vocabulary-field>
                       </div>
                     }
@@ -220,68 +229,78 @@
                       control.typeInfo.type === 'double') {
                       <div>
                         <app-string-url-email-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
-                          (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                                    [scrollContainer]="scrollContainer"
+                                                    (hasChanges)="unsavedChangesPrompt()"
+                                                    (handleBitSets)="handleBitsetOfChildren($event)"
+                                                    (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-string-url-email-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'number') {
                       <div>
                         <app-number-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
-                          (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                          [scrollContainer]="scrollContainer"
+                                          (hasChanges)="unsavedChangesPrompt()"
+                                          (handleBitSets)="handleBitsetOfChildren($event)"
+                                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-number-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'bool') {
                       <div>
                         <app-boolean-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
-                          (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                           [scrollContainer]="scrollContainer"
+                                           (hasChanges)="unsavedChangesPrompt()"
+                                           (handleBitSets)="handleBitsetOfChildren($event)"
+                                           (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-boolean-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'checkbox') {
                       <div class="uk-form-controls">
-                        <app-checkbox-field [fieldData]="control" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                        <app-checkbox-field [fieldData]="control" [editMode]="editMode"
+                                            (hasChanges)="unsavedChangesPrompt()"
+                                            (handleBitSets)="handleBitsetOfChildren($event)"
+                                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-checkbox-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'largeText') {
                       <div class="uk-form-controls">
                         <app-large-text-field [fieldData]="control" [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                              [editMode]="editMode" [scrollContainer]="scrollContainer"
+                                              (handleBitSets)="handleBitsetOfChildren($event)"
+                                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-large-text-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'richText') {
                       <div class="uk-form-controls">
                         <app-rich-text-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
-                          (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                             [scrollContainer]="scrollContainer"
+                                             (hasChanges)="unsavedChangesPrompt()"
+                                             (handleBitSets)="handleBitsetOfChildren($event)"
+                                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-rich-text-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'radio') {
                       <div class="uk-form-controls">
-                        <app-radio-button-field [fieldData]="control" [readonly]="readonly" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)" [editMode]="editMode"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                        <app-radio-button-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                                [scrollContainer]="scrollContainer"
+                                                (hasChanges)="unsavedChangesPrompt()"
+                                                (handleBitSets)="handleBitsetOfChildren($event)"
+                                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-radio-button-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'date') {
                       <div>
-                        <app-date-field [fieldData]="control" [editMode]="editMode" (hasChanges)="unsavedChangesPrompt()"
-                          (handleBitSets)="handleBitsetOfChildren($event)"
-                          (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                        <app-date-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                        [scrollContainer]="scrollContainer"
+                                        (hasChanges)="unsavedChangesPrompt()"
+                                        (handleBitSets)="handleBitsetOfChildren($event)"
+                                        (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                         </app-date-field>
                       </div>
                     }

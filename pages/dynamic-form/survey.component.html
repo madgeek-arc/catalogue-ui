@@ -1,38 +1,9 @@
-<!--<div *ngIf="model" class="uk-grid">-->
-<!--  <div class="uk-width-1-1 uk-flex uk-flex-middle uk-flex-right">-->
-<!--    <ng-container *ngIf="!freeView">-->
-<!--      <div *ngIf="activeUsers === null; else users" class="uk-margin-large-right">-->
-<!--        <div uk-spinner></div>-->
-<!--      </div>-->
-<!--      <ng-template #users id="concurrentEdit">-->
-<!--        <div class="uk-margin-medium-right">-->
-<!--          <a *ngFor="let user of activeUsers" class="uk-icon" aria-expanded="false"-->
-<!--             title="{{user.fullname + ' currently ' + actionTooltip(user.action)}}">-->
-<!--            <svg height="42" width="42">-->
-<!--              <circle cx="21" cy="21" r="18" stroke-width="1" [attr.fill]="user.color"></circle>-->
-<!--              <text dy=".4em" font-size="16" text-anchor="middle" x="50%" y="50%" fill="white" class="uk-text-bold">-->
-<!--                {{getInitials(user.fullname)}} </text>-->
-<!--              <circle cx="34" cy="34" r="7" stroke-width="1" fill="white"></circle>-->
-<!--              <text x="28" y="40" fill="black" alignment-baseline="middle">-->
-<!--                <tspan class="material-icons md-12"> {{actionIcon(user.action)}}</tspan>-->
-<!--              </text>-->
-<!--            </svg>-->
-<!--          </a>-->
-<!--        </div>-->
-<!--      </ng-template>-->
-<!--    </ng-container>-->
-<!--    <button *ngIf="validate" class="uk-float-right uk-button uk-button-primary" (click)="validateForm()">Validate</button>-->
-<!--  </div>-->
-<!--  <h5 class="uk-width-1-1 uk-margin-bottom">{{model.name}}</h5>-->
-<!--  <p class="uk-margin-bottom" [innerHTML]="model.notice"></p>-->
-<!--</div>-->
-
 <ng-content select=".form-top-section"></ng-content>
 
 @if (downloadPDF) {
   <div class="uk-flex uk-flex-right">
     <button class="uk-button uk-button-secondary" (click)="generatePDF()"
-      uk-tooltip="title:Unsaved changes will not be displayed to pdf; pos: bottom">Download as pdf
+      data-uk-tooltip="title:Unsaved changes will not be displayed to pdf; pos: bottom">Download as pdf
     </button>
   </div>
 }
@@ -40,13 +11,19 @@
 <!--Chapter Selection-->
 @if (model && ready) {
   <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
-    <ul class="chapter-tabs uk-tab" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
+    <ul class="chapter-tabs uk-tab" data-uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
       @for (section of model.sections; track section) {
         <li class="">
           @if ((!section.subType || section.subType===subType)) {
             <a (click)="showUnsavedChangesPrompt(section)">{{section.name}}
               @if (chapterChangeMap.get(section.id)) {
                 <span class="material-icons md-10 uk-margin-small-left">circle</span>
+              }
+              @if (commentsPerSection.get(section.id)) {
+                <span class="uk-flex uk-flex-middle">
+                  {{ commentsPerSection.get(section.id) }}
+                  <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                </span>
               }
             </a>
           }
@@ -59,14 +36,14 @@
 <ng-content select=".form-action-bar"></ng-content>
 
 @if (errorMessage) {
-  <pre id="errorAlert" class="uk-alert uk-alert-danger" uk-alert="duration: 500" style="border-width: 0">
-    <a (click)="closeError()" class="uk-alert-close" uk-close></a>
+  <pre id="errorAlert" class="uk-alert uk-alert-danger" data-uk-alert="duration: 500" style="border-width: 0">
+    <a (click)="closeError()" class="uk-alert-close" data-uk-close></a>
     {{ errorMessage }}
   </pre>
 }
 
 @if (successMessage) {
-  <div id="successAlert" class="uk-alert uk-alert-success" uk-alert="duration: 500">
+  <div id="successAlert" class="uk-alert uk-alert-success" data-uk-alert="duration: 500">
     <p>{{ successMessage }}</p>
   </div>
 }
@@ -76,13 +53,14 @@
     <ul id="top-navigation-tabs" class="uk-switcher">
       @for (section of model.sections; let i = $index; track section) {
         <li>
-          <app-chapter-edit [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
-            [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [tabsHeader]="tabsHeader"
-            [fields]="model.sections[i].subSections ? model.sections[i].subSections : model.sections"
-            [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
-            [editMode] = editMode
-            (submit)="parentSubmit()" (chapterHasChanges)="setChapterChangesMap($event)">
-          </app-chapter-edit>
+          <app-chapter [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
+                       [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap" [tabsHeader]="tabsHeader"
+                       [fields]="model.sections[i].subSections ?? model.sections"
+                       [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
+                       [editMode]=editMode [enableCommenting]="enableCommenting" [userId]="userId"
+                       (totalComments)="setCommentCount($event.sectionId, $event.comments)"
+                       (chapterHasChanges)="setChapterChangesMap($event)">
+          </app-chapter>
         </li>
       }
     </ul>
@@ -92,14 +70,14 @@
 }
 
 
-<div class="uk-position-fixed" style="z-index: 100; top: 90vh; right: 0.5vw">
-  <a uk-totop uk-scroll style="padding: 25px;" (click)="toTop()"></a>
+<div class="uk-position-fixed" style="z-index: 100; top: 90vh; right: 0.4vw">
+  <a data-uk-totop style="padding: 18px;" (click)="toTop()"></a>
 </div>
 
 <!--<pre *ngIf="form">{{form.value | json}}</pre>-->
 
 <!-- Validation modal -->
-<div id="validation-modal" uk-modal="esc-close: false; bg-close: false">
+<div id="validation-modal" data-uk-modal="esc-close: false; bg-close: false">
   <div class="uk-modal-dialog uk-modal-body">
     <h2 class="uk-modal-title">Survey validation</h2>
     <p>The survey fields will be validated and if all required fields are present it will be locked and it will not be
@@ -112,13 +90,13 @@
 </div>
 
 <!-- Unsaved changes modal -->
-<div id="unsaved-changes-modal" uk-modal="esc-close: false; bg-close: false">
+<div id="unsaved-changes-modal" data-uk-modal="esc-close: false; bg-close: false">
   <div class="uk-modal-dialog uk-modal-body">
-    <!--    <h2 class="uk-modal-title"></h2>-->
+<!--    <h2 class="uk-modal-title"></h2>-->
     <p>There are unsaved changes, do you want to submit them before moving on?</p>
     <p class="uk-text-right">
       <button class="uk-button uk-button-secondary uk-modal-close" type="button">I will do it later</button>
-      <button class="uk-button uk-button-primary" type="button" (click)="onSubmit()">Submit now</button>
+      <button class="uk-button uk-button-primary" type="button" (click)="parentSubmit()">Submit now</button>
     </p>
   </div>
 </div>

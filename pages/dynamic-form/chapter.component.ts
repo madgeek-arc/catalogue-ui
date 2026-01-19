@@ -1,19 +1,22 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {FormControlService} from '../../services/form-control.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UntypedFormArray, UntypedFormBuilder} from '@angular/forms';
-import {Section, Field, HandleBitSet, Tab, Tabs} from '../../domain/dynamic-form-model';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { FormControlService } from '../../services/form-control.service';
+import { UntypedFormArray } from '@angular/forms';
+import { Field, HandleBitSet, Section, Tab, Tabs } from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
 
-import * as UIkit from 'uikit';
+type SectionComments = {
+  sectionId: string;
+  comments: number;
+}
 
 @Component({
-    selector: 'app-chapter-edit',
+    selector: 'app-chapter',
     templateUrl: './chapter.component.html',
     providers: [FormControlService],
     standalone: false
 })
-export class ChapterEditComponent implements OnChanges{
+
+export class ChapterComponent implements OnChanges {
 
   @Input() form: any = null;
   @Input() tabsHeader: string;
@@ -21,36 +24,30 @@ export class ChapterEditComponent implements OnChanges{
   @Input() editMode: boolean = null;
   @Input() readonly: boolean = null;
   @Input() validate: boolean = null;
+  @Input() enableCommenting: boolean = false;
+  @Input() userId: string | null = null;
   @Input() vocabularies: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() chapter: Section = null;
   @Input() fields: Section[] = null;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
-  @Output() submit = new EventEmitter();
+  @Output() totalComments = new EventEmitter<SectionComments>();
 
   bitset: Tabs = new Tabs;
   errorMessage = '';
-  successMessage = '';
   ready = false;
   showLoader = false;
   hasChanges = false;
-  pendingService = false;
 
   showBitsets = false;
   loaderBitSet = new BitSet;
   loaderPercentage = 0;
   tabIndex= 0;
+  commentsPerSubSection: Map<string, number> = new Map();
 
-  constructor(public route: ActivatedRoute,
-              protected fb: UntypedFormBuilder,
-              protected router: Router) {
-  }
 
-  ngOnInit() {
-  }
-
-  ngOnChanges(changes:SimpleChanges) {
+  ngOnChanges() {
     if (this.fields) {
       this.initializations();
       this.ready = true
@@ -81,8 +78,17 @@ export class ChapterEditComponent implements OnChanges{
     this.bitset.requiredTotal = requiredTotal;
   }
 
+  setCommentCount(subSectionId: string, count: number) {
+    this.commentsPerSubSection.set(subSectionId, count);
+    let sum = 0;
+    this.commentsPerSubSection.forEach((value) => {
+      sum += value;
+    });
+    this.totalComments.emit({sectionId: this.chapter.id, comments: sum});
+  }
+
   /** Bitsets-->**/
-  timeOut(ms) {
+  timeOut(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -228,7 +234,7 @@ export class ChapterEditComponent implements OnChanges{
       return;
     }
     this.tabIndex = i;
-    let element: HTMLElement = document.getElementById(this.chapter.id + '-tab' + i) as HTMLElement
+    let element: HTMLElement = document.getElementById(this.chapter.id + '-tab' + i) as HTMLElement;
     element.click();
     // console.log(element)
   }

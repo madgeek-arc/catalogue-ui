@@ -1,0 +1,156 @@
+<div #panel class="uk-position-relative comments-panel">
+
+  <!-- top spacer to create scrollable negative area when needed -->
+  <div class="top-spacer" [style.height.px]="topOffset"></div>
+
+  @if (observablesReady) {
+    @for (thread of sectionThreads; track thread.id) {
+      <div class="thread-wrapper uk-position-absolute uk-width-expand"
+        [class.thread--focused]="thread.id === focusedThreadId"
+        [style.top.px]="layoutMap.get(thread.id)?.top ?? 0"
+        (click)="onThreadClick(thread)">
+        <div measureComment [threadId]="thread.id" (sizeChange)="onCommentSizeChange(thread.id, $event)"
+             class="uk-card uk-card-default uk-card-small uk-animation-slide-top-medium comment-card film-card">
+          <div class="uk-card-body">
+<!--            <div class="comment-header">-->
+<!--              <strong>{{ thread.fieldId }}</strong><br>-->
+<!--              <strong>{{ thread.id }}</strong><br>-->
+<!--              top - {{ layoutMap.get(thread.id)?.top}}-->
+<!--            </div>-->
+            <div class="comment-messages">
+              @if (thread.id === 'tmpThreadId') {
+                <div class="uk-width-expand">
+                  <p class="uk-margin-small-top uk-margin-remove-bottom">{{ userId }}</p>
+                </div>
+                <textarea id="thread-creation-text-area" class="uk-textarea" [(ngModel)]="createThreadComment.body"
+                          [ngModelOptions]="{standalone: true}">
+                </textarea>
+                <div class="uk-flex uk-flex-center uk-margin-small-top">
+                  <button class="uk-button uk-button-default" (click)="clearTemporaryThread()">Cancel</button>
+                  <button class="uk-button uk-button-primary" (click)="createThread(thread.fieldId, createThreadComment.body)"
+                          [ngClass]="{'uk-disabled': !createThreadComment?.body || createThreadComment?.body?.trim() === ''}">
+                    Comment
+                  </button>
+                </div>
+
+              } @else {
+
+                @for (comment of thread.messages; track comment.id) {
+                  <div class="comment-wrapper">
+                    <div class="uk-visible-toggle" tabindex="-1">
+
+                      <div data-uk-grid>
+                        <div class="uk-width-expand">
+                          <p class="uk-margin-small-top uk-margin-remove-bottom">{{ comment.authorId }}</p>
+                        </div>
+                        @if (userId === comment.authorId) {
+                          <div class="uk-width-auto">
+                            <ul class="uk-hidden-hover uk-iconnav">
+                              <li>
+                                <div class="uk-inline">
+                                  <a (click)="closeOverlay()">
+                                    <span class="material-symbols-outlined uk-margin-small-top" style="font-size: 22px">more_vert</span>
+                                  </a>
+                                  <div id="kebab-menu-{{comment.id}}" class="comment-dropdown"
+                                       uk-dropdown="mode: click; animation: reveal-top; animate-out: true; duration: 250">
+                                    <ul class="uk-nav uk-dropdown-nav">
+                                      <li><a (click)="copyComment(comment)">Edit</a></li>
+                                      <li><a (click)="openOverlay(comment.id, thread)">Delete</a></li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        }
+                      </div>
+
+                      @if (comment.id !== editingComment?.id) {
+                        <p class="uk-margin-remove-top">->{{ comment.body }}</p>
+                      } @else {
+                        <textarea id="text-area-{{comment.id}}" class="uk-textarea" [(ngModel)]="editingComment.body"
+                                  [ngModelOptions]="{standalone: true}">
+                        </textarea>
+                        <div>
+                          <button class="uk-button uk-button-default" (click)="editingComment = null">Cancel</button>
+                          <button class="uk-button uk-button-primary" (click)="updateComment(thread.id, editingComment)"
+                                  [ngClass]="{'uk-disabled': (comment.body === editingComment?.body && editingComment?.body.trim() !== '')}">
+                            Save
+                          </button>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- COMMENT OVERLAY -->
+                    @if (overlayCommentId === comment.id) {
+                      <div class="comment-overlay uk-animation-fade" >
+
+                        <div class="uk-margin-xsmall" (click)="$event.stopPropagation()">
+                          <p class="uk-light uk-margin-remove">Delete this comment?</p>
+
+                          <button class="uk-button uk-button-small uk-button-danger uk-margin-small-right"
+                                  (click)="deleteComment(thread.id, comment.id)">Ok
+                          </button>
+
+                          <button class="uk-button uk-button-default uk-button-small" (click)="closeOverlay()">
+                            Cancel
+                          </button>
+                        </div>
+
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (!showInputMap.get(thread.id)) {
+                  <div class="uk-flex uk-flex-right">
+                    <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px"
+                       (click)="toggleInput(thread.id)">reply
+                    </a>
+                  </div>
+                } @else {
+                  <div class="uk-flex uk-flex-middle">
+                    <!-- Input fields inside forms trigger form submission by default when Enter is pressed.
+                         This is standard HTML behavior as per HTML5 spec for backward compatibility. -->
+                    <div class="uk-width-expand uk-margin-xsmall-right">
+                      <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply"
+                             [(ngModel)]="inputMessage" [ngModelOptions]="{standalone: true}"
+                             (keydown.enter)="$event.preventDefault()">
+                    </div>
+                    <div class="uk-width-auto">
+                      <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px"
+                         (click)="sendComment(thread.id)">send
+                      </a>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- OVERLAY FOR DELETING ENTIRE THREAD -->
+          @if (overlayThreadId === thread.id) {
+            <div class="card-overlay uk-animation-fade" (click)="closeOverlay()">
+              <div class="uk-margin-xsmall" (click)="$event.stopPropagation()">
+                <p class="uk-light uk-margin-remove">Delete entire thread?</p>
+
+                <div class="uk-margin-small-top">
+                  <button class="uk-button uk-button-danger uk-button-small uk-margin-small-right"
+                          (click)="deleteThread(thread.id)">Ok
+                  </button>
+
+                  <button class="uk-button uk-button-default uk-button-small" (click)="closeOverlay()">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="uk-text-center">Loading...</div>
+  }
+</div>

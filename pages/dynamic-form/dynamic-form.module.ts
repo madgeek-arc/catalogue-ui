@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DynamicFormFieldsComponent } from "./fields/dynamic-form-fields.component";
-import { ChapterEditComponent } from "./chapter-edit.component";
+import { ChapterComponent } from "./chapter.component";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { CompositeFieldComponent } from "./fields/composite-field/composite-field.component";
 import { StringFieldComponent } from "./fields/string-field/string-field.component";
@@ -24,6 +24,7 @@ import { BaseFieldComponent } from "./fields/utils/base-field.component";
 import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component";
 import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
 import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.component";
+import { CommentsPanelComponent } from "./comments-pannel/comments-panel.component";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.comp
     StringFieldComponent,
     CompositeFieldComponent,
     DynamicFormFieldsComponent,
-    ChapterEditComponent,
+    ChapterComponent,
     VocabularyFieldComponent,
     CheckboxFieldComponent,
     RadioButtonFieldComponent,
@@ -55,9 +56,10 @@ import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.comp
     BaseFieldHtmlComponent,
     BooleanFieldComponent,
     DateFieldComponent,
+    CommentsPanelComponent,
   ],
   exports: [
-    ChapterEditComponent,
+    ChapterComponent,
     SurveyComponent,
     DynamicFormFieldsComponent
   ]

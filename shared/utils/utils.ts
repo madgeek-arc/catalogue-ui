@@ -16,3 +16,23 @@ export class Utils {
     return !isNaN(number) && isFinite(number) && String(number) === value;
   }
 }
+
+export function collectIdsRecursive(node: any[], out: string[] = []): string[] {
+  if (node === null || typeof node !== 'object') return out;
+
+  if ('id' in node && node.id != null) {
+    out.push(String(node.id));
+  }
+
+  // walk arrays and objects
+  if (Array.isArray(node)) {
+    for (const item of node) collectIdsRecursive(item, out);
+  } else {
+    for (const key of Object.keys(node)) {
+      collectIdsRecursive(node[key], out);
+    }
+  }
+
+  console.log('finished collecting ids.')
+  return out;
+}

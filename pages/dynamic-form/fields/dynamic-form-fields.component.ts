@@ -3,9 +3,9 @@ import { UntypedFormGroup } from '@angular/forms';
 import { Field, HandleBitSet } from '../../../domain/dynamic-form-model';
 
 @Component({
-    selector: 'app-field',
-    templateUrl: './dynamic-form-fields.component.html',
-    standalone: false
+  selector: 'app-field',
+  templateUrl: './dynamic-form-fields.component.html',
+  standalone: false
 })
 export class DynamicFormFieldsComponent {
   @Input() fieldData: Field;
@@ -14,6 +14,7 @@ export class DynamicFormFieldsComponent {
   @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: boolean;
   @Input() readonly: boolean = null;
+  @Input() scrollContainer: HTMLElement | null = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();

@@ -1,17 +1,24 @@
-<div class="uk-margin-small-bottom"
-     [ngClass]="[
-        fieldData.form.display?.cssClasses || '',
-        (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '',
-        readonly ? 'uk-disabled' : ''
+<div class="reference-item uk-margin-small-bottom uk-visible-toggle" [anchorContainer]="scrollContainer"
+     commentAnchor="{{fieldData.id}}" [arrayPosition]="position"
+     [ngClass]="[fieldData.form.display?.cssClasses || '',
+       (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '', readonly ? 'uk-disabled' : ''
      ]">
 
   <div class="uk-margin-bottom">
-    @if (fieldData.label.text) {
-      <span class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
-        [attr.for]="fieldData.name" style="{{fieldData.label.style}}"
-        [innerHTML]="fieldData.form.mandatory ? appendAsterisk(fieldData.label.text) : fieldData.label.text">
-      </span>
-    }
+<!--    {{ fieldData.id }}-->
+    <div class="uk-flex-middle" data-uk-grid>
+      @if (fieldData.label.text) {
+        <label [attr.for]="inputId" class="uk-form-label uk-width-expand"
+               [ngClass]="[fieldData.label.cssClasses || '']" style="{{fieldData.label.style}}"
+               [innerHTML]="label">
+        </label>
+      }
+      <div class="uk-width-auto">
+        <ul class="uk-invisible-hover uk-iconnav">
+          <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   @if (fieldData.form.description?.showLess) {
@@ -55,3 +62,16 @@
   }
 
 </div>
+
+<!-- This is the modal -->
+<!--<div id="comment-modal-{{fieldData.id}}" data-uk-modal>-->
+<!--  <div class="uk-modal-dialog uk-modal-body">-->
+<!--    <h2 class="uk-modal-title">New thread</h2>-->
+<!--    <label for="comment-body">Comment message</label>-->
+<!--    <textarea id="comment-body" class="uk-textarea" [(ngModel)]="comment" [ngModelOptions]="{standalone: true}" rows="5"></textarea>-->
+<!--    <p class="uk-text-right">-->
+<!--      <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>-->
+<!--      <button class="uk-button uk-button-primary" type="button" (click)="createThread()">Create comment</button>-->
+<!--    </p>-->
+<!--  </div>-->
+<!--</div>-->

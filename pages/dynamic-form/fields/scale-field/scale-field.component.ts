@@ -1,7 +1,7 @@
-import {AfterContentInit, Component, EventEmitter, Input, Output} from "@angular/core";
-import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
-import {UntypedFormControl, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
-import {FormControlService} from "../../../../services/form-control.service";
+import { AfterContentInit, Component, EventEmitter, Input, Output } from "@angular/core";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { FormGroupDirective, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
+import { FormControlService } from "../../../../services/form-control.service";
 
 @Component({
     selector: 'app-scale-field',
