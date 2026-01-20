@@ -20,17 +20,20 @@ export class Dependent {
 }
 
 export class TypeInfo {
-  type: 'composite' | 'string' | 'vocabulary' | 'select' | 'number' | 'double' | 'bool' | 'largeText' | 'richText' | 'radio' | 'checkbox' | 'scale' | 'date' | 'url' | 'email' | 'phone' | 'chooseOne' | 'radioGrid';
-  values: string[];
   vocabulary: string;
+  type: FieldType;
+  defaultValue: string;
+  values: IdLabel[];
+  properties: TypeProperties;
   multiplicity: boolean;
+  prefill: DataRequest;
 
 
-  constructor(type?: typeof TypeInfo.prototype.type) {
+  constructor(type: FieldType) {
     if (type)
       this.type = type;
     else
-      this.type = 'string';
+      this.type = FieldType.string;
     this.values = [];
     this.vocabulary = null;
     this.multiplicity = false;
@@ -40,7 +43,7 @@ export class TypeInfo {
 export class Form {
   dependsOn: Dependent;
   affects: Dependent[];
-  vocabulary: string;
+  // vocabulary: string;
   group: string;
   description: StyledText;
   suggestion: StyledText;
@@ -52,7 +55,7 @@ export class Form {
   constructor() {
     this.dependsOn = null;
     this.affects = null;
-    this.vocabulary = null;
+    // this.vocabulary = null;
     this.group = '';
     this.description = new StyledText();
     this.suggestion = new StyledText();
@@ -172,9 +175,11 @@ export class Model {
   notice: string | null;
   type: string;
   subType: string;
+  series: Series;
   resourceType: string;
   creationDate: string;
   createdBy: string;
+  modificationDate: Date;
   modifiedBy: string;
   sections: Section[];
   configuration: Configuration;
@@ -249,4 +254,57 @@ export class Tabs {
 export class HandleBitSet {
   field: Field;
   position: number;
+}
+
+export class IdLabel {
+  id: string;
+  label: string;
+}
+
+export class DataRequest {
+  request: Request;
+  endpoint: string;
+  params: { [index: string]: any };
+  contentType: string;
+  expression: string;
+}
+
+export class Request {
+  method: string;
+  url: string;
+  headers: { [index: string]: string[] };
+  body: string;
+}
+
+export class RequiredFields {
+  topLevel: number;
+  total: number;
+}
+
+export class Series {
+  name: string;
+  referenceYear: string;
+}
+
+export interface TypeProperties {
+}
+
+export const enum FieldType {
+  string = "string",
+  url = "url",
+  email = "email",
+  phone = "phone",
+  select = "select",
+  radio = "radio",
+  largeText = "largeText",
+  richText = "richText",
+  composite = "composite",
+  chooseOne = "chooseOne",
+  number = "number",
+  bool = "bool",
+  vocabulary = "vocabulary",
+  checkbox = "checkbox",
+  date = "date",
+  scale = "scale",
+  array = "array",
 }
