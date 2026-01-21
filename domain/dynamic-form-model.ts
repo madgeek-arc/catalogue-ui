@@ -289,6 +289,36 @@ export class Series {
 export interface TypeProperties {
 }
 
+export interface DateProperties extends TypeProperties {
+  formatToString: boolean;
+}
+
+export interface NumberProperties extends TypeProperties {
+  min: number;
+  max: number;
+  decimals: number;
+  pattern: string;
+}
+
+export interface PatternProperties extends TypeProperties {
+  pattern: string;
+}
+
+export interface TextProperties extends TypeProperties {
+  minLength: number;
+  maxLength: number;
+}
+
+export interface UrlProperties extends TypeProperties {
+  strictValidation: boolean;
+}
+
+export interface VocabularyProperties extends TypeProperties {
+  url: string;
+  idField: string;
+  labelField: string;
+}
+
 export const enum FieldType {
   string = "string",
   url = "url",
