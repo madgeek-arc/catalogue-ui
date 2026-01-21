@@ -1,11 +1,9 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { environment } from "../../environments/environment";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { XsrfTokenExtractor } from "./xsrf-token-extractor.service";
-import { threadId } from "node:worker_threads";
 
 declare var SockJS;
 declare var Stomp;
@@ -25,7 +23,7 @@ interface IMessage {
 export class CommentingWebsocketService {
   private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
-  private xsrf = inject(XsrfTokenExtractor);
+  private xsrf = inject(HttpXsrfTokenExtractor);
 
   private readonly base = environment.API_ENDPOINT;
   private surveyAnswerId: string | null = null;
@@ -46,7 +44,7 @@ export class CommentingWebsocketService {
     this.stompClient = new Promise((resolve, reject) => {
       let stomp = Stomp.over(ws);
       stomp.debug = null;
-      stomp.connect(this.xsrf.getHeader(), function (frame) {
+      stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function (frame) {
         const timer = setInterval(() => {
           if (stomp.connected) {
             clearInterval(timer);
