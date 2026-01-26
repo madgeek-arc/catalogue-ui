@@ -1,142 +1,142 @@
 @if (ready) {
   <div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom" style="min-height: 325px">
     <div class="uk-container uk-container-expand">
-          @if (chapter) {
-            <div class="uk-margin-top chapter-description">
-              <p [innerHtml]="chapter.description"></p>
-            </div>
-          }
-          <div class="uk-margin-medium-bottom">
-            <div class="uk-grid">
-              <!-- MIDDLE -->
-              <div class="uk-width-expand@m uk-margin-top">
-                <div>
-                  @if (bitset.requiredTotal !== 0 && mandatoryFieldsText) {
-                    <div class="requiredFields">
-                      {{mandatoryFieldsText}}
-                    </div>
-                  }
-                  <div id="serviceForm">
-                    @if (errorMessage) {
-                      <div class="uk-alert uk-alert-danger">
-                        <p>{{errorMessage}}</p>
+      @if (chapter) {
+        <div class="uk-margin-top chapter-description">
+          <p [innerHtml]="chapter.description"></p>
+        </div>
+      }
+      <div class="uk-margin-medium-bottom">
+        <div class="uk-grid">
+          <!-- MIDDLE -->
+          <div class="uk-width-expand@m uk-margin-top">
+            <div>
+              @if (bitset.requiredTotal !== 0 && mandatoryFieldsText) {
+                <div class="requiredFields">
+                  {{mandatoryFieldsText}}
+                </div>
+              }
+              <div id="serviceForm">
+                @if (errorMessage) {
+                  <div class="uk-alert uk-alert-danger">
+                    <p>{{errorMessage}}</p>
+                  </div>
+                }
+                @if (showLoader) {
+                  <div class="whiteFilm">
+                    <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
+                  </div>
+                }
+                <div class="uk-grid">
+                  <div class="uk-width-1-5" [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
+                    @if (tabsHeader) {
+                      <div class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
+                    }
+                    <ul id="{{chapter.name}}" class="uk-tab uk-tab-left form-tabs"
+                      [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
+                      @for (tab of fields; track tab; let i = $index) {
+                        <li  (click)="setTabIndex(i)">
+                          <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration"
+                             [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
+                            <div class="uk-width-expand uk-flex uk-flex-between">
+                              <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
+                              @if (commentsPerSubSection.get(tab.id)) {
+                                <div class="uk-flex uk-flex-middle" data-uk-tooltip="title: Active comments">
+                                  {{ commentsPerSubSection.get(tab.id) }}
+                                  <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                                </div>
+                              }
+                              <!-- Bitsets, to be removed -->
+                              <!--                            <span *ngIf="bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets" class="circle-number">-->
+                              <!--                              <i *ngIf="bitset.tabs.get(tab.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>-->
+                              <!--                              {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}-->
+                              <!--                            </span>-->
+                            </div>
+                          </a>
+                        </li>
+                      }
+                    </ul>
+                    @if (bitset.requiredTotal !== 0) {
+                      <div class="requiredFields uk-text-right">*Required fields</div>
+                    }
+                    @if (bitset?.tabs) {
+                      <div class="uk-margin-small-top uk-flex uk-flex-center">
+                        <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
+                                style="padding-left: 10px; padding-right: 12px"
+                                (click)="goToTab(tabIndex-1)"
+                                [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'">
+                          <span class="uk-flex uk-flex-middle">
+                            <span class="material-symbols-outlined" style="font-size: 24px">chevron_left</span> PREVIOUS
+                          </span>
+                        </button>
+                        <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"
+                                style="padding-left: 12px; padding-right: 10px"
+                                (click)="goToTab(tabIndex+1)"
+                                [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-secondary' : 'uk-button-primary'">
+                          <span class="uk-flex uk-flex-middle">NEXT
+                            <span class="material-symbols-outlined" style="font-size: 24px">chevron_right</span>
+                          </span>
+                        </button>
                       </div>
                     }
-                    @if (showLoader) {
-                      <div class="whiteFilm">
-                        <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
+                    @if (showBitsets) {
+                      <div>
+                        <div class="stepsCompleted uk-margin-top uk-text-center">
+                          {{bitset.completedTabs}} of {{bitset.requiredTabs}}
+                        </div>
+                        <div class="uk-margin-small-top">
+                          <progress id="js-progressbar" class="uk-progress uk-margin-remove-bottom"
+                            value="{{loaderPercentage}}" max="100">
+                          </progress>
+                          <div [ngStyle]="{'margin-left.%': (loaderPercentage*0.9).toLocaleString()}"
+                            class="percentageNumber">{{loaderPercentage}}%
+                          </div>
+                        </div>
                       </div>
                     }
-                    <div class="uk-grid">
-                      <div class="uk-width-1-5" [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
-                        @if (tabsHeader) {
-                          <div class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
-                        }
-                        <ul id="{{chapter.name}}" class="uk-tab uk-tab-left form-tabs"
-                          [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
-                          @for (tab of fields; track tab; let i = $index) {
-                            <li  (click)="setTabIndex(i)">
-                              <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration"
-                                 [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
-                                <div class="uk-width-expand uk-flex uk-flex-between">
-                                  <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
-                                  @if (commentsPerSubSection.get(tab.id)) {
-                                    <div class="uk-flex uk-flex-middle" data-uk-tooltip="title: Active comments">
-                                      {{ commentsPerSubSection.get(tab.id) }}
-                                      <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                  </div>
+                  @if (form && ready) {
+                    <div [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
+                      <form [formGroup]="form">
+                        <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
+                          @for (group of fields; track group.id) {
+                            <li data-uk-grid>
+                              <div #scrollContainer
+                                   [ngClass]="(!enableCommenting || commentsPerSubSection.get(group.id) === 0) ? 'uk-width-1-1' : 'uk-width-3-4'">
+                                @for (fieldsData of group.fields; track fieldsData.id) {
+                                  @if (!fieldsData.deprecated) {
+                                    <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
+                                      <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
+                                                 [scrollContainer]="scrollContainer"
+                                                 [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                                                 [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
+                                        <!--                                           (handleBitSets)="handleBitSet($event)"-->
+                                        <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
+                                      </app-field>
                                     </div>
                                   }
-                                  <!-- Bitsets, to be removed -->
-                                  <!--                            <span *ngIf="bitset.tabs.get(tab.id).requiredOnTab !== 0 && showBitsets" class="circle-number">-->
-                                  <!--                              <i *ngIf="bitset.tabs.get(tab.id).remainingOnTab === 0" aria-hidden="true" class="fa fa-check"></i>-->
-                                  <!--                              {{bitset.tabs.get(tab.id).remainingOnTab != 0 ? bitset.tabs.get(tab.id).remainingOnTab + '*' : ''}}-->
-                                  <!--                            </span>-->
-                                </div>
-                              </a>
+                                }
+                              </div>
+
+                              <div [ngClass]="enableCommenting ? 'uk-width-expand' : 'uk-hidden'">
+                                <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
+                                                    [userId]="userId"
+                                                    (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
+                                </app-comments-panel>
+                              </div>
                             </li>
                           }
                         </ul>
-                        @if (bitset.requiredTotal !== 0) {
-                          <div class="requiredFields uk-text-right">*Required fields</div>
-                        }
-                        @if (bitset?.tabs) {
-                          <div class="uk-margin-small-top uk-flex uk-flex-center">
-                            <button class="uk-button uk-margin-small-right" [disabled]="(tabIndex === 0)"
-                                    style="padding-left: 10px; padding-right: 12px"
-                                    (click)="goToTab(tabIndex-1)"
-                                    [ngClass]="tabIndex === 0 ? 'uk-button-secondary' : 'uk-button-primary'">
-                              <span class="uk-flex uk-flex-middle">
-                                <span class="material-symbols-outlined" style="font-size: 24px">chevron_left</span> PREVIOUS
-                              </span>
-                            </button>
-                            <button id="next" class="uk-button" [disabled]="(tabIndex === bitset.tabs.size - 1)"
-                                          style="padding-left: 12px; padding-right: 10px"
-                                          (click)="goToTab(tabIndex+1)"
-                                          [ngClass]="tabIndex === bitset.tabs.size - 1  ? 'uk-button-secondary' : 'uk-button-primary'">
-                              <span class="uk-flex uk-flex-middle">NEXT
-                                <span class="material-symbols-outlined" style="font-size: 24px">chevron_right</span>
-                              </span>
-                            </button>
-                          </div>
-                        }
-                        @if (showBitsets) {
-                          <div>
-                            <div class="stepsCompleted uk-margin-top uk-text-center">
-                              {{bitset.completedTabs}} of {{bitset.requiredTabs}}
-                            </div>
-                            <div class="uk-margin-small-top">
-                              <progress id="js-progressbar" class="uk-progress uk-margin-remove-bottom"
-                                value="{{loaderPercentage}}" max="100">
-                              </progress>
-                              <div [ngStyle]="{'margin-left.%': (loaderPercentage*0.9).toLocaleString()}"
-                                class="percentageNumber">{{loaderPercentage}}%
-                              </div>
-                            </div>
-                          </div>
-                        }
-                      </div>
-                      @if (form && ready) {
-                        <div [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-4-5'">
-                          <form [formGroup]="form">
-                            <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
-                              @for (group of fields; track group.id) {
-                                <li data-uk-grid>
-                                  <div #scrollContainer
-                                       [ngClass]="(!enableCommenting || commentsPerSubSection.get(group.id) === 0) ? 'uk-width-1-1' : 'uk-width-3-4'">
-                                    @for (fieldsData of group.fields; track fieldsData.id) {
-                                      @if (!fieldsData.deprecated) {
-                                        <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
-                                          <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
-                                                     [scrollContainer]="scrollContainer"
-                                                     [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                                     [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
-                                            <!--                                           (handleBitSets)="handleBitSet($event)"-->
-                                            <!--                                           (handleBitSetsOfComposite)="handleBitSetOfComposite($event)">-->
-                                          </app-field>
-                                        </div>
-                                      }
-                                    }
-                                  </div>
-
-                                  <div [ngClass]="enableCommenting ? 'uk-width-expand' : 'uk-hidden'">
-                                    <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
-                                                        [userId]="userId"
-                                                        (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
-                                    </app-comments-panel>
-                                  </div>
-                                </li>
-                              }
-                            </ul>
-                          </form>
-                          <!--                      <pre>{{form.value | json}}</pre>-->
-                        </div>
-                      }
+                      </form>
+                      <pre>{{ form.value | json }}</pre>
                     </div>
-                  </div>
+                  }
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
     </div>
   </div>
 }

@@ -289,6 +289,10 @@ export class Series {
 export interface TypeProperties {
 }
 
+export interface CustomProperties extends TypeProperties {
+  [key: string]: string;
+}
+
 export interface DateProperties extends TypeProperties {
   formatToString: boolean;
 }
@@ -319,7 +323,7 @@ export interface VocabularyProperties extends TypeProperties {
   labelField: string;
 }
 
-export const enum FieldType {
+export enum FieldType {
   string = "string",
   url = "url",
   email = "email",

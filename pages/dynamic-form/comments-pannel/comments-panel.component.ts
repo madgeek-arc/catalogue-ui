@@ -89,7 +89,7 @@ export class CommentsPanelComponent implements OnInit {
       next: value => {
         // filter threads relevant to this subsection
         this.sectionThreads = value.filter((t: Thread) => ids.includes(t.fieldId));
-        console.log('Got the comments for this subsection: ', this.subSection.id)
+        // console.log('Got the comments for this subsection: ', this.subSection.id)
         // this.observablesReady = true;
         this.commentCount.emit({subSectionId: this.subSection.id, comments: this.sectionThreads.length});
         // this.threadsChanged$.next();

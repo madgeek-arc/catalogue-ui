@@ -4,7 +4,7 @@ import {
   OnChanges, OnInit,
   SimpleChanges
 } from "@angular/core";
-import {TypeInfo} from "../../../domain/dynamic-form-model";
+import { IdLabel, TypeInfo } from "../../../domain/dynamic-form-model";
 
 
 @Component({
@@ -18,7 +18,11 @@ export class TypeSelectorComponent {
   @Input() typeInfo: TypeInfo;
 
   addOption() {
-    this.typeInfo.values.push('Option '+ (this.typeInfo.values.length+1));
+    const opt = new IdLabel();
+    // FixMe: With proper values.
+    opt.label = 'Option '+ (this.typeInfo.values.length+1);
+    opt.id = 'Option '+ (this.typeInfo.values.length+1);
+    this.typeInfo.values.push(opt);
   }
 
   remove(position) {

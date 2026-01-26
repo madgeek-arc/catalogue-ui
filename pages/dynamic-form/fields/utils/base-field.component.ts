@@ -205,7 +205,7 @@ export class BaseFieldComponent implements OnInit {
     if (this.readonly)
       return false;
 
-    return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
+    return (this.formControl.invalid && (this.formControl.touched || this.formControl.dirty));
   }
 
   checkFormArrayValidity(position: number): boolean {

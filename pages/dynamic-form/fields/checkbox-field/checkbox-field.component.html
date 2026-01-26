@@ -1,55 +1,19 @@
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}">
+<ng-container [formGroup]="form">
 
-  @if (fieldData.form.description.text) {
-    <div class="uk-form-description uk-text-small uk-margin-top uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-      [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-    </div>
-  }
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="push()">
 
   @if (fieldData.typeInfo.multiplicity) {
-    <div [formArrayName]="fieldData.name">
-      @for (input of fieldAsFormArray().controls; track input; let i = $index) {
-        <div class="uk-margin-bottom">
-          <input [id]="fieldData.name" [formControlName]="i"
-            class="uk-checkbox uk-width-9-10 uk-animation-slide-top-small" type="checkbox"
-            [placeholder]="fieldData.form.placeholder ? fieldData.form.placeholder : ''"
-            [ngClass]="{'uk-form-danger': checkFormArrayValidity(fieldData.name, i, this.editMode)}"
-            (input)="updateBitSet(fieldData); unsavedChangesPrompt()">
-          @if (fieldAsFormArray().length > 1  && editMode) {
-            <a
-              class="remove-element uk-padding-small uk-animation-slide-top-small"
-              (click)="remove(fieldData.name, i); updateBitSet(fieldData); unsavedChangesPrompt()">
-              <span class="material-icons">clear</span>
-            </a>
-          }
-        </div>
-      }
-      <div class="uk-width-9-10"><i><small>{{fieldData.form.suggestion.text}}</small></i></div>
-      @if (editMode) {
-        <div class="uk-width-9-10 uk-text-center uk-margin-top">
-          <a class="add-new-element uk-flex uk-flex-middle uk-flex-center"
-            (click)="push(fieldData.name, fieldData.form.mandatory)">
-            <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
-          </a>
-        </div>
-      }
-    </div>
+
   } @else {
-    @if (fieldData.label.text) {
-      <label class="uk-form-label {{fieldData.label.cssClasses}}" style="{{fieldData.label.style}}">
-        <input [formControlName]="fieldData.name" [id]="fieldData.id" class="uk-checkbox" type="checkbox"
-          (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-          [ngClass]="{'uk-form-danger': checkFormValidity() }">
-        <span class="uk-checkbox-label uk-margin-small-left">{{fieldData.label.text + (fieldData.form.mandatory ? ' (*)' : '')}}</span>
-      </label>
-    }
-    @if (fieldData.form.suggestion.text) {
-      <div class="uk-margin-top">
-        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
-      </div>
-    }
+    <input type="checkbox" class="uk-checkbox" [ngClass]="{'uk-form-danger': checkFormValidity()}"
+           [formControlName]="fieldData.name" [id]="inputId"
+           (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+           (focusin)="focus()" (focusout)="focusOut(true)">
+    <label [for]="inputId" class="uk-checkbox-label uk-margin-small-left">{{ label }}</label>
   }
 
+  </app-base-field-html>
 
-</form>
-<!--<pre>{{form.value | json}}</pre>-->
+</ng-container>

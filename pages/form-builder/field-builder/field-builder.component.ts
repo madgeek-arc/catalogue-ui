@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Field} from "../../../domain/dynamic-form-model";
+import { Field, IdLabel } from "../../../domain/dynamic-form-model";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
@@ -22,7 +22,10 @@ export class FieldBuilderComponent implements OnInit {
   setValues() {
     this.field.typeInfo.values = [];
     if (this.field.typeInfo.type === 'radio' || this.field.typeInfo.type === 'select') {
-      this.field.typeInfo.values.push('Option 1')
+      const opt = new IdLabel();
+      opt.label = 'Option 1';
+      opt.id = 'Option 1';
+      this.field.typeInfo.values.push(opt);
     }
   }
 

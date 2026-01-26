@@ -123,7 +123,7 @@ export class PdfGenerateService {
           else {
             content.columns.push(new PdfImage('radioUnchecked', 10, 10, ['marginTopCheckBox']));
           }
-          content.columns.push(new Content(value,['ms_1', 'mt_1']));
+          content.columns.push(new Content(value.label, ['ms_1', 'mt_1']));
           docDefinition.content.push(content);
         }
       } else if (field.typeInfo.type === 'checkbox') {

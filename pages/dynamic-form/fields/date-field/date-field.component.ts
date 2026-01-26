@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { DateProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
 import { DatePipe } from "@angular/common";
 import { MatDatepickerModule } from "@angular/material/datepicker";
@@ -39,7 +39,7 @@ export class DateFieldComponent extends BaseFieldComponent implements OnInit {
   }
 
   dateChanged(event: Date) {
-    if (this.fieldData.typeInfo.values?.[0] === 'formatDateToString') {
+    if ((this.fieldData.typeInfo.properties as DateProperties).formatToString) {
       this.formControl.setValue(this.formatDateLocal(event));
       return;
     }

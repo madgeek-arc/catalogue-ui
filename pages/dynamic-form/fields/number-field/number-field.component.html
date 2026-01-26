@@ -8,12 +8,16 @@
       <!--    add multiplicity here-->
     </div>
   } @else {
-    <input [formControlName]="fieldData.name" [id]="inputId" (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-      (focus)="focus()" (focusout)="focusOut(false)" [step]='step' placeholder="{{fieldData.form.placeholder}}"
-      class="uk-input uk-width-9-10 uk-animation-scale-up" [ngClass]="{'uk-form-danger': checkFormValidity()}">
-    @if (checkFormValidity()) {
+    <input [formControlName]="fieldData.name" [id]="inputId" [step]='step' placeholder="{{fieldData.form.placeholder}}"
+           (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focus)="focus()" (focusout)="focusOut(false)"
+           class="uk-input uk-width-9-10 uk-animation-scale-up" [ngClass]="{'uk-form-danger': checkFormValidity()}">
+    @if (checkFormValidity() && form.get(fieldData.name).value != null && form.get(fieldData.name).value != '') {
       <p class="uk-form-danger uk-animation-fade uk-text-italic">
-        Value should be numeric{{getNumberOfDecimals() ? ' with up to ' + getNumberOfDecimals() + ' decimals separated with \'.\'' : ''}}
+        @if (getNumberOfDecimals()) {
+          Value should be a number with up to {{getNumberOfDecimals()}} decimals separated with '.'
+        } @else {
+          Value should be a number (no decimals).
+        }
       </p>
     }
   }

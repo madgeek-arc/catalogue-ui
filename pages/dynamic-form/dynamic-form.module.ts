@@ -6,7 +6,7 @@ import { ChapterComponent } from "./chapter.component";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { CompositeFieldComponent } from "./fields/composite-field/composite-field.component";
 import { StringFieldComponent } from "./fields/string-field/string-field.component";
-import { VocabularyFieldComponent } from "./fields/dropdown-field/vocabulary-field.component";
+import { VocabularyFieldComponent } from "./fields/dropdown-field/vocabulary-field/vocabulary-field.component";
 import { CheckboxFieldComponent } from "./fields/checkbox-field/checkbox-field.component";
 import { LargeTextFieldComponent } from "./fields/large-text-field/large-text-field.component";
 import { RadioButtonFieldComponent } from "./fields/radio-button-field/radio-button-field.component";
@@ -25,6 +25,7 @@ import { BaseFieldHtmlComponent } from "./fields/utils/base-field-html.component
 import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
 import { BooleanFieldComponent } from "./fields/boolean-field/boolean-field.component";
 import { CommentsPanelComponent } from "./comments-pannel/comments-panel.component";
+import { SelectFieldComponent } from "./fields/dropdown-field/select-field/select-field.component";
 
 @NgModule({
   declarations: [
@@ -33,15 +34,12 @@ import { CommentsPanelComponent } from "./comments-pannel/comments-panel.compone
     CompositeFieldComponent,
     DynamicFormFieldsComponent,
     ChapterComponent,
-    VocabularyFieldComponent,
-    CheckboxFieldComponent,
     RadioButtonFieldComponent,
     LargeTextFieldComponent,
     RichTextFieldComponent,
     RadioGridFieldComponent,
     NumberFieldComponent,
     ChooseOneComponent,
-    ScaleFieldComponent,
     SurveyComponent
   ],
   imports: [
@@ -54,9 +52,13 @@ import { CommentsPanelComponent } from "./comments-pannel/comments-panel.compone
     CatalogueUiSharedModule,
     SafeUrlPipe,
     BaseFieldHtmlComponent,
+    CheckboxFieldComponent,
     BooleanFieldComponent,
     DateFieldComponent,
     CommentsPanelComponent,
+    ScaleFieldComponent,
+    SelectFieldComponent,
+    VocabularyFieldComponent,
   ],
   exports: [
     ChapterComponent,
