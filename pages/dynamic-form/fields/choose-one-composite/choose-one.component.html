@@ -16,10 +16,8 @@
       }
     } @else {
       @if (fieldData.form.description?.text) {
-        <div
-          class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-          [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-          <!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
+        <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+             [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
         </div>
       }
     }

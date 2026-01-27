@@ -25,7 +25,7 @@
   } @else {
     <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
                [id]="inputId" [formControlName]="fieldData.name"
-               [items]="dynamicVoc?.length > 0 ? dynamicVoc : vocabularies[fieldData.typeInfo.vocabulary]"
+               [items]="dynamicVoc"
                (change)="unsavedChangesPrompt()"
                [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear">
     </ng-select>

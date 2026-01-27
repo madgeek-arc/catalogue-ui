@@ -30,7 +30,6 @@ export class ScaleFieldComponent extends BaseFieldComponent {
 
     if (properties && 'textLeft' in properties) {
       this.text_left = properties.textLeft;
-      console.log(this.text_left);
     }
 
     if (properties && 'textRight' in properties) {
