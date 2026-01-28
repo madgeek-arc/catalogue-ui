@@ -1,72 +1,39 @@
-import { AfterContentInit, Component, EventEmitter, Input, Output } from "@angular/core";
-import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
-import { FormGroupDirective, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
-import { FormControlService } from "../../../../services/form-control.service";
+import { Component, EventEmitter, Output } from "@angular/core";
+import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { BaseFieldComponent } from "../utils/base-field.component";
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import { NgClass } from "@angular/common";
 
 @Component({
-    selector: 'app-scale-field',
-    templateUrl: 'scale-field.component.html',
-    styleUrls: ['scale-field.component.scss'],
-    styles: ['.clear-style { height: 0 !important;}'],
-    standalone: false
+  selector: 'app-scale-field',
+  templateUrl: 'scale-field.component.html',
+  styleUrls: ['scale-field.component.scss'],
+  imports: [
+    BaseFieldHtmlComponent,
+    ReactiveFormsModule,
+    NgClass
+  ]
 })
 
-export class ScaleFieldComponent implements AfterContentInit {
+export class ScaleFieldComponent extends BaseFieldComponent {
 
-  @Input() fieldData: Field;
-  @Input() editMode: boolean = false;
-  @Input() position?: number = null;
-
-  @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  formControl!: UntypedFormControl;
-  form!: UntypedFormGroup;
-  hideField: boolean = null;
-  iterationArr: any[];
+  text_left: string | null = null;
+  text_right: string | null = null;
 
-  constructor(private rootFormGroup: FormGroupDirective, private formControlService: FormControlService) {}
+  ngOnInit() {
+    super.ngOnInit();
+    const properties = this.fieldData.typeInfo.properties as CustomProperties;
 
-  ngAfterContentInit() {
-    if (this.position !== null) {
-      this.form = this.rootFormGroup.control.controls[this.position] as UntypedFormGroup;
-    } else {
-      this.form = this.rootFormGroup.control;
-    }
-    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
-
-    this.iterationArr = new Array(+this.fieldData.typeInfo.values[0]);
-
-    this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
-    if(this.fieldData.form.dependsOn) {
-      this.enableDisableField(this.form.get(this.fieldData.form.dependsOn.name).value, this.fieldData.form.dependsOn.value);
-      this.form.get(this.fieldData.form.dependsOn.name).valueChanges.subscribe(value => {
-        this.enableDisableField(value, this.fieldData.form.dependsOn.value);
-      }, error => {console.log(error)});
-    }
-  }
-
-  checkFormValidity(): boolean {
-    return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
-  }
-
-  /** other stuff--> **/
-  enableDisableField(value, enableValue) {
-
-    if (value === enableValue) {
-      this.formControl.enable();
-      this.hideField = false;
-
-    } else {
-      this.formControl.disable();
-      this.formControl.reset();
-      this.hideField = true;
+    if (properties && 'textLeft' in properties) {
+      this.text_left = properties.textLeft;
     }
 
-  }
-
-  unsavedChangesPrompt() {
-    this.hasChanges.emit(true);
+    if (properties && 'textRight' in properties) {
+      this.text_right = properties.textRight;
+    }
   }
 }

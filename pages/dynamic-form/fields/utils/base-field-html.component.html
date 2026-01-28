@@ -4,22 +4,22 @@
        (hideField || !fieldData.form.display?.visible) ? 'uk-hidden clear-style' : '', readonly ? 'uk-disabled' : ''
      ]">
 
-  <div class="uk-margin-bottom">
-<!--    {{ fieldData.id }}-->
-    <div class="uk-flex-middle" data-uk-grid>
-      @if (fieldData.label.text) {
-        <label [attr.for]="inputId" class="uk-form-label uk-width-expand"
+  @if (fieldData.label.text) {
+    <div class="uk-margin-bottom">
+      <!--    {{ fieldData.id }}-->
+      <div class="uk-flex-middle" data-uk-grid>
+        <label [for]="inputId" class="uk-form-label uk-width-expand"
                [ngClass]="[fieldData.label.cssClasses || '']" style="{{fieldData.label.style}}"
                [innerHTML]="label">
         </label>
-      }
-      <div class="uk-width-auto">
-        <ul class="uk-invisible-hover uk-iconnav">
-          <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
-        </ul>
+        <div class="uk-width-auto">
+          <ul class="uk-invisible-hover uk-iconnav">
+            <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   @if (fieldData.form.description?.showLess) {
     @if (fieldData.form.description.text) {
@@ -38,11 +38,19 @@
   }
 
   <ng-content></ng-content>
-  @if (fieldData.typeInfo.multiplicity) {
-<!--    <ng-content select="[multiplicity]"></ng-content>-->
-    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-      [innerHTML]="fieldData.form.suggestion.text">
+
+  @if (fieldData.form.suggestion.text) {
+    <div class="uk-margin-top">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}"
+           style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">
+      </div>
     </div>
+  }
+
+  @if (fieldData.typeInfo.multiplicity && fieldData.typeInfo.type !== 'select') {
+<!--    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" -->
+<!--         style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">-->
+<!--    </div>-->
     @if (!readonly) {
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
         <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
@@ -50,28 +58,6 @@
         </a>
       </div>
     }
-  } @else {
-<!--    <ng-content select="[noMultiplicity]"></ng-content>-->
-    @if (fieldData.form.suggestion.text) {
-      <div class="uk-margin-top">
-        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" [innerHTML]="fieldData.form.suggestion.text"
-          style="{{fieldData.form.suggestion.style}}">
-        </div>
-      </div>
-    }
   }
 
 </div>
-
-<!-- This is the modal -->
-<!--<div id="comment-modal-{{fieldData.id}}" data-uk-modal>-->
-<!--  <div class="uk-modal-dialog uk-modal-body">-->
-<!--    <h2 class="uk-modal-title">New thread</h2>-->
-<!--    <label for="comment-body">Comment message</label>-->
-<!--    <textarea id="comment-body" class="uk-textarea" [(ngModel)]="comment" [ngModelOptions]="{standalone: true}" rows="5"></textarea>-->
-<!--    <p class="uk-text-right">-->
-<!--      <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>-->
-<!--      <button class="uk-button uk-button-primary" type="button" (click)="createThread()">Create comment</button>-->
-<!--    </p>-->
-<!--  </div>-->
-<!--</div>-->

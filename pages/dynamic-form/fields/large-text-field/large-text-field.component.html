@@ -7,17 +7,18 @@
     @if (fieldData.typeInfo.multiplicity) {
 
     } @else {
-      <textarea [formControlName]="fieldData.name" [id]="inputId" class="uk-textarea uk-width-9-10 uk-animation-scale-up"
-                [placeholder]="fieldData.form.placeholder ?? ''" [ngClass]="{'uk-form-danger': checkFormValidity()}"
-                [maxlength]="fieldData.typeInfo.values ? fieldData.typeInfo.values[0] : null"
+      <textarea class="uk-textarea uk-width-9-10 uk-animation-scale-up"
+                [class.uk-form-danger]="checkFormValidity()"
+                [formControlName]="fieldData.name" [id]="inputId"
+                [placeholder]="fieldData.form.placeholder ?? ''" [maxlength]=maxLength
                 (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
                 (focusin)="focus()" (focusout)="focusOut(false)">
       </textarea>
       <div class="uk-width-9-10">
-        @if (fieldData.typeInfo.values?.length === 1) {
-          <div class="uk-animation-scale-up" style="float: right;">
-            <span> {{form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0}}</span>
-            <span>/ {{fieldData.typeInfo.values[0]}}</span>
+        @if (maxLength) {
+          <div class="uk-animation-scale-up uk-flex uk-flex-right">
+            <span> {{ form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0 }}</span>
+            <span>/ {{ maxLength }}</span>
           </div>
         }
       </div>

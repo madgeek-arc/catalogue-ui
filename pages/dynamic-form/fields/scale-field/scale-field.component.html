@@ -1,42 +1,29 @@
-@if (form) {
-  <form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-    [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
-    <div class="uk-margin-bottom">
-      @if (fieldData.label.text) {
-        <span class="uk-form-label {{fieldData.label.cssClasses}}" [attr.for]="fieldData.name"
-          [ngClass]="{'uk-subLabel': fieldData.form.dependsOn !== null}" style="{{fieldData.label.style}}"
-          [innerHTML]="fieldData.label.text">
-        </span>
-      }
-      <span>{{fieldData.form.mandatory ? ' (*)' : ''}}</span>
-    </div>
-    @if (fieldData.form.description.text) {
-      <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-        [innerHTML]="fieldData.form.description.text | safeUrl: 'html'" style="{{fieldData.form.description.style}}">
-      </div>
-    }
+<ng-container [formGroup]="form">
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="push()">
+
+
     @if (fieldData.typeInfo.multiplicity) {
-      <div [formArrayName]="fieldData.name"></div>
+
     } @else {
       <div class="radio-container uk-padding-small uk-width-1-1 uk-child-width-expand">
-        <div class="uk-form-label uk-flex uk-flex-center">{{fieldData.typeInfo.values[1]}}</div>
-        @for (radio of iterationArr; track radio; let i = $index) {
+        @if (text_left) {
+          <div class="uk-form-label uk-flex uk-flex-center">{{text_left}}</div>
+        }
+        @for (radio of fieldData.typeInfo.values; track radio; let i = $index) {
           <div class="radio-button">
-            <label for="radio{{i}}" class="radio-label uk-form-label uk-margin-small-bottom">{{i+1}}</label>
-            <input type="radio" id="radio{{i}}" class="uk-radio"
-              [formControlName]="fieldData.name" [name]="fieldData.name" [value]="i+1"
-              [ngClass]="{'uk-form-danger': checkFormValidity()}">
+            <label for="radio-{{i}}" class="radio-label uk-form-label uk-margin-small-bottom">{{radio.label}}</label>
+            <input type="radio" id="radio-{{i}}" class="uk-radio"
+                   [formControlName]="fieldData.name" [name]="fieldData.name" [value]="radio.id"
+                   [ngClass]="{'uk-form-danger': checkFormValidity()}">
           </div>
         }
-        <div class="uk-form-label uk-flex uk-flex-center">{{fieldData.typeInfo.values[2]}}</div>
+        @if (text_right) {
+          <div class="uk-form-label uk-flex uk-flex-center">{{text_right}}</div>
+        }
       </div>
-      @if (fieldData.form.suggestion.text) {
-        <div class="uk-margin-top">
-          <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-            [innerHTML]="fieldData.form.suggestion.text">
-          </div>
-        </div>
-      }
     }
-  </form>
-}
+
+  </app-base-field-html>
+</ng-container>

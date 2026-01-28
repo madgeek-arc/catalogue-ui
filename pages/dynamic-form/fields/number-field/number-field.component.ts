@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
+import { Field, HandleBitSet, NumberProperties } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
@@ -18,8 +18,8 @@ export class NumberFieldComponent extends BaseFieldComponent implements OnInit {
   ngOnInit() {
     super.ngOnInit();
 
-    if (this.fieldData.typeInfo.values) {
-      this.step = this.fieldData.typeInfo.values[0]
+    if ((this.fieldData.typeInfo.properties as NumberProperties).decimals) {
+      this.step = '0.' + '0'.repeat((this.fieldData.typeInfo.properties as NumberProperties).decimals - 1) + '1';
     }
   }
 
@@ -38,10 +38,10 @@ export class NumberFieldComponent extends BaseFieldComponent implements OnInit {
 
   /** other stuff--> **/
   getNumberOfDecimals() {
-    if (this.fieldData.typeInfo.values) {
-      return this.fieldData.typeInfo.values[0].split('.')[1].length;
+    if ((this.fieldData.typeInfo.properties as NumberProperties).decimals) {
+      return (this.fieldData.typeInfo.properties as NumberProperties).decimals;
     }
-    return 0
+    return null;
   }
 
 }

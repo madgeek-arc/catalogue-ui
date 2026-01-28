@@ -1,110 +1,44 @@
-<!--<app-base-field-html [form]="form" [fieldData]="fieldData"-->
-<!--                     [editMode]="editMode" [readonly]="readonly"-->
-<!--                     [hideField]="hideField" (emitPush)="push()">-->
-<!--  <div *ngIf="fieldData.typeInfo.multiplicity" [formArrayName]="fieldData.name" class="multiplicity">-->
-<!--    <div *ngFor="let input of fieldAsFormArray().controls; let i=index" class="uk-margin-bottom uk-flex uk-flex-middle">-->
-<!--      <div class="uk-margin-medium-top uk-width-9-10">-->
-<!--        <ckeditor [id]="inputId+'.['+i+']'" [formControlName]="i" [config]="{placeholder: fieldData.form.placeholder}"-->
-<!--                  (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"-->
-<!--                  [ngClass]="{'uk-form-danger': checkFormValidity()}">-->
-<!--        </ckeditor>-->
-<!--      </div>-->
-<!--      <a *ngIf="fieldAsFormArray().length > 1 && editMode"-->
-<!--         (click)="remove(i); updateBitSet(fieldData); unsavedChangesPrompt()"-->
-<!--         class="remove-element uk-animation-slide-top-small uk-margin-small-left">-->
-<!--        <span class="material-icons">clear</span>-->
-<!--      </a>-->
-<!--    </div>-->
-<!--    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"-->
-<!--         [innerHTML]="fieldData.form.suggestion.text">-->
-<!--    </div>-->
+<ng-container [formGroup]="form">
 
-<!--    <div *ngIf="editMode" class="uk-width-9-10 uk-text-center uk-margin-top">-->
-<!--      <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">-->
-<!--        <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>-->
-<!--      </a>-->
-<!--    </div>-->
-<!--  </div>-->
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="push()">
 
-<!--  <div class="uk-margin-medium-top uk-width-9-10 noMultiplicity">-->
-<!--    <ckeditor [id]="inputId" [editor]="editor" [formControlName]="fieldData.name"-->
-<!--              (ngModelChange)="updateBitSet(fieldData)" [config]="{placeholder: fieldData.form.placeholder}"-->
-<!--              [ngClass]="{'uk-form-danger': checkFormValidity()}">-->
-<!--    </ckeditor>-->
-<!--  </div>-->
-
-<!--</app-base-field-html>-->
-
-<form [formGroup]="form" class="uk-margin-small-bottom {{fieldData.form.display.cssClasses}}"
-  [ngClass]="{'uk-hidden clear-style': hideField || !fieldData.form.display.visible, 'uk-disabled': readonly}">
-
-  <div class="uk-margin-bottom">
-    @if (fieldData.label.text) {
-      <span class="uk-form-label uk-width-9-10 {{fieldData.label.cssClasses}}"
-        [attr.for]="fieldData.name" style="{{fieldData.label.style}}"
-        [innerHTML]="fieldData.form.mandatory ? appendAsterisk(fieldData.label.text) : fieldData.label.text">
-      </span>
-    }
-    <!--    <span>{{ fieldData.form.mandatory ? ' (*)' : '' }}</span>-->
-  </div>
-  @if (fieldData.form.description?.showLess) {
-    @if (fieldData.form.description.text) {
-      <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-        style="{{fieldData.form.description.style}}">
-        <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
-      </div>
-    }
-  } @else {
-    @if (fieldData.form.description?.text) {
-      <div style="{{fieldData.form.description.style}}"
-        class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-        [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
-      </div>
-    }
-  }
-
-  @if (fieldData.typeInfo.multiplicity) {
-    <div [formArrayName]="fieldData.name">
-      @for (input of fieldAsFormArray().controls; track input; let i = $index) {
-        <div class="uk-margin-bottom uk-flex uk-flex-middle">
-          <div class="uk-margin-medium-top uk-width-9-10">
-            <ckeditor [id]="inputId+'.['+i+']'" [formControlName]="i" [config]="{placeholder: fieldData.form.placeholder}"
-              (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"
-              [ngClass]="{'uk-form-danger': checkFormValidity()}">
-            </ckeditor>
-          </div>
-          @if (fieldAsFormArray().length > 1 && editMode) {
-            <a
-              (click)="remove(i); updateBitSet(fieldData); unsavedChangesPrompt()"
-              class="remove-element uk-animation-slide-top-small uk-margin-small-left">
-              <span class="material-icons">clear</span>
-            </a>
+    @if (fieldData.typeInfo.multiplicity) {
+      <div [formArrayName]="fieldData.name">
+        <div appSortable (positionChanged)="onPositionChanged($event)" id="sortable-container">
+          @for (input of fieldAsFormArray().controls; track input; let i = $index) {
+            <div id="{{i}}" [attr.data-index]="i" class="uk-margin-bottom uk-flex uk-flex-middle">
+              <ckeditor [id]="inputId+'.['+i+']'" [formControlName]="i" class="uk-width-9-10 uk-animation-scale-up"
+                        [config]="{placeholder: fieldData.form.placeholder}"
+                        (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"
+                        [ngClass]="{'uk-form-danger': checkFormValidity()}">
+              </ckeditor>
+              @if (formArrayControls.length > 1 && !readonly) {
+                <div class="">
+                  <span class="uk-sortable-handle uk-text-center uk-margin-small-left" data-uk-icon="icon: move"></span>
+                </div>
+              }
+              @if (fieldAsFormArray().length > 1 && editMode) {
+                <a (click)="remove(i); updateBitSet(fieldData); unsavedChangesPrompt()"
+                  class="remove-element uk-animation-slide-top-small uk-margin-small-left">
+                  <span class="material-icons">clear</span>
+                </a>
+              }
+            </div>
           }
         </div>
-      }
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-        [innerHTML]="fieldData.form.suggestion.text">
       </div>
-      @if (editMode) {
-        <div class="uk-width-9-10 uk-text-center uk-margin-top">
-          <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
-            <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
-          </a>
-        </div>
-      }
-    </div>
-  } @else {
-    <div class="uk-margin-medium-top uk-width-9-10">
-      <ckeditor [id]="inputId" [editor]="editor" [formControlName]="fieldData.name"
-        (ngModelChange)="updateBitSet(fieldData)" [config]="{placeholder: fieldData.form.placeholder}"
-        [ngClass]="{'uk-form-danger': checkFormValidity()}">
-      </ckeditor>
-    </div>
-    @if (fieldData.form.suggestion.text) {
-      <div class="uk-margin-top">
-        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text"></div>
+    } @else {
+      <div class="uk-margin-medium-top uk-width-9-10">
+        <ckeditor [id]="inputId" [editor]="editor" [formControlName]="fieldData.name"
+          (ngModelChange)="updateBitSet(fieldData)" [config]="{placeholder: fieldData.form.placeholder}"
+          [ngClass]="{'uk-form-danger': checkFormValidity()}">
+        </ckeditor>
       </div>
     }
-  }
 
-</form>
+  </app-base-field-html>
+
+</ng-container>
+<!--</form>-->

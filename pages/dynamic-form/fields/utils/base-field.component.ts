@@ -1,6 +1,12 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import { DestroyRef, Directive, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import {
-  AbstractControl, FormArray, FormGroup, FormGroupDirective, UntypedFormArray, UntypedFormControl, UntypedFormGroup
+  AbstractControl,
+  FormArray,
+  FormGroup,
+  FormGroupDirective,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup
 } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Field } from "../../../../domain/dynamic-form-model";
@@ -14,13 +20,11 @@ interface PositionChange {
   element: HTMLElement;
 }
 
-@Component({
-    template: ``,
-    styles: ['.clear-style { height: 0 !important;}'],
-    standalone: false
-})
-
-export class BaseFieldComponent implements OnInit {
+@Directive()
+export abstract class BaseFieldComponent implements OnInit {
+  protected rootFormGroup = inject(FormGroupDirective);
+  private formControlService = inject(FormControlService);
+  private wsService = inject(WebsocketService);
 
   protected destroyRef = inject(DestroyRef);
 
@@ -39,9 +43,6 @@ export class BaseFieldComponent implements OnInit {
   hideField: boolean = null;
 
   focused = false;
-
-  constructor(protected rootFormGroup: FormGroupDirective, protected formControlService: FormControlService,
-              private wsService: WebsocketService) {}
 
   ngOnInit() {
     if (this.position !== null) {
@@ -205,7 +206,7 @@ export class BaseFieldComponent implements OnInit {
     if (this.readonly)
       return false;
 
-    return (!this.formControl.valid && (this.formControl.touched || this.formControl.dirty));
+    return (this.formControl.invalid && (this.formControl.touched || this.formControl.dirty));
   }
 
   checkFormArrayValidity(position: number): boolean {

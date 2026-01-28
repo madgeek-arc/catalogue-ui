@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output } from "@angular/core";
-import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Field, HandleBitSet, TextProperties } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
@@ -8,10 +8,17 @@ import { BaseFieldComponent } from "../utils/base-field.component";
     standalone: false
 })
 
-export class LargeTextFieldComponent extends BaseFieldComponent {
+export class LargeTextFieldComponent extends BaseFieldComponent implements OnInit {
 
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
+
+  maxLength: number | null = null;
+
+  ngOnInit() {
+    super.ngOnInit();
+    this.maxLength = (this.fieldData.typeInfo.properties as TextProperties).maxLength;
+  }
 
 
   /** Bitsets--> **/

@@ -1,17 +1,19 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" [inputId]="inputId" (emitPush)="push()">
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="push()">
+
     @if (fieldData.typeInfo.multiplicity) {
 
     } @else {
       <div>
-        <label class="uk-form-label">
-          <input class="uk-checkbox" type="checkbox" [formControlName]="fieldData.name" [id]="inputId"
-                 (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()"
-                 (focusout)="focusOut(true)"
-                 [ngClass]="{'uk-form-danger': checkFormValidity()}">
-          <span class="uk-checkbox-label uk-margin-xsmall-left">{{ fieldData.typeInfo.values[0] }}</span>
+        <input class="uk-checkbox" type="checkbox" [ngClass]="{'uk-form-danger': checkFormValidity()}"
+               [formControlName]="fieldData.name" [id]="inputId"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+               (focusin)="focus()" (focusout)="focusOut(true)">
+        <label [for]="inputId" class="uk-form-label">
+          <span class="uk-checkbox-label uk-margin-small-left">{{ label }}</span>
         </label>
       </div>
     }

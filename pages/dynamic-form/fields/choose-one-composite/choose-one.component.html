@@ -16,10 +16,8 @@
       }
     } @else {
       @if (fieldData.form.description?.text) {
-        <div
-          class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-          [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
-          <!--  [innerHTML]="'<read-more-text [maxHeight]=&quot260&quot [text]=\'asdsad\'></read-more-text>'">-->
+        <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
+             [innerHTML]="fieldData.form.description.text" style="{{fieldData.form.description.style}}">
         </div>
       }
     }
@@ -52,12 +50,12 @@
                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                           </app-composite-field>
                         }
-                        @if (control.typeInfo.type === 'string' || control.typeInfo.type === 'double' ||
-                          control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
-                          control.typeInfo.type === 'url') {
-                          <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                            (handleBitSets)="handleBitsetOfChildren($event)"
-                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                        @if (control.typeInfo.type === 'string' || control.typeInfo.type === 'email' ||
+                             control.typeInfo.type === 'phone' || control.typeInfo.type === 'url') {
+                          <app-string-url-email-field [fieldData]="control" [position]="i"
+                                                      (hasChanges)="unsavedChangesPrompt()"
+                                                      (handleBitSets)="handleBitsetOfChildren($event)"
+                                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                           </app-string-url-email-field>
                         }
                       </div>
