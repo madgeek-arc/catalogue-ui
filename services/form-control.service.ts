@@ -92,12 +92,12 @@ export class FormControlService {
         //   new UntypedFormArray([new UntypedFormControl(null, Validators.required)])
         //   : new UntypedFormArray([new UntypedFormControl(null)]);
 
-        if (formField.typeInfo.type === 'select') { // Special treatment for select fields with multiselect
+        if (subField.typeInfo.type === 'select') { // Special treatment for select fields with multiselect
           subGroup[subField.name] = subField.form.mandatory ?
             new FormControl<string[] | null>(null, Validators.required) : new FormControl<string[] | null>(null);
         } else {
           subGroup[subField.name] = subField.form.mandatory ?
-            new FormArray([this.createField(formField)], Validators.required) : new FormArray([this.createField(formField)]);
+            new FormArray([this.createField(subField)], Validators.required) : new FormArray([this.createField(subField)]);
         }
 
       } else

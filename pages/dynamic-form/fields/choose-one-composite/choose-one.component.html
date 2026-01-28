@@ -50,12 +50,12 @@
                             (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                           </app-composite-field>
                         }
-                        @if (control.typeInfo.type === 'string' || control.typeInfo.type === 'double' ||
-                          control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
-                          control.typeInfo.type === 'url') {
-                          <app-string-url-email-field [fieldData]="control" [position]="i" (hasChanges)="unsavedChangesPrompt()"
-                            (handleBitSets)="handleBitsetOfChildren($event)"
-                            (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                        @if (control.typeInfo.type === 'string' || control.typeInfo.type === 'email' ||
+                             control.typeInfo.type === 'phone' || control.typeInfo.type === 'url') {
+                          <app-string-url-email-field [fieldData]="control" [position]="i"
+                                                      (hasChanges)="unsavedChangesPrompt()"
+                                                      (handleBitSets)="handleBitsetOfChildren($event)"
+                                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
                           </app-string-url-email-field>
                         }
                       </div>

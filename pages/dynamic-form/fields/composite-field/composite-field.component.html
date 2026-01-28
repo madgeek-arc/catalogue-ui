@@ -62,16 +62,14 @@
                             }
                             @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
                               <div class="uk-form-controls uk-margin-medium-top">
-                                <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies" [editMode]="editMode"
-                                                      [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                                      [position]="i" (handleBitSets)="handleBitsetOfChildren($event)"
-                                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                                <app-vocabulary-field [fieldData]="control" [position]="i" [editMode]="editMode"
+                                                      [readonly]="readonly" [scrollContainer]="scrollContainer"
+                                                      (hasChanges)="unsavedChangesPrompt()">
                                 </app-vocabulary-field>
                               </div>
                             }
                             @if (control.typeInfo.type === 'string' || control.typeInfo.type === 'email'||
-                              control.typeInfo.type === 'phone' || control.typeInfo.type === 'url' ||
-                              control.typeInfo.type === 'double') {
+                                 control.typeInfo.type === 'phone' || control.typeInfo.type === 'url') {
                               <div>
                                 <app-string-url-email-field [fieldData]="control" [position]="i" [editMode]="editMode"
                                                             [readonly]="readonly" [scrollContainer]="scrollContainer"
@@ -217,16 +215,14 @@
                     }
                     @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
                       <div class="uk-form-controls uk-margin-medium-top">
-                        <app-vocabulary-field [fieldData]="control" [subVocabularies]="subVocabularies" [editMode]="editMode"
-                                              [vocabularies]="vocabularies" (hasChanges)="unsavedChangesPrompt()"
-                                              (handleBitSets)="handleBitsetOfChildren($event)"
-                                              (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
+                        <app-vocabulary-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                              [scrollContainer]="scrollContainer"
+                                              (hasChanges)="unsavedChangesPrompt()">
                         </app-vocabulary-field>
                       </div>
                     }
                     @if (control.typeInfo.type === 'string' || control.typeInfo.type === 'url' ||
-                      control.typeInfo.type === 'email' || control.typeInfo.type === 'phone' ||
-                      control.typeInfo.type === 'double') {
+                         control.typeInfo.type === 'email' || control.typeInfo.type === 'phone') {
                       <div>
                         <app-string-url-email-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
                                                     [scrollContainer]="scrollContainer"
@@ -304,12 +300,12 @@
                         </app-date-field>
                       </div>
                     }
-                    @if (control.typeInfo.type === 'radioGrid') {
-                      <div>
-                        <app-radio-grid [fieldData]="control">
-                        </app-radio-grid>
-                      </div>
-                    }
+<!--                    @if (control.typeInfo.type === 'radioGrid') {-->
+<!--                      <div>-->
+<!--                        <app-radio-grid [fieldData]="control">-->
+<!--                        </app-radio-grid>-->
+<!--                      </div>-->
+<!--                    }-->
                   </div>
                 }
               </div>

@@ -41,16 +41,16 @@
 
   @if (fieldData.form.suggestion.text) {
     <div class="uk-margin-top">
-      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" [innerHTML]="fieldData.form.suggestion.text"
-           style="{{fieldData.form.suggestion.style}}">
+      <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}"
+           style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">
       </div>
     </div>
   }
 
   @if (fieldData.typeInfo.multiplicity && fieldData.typeInfo.type !== 'select') {
-    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-      [innerHTML]="fieldData.form.suggestion.text">
-    </div>
+<!--    <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" -->
+<!--         style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">-->
+<!--    </div>-->
     @if (!readonly) {
       <div class="uk-width-9-10 uk-text-center uk-margin-top">
         <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="push()">
@@ -61,16 +61,3 @@
   }
 
 </div>
-
-<!-- This is the modal -->
-<!--<div id="comment-modal-{{fieldData.id}}" data-uk-modal>-->
-<!--  <div class="uk-modal-dialog uk-modal-body">-->
-<!--    <h2 class="uk-modal-title">New thread</h2>-->
-<!--    <label for="comment-body">Comment message</label>-->
-<!--    <textarea id="comment-body" class="uk-textarea" [(ngModel)]="comment" [ngModelOptions]="{standalone: true}" rows="5"></textarea>-->
-<!--    <p class="uk-text-right">-->
-<!--      <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>-->
-<!--      <button class="uk-button uk-button-primary" type="button" (click)="createThread()">Create comment</button>-->
-<!--    </p>-->
-<!--  </div>-->
-<!--</div>-->

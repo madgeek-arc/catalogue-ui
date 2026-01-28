@@ -67,10 +67,9 @@
             }
             @if (fieldData.typeInfo.type === 'vocabulary') {
               <div>
-                <app-vocabulary-field [fieldData]="fieldData" [subVocabularies]="subVocabularies"
-                                      [vocabularies]="vocabularies"
-                                      (handleBitSets)="handleBitsetOfChildren($event)" (hasChanges)="unsavedChangesPrompt()"
-                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)" [editMode]="editMode">
+                <app-vocabulary-field [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                                      [scrollContainer]="scrollContainer"
+                                      (hasChanges)="unsavedChangesPrompt()">
                 </app-vocabulary-field>
               </div>
             }
