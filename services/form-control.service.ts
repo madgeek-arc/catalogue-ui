@@ -167,13 +167,15 @@ export class FormControlService {
     }
   }
 
-  numberRegex(decimals: number): string {
-    // return `^(\\d)*(\\.)?([0-9]{0,${decimals}})?$`;
-    if (decimals === 0)
-      return '^(\\d)*$';
-
-    return `^(\\d)+(\\.\\d{1,${decimals}})?$`;
-
+  numberRegex(decimals?: number | null): string {
+    if (decimals == null) { // Any number (integer or decimal, unlimited decimals)
+      return '^\\d+(\\.\\d+)?$';
+    }
+    if (decimals === 0) { // Integer only
+      return '^\\d+$';
+    }
+    // Integer or decimal with max N decimals
+    return `^\\d+(\\.\\d{1,${decimals}})?$`;
   }
 
   static removeNulls(obj: any) {

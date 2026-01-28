@@ -16,7 +16,7 @@
         @if (getNumberOfDecimals()) {
           Value should be a number with up to {{getNumberOfDecimals()}} decimals separated with '.'
         } @else {
-          Value should be a number (no decimals).
+          Value should be a number{{getNumberOfDecimals() === 0 ? ' (no decimals)' : ''}}.
         }
       </p>
     }

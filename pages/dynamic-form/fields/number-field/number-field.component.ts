@@ -41,7 +41,7 @@ export class NumberFieldComponent extends BaseFieldComponent implements OnInit {
     if ((this.fieldData.typeInfo.properties as NumberProperties).decimals) {
       return (this.fieldData.typeInfo.properties as NumberProperties).decimals;
     }
-    return 0
+    return null;
   }
 
 }
