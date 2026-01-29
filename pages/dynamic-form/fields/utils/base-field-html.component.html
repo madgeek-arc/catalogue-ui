@@ -8,9 +8,8 @@
     <div class="uk-margin-bottom">
       <!--    {{ fieldData.id }}-->
       <div class="uk-flex-middle" data-uk-grid>
-        <label [for]="inputId" class="uk-form-label uk-width-expand"
-               [ngClass]="[fieldData.label.cssClasses || '']" style="{{fieldData.label.style}}"
-               [innerHTML]="label">
+        <label class="uk-form-label uk-width-expand" [ngClass]="[fieldData.label.cssClasses || '']"
+               style="{{fieldData.label.style}}" [for]="inputId" [innerHTML]="label">
         </label>
         <div class="uk-width-auto">
           <ul class="uk-invisible-hover uk-iconnav">
@@ -36,8 +35,11 @@
       </div>
     }
   }
-
-  <ng-content></ng-content>
+  @if (fieldData.kind === 'paused') {
+    Question is paused.
+  } @else {
+    <ng-content></ng-content>
+  }
 
   @if (fieldData.form.suggestion.text) {
     <div class="uk-margin-top">

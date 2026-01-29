@@ -21,7 +21,7 @@
         </div>
       }
     }
-    @if (fieldData.kind !== 'external') {
+    @if (fieldData.kind !== 'external' && fieldData.kind !== 'paused') {
       <div>
         @if (fieldData.typeInfo.multiplicity) {
           <div>
