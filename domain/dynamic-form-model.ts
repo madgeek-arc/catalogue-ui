@@ -287,6 +287,10 @@ export class Series {
 }
 
 export interface TypeProperties {
+  url: string;
+  idField: string;
+  labelField: string;
+  filterField: string;
 }
 
 export interface CustomProperties extends TypeProperties {
@@ -321,6 +325,7 @@ export interface VocabularyProperties extends TypeProperties {
   url: string;
   idField: string;
   labelField: string;
+  filterField: string;
 }
 
 export enum FieldType {
