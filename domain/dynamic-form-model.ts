@@ -290,7 +290,6 @@ export interface TypeProperties {
   url: string;
   idField: string;
   labelField: string;
-  filterField: string;
 }
 
 export interface CustomProperties extends TypeProperties {

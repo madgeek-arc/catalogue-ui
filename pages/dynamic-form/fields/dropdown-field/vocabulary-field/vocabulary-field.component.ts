@@ -50,8 +50,7 @@ export class VocabularyFieldComponent extends BaseFieldComponent {
         this.formControl.reset();
       }
     } else if (value) {
-      const filterValue = this.fieldData.typeInfo.properties.filterField;
-      this.dynamicVoc = this.voc.filter(v => v[filterValue] === value);
+      this.dynamicVoc = this.voc.filter(v => v['parentId'] === value);
       // console.log(this.voc);
       // console.log(this.dynamicVoc);
       this.formControl.reset(null);
