@@ -13,6 +13,7 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
   @Input() arrayPosition?: string;
 
   private destroy$ = new Subject<void>();
+  private ro?: ResizeObserver;
 
   constructor(
     private el: ElementRef<HTMLElement>,
@@ -22,27 +23,44 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
-      // Recalculate on resize and scroll (of the window)
-      fromEvent(window, 'resize')
-        .pipe(debounceTime(50), takeUntil(this.destroy$))
-        .subscribe(() => this.updatePosition());
+      const container = this.anchorContainer ?? document.body;
 
-      fromEvent(window, 'scroll')
-        .pipe(debounceTime(50), takeUntil(this.destroy$))
-        .subscribe(() => this.updatePosition());
+      // Listen to container scroll events (not window scroll)
+      const scrollTarget = container === document.body ? window : container;
+      fromEvent(scrollTarget, 'scroll', { passive: true })
+        .pipe(debounceTime(16), takeUntil(this.destroy$))
+        .subscribe(() => this.scheduleMeasure());
+
+      fromEvent(window, 'resize', { passive: true })
+        .pipe(debounceTime(16), takeUntil(this.destroy$))
+        .subscribe(() => this.scheduleMeasure());
+
+      // ResizeObserver for element and container layout changes
+      this.ro = new ResizeObserver(() => this.scheduleMeasure());
+      this.ro.observe(this.el.nativeElement);
+      if (container !== document.body) {
+        this.ro.observe(container);
+      }
     });
 
     // Initial position
-    setTimeout(() => this.updatePosition(), 0);
-    // this.updatePosition();
+    this.scheduleMeasure();
+  }
+
+  private scheduleMeasure() {
+    requestAnimationFrame(() => this.updatePosition());
   }
 
   private updatePosition() {
-    // const element = this.el.nativeElement;
-    const rect = this.el.nativeElement.getBoundingClientRect();
-    const containerRect = (this.anchorContainer ?? document.body).getBoundingClientRect();
-    const relativeTop = rect.top - containerRect.top;
-    // console.log('rect top: ', rect.top, ' container top: ', containerRect.top, ' offset: ', relativeTop);
+    const element = this.el.nativeElement;
+    const rect = element.getBoundingClientRect();
+    const container = (this.anchorContainer ?? document.body);
+    const containerRect = container.getBoundingClientRect();
+
+    // Calculate position in content-space coordinates (stable regardless of scroll)
+    const scrollTop = container === document.body ? window.scrollY : container.scrollTop;
+    const relativeTop = rect.top - containerRect.top + scrollTop;
+    // console.log('rect top: ', rect.top, ' container top: ', containerRect.top, ' scrollTop: ', scrollTop, ' offset: ', relativeTop);
 
     let pos = Number.parseInt(this.arrayPosition);
     this.anchorService.updatePosition(this.anchorId, relativeTop, pos);
@@ -51,6 +69,7 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    this.ro?.disconnect();
   }
 }
 

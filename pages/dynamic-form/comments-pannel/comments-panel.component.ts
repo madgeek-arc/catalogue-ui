@@ -19,7 +19,7 @@ import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { debounceTime } from "rxjs/operators";
 import { FormsModule } from "@angular/forms";
-import { JsonPipe, NgClass } from "@angular/common";
+import { NgClass } from "@angular/common";
 import UIkit from "uikit";
 import { Section } from "../../../domain/dynamic-form-model";
 
@@ -85,7 +85,7 @@ export class CommentsPanelComponent implements OnInit {
     this.heights$ = this.anchorService.heights$;
 
     const ids: string[] = collectIdsRecursive(this.subSection['fields'] ?? []);
-    this.commentingService.threadSubject.pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.commentingService.threadSubject.pipe(debounceTime(16), takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
         // filter threads relevant to this subsection
         this.sectionThreads = value.filter((t: Thread) => ids.includes(t.fieldId));
@@ -99,7 +99,7 @@ export class CommentsPanelComponent implements OnInit {
 
     // Combine positions + heights + thread changes: recompute layout
     combineLatest([this.positions$, this.heights$])
-      .pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef))
+      .pipe(debounceTime(16), takeUntilDestroyed(this.destroyRef))
       .subscribe(([pos, heights]) => {
         // store last
         this.lastPositions = new Map(pos);
@@ -227,180 +227,261 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   private recomputeLayout(positions: Map<string, number>, heights: Map<string, number>) {
-    this.ngZone.runOutsideAngular(() => {
-      const panelEl = this.panelRef?.nativeElement;
-      if (!panelEl) return;
+    requestAnimationFrame(() => {
+      this.ngZone.runOutsideAngular(() => {
+        const panelEl = this.panelRef?.nativeElement;
+        if (!panelEl) return;
 
-      type ThreadItem = {
-        id: string;
-        fieldId: string;
-        height: number;
-      };
+        type ThreadItem = {
+          id: string;
+          fieldId: string;
+          anchorTop: number;
+          height: number;
+          index: number; // original order in sectionThreads
+        };
 
-      type FieldGroup = {
-        fieldId: string;
-        anchorTop: number;
-        threads: ThreadItem[];      // in display/order-preserving sequence
-        groupHeight: number;       // sum heights + gaps between threads
-        desiredTop: number;        // anchorTop (initially)
-        finalTop?: number;         // computed later
-      };
+        type FieldGroup = {
+          fieldId: string;
+          anchorTop: number;
+          threads: ThreadItem[];
+          groupHeight: number;
+          firstThreadIndex: number; // for maintaining original order
+        };
 
-      // 1) group threads by field (keep order of threads as in this.sectionThreads)
-      const groupsMap = new Map<string, FieldGroup>();
-      for (const thread of this.sectionThreads) {
-        const h = Math.round(heights.get(thread.id) ?? 80);
-        const fieldId = thread.fieldId;
-        if (!groupsMap.has(fieldId)) {
-          const anchor = Math.round(positions.get(fieldId) ?? 0);
-          groupsMap.set(fieldId, {
-            fieldId,
-            anchorTop: anchor,
-            threads: [],
-            groupHeight: 0,
-            desiredTop: anchor
+        // 1) Build array of all threads with their properties
+        const threads: ThreadItem[] = this.sectionThreads.map((thread, index) => ({
+          id: thread.id,
+          fieldId: thread.fieldId,
+          anchorTop: Math.round(positions.get(thread.fieldId) ?? 0),
+          height: Math.round(heights.get(thread.id) ?? 80),
+          index
+        }));
+
+        if (threads.length === 0) {
+          this.ngZone.run(() => {
+            this.topOffset = 0;
+            this.layoutMap = new Map();
           });
+          return;
         }
-        const grp = groupsMap.get(fieldId)!;
-        grp.threads.push({ id: thread.id, fieldId, height: h });
-      }
 
-      // If there are fields with no threads, they are irrelevant here.
-      // 2) create an array of groups ordered by field anchorTop (top-to-bottom)
-      const groups: FieldGroup[] = Array.from(groupsMap.values()).sort((a, b) => a.anchorTop - b.anchorTop);
-
-      // 3) compute each group's height (sum thread heights and gaps)
-      for (const g of groups) {
-        const totalHeights = g.threads.reduce((sum, t) => sum + t.height, 0);
-        const gapsBetween = Math.max(0, g.threads.length - 1) * this.gap;
-        g.groupHeight = totalHeights + gapsBetween;
-        g.desiredTop = g.anchorTop;
-      }
-
-      // 4) initial pass: ensure groups don't overlap by pushing groups (group-level push-down)
-      let prevBottom = -Infinity;
-      for (const g of groups) {
-        let top = g.desiredTop;
-        if (top <= prevBottom + this.gap) {
-          top = prevBottom + this.gap;
+        // 2) Group threads by fieldId (preserve original order)
+        const groupsMap = new Map<string, FieldGroup>();
+        for (const thread of threads) {
+          if (!groupsMap.has(thread.fieldId)) {
+            groupsMap.set(thread.fieldId, {
+              fieldId: thread.fieldId,
+              anchorTop: thread.anchorTop,
+              threads: [],
+              groupHeight: 0,
+              firstThreadIndex: thread.index
+            });
+          }
+          groupsMap.get(thread.fieldId)!.threads.push(thread);
         }
-        g.finalTop = Math.round(top);
-        prevBottom = g.finalTop + g.groupHeight;
-      }
 
-      // 5) if focusedThreadId exists, align its group to its anchor and pull/push neighbor groups
-      if (this.focusedThreadId) {
-        const focusedThread = this.sectionThreads.find(t => t.id === this.focusedThreadId);
-        if (focusedThread) {
-          const focusedGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
-          if (focusedGroupIdx !== -1) {
-            // 5a) set the focused group top to its anchor (align)
-            const focusedGroup = groups[focusedGroupIdx];
-            focusedGroup.finalTop = focusedGroup.desiredTop;
+        // Convert to array and keep original order (by first thread appearance)
+        const groups = Array.from(groupsMap.values()).sort((a, b) =>
+          a.firstThreadIndex - b.firstThreadIndex
+        );
 
-            // 5b) pull previous groups up if overlapping
-            for (let i = focusedGroupIdx - 1; i >= 0; i--) {
-              const cur = groups[i];
-              const next = groups[i + 1];
-              const desiredBottomForCur = (next.finalTop ?? next.desiredTop) - this.gap;
-              const candidateTop = desiredBottomForCur - cur.groupHeight;
-              if (candidateTop < (cur.finalTop ?? cur.desiredTop)) {
-                // NOTE: DO NOT clamp to 0 here — allow negative finalTop
-                cur.finalTop = Math.round(candidateTop);
-              } else {
-                // no more conflicts upward
-                break;
+        // Calculate each group's total height
+        for (const group of groups) {
+          const totalThreadHeights = group.threads.reduce((sum, t) => sum + t.height, 0);
+          const gapsWithinGroup = Math.max(0, group.threads.length - 1) * this.gap;
+          group.groupHeight = totalThreadHeights + gapsWithinGroup;
+        }
+
+        const rawMap = new Map<string, { top: number }>();
+
+        // 3) FOCUSED MODE: Align focused thread with its field, handle groups
+        if (this.focusedThreadId) {
+          const focusedThread = threads.find(t => t.id === this.focusedThreadId);
+
+          if (focusedThread) {
+            const focusedGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
+
+            if (focusedGroupIdx !== -1) {
+              const focusedGroup = groups[focusedGroupIdx];
+              const focusedThreadIdxInGroup = focusedGroup.threads.findIndex(t => t.id === this.focusedThreadId);
+
+              // Calculate where the focused thread should be positioned (at its anchor)
+              const focusedThreadTop = focusedThread.anchorTop;
+
+              // Position the focused thread
+              rawMap.set(focusedThread.id, { top: focusedThreadTop });
+
+              // Position other threads in the same group around the focused thread
+              // Threads BEFORE focused thread in group: stack upward
+              let currentBottom = focusedThreadTop - this.gap;
+              for (let i = focusedThreadIdxInGroup - 1; i >= 0; i--) {
+                const thread = focusedGroup.threads[i];
+                const threadTop = currentBottom - thread.height;
+                rawMap.set(thread.id, { top: threadTop });
+                currentBottom = threadTop - this.gap;
               }
-            }
 
-            // 5c) push the following groups down if they overlap
-            for (let i = focusedGroupIdx + 1; i < groups.length; i++) {
-              const prev = groups[i - 1];
-              const cur = groups[i];
-              const neededTop = (prev.finalTop ?? prev.desiredTop) + prev.groupHeight + this.gap;
-              if ((cur.finalTop ?? cur.desiredTop) < neededTop) {
-                cur.finalTop = Math.round(neededTop);
-              } else {
-                break;
+              // Threads AFTER focused thread in group: stack downward
+              let currentTop = focusedThreadTop + focusedThread.height + this.gap;
+              for (let i = focusedThreadIdxInGroup + 1; i < focusedGroup.threads.length; i++) {
+                const thread = focusedGroup.threads[i];
+                rawMap.set(thread.id, { top: currentTop });
+                currentTop += thread.height + this.gap;
+              }
+
+              // Now handle OTHER groups (before and after the focused group)
+              // Smart stacking: only stack if there's not enough space to align at anchor
+
+              // Groups BEFORE focused group: try to align at anchor, stack only if overlapping
+              const focusedGroupTop = Math.min(...focusedGroup.threads.map(t => rawMap.get(t.id)!.top));
+              let nextGroupBottomConstraint = focusedGroupTop - this.gap;
+
+              for (let i = focusedGroupIdx - 1; i >= 0; i--) {
+                const group = groups[i];
+
+                // Try to place at anchor first
+                let groupTop = group.anchorTop;
+                const groupBottom = groupTop + group.groupHeight;
+
+                // Check if it would overlap with the group below (or focused group)
+                if (groupBottom + this.gap > nextGroupBottomConstraint) {
+                  // Overlap detected - must stack upward
+                  groupTop = nextGroupBottomConstraint - group.groupHeight;
+                }
+
+                // Position all threads in this group
+                let offset = 0;
+                for (const thread of group.threads) {
+                  rawMap.set(thread.id, { top: groupTop + offset });
+                  offset += thread.height + this.gap;
+                }
+
+                // Update constraint for next group above
+                nextGroupBottomConstraint = groupTop - this.gap;
+              }
+
+              // Groups AFTER focused group: try to align at anchor, stack only if overlapping
+              const focusedGroupBottom = Math.max(...focusedGroup.threads.map(t =>
+                rawMap.get(t.id)!.top + t.height
+              ));
+              let prevGroupTopConstraint = focusedGroupBottom + this.gap;
+
+              for (let i = focusedGroupIdx + 1; i < groups.length; i++) {
+                const group = groups[i];
+
+                // Try to place at anchor first
+                let groupTop = group.anchorTop;
+
+                // Check if it would overlap with the group above (or focused group)
+                if (groupTop < prevGroupTopConstraint) {
+                  // Overlap detected - must stack downward
+                  groupTop = prevGroupTopConstraint;
+                }
+
+                // Position all threads in this group
+                let offset = 0;
+                for (const thread of group.threads) {
+                  rawMap.set(thread.id, { top: groupTop + offset });
+                  offset += thread.height + this.gap;
+                }
+
+                // Update constraint for next group below
+                prevGroupTopConstraint = groupTop + group.groupHeight + this.gap;
               }
             }
           }
+        } else {
+          // 4) UNFOCUSED MODE: Place groups sequentially, try to align with anchors
+
+          let prevGroupBottom = -Infinity;
+
+          for (const group of groups) {
+            // Try to place group at its anchor position
+            let groupTop = group.anchorTop;
+
+            // If it would overlap with previous group, push it down
+            if (groupTop < prevGroupBottom + this.gap) {
+              groupTop = prevGroupBottom + this.gap;
+            }
+
+            // Position all threads in this group
+            let offset = 0;
+            for (const thread of group.threads) {
+              rawMap.set(thread.id, { top: groupTop + offset });
+              offset += thread.height + this.gap;
+            }
+
+            prevGroupBottom = groupTop + group.groupHeight;
+          }
         }
-      }
 
-      // 6) finalize per-thread positions: each thread's top = group.finalTop + offset within a group
-      const rawMap = new Map<string, { top: number }>();
-      for (const g of groups) {
-        const groupTop = Math.round(g.finalTop ?? g.desiredTop);
-        let offset = 0;
-        for (let i = 0; i < g.threads.length; i++) {
-          const t = g.threads[i];
-          const threadTop = groupTop + offset;
-          rawMap.set(t.id, { top: threadTop });
-          offset += t.height + this.gap;
+        // 5) Compute minimum top and create spacer if needed (for negative overflow)
+        let minTop = Infinity;
+        for (const v of rawMap.values()) {
+          if (v.top < minTop) minTop = v.top;
         }
-      }
 
-      // compute minimum top among all threads
-      let minTop = Infinity;
-      for (const v of rawMap.values()) {
-        if (v.top < minTop) minTop = v.top;
-      }
+        const shift = minTop < 0 ? -minTop : 0;
 
-      // if minTop < 0, we will create a top spacer of height = -minTop
-      // and shift every final top by that spacer so nothing has negative 'top' in the DOM.
-      // This gives the user "scrollable overflow above the panel".
-      const shift = minTop < 0 ? -minTop : 0;
+        // 6) Apply shift to all positions
+        const adjustedMap = new Map<string, { top: number }>();
+        for (const [id, v] of rawMap.entries()) {
+          adjustedMap.set(id, { top: Math.round(v.top + shift) });
+        }
 
-      const adjustedMap = new Map<string, { top: number }>();
-      for (const [id, v] of rawMap.entries()) {
-        adjustedMap.set(id, { top: Math.round(v.top + shift) });
-      }
-
-      // 7) write back to Angular zone: new layoutMap + topOffset value
-      this.ngZone.run(() => {
-        this.topOffset = shift;
-        this.layoutMap = adjustedMap;
+        // 7) Write back to Angular zone
+        this.ngZone.run(() => {
+          this.topOffset = shift;
+          this.layoutMap = adjustedMap;
+        });
       });
     });
   }
 
   // Make the focused thread visible and align form input with the thread if possible.
-  // Two things:
-  //  - Scroll the comments panel so the focused thread is visible at approximately the same vertical position
-  //  - Scroll the form scrollContainer so the anchored input is visible (positions were computed relative to it)
+  // Strategy:
+  //  1. Scroll both the form container and comments panel
+  //  2. Aim to position the focused thread and its anchored field at the same viewport position
+  //  3. Account for the topOffset spacer in the comments panel
   private ensureFocusedVisible(threadId: string) {
     const panelEl = this.panelRef?.nativeElement;
-    if (!panelEl) return;
+    if (!panelEl || !this.scrollContainer) return;
+
+    const thread = this.sectionThreads.find(t => t.id === threadId);
+    if (!thread) return;
 
     const layout = this.layoutMap.get(threadId);
-    if (layout) {
-      const focusedTop = layout.top;
-      const focusedHeight = this.lastHeights.get(threadId) ?? 100;
+    if (!layout) return;
 
-      // Scroll the comments panel to bring a focused thread into view (prefer center)
-      // const panelScrollTop = panelEl.scrollTop;
-      const panelClientHeight = panelEl.clientHeight;
-      const targetTopInPanel = Math.max(0, focusedTop - Math.round(panelClientHeight / 2) + Math.round(focusedHeight / 2));
+    // Position of the focused thread in the comments panel (includes topOffset shift)
+    const focusedTopInPanel = layout.top;
 
-      panelEl.scrollTo({ top: targetTopInPanel, behavior: 'smooth' });
-    }
+    // Position of the anchored field in the form container (content-space coordinates)
+    const anchorTopInForm = this.lastPositions.get(thread.fieldId) ?? 0;
 
-    // Also, scroll the form scroll container so the field input is visible and roughly aligned.
-    if (this.scrollContainer && this.lastPositions && this.lastPositions.size > 0) {
-      // we need to map the threadId -> its fieldId (we have sectionThreads)
-      const thread = this.sectionThreads.find(t => t.id === threadId);
-      if (!thread) return;
-      const fieldTop = this.lastPositions.get(thread.fieldId) ?? 0;
+    // Key insight: Due to the topOffset shift applied during overflow,
+    // focusedTopInPanel and anchorTopInForm are in different coordinate spaces.
+    // To align them visually, both should appear at the same position in their viewports.
 
-      // Scroll the form container so the input area appears near center too.
-      // Note: positions were measured as rect.top - containerRect.top by commentAnchor directive,
-      // therefore, they correspond to a y-offset inside scrollContainer.
-      const container = this.scrollContainer;
-      const containerClientHeight = container.clientHeight;
-      const desiredScrollTop = Math.max(0, Math.round(fieldTop - (containerClientHeight / 2)));
-      container.scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
-    }
+    // Target: show both at the same relative position (1/3 from top of viewport)
+    const panelHeight = panelEl.clientHeight;
+    const formHeight = this.scrollContainer.clientHeight;
+    const targetOffsetFromTop = Math.min(panelHeight, formHeight) / 3;
+
+    // Simple solution: Scroll each container independently to show its content
+    // at targetOffsetFromTop. This naturally accounts for any coordinate space differences.
+
+    // Viewport position formula: viewportPos = contentPos - scrollPos
+    // We want: viewportPos = targetOffsetFromTop
+    // Therefore: scrollPos = contentPos - targetOffsetFromTop
+
+    // Panel: scroll to show focused thread at targetOffsetFromTop
+    const panelScrollTop = Math.max(0, focusedTopInPanel - targetOffsetFromTop);
+    panelEl.scrollTo({ top: panelScrollTop, behavior: 'smooth' });
+
+    // Form: scroll to show anchored field at targetOffsetFromTop
+    const formScrollTop = Math.max(0, anchorTopInForm - targetOffsetFromTop);
+    this.scrollContainer.scrollTo({ top: formScrollTop, behavior: 'smooth' });
   }
 
   // private ensureFocusedVisible(threadId: string) {
