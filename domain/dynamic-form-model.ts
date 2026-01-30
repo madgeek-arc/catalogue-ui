@@ -287,9 +287,6 @@ export class Series {
 }
 
 export interface TypeProperties {
-  url: string;
-  idField: string;
-  labelField: string;
 }
 
 export interface CustomProperties extends TypeProperties {
