@@ -24,7 +24,8 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId">
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="pushComposite(fieldData)">
 
     @if (fieldData.kind !== 'external' && fieldData.kind !== 'paused') {
       <div>

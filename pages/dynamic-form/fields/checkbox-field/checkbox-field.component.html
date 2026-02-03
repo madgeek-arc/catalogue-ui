@@ -4,15 +4,17 @@
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
 
-  @if (fieldData.typeInfo.multiplicity) {
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
 
-  } @else {
-    <input type="checkbox" class="uk-checkbox" [ngClass]="{'uk-form-danger': checkFormValidity()}"
-           [formControlName]="fieldData.name" [id]="inputId"
-           (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-           (focusin)="focus()" (focusout)="focusOut(true)">
-    <label [for]="inputId" class="uk-checkbox-label uk-margin-small-left">{{ label }}</label>
-  }
+      } @else {
+        <input type="checkbox" class="uk-checkbox" [ngClass]="{'uk-form-danger': checkFormValidity()}"
+               [formControlName]="fieldData.name" [id]="inputId"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+               (focusin)="focus()" (focusout)="focusOut(true)">
+        <label [for]="inputId" class="uk-checkbox-label uk-margin-small-left">{{ label }}</label>
+      }
+    </div>
 
   </app-base-field-html>
 

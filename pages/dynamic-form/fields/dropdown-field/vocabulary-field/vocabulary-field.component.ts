@@ -5,6 +5,7 @@ import { BaseFieldHtmlComponent } from "../../utils/base-field-html.component";
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { VocabularyService } from "../../../../../services/vocabulary.service";
 import { VocabularyProperties } from "../../../../../domain/dynamic-form-model";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-vocabulary-field',
@@ -13,7 +14,8 @@ import { VocabularyProperties } from "../../../../../domain/dynamic-form-model";
   imports: [
     ReactiveFormsModule,
     BaseFieldHtmlComponent,
-    NgSelectComponent
+    NgSelectComponent,
+    NgClass
   ]
 })
 

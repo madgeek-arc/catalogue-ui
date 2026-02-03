@@ -4,39 +4,41 @@
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
 
-    @if (fieldData.typeInfo.multiplicity) {
-      <div [formArrayName]="fieldData.name">
-        <div appSortable (positionChanged)="onPositionChanged($event)" id="sortable-container">
-          @for (input of fieldAsFormArray().controls; track input; let i = $index) {
-            <div id="{{i}}" [attr.data-index]="i" class="uk-margin-bottom uk-flex uk-flex-middle">
-              <ckeditor [id]="inputId+'.['+i+']'" [formControlName]="i" class="uk-width-9-10 uk-animation-scale-up"
-                        [config]="{placeholder: fieldData.form.placeholder}"
-                        (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"
-                        [ngClass]="{'uk-form-danger': checkFormValidity()}">
-              </ckeditor>
-              @if (formArrayControls.length > 1 && !readonly) {
-                <div class="">
-                  <span class="uk-sortable-handle uk-text-center uk-margin-small-left" data-uk-icon="icon: move"></span>
-                </div>
-              }
-              @if (fieldAsFormArray().length > 1 && editMode) {
-                <a (click)="remove(i); updateBitSet(fieldData); unsavedChangesPrompt()"
-                  class="remove-element uk-animation-slide-top-small uk-margin-small-left">
-                  <span class="material-icons">clear</span>
-                </a>
-              }
-            </div>
-          }
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
+        <div [formArrayName]="fieldData.name">
+          <div appSortable (positionChanged)="onPositionChanged($event)" id="sortable-container">
+            @for (input of fieldAsFormArray().controls; track input; let i = $index) {
+              <div id="{{i}}" [attr.data-index]="i" class="uk-margin-bottom uk-flex uk-flex-middle">
+                <ckeditor [id]="inputId+'.['+i+']'" [formControlName]="i" class="uk-width-9-10 uk-animation-scale-up"
+                          [config]="{placeholder: fieldData.form.placeholder}"
+                          (ngModelChange)="updateBitSet(fieldData)" [editor]="editor"
+                          [ngClass]="{'uk-form-danger': checkFormValidity()}">
+                </ckeditor>
+                @if (formArrayControls.length > 1 && !readonly) {
+                  <div class="">
+                    <span class="uk-sortable-handle uk-text-center uk-margin-small-left" data-uk-icon="icon: move"></span>
+                  </div>
+                }
+                @if (fieldAsFormArray().length > 1 && editMode) {
+                  <a (click)="remove(i); updateBitSet(fieldData); unsavedChangesPrompt()"
+                    class="remove-element uk-animation-slide-top-small uk-margin-small-left">
+                    <span class="material-icons">clear</span>
+                  </a>
+                }
+              </div>
+            }
+          </div>
         </div>
-      </div>
-    } @else {
-      <div class="uk-margin-medium-top uk-width-9-10">
-        <ckeditor [id]="inputId" [editor]="editor" [formControlName]="fieldData.name"
-          (ngModelChange)="updateBitSet(fieldData)" [config]="{placeholder: fieldData.form.placeholder}"
-          [ngClass]="{'uk-form-danger': checkFormValidity()}">
-        </ckeditor>
-      </div>
-    }
+      } @else {
+        <div class="uk-margin-medium-top uk-width-9-10">
+          <ckeditor [id]="inputId" [editor]="editor" [formControlName]="fieldData.name"
+            (ngModelChange)="updateBitSet(fieldData)" [config]="{placeholder: fieldData.form.placeholder}"
+            [ngClass]="{'uk-form-danger': checkFormValidity()}">
+          </ckeditor>
+        </div>
+      }
+    </div>
 
   </app-base-field-html>
 

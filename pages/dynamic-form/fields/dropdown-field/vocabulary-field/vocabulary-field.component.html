@@ -3,31 +3,33 @@
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId">
 
-  @if (fieldData.typeInfo.multiplicity) {
-    <div [formArrayName]="fieldData.name">
-      @for (input of fieldAsFormArray().controls; track input; let i = $index) {
-        <div class="uk-margin-bottom uk-flex uk-flex-middle">
-          <ng-select class="uk-width-9-10" [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
-                     [id]="inputId" [formControlName]="i" [items]="dynamicVoc"
-                     [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
-                     (change)="unsavedChangesPrompt()">
-          </ng-select>
-          @if (fieldAsFormArray().length > 1 && editMode) {
-            <a class="remove-element uk-padding-small uk-animation-slide-top-small"
-               (click)="remove(i); unsavedChangesPrompt()">
-              <span class="material-icons">clear</span>
-            </a>
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
+        <div [formArrayName]="fieldData.name">
+          @for (input of fieldAsFormArray().controls; track input; let i = $index) {
+            <div class="uk-margin-bottom uk-flex uk-flex-middle">
+              <ng-select class="uk-width-9-10" [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
+                         [id]="inputId" [formControlName]="i" [items]="dynamicVoc"
+                         [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
+                         (change)="unsavedChangesPrompt()">
+              </ng-select>
+              @if (fieldAsFormArray().length > 1 && editMode) {
+                <a class="remove-element uk-padding-small uk-animation-slide-top-small"
+                   (click)="remove(i); unsavedChangesPrompt()">
+                  <span class="material-icons">clear</span>
+                </a>
+              }
+            </div>
           }
         </div>
+      } @else {
+        <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
+                   [id]="inputId" [formControlName]="fieldData.name" [items]="dynamicVoc"
+                   [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
+                   (change)="unsavedChangesPrompt()">
+        </ng-select>
       }
     </div>
-  } @else {
-    <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
-               [id]="inputId" [formControlName]="fieldData.name" [items]="dynamicVoc"
-               [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
-               (change)="unsavedChangesPrompt()">
-    </ng-select>
-  }
 
   </app-base-field-html>
 </ng-container>

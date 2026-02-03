@@ -2,21 +2,23 @@
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId">
-    @if (fieldData.typeInfo.multiplicity) {
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
 
-    } @else {
-      @for (value of fieldData.typeInfo.values; track value; let i = $index) {
-        <div class="uk-margin-small-top">
-          <input class="uk-radio uk-margin-small-right " type="radio" onchange="this.setAttribute('value', this.value)"
-                 [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value.id" [id]="inputId+'['+i+']'"
-                 (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(true)"
-                 [ngClass]="{'uk-form-danger': checkFormValidity()}">
-          <label [for]="inputId+'['+i+']'" class="uk-form-label">
-            <span class="uk-radio-label">{{ value.label }}</span>
-          </label>
-        </div>
+      } @else {
+        @for (value of fieldData.typeInfo.values; track value; let i = $index) {
+          <div class="uk-margin-small-top">
+            <input class="uk-radio uk-margin-small-right " type="radio" onchange="this.setAttribute('value', this.value)"
+                   [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value.id" [id]="inputId+'['+i+']'"
+                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focusin)="focus()" (focusout)="focusOut(true)"
+                   [ngClass]="{'uk-form-danger': checkFormValidity()}">
+            <label [for]="inputId+'['+i+']'" class="uk-form-label">
+              <span class="uk-radio-label">{{ value.label }}</span>
+            </label>
+          </div>
+        }
       }
-    }
+    </div>
   </app-base-field-html>
 
 </ng-container>
