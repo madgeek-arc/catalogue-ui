@@ -64,7 +64,13 @@
                                 </app-choose-one>
                               </div>
                             }
-                            @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
+                            @if (fieldData.typeInfo.type === 'select') {
+                              <app-select-field [fieldData]="control" [position]="i" [editMode]="editMode"
+                                                [readonly]="readonly" [scrollContainer]="scrollContainer"
+                                                (hasChanges)="unsavedChangesPrompt()">
+                              </app-select-field>
+                            }
+                            @if (control.typeInfo.type === 'vocabulary') {
                               <div class="uk-form-controls uk-margin-medium-top">
                                 <app-vocabulary-field [fieldData]="control" [position]="i" [editMode]="editMode"
                                                       [readonly]="readonly" [scrollContainer]="scrollContainer"
@@ -216,7 +222,12 @@
                         </app-choose-one>
                       </div>
                     }
-                    @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
+                    @if (control.typeInfo.type === 'select') {
+                      <app-select-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                        [scrollContainer]="scrollContainer" (hasChanges)="unsavedChangesPrompt()">
+                      </app-select-field>
+                    }
+                    @if (control.typeInfo.type === 'vocabulary') {
                       <div class="uk-form-controls uk-margin-medium-top">
                         <app-vocabulary-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
                                               [scrollContainer]="scrollContainer"
