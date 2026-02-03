@@ -321,7 +321,12 @@ export interface VocabularyProperties extends TypeProperties {
   url: string;
   idField: string;
   labelField: string;
-  filterField: string;
+  urlParams: UrlParameter[];
+}
+
+export interface UrlParameter {
+  placeholder: string;
+  valueFromField: string;
 }
 
 export enum FieldType {

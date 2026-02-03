@@ -36,22 +36,21 @@ export class CompositeFieldComponent implements OnInit {
 
   form: UntypedFormGroup;
   hideField: boolean = null;
+  inputId!: string;
 
   constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService,
               private wsService: WebsocketService) {
   }
 
   ngOnInit() {
-    // console.log(this.fieldData.name);
     if (this.position !== null) {
-      // console.log(this.rootFormGroup.control.controls[this.position]);
-      // console.log(this.rootFormGroup.control.controls[this.position].get(this.fieldData.name));
       this.form = this.rootFormGroup.control.controls[this.position].get(this.fieldData.name) as UntypedFormGroup;
     } else {
       this.form = this.rootFormGroup.control.get(this.fieldData.name) as UntypedFormGroup;
-      // console.log(this.form);
     }
+
     // console.log(this.form);
+    this.inputId = this.getPath(this.form).join('.');
     if(this.fieldData.form.dependsOn) { // specific changes for composite field, maybe revise it
       this.enableDisableField(this.rootFormGroup.form.get(this.fieldData.form.dependsOn.name).value);
 
