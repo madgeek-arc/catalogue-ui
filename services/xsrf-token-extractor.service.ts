@@ -1,22 +1,19 @@
-import {HttpClient, HttpXsrfTokenExtractor} from "@angular/common/http";
+import { HttpClient, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { Injectable, NgZone, signal } from '@angular/core';
-import { of } from "rxjs";
 import { catchError, finalize, map, take, tap } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class XsrfTokenExtractor implements HttpXsrfTokenExtractor {
   private csrfUrl = null;
 
   readonly token = signal<string | null>(null);
-  private readonly initialized = signal(false);
   private readonly inFlight = signal(false);
   private readonly lastFetchMs = signal(0);
 
   private readonly minRefreshIntervalMs = 30_000;
 
-  constructor(private http: HttpClient, private zone: NgZone) {
-    console.log("CONSTRUCTOR CALLED")
-  }
+  constructor(private http: HttpClient, private zone: NgZone) {}
 
   getHeader(): Record<string, string> | {} {
     const t = this.getToken();
@@ -52,22 +49,19 @@ export class XsrfTokenExtractor implements HttpXsrfTokenExtractor {
 
     return new Promise<string | null>((resolve) => {
       this.zone.runOutsideAngular(() => {
-        this.http
-          .get<{ token?: string }>(this.csrfUrl!, { withCredentials: true })
-          .pipe(
-            take(1),
-            map(res => res?.token ?? null),
-            tap(t => { if (t) this.token.set(t); }),
-            catchError(err => {
-              console.warn('CSRF token fetch failed:', err);
-              return of(null);
-            }),
-            finalize(() => {
-              this.lastFetchMs.set(Date.now());
-              this.inFlight.set(false);
-            }),
-          )
-          .subscribe((t) => resolve(t ?? this.token()));
+        this.http.get<{ token?: string }>(this.csrfUrl!, { withCredentials: true }).pipe(
+          take(1),
+          map(res => res?.token ?? null),
+          tap(t => { if (t) this.token.set(t); }),
+          catchError(err => {
+            console.error('CSRF token fetch failed:', err);
+            return of(null);
+          }),
+          finalize(() => {
+            this.lastFetchMs.set(Date.now());
+            this.inFlight.set(false);
+          }),
+        ).subscribe((t) => resolve(t ?? this.token()));
       });
     });
   }
