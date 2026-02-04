@@ -30,6 +30,12 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
       fromEvent(window, 'scroll')
         .pipe(debounceTime(50), takeUntil(this.destroy$))
         .subscribe(() => this.updatePosition());
+
+      if (this.anchorContainer) {
+        fromEvent(this.anchorContainer, 'scroll')
+          .pipe(debounceTime(50), takeUntil(this.destroy$))
+          .subscribe(() => this.updatePosition());
+      }
     });
 
     // Initial position
@@ -38,11 +44,16 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
   }
 
   private updatePosition() {
-    // const element = this.el.nativeElement;
-    const rect = this.el.nativeElement.getBoundingClientRect();
-    const containerRect = (this.anchorContainer ?? document.body).getBoundingClientRect();
-    const relativeTop = rect.top - containerRect.top;
-    // console.log('rect top: ', rect.top, ' container top: ', containerRect.top, ' offset: ', relativeTop);
+    const el = this.el.nativeElement;
+    const container = this.anchorContainer || document.documentElement;
+    const rect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    // Absolute top relative to container content
+    // If container is documentElement, rect.top - containerRect.top is already absolute relative to document
+    // If container is a scrollable div, we need to add its scrollTop
+    const scrollTop = (container === document.documentElement || container === document.body) ? window.scrollY : (container as HTMLElement).scrollTop;
+    const relativeTop = rect.top - containerRect.top + (container === document.documentElement || container === document.body ? 0 : scrollTop);
 
     let pos = Number.parseInt(this.arrayPosition);
     this.anchorService.updatePosition(this.anchorId, relativeTop, pos);

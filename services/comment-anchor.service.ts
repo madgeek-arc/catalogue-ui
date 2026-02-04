@@ -17,6 +17,9 @@ export class CommentAnchorService {
       return;
     }
 
+    if (this._positions.get(id) === top)
+      return;
+
     this._positions.set(id, top);
     // emit a new Map, so OnPush components see a new reference
     // console.log(this._positions);
@@ -28,6 +31,9 @@ export class CommentAnchorService {
   }
 
   updateCommentHeight(commentId: string, height: number) {
+    if (this._heights.get(commentId) === height)
+      return;
+
     this._heights.set(commentId, height);
     this._heights$.next(new Map(this._heights));
   }
