@@ -11,7 +11,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { CommentAnchorService } from "../../../services/comment-anchor.service";
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, fromEvent } from 'rxjs';
 import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Comment, Thread } from "../../../domain/comment.model";
@@ -108,10 +108,34 @@ export class CommentsPanelComponent implements OnInit {
         this.recomputeLayout(pos, heights);
       });
 
-    // Also recompute when threads list changes (debounced)
-    // this.threadsChanged$.pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-    //   this.recomputeLayout(this.lastPositions, this.lastHeights);
-    // });
+    // Scroll synchronization
+    this.ngZone.runOutsideAngular(() => {
+      const scrollTarget = this.scrollContainer || window;
+      fromEvent(scrollTarget, 'scroll', { passive: true })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.syncScroll();
+        });
+    });
+  }
+
+  private syncScroll() {
+    const panelEl = this.panelRef?.nativeElement;
+    if (!panelEl) return;
+    const target = this.topOffset + this.getFormScrollTop();
+    if (Math.abs(panelEl.scrollTop - target) > 1) {
+      this.ngZone.run(() => {
+        panelEl.scrollTop = target;
+      });
+    }
+  }
+
+  private getFormScrollTop(): number {
+    if (!this.scrollContainer) return window.scrollY;
+    // Check if scrollContainer is actually the scrolling element
+    if (this.scrollContainer === document.documentElement || this.scrollContainer === document.body)
+      return window.scrollY;
+    return this.scrollContainer.scrollTop;
   }
 
   toggleInput(id: string) {
@@ -288,27 +312,30 @@ export class CommentsPanelComponent implements OnInit {
         prevBottom = g.finalTop + g.groupHeight;
       }
 
-      // 5) if focusedThreadId exists, align its group to its anchor and pull/push neighbor groups
+      // 5) if focusedThreadId exists, align the focused thread to its anchor and pull/push neighbor groups
       if (this.focusedThreadId) {
         const focusedThread = this.sectionThreads.find(t => t.id === this.focusedThreadId);
         if (focusedThread) {
           const focusedGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
           if (focusedGroupIdx !== -1) {
-            // 5a) set the focused group top to its anchor (align)
             const focusedGroup = groups[focusedGroupIdx];
-            focusedGroup.finalTop = focusedGroup.desiredTop;
 
-            // 5b) pull previous groups up if overlapping
+            // 5a) set the focused group top so that the focused thread aligns with its anchor
+            let offsetInGroup = 0;
+            for (const t of focusedGroup.threads) {
+              if (t.id === this.focusedThreadId) break;
+              offsetInGroup += t.height + this.gap;
+            }
+            focusedGroup.finalTop = focusedGroup.anchorTop - offsetInGroup;
+
+            // 5b) pull previous groups up if they overlap with the now-moved focused group
             for (let i = focusedGroupIdx - 1; i >= 0; i--) {
               const cur = groups[i];
               const next = groups[i + 1];
-              const desiredBottomForCur = (next.finalTop ?? next.desiredTop) - this.gap;
-              const candidateTop = desiredBottomForCur - cur.groupHeight;
-              if (candidateTop < (cur.finalTop ?? cur.desiredTop)) {
-                // NOTE: DO NOT clamp to 0 here — allow negative finalTop
-                cur.finalTop = Math.round(candidateTop);
+              const neededBottom = next.finalTop! - this.gap;
+              if (cur.finalTop! + cur.groupHeight > neededBottom) {
+                cur.finalTop = neededBottom - cur.groupHeight;
               } else {
-                // no more conflicts upward
                 break;
               }
             }
@@ -317,9 +344,9 @@ export class CommentsPanelComponent implements OnInit {
             for (let i = focusedGroupIdx + 1; i < groups.length; i++) {
               const prev = groups[i - 1];
               const cur = groups[i];
-              const neededTop = (prev.finalTop ?? prev.desiredTop) + prev.groupHeight + this.gap;
-              if ((cur.finalTop ?? cur.desiredTop) < neededTop) {
-                cur.finalTop = Math.round(neededTop);
+              const neededTop = prev.finalTop! + prev.groupHeight + this.gap;
+              if (cur.finalTop! < neededTop) {
+                cur.finalTop = neededTop;
               } else {
                 break;
               }
@@ -366,73 +393,42 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   // Make the focused thread visible and align form input with the thread if possible.
-  // Two things:
-  //  - Scroll the comments panel so the focused thread is visible at approximately the same vertical position
-  //  - Scroll the form scrollContainer so the anchored input is visible (positions were computed relative to it)
   private ensureFocusedVisible(threadId: string) {
     const panelEl = this.panelRef?.nativeElement;
     if (!panelEl) return;
 
     const layout = this.layoutMap.get(threadId);
     if (layout) {
-      const focusedTop = layout.top;
-      const focusedHeight = this.lastHeights.get(threadId) ?? 100;
-
-      // Scroll the comments panel to bring a focused thread into view (prefer center)
-      // const panelScrollTop = panelEl.scrollTop;
-      const panelClientHeight = panelEl.clientHeight;
-      const targetTopInPanel = Math.max(0, focusedTop - Math.round(panelClientHeight / 2) + Math.round(focusedHeight / 2));
-
-      panelEl.scrollTo({ top: targetTopInPanel, behavior: 'smooth' });
+      // In focus mode, we want the focused thread to align with its anchor field.
+      // Based on our recomputeLayout (absolute positions):
+      // focusedThread.rawTop = anchorTop
+      // focusedThread.adjustedTop = anchorTop + topOffset
+      // To align visually: adjustedTop - panel.scrollTop = anchorTop - form.scrollTop
+      // => panel.scrollTop = topOffset + form.scrollTop
+      const targetScrollTop = this.topOffset + this.getFormScrollTop();
+      panelEl.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
     }
 
     // Also, scroll the form scroll container so the field input is visible and roughly aligned.
     if (this.scrollContainer && this.lastPositions && this.lastPositions.size > 0) {
-      // we need to map the threadId -> its fieldId (we have sectionThreads)
       const thread = this.sectionThreads.find(t => t.id === threadId);
       if (!thread) return;
       const fieldTop = this.lastPositions.get(thread.fieldId) ?? 0;
 
-      // Scroll the form container so the input area appears near center too.
-      // Note: positions were measured as rect.top - containerRect.top by commentAnchor directive,
-      // therefore, they correspond to a y-offset inside scrollContainer.
-      const container = this.scrollContainer;
-      const containerClientHeight = container.clientHeight;
-      const desiredScrollTop = Math.max(0, Math.round(fieldTop - (containerClientHeight / 2)));
-      container.scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
+      // Use absolute position to scroll form container
+      const container = (this.scrollContainer === document.documentElement || this.scrollContainer === document.body)
+                        ? window : this.scrollContainer;
+
+      const containerClientHeight = (container === window) ? window.innerHeight : (container as HTMLElement).clientHeight;
+      const fieldHeight = 100; // estimated
+      const desiredScrollTop = Math.max(0, Math.round(fieldTop - (containerClientHeight / 2) + (fieldHeight / 2)));
+
+      if (container === window) {
+        window.scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
+      } else {
+        (container as HTMLElement).scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
+      }
     }
   }
 
-  // private ensureFocusedVisible(threadId: string) {
-  //   const panelEl = this.panelRef?.nativeElement;
-  //   if (!panelEl) return;
-  //
-  //   const thread = this.sectionThreads.find(t => t.id === threadId);
-  //   if (!thread) return;
-  //
-  //   const layout = this.layoutMap.get(threadId);
-  //   if (!layout) return;
-  //
-  //   const focusedTop = layout.top;
-  //
-  //   // Anchor position inside the form scroll container (your measured coordinate space)
-  //   const anchorTop = this.lastPositions.get(thread.fieldId) ?? 0;
-  //
-  //   // Because the panel adds a top spacer and shifts all thread tops by `topOffset`,
-  //   // the equivalent "anchor line" inside panel scroll coordinates is:
-  //   const panelAnchorY = anchorTop + this.topOffset;
-  //
-  //   // Scroll panel so focused thread's top lands exactly on the anchor line
-  //   const targetPanelScrollTop = Math.max(0, Math.round(focusedTop - panelAnchorY));
-  //
-  //   panelEl.scrollTo({ top: targetPanelScrollTop, behavior: 'smooth' });
-  //
-  //   // Keep the form container behavior as-is (optional), but this is independent.
-  //   if (this.scrollContainer) {
-  //     const container = this.scrollContainer;
-  //     const containerClientHeight = container.clientHeight;
-  //     const desiredScrollTop = Math.max(0, Math.round(anchorTop - (containerClientHeight / 2)));
-  //     container.scrollTo({ top: desiredScrollTop, behavior: 'smooth' });
-  //   }
-  // }
 }
