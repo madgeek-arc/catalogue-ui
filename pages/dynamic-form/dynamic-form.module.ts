@@ -35,7 +35,6 @@ import { SelectFieldComponent } from "./fields/dropdown-field/select-field/selec
     DynamicFormFieldsComponent,
     ChapterComponent,
     RadioButtonFieldComponent,
-    LargeTextFieldComponent,
     RichTextFieldComponent,
     RadioGridFieldComponent,
     NumberFieldComponent,
@@ -59,6 +58,7 @@ import { SelectFieldComponent } from "./fields/dropdown-field/select-field/selec
     ScaleFieldComponent,
     SelectFieldComponent,
     VocabularyFieldComponent,
+    LargeTextFieldComponent,
   ],
   exports: [
     ChapterComponent,

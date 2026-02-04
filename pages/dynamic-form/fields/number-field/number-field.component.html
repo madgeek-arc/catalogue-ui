@@ -3,24 +3,26 @@
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
 
-  @if (fieldData.typeInfo.multiplicity) {
-    <div [formArrayName]="fieldData.name">
-      <!--    add multiplicity here-->
-    </div>
-  } @else {
-    <input [formControlName]="fieldData.name" [id]="inputId" [step]='step' placeholder="{{fieldData.form.placeholder}}"
-           (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focus)="focus()" (focusout)="focusOut(false)"
-           class="uk-input uk-width-9-10 uk-animation-scale-up" [ngClass]="{'uk-form-danger': checkFormValidity()}">
-    @if (checkFormValidity() && form.get(fieldData.name).value != null && form.get(fieldData.name).value != '') {
-      <p class="uk-form-danger uk-animation-fade uk-text-italic">
-        @if (getNumberOfDecimals()) {
-          Value should be a number with up to {{getNumberOfDecimals()}} decimals separated with '.'
-        } @else {
-          Value should be a number{{getNumberOfDecimals() === 0 ? ' (no decimals)' : ''}}.
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
+        <div [formArrayName]="fieldData.name">
+          <!--    add multiplicity here-->
+        </div>
+      } @else {
+        <input [formControlName]="fieldData.name" [id]="inputId" [step]='step' placeholder="{{fieldData.form.placeholder}}"
+               (input)="updateBitSet(fieldData); unsavedChangesPrompt()" (focus)="focus()" (focusout)="focusOut(false)"
+               class="uk-input uk-width-9-10 uk-animation-scale-up" [ngClass]="{'uk-form-danger': checkFormValidity()}">
+        @if (checkFormValidity() && form.get(fieldData.name).value != null && form.get(fieldData.name).value != '') {
+          <p class="uk-form-danger uk-animation-fade uk-text-italic">
+            @if (getNumberOfDecimals()) {
+              Value should be a number with up to {{getNumberOfDecimals()}} decimals separated with '.'
+            } @else {
+              Value should be a number{{getNumberOfDecimals() === 0 ? ' (no decimals)' : ''}}.
+            }
+          </p>
         }
-      </p>
-    }
-  }
+      }
+    </div>
 
   </app-base-field-html>
 </ng-container>

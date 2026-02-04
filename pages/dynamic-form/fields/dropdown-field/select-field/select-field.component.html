@@ -2,14 +2,15 @@
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
-
-    <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
-               [id]="inputId" [formControlName]="fieldData.name" [items]="fieldData.typeInfo.values"
-               [placeholder]="fieldData.form.placeholder ?? ''"
-               [multiple]="fieldData.typeInfo.multiplicity"
-               (change)="unsavedChangesPrompt()"
-               bindLabel="label" bindValue="id" clearAllText="Clear">
-    </ng-select>
+    <div [ngClass]="{'uk-disabled': readonly}">
+      <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
+                 [id]="inputId" [formControlName]="fieldData.name" [items]="fieldData.typeInfo.values"
+                 [placeholder]="fieldData.form.placeholder ?? ''"
+                 [multiple]="fieldData.typeInfo.multiplicity"
+                 (change)="unsavedChangesPrompt()"
+                 bindLabel="label" bindValue="id" clearAllText="Clear">
+      </ng-select>
+    </div>
 
   </app-base-field-html>
 </ng-container>

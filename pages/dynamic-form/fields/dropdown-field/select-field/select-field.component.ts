@@ -3,6 +3,7 @@ import { BaseFieldComponent } from "../../utils/base-field.component";
 import { BaseFieldHtmlComponent } from "../../utils/base-field-html.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgSelectComponent } from "@ng-select/ng-select";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-select-field',
@@ -10,7 +11,8 @@ import { NgSelectComponent } from "@ng-select/ng-select";
   imports: [
     BaseFieldHtmlComponent,
     ReactiveFormsModule,
-    NgSelectComponent
+    NgSelectComponent,
+    NgClass
   ]
 })
 

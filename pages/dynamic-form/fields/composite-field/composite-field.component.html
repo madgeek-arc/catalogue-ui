@@ -1,34 +1,39 @@
-@if (form) {
-  <form [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">
-    <!--  {{fieldData.name | json}}-->
-    @if (fieldData.label?.text) {
-      <div class="uk-form-label uk-margin-bottom {{fieldData.label?.cssClasses}}" style="{{fieldData.label.style}}">
-        {{fieldData.label?.text + (fieldData.form.mandatory ? ' (*)' : '')}}
-      </div>
-    }
-    @if (fieldData.form.description?.showLess) {
-      @if (fieldData.form.description.text) {
-        <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-             style="{{fieldData.form.description.style}}">
-          <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
-        </div>
-      }
-    } @else {
-      @if (fieldData.form.description?.text) {
-        <div style="{{fieldData.form.description.style}}"
-             class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"
-             [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
-        </div>
-      }
-    }
+<!--@if (form) {-->
+<!--  <form [formGroup]="form" class="{{fieldData.form.display?.cssClasses}}" [ngClass]="{'uk-hidden clear-style': (hideField || !fieldData.form.display.visible)}">-->
+<!--    &lt;!&ndash;  {{fieldData.name | json}}&ndash;&gt;-->
+<!--    @if (fieldData.label?.text) {-->
+<!--      <div class="uk-form-label uk-margin-bottom {{fieldData.label?.cssClasses}}" style="{{fieldData.label.style}}">-->
+<!--        {{fieldData.label?.text + (fieldData.form.mandatory ? ' (*)' : '')}}-->
+<!--      </div>-->
+<!--    }-->
+<!--    @if (fieldData.form.description?.showLess) {-->
+<!--      @if (fieldData.form.description.text) {-->
+<!--        <div class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"-->
+<!--             style="{{fieldData.form.description.style}}">-->
+<!--          <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>-->
+<!--        </div>-->
+<!--      }-->
+<!--    } @else {-->
+<!--      @if (fieldData.form.description?.text) {-->
+<!--        <div style="{{fieldData.form.description.style}}"-->
+<!--             class="uk-form-description uk-text-small uk-margin-bottom uk-width-9-10 {{fieldData.form.description.cssClasses}}"-->
+<!--             [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">-->
+<!--        </div>-->
+<!--      }-->
+<!--    }-->
+<ng-container [formGroup]="form">
+
+  <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
+                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       (emitPush)="pushComposite(fieldData)">
+
     @if (fieldData.kind !== 'external' && fieldData.kind !== 'paused') {
       <div>
         @if (fieldData.typeInfo.multiplicity) {
           <div>
             <div appSortable (positionChanged)="onPositionChanged($event)" id="sortable-container">
               @for (control of fieldAsFormArray().controls; track control; let i = $index) {
-                <div id="{{i}}" [attr.data-index]="i"
-                  class="uk-width-expand uk-grid">
+                <div id="{{i}}" [attr.data-index]="i" class="uk-width-expand uk-grid">
                   <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
                        [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
                     @if (fieldAsFormArray().length > 1 && !readonly) {
@@ -59,7 +64,13 @@
                                 </app-choose-one>
                               </div>
                             }
-                            @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
+                            @if (fieldData.typeInfo.type === 'select') {
+                              <app-select-field [fieldData]="control" [position]="i" [editMode]="editMode"
+                                                [readonly]="readonly" [scrollContainer]="scrollContainer"
+                                                (hasChanges)="unsavedChangesPrompt()">
+                              </app-select-field>
+                            }
+                            @if (control.typeInfo.type === 'vocabulary') {
                               <div class="uk-form-controls uk-margin-medium-top">
                                 <app-vocabulary-field [fieldData]="control" [position]="i" [editMode]="editMode"
                                                       [readonly]="readonly" [scrollContainer]="scrollContainer"
@@ -178,13 +189,13 @@
                 </div>
               }
             </div>
-            @if (!readonly) {
-              <div class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">
-                <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">
-                  <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>
-                </a>
-              </div>
-            }
+<!--            @if (!readonly) {-->
+<!--              <div class="uk-width-9-10 uk-text-center uk-margin-top uk-margin-bottom">-->
+<!--                <a class="add-new-element uk-flex uk-flex-middle uk-flex-center" (click)="pushComposite(fieldData)">-->
+<!--                  <span class="material-icons">add</span>Add &nbsp;<span [innerHTML]="fieldData.label.text"></span>-->
+<!--                </a>-->
+<!--              </div>-->
+<!--            }-->
           </div>
         } @else {
           <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
@@ -211,7 +222,12 @@
                         </app-choose-one>
                       </div>
                     }
-                    @if (control.typeInfo.type === 'vocabulary' || control.typeInfo.type === 'select') {
+                    @if (control.typeInfo.type === 'select') {
+                      <app-select-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
+                                        [scrollContainer]="scrollContainer" (hasChanges)="unsavedChangesPrompt()">
+                      </app-select-field>
+                    }
+                    @if (control.typeInfo.type === 'vocabulary') {
                       <div class="uk-form-controls uk-margin-medium-top">
                         <app-vocabulary-field [fieldData]="control" [editMode]="editMode" [readonly]="readonly"
                                               [scrollContainer]="scrollContainer"
@@ -312,13 +328,20 @@
         }
       </div>
     }
-    @if (fieldData.form.suggestion?.text) {
-      <div class="uk-margin-top">
-        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"
-          [innerHTML]="fieldData.form.suggestion.text">
-        </div>
-      </div>
-    }
-  </form>
-}
+
+  </app-base-field-html>
+</ng-container>
+
+
+<!--    @if (fieldData.form.suggestion?.text) {-->
+<!--      <div class="uk-margin-top">-->
+<!--        <div class="uk-suggestion uk-width-9-10 {{fieldData.form.suggestion.cssClasses}}" style="{{fieldData.form.suggestion.style}}"-->
+<!--          [innerHTML]="fieldData.form.suggestion.text">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    }-->
+<!--  </form>-->
+<!--}-->
+
+
 <!--<pre>{{ form.value | json }}</pre>-->

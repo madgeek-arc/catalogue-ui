@@ -4,25 +4,27 @@
                        [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
 
-    @if (fieldData.typeInfo.multiplicity) {
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
 
-    } @else {
-      <textarea class="uk-textarea uk-width-9-10 uk-animation-scale-up"
-                [class.uk-form-danger]="checkFormValidity()"
-                [formControlName]="fieldData.name" [id]="inputId"
-                [placeholder]="fieldData.form.placeholder ?? ''" [maxlength]=maxLength
-                (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-                (focusin)="focus()" (focusout)="focusOut(false)">
-      </textarea>
-      <div class="uk-width-9-10">
-        @if (maxLength) {
-          <div class="uk-animation-scale-up uk-flex uk-flex-right">
-            <span> {{ form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0 }}</span>
-            <span>/ {{ maxLength }}</span>
-          </div>
-        }
-      </div>
-    }
+      } @else {
+        <textarea class="uk-textarea uk-width-9-10 uk-animation-scale-up"
+                  [class.uk-form-danger]="checkFormValidity()"
+                  [formControlName]="fieldData.name" [id]="inputId"
+                  [placeholder]="fieldData.form.placeholder ?? ''" [maxlength]=maxLength
+                  (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+                  (focusin)="focus()" (focusout)="focusOut(false)">
+        </textarea>
+        <div class="uk-width-9-10">
+          @if (maxLength) {
+            <div class="uk-animation-scale-up uk-flex uk-flex-right">
+              <span> {{ form.get(fieldData.name).value ? form.get(fieldData.name).value.length : 0 }}</span>
+              <span>/ {{ maxLength }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
 
   </app-base-field-html>
 

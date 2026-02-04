@@ -3,38 +3,40 @@
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
                        [hideField]="hideField" [inputId]="inputId" (emitPush)="push()">
 
-    @if (fieldData.typeInfo.multiplicity) {
+    <div [ngClass]="{'uk-disabled': readonly}">
+      @if (fieldData.typeInfo.multiplicity) {
 
-    } @else {
-      <!--      {{ formControl.value }}-->
-      <div class="input-wrapper flat uk-width-9-10" [class.focused]="focused"
-           [class.danger]="(formControl.invalid && formControl.touched)">
-        <div class="input-box" tabindex="0">
+      } @else {
+        <!--      {{ formControl.value }}-->
+        <div class="input-wrapper flat uk-width-9-10" [class.focused]="focused"
+             [class.danger]="(formControl.invalid && formControl.touched)">
+          <div class="input-box" tabindex="0">
 
-          <div class="uk-flex uk-flex-middle" tabindex="0" (focusin)="focus()" (focusout)="focusOut(false)">
-            @if (!formControl.getRawValue()) {
-              <div class="input uk-text-truncate">
-                {{ fieldData.form.placeholder ?? 'Select Date' }}
+            <div class="uk-flex uk-flex-middle" tabindex="0" (focusin)="focus()" (focusout)="focusOut(false)">
+              @if (!formControl.getRawValue()) {
+                <div class="input uk-text-truncate">
+                  {{ fieldData.form.placeholder ?? 'Select Date' }}
+                </div>
+              }
+              @if (formControl.getRawValue()) {
+                <div class="input uk-text-truncate">
+                  {{ formControl.getRawValue() | date: 'dd-MM-yyyy' }}
+                </div>
+              }
+              <div class="uk-margin-small-left icon">
+                <span class="uk-flex">
+                  <span class="material-symbols-outlined" style="font-size: 20px;">today</span>
+                </span>
               </div>
-            }
-            @if (formControl.getRawValue()) {
-              <div class="input uk-text-truncate">
-                {{ formControl.getRawValue() | date: 'dd-MM-yyyy' }}
-              </div>
-            }
-            <div class="uk-margin-small-left icon">
-              <span class="uk-flex">
-                <span class="material-symbols-outlined" style="font-size: 20px;">today</span>
-              </span>
             </div>
           </div>
         </div>
-      </div>
-      <div class="uk-dropdown" data-uk-dropdown="mode: click; flip: false ; shift: false" (click)="$event.stopPropagation()">
-        <mat-calendar [selected]="selectedDate" [startAt]="selectedDate" (selectedChange)="dateChanged($event)">
-        </mat-calendar>
-      </div>
-    }
+        <div class="uk-dropdown" data-uk-dropdown="mode: click; flip: false ; shift: false" (click)="$event.stopPropagation()">
+          <mat-calendar [selected]="selectedDate" [startAt]="selectedDate" (selectedChange)="dateChanged($event)">
+          </mat-calendar>
+        </div>
+      }
+    </div>
 
   </app-base-field-html>
 

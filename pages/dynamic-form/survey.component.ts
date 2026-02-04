@@ -285,7 +285,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   initializeCommenting() {
     if (this.enableCommenting && this.payload?.id && !this.commentingInitialized) {
-      console.log('Starting websocket for comments')
+      // console.log('Starting websocket for comments')
       this.wsComments.initializeWebSocketConnection(this.payload.id);
       this.commentingInitialized = true;
     }

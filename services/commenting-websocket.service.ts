@@ -177,7 +177,7 @@ export class CommentingWebsocketService {
 
     return this.http.get<Thread[]>(`${this.base}/survey-answer-comments`, {params}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
-        console.log('Just got the comments.');
+        // console.log('Just got the comments.');
         this.threadSubject.next(value);
       }, error: error => {
         console.error(error);
