@@ -77,7 +77,7 @@
                           <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
                           @if (currentSection.fields.length > 1) {
                             <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
-                              @if (i !==0) {
+                              @if (i !== 0) {
                                 <div class="uk-margin-small" data-uk-tooltip="Move up">
                                   <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
                                 </div>
@@ -95,7 +95,16 @@
                   }
                   <div class="uk-card uk-card-default uk-card-body uk-padding-small">
                     <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
-                      <a class="uk-flex uk-flex-center uk-padding-small" (click)="sideMenuSettingsType = 'fieldSelector'">
+                      <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                         (click)="sideMenuSettingsType = 'fieldSelector'">
+                        Add group <span class="material-icons">add</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                    <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+                      <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                         (click)="sideMenuSettingsType = 'fieldSelector'">
                         Add Question <span class="material-icons">add</span>
                       </a>
                     </div>

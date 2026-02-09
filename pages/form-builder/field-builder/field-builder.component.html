@@ -36,10 +36,14 @@
     <div class="uk-width-1-1 uk-form-controls">
       <hr>
       <div class="uk-float-right">
-        <label><input type="checkbox" [(ngModel)]="field.form.mandatory" title="Make input required" class="uk-checkbox">
-          Required </label>
-        <label><input type="checkbox" [(ngModel)]="field.typeInfo.multiplicity"  class="uk-checkbox"
-                      title="User may provide more than one answer to the given question"> Multiple </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="field.form.mandatory" title="Make input required" class="uk-checkbox">
+          Required
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="field.typeInfo.multiplicity"  class="uk-checkbox"
+                      title="User may provide more than one answer to the given question"> Multiple
+        </label>
         <label><input type="checkbox" (change)="showDescriptionField()" class="uk-checkbox"> Description </label>
         <label><input type="checkbox" (change)="showSuggestionField()" class="uk-checkbox"> Suggestion </label>
       </div>
