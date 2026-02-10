@@ -1,13 +1,13 @@
-<a class="uk-button uk-button-default" href="#fb-modal-full" uk-toggle>Open form builder</a>
+<a class="uk-button uk-button-default" href="#fb-modal-full" data-uk-toggle>Open form builder</a>
 
 
 <div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom">
   <div class="uk-container uk-container-expand">
 
-    <div id="fb-modal-full" class="uk-modal-full" uk-modal style="min-height: 100vh">
+    <div id="fb-modal-full" class="uk-modal-full" data-uk-modal style="min-height: 100vh">
       <div class="uk-modal-dialog" >
 
-        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <button class="uk-modal-close-default" type="button" data-uk-close></button>
 
         <div class="uk-modal-header">
           <h2 class="uk-modal-title">Title</h2>
@@ -19,31 +19,32 @@
             <div class="uk-width-1-6 uk-section-primary uk-preserve-color">
               <aside class="">
 
-                <app-side-menu [chapterModel]="model.sections" (userSelection)="setCurrentSection($event)">
+                <app-side-menu [chapterModel]="fbService.model().sections" (userSelection)="setCurrentSection($event)">
                 </app-side-menu>
 
               </aside>
             </div>
 
-            <div class="uk-width-expand  uk-padding" style="min-height: 80vh">
-              @if (sideMenuSettingsType === 'main') {
+            <div class="uk-width-expand uk-padding" style="min-height: 80vh">
+              @if (fbService.sideMenuSettingsType() === 'main') {
                 <div>
-                  <app-main-info [formTitle]="model.name" [description]="model.description" [notice]="model.notice"
-                    (emitTitle)="model.name = $event"
-                    (emitDescription)="model.description = $event"
-                    (emitNotice)="model.notice = $event">
+                  <app-main-info [formTitle]="fbService.model().name" [description]="fbService.model().description"
+                                 [notice]="fbService.model().notice"
+                                 (emitTitle)="fbService.model().name = $event"
+                                 (emitDescription)="fbService.model().description = $event"
+                                 (emitNotice)="fbService.model().notice = $event">
                   </app-main-info>
                 </div>
               }
-              @if (chapter) {
+              @if (fbService.chapter()) {
                 <div>
-                  <h3>{{ chapter.name ?? 'Untitled Chapter' }}</h3>
-                  <p [innerHTML]="chapter.description"></p>
-                  @if (!currentSection) {
+                  <h3>{{ fbService.chapter().name ?? 'Untitled Chapter' }}</h3>
+                  <p [innerHTML]="fbService.chapter().description"></p>
+                  @if (!fbService.currentSection()) {
                     <div>
-                      @for (section of chapter.subSections; track section; let i = $index) {
+                      @for (section of fbService.chapter().subSections; track section; let i = $index) {
                         <div class="uk-margin-bottom">
-                          <a (click)="this.currentSection = section; sideMenuSettingsType = 'section'">
+                          <a (click)="fbService.setCurrentSection(section); fbService.setSideMenuSettingsType('section')">
                             {{ section.name ?? 'Untitled Section ' + (i+1) }}
                           </a>
                         </div>
@@ -52,16 +53,15 @@
                   }
                 </div>
               }
-              @if (currentSection) {
+              @if (fbService.currentSection()) {
                 <div>
-                  <h5>{{ currentSection.name ?? 'Untitled Section' }}</h5>
-                  <p [innerHTML]="currentSection.description"></p>
-                  @for (field of currentSection.fields; track field; let i = $index) {
+                  <h5>{{ fbService.currentSection().name ?? 'Untitled Section' }}</h5>
+                  <p [innerHTML]="fbService.currentSection().description"></p>
+                  @for (field of fbService.currentSection().fields; track field; let i = $index) {
                     <div class="uk-margin-bottom">
-                      <!--                  <app-field-builder [field]="field" (click)="fieldSelection(field)"></app-field-builder>-->
                       <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
-                        [ngClass]="{'highlight-field': currentField?.id === field.id}" (click)="fieldSelection(field)">
-                        <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+                        [ngClass]="{'highlight-field': fbService.currentField()?.id === field.id}" (click)="fieldSelection(field)">
+                        <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right" (click)="$event.stopPropagation()">
                           <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                             <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
                             <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
@@ -74,15 +74,15 @@
                           <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
                         </div>
                         <div class="uk-grid uk-grid-column-collapse">
-                          <app-field-templates [fieldData]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
-                          @if (currentSection.fields.length > 1) {
+                          <app-field-templates [field]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
+                          @if (fbService.currentSection().fields.length > 1) {
                             <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
                               @if (i !== 0) {
                                 <div class="uk-margin-small" data-uk-tooltip="Move up">
                                   <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
                                 </div>
                               }
-                              @if (i !== currentSection.fields.length-1) {
+                              @if (i !== fbService.currentSection().fields.length-1) {
                                 <div class="uk-margin-small" data-uk-tooltip="Move down" >
                                   <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
                                 </div>
@@ -93,22 +93,22 @@
                       </div>
                     </div>
                   }
-                  <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-                    <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
-                      <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                         (click)="sideMenuSettingsType = 'fieldSelector'">
-                        Add group <span class="material-icons">add</span>
-                      </a>
+                    <div class="uk-card uk-card-default uk-card-body uk-padding-small" (click)="$event.stopPropagation()">
+                      <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+                        <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                           (click)="fbService.addCompositeField(); fbService.setSideMenuSettingsType('field')">
+                          Add group <span class="material-icons">add</span>
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                  <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-                    <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
-                      <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                         (click)="sideMenuSettingsType = 'fieldSelector'">
-                        Add Question <span class="material-icons">add</span>
-                      </a>
+                    <div class="uk-card uk-card-default uk-card-body uk-padding-small" (click)="$event.stopPropagation()">
+                      <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+                        <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                           (click)="fbService.setSideMenuSettingsType('fieldSelector')">
+                          Add Question <span class="material-icons">add</span>
+                        </a>
+                      </div>
                     </div>
-                  </div>
                 </div>
               }
 
@@ -116,12 +116,12 @@
 
 
             <div class="uk-width-1-5 uk-section-primary uk-preserve-color">
+              {{fbService.sideMenuSettingsType() | json}}
               <aside class="">
-                <app-settings-side-menu [chapter]="chapter" [section]="currentSection" [field]="currentField"
-                  [sideMenuSettingsType]="sideMenuSettingsType"
+                <app-settings-side-menu [section]="fbService.currentSection()" [field]="fbService.currentField()"
                   (emitFieldReferenceChange)="updateReference()"
-                  (emitSideMenuSettingsChange)="sideMenuSettingsType = $event"
-                  (emitField)="currentField = $event">
+                  (emitSideMenuSettingsChange)="fbService.setSideMenuSettingsType($event)"
+                  (emitField)="fbService.setCurrentField($event)">
                 </app-settings-side-menu>
               </aside>
 
@@ -132,7 +132,7 @@
 
         <div class="uk-modal-footer">
           Footer
-          <pre>{{ currentField | json }}</pre>
+          <pre>{{ fbService.currentField() | json }}</pre>
         </div>
       </div>
     </div>

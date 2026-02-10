@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Field, IdLabel } from "../../../domain/dynamic-form-model";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -8,16 +8,13 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     standalone: false
 })
 
-export class FieldBuilderComponent implements OnInit {
+export class FieldBuilderComponent {
   @Input() field: Field;
 
   showDescription = false;
   showSuggestion = false;
 
-  public editor = ClassicEditor;
-
-  ngOnInit() {
-  }
+  editor = ClassicEditor;
 
   setValues() {
     this.field.typeInfo.values = [];

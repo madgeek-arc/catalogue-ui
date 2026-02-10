@@ -6,7 +6,6 @@ export class Required {
   topLevel: number;
   total: number;
 
-
   constructor() {
     this.topLevel = 0;
     this.total = 0;
@@ -28,7 +27,6 @@ export class TypeInfo {
   multiplicity: boolean;
   prefill: DataRequest;
 
-
   constructor(type: FieldType) {
     if (type)
       this.type = type;
@@ -42,8 +40,6 @@ export class TypeInfo {
 
 export class Form {
   dependsOn: Dependent;
-  affects: Dependent[];
-  // vocabulary: string;
   group: string;
   description: StyledText;
   suggestion: StyledText;
@@ -54,8 +50,6 @@ export class Form {
 
   constructor() {
     this.dependsOn = null;
-    this.affects = null;
-    // this.vocabulary = null;
     this.group = '';
     this.description = new StyledText();
     this.suggestion = new StyledText();
@@ -67,33 +61,33 @@ export class Form {
 }
 
 export class Display {
-  hasBorder: boolean;
   order: number;
-  placement: string;
   visible: boolean;
-  cssClasses: string;
-  style: string;
+  hasBorder: boolean;
+  cssClasses: string | null;
+  style: string | null;
+  placement: string | null;
 
   constructor() {
     this.hasBorder = false;
     this.order = 0;
-    this.placement = '';
-    this.cssClasses = '';
-    this.style = '';
+    this.placement = null;
+    this.cssClasses = null;
+    this.style = null;
     this.visible = true;
   }
 }
 
 export class StyledText {
-  cssClasses: string;
-  style: string;
-  text: string;
+  cssClasses: string | null;
+  style: string | null;
+  text: string | null;
   showLess: boolean;
 
   constructor() {
-    this.cssClasses = '';
-    this.style = '';
-    this.text = '';
+    this.cssClasses = null;
+    this.style = null;
+    this.text = null;
     this.showLess = false;
   }
 }
@@ -113,7 +107,7 @@ export class Field {
   display: Display;
   subFields: Field[];
 
-  constructor(id: string, type?: typeof TypeInfo.prototype.type) {
+  constructor(id: string, type?: FieldType) {
     this.id = id;
     this.name = '';
     this.parentId = '';
@@ -130,13 +124,13 @@ export class Field {
 }
 
 export class Section {
-  id: string;
-  name: string;
-  description: string;
-  subType: string;
+  id: string | null;
+  name: string  | null;
+  description: string | null;
+  subType: string | null;
   order: number;
-  subSections: Section[];
-  fields: Field[];
+  subSections: Section[] | null;
+  fields: Field[] | null;
   required: Required;
 
   constructor() {
@@ -149,24 +143,31 @@ export class Section {
   }
 }
 
-export class GroupedFields {
-  id: string;
-  name: string;
-  description: string;
-  order: number;
-  fields: Field[];
-  required: Required;
-
-
-  constructor() {
-    this.id = '';
-    this.name = '';
-    this.description = '';
-    this.order = 0;
-    this.fields = [];
-    this.required = new Required();
-  }
+export class SelectedSection {
+  chapter: Section | null = null;
+  section: Section | null = null;
+  field: Field | null = null;
+  sideMenuSettingsType: 'main' | 'chapter' | 'section' | 'field' | 'fieldSelector' = 'main';
 }
+
+// export class GroupedFields {
+//   id: string;
+//   name: string;
+//   description: string;
+//   order: number;
+//   fields: Field[];
+//   required: Required;
+//
+//
+//   constructor() {
+//     this.id = '';
+//     this.name = '';
+//     this.description = '';
+//     this.order = 0;
+//     this.fields = [];
+//     this.required = new Required();
+//   }
+// }
 
 export class Model {
   id: string;

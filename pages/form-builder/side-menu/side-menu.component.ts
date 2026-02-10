@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Field, Section } from "../../../domain/dynamic-form-model";
-import { SelectedSection } from "../form-builder.component";
+import { Field, Section, SelectedSection } from "../../../domain/dynamic-form-model";
 
 @Component({
     selector: 'app-side-menu',
     templateUrl: './side-menu.component.html',
-    standalone: false
 })
 
 export class SideMenuComponent {
@@ -58,17 +56,18 @@ export class SideMenuComponent {
     return;
   }
 
-  // addField(positionI: string | number, positionJ: string | number) {
-  //   if (this.chapterModel[positionI].subSections[positionJ].fields === null)
-  //     this.chapterModel[positionI].subSections[positionJ].fields = [];
-  //
-  //   this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
-  //
-  //   this.emitSelection(this.chapterModel[positionI], this.chapterModel[positionI].subSections[positionJ], this.chapterModel[positionI].subSections[positionJ].fields[this.chapterModel[positionI].subSections[positionJ].fields.length-1], 'field');
-  // }
-
   emitSelection(chapter: Section, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
     this.userSelection.emit({chapter: chapter, section: section, field, sideMenuSettingsType: type});
+  }
+
+  unwrapOuterParagraph(html?: string): string {
+    if (!html) {
+      return 'Untitled question';
+    }
+
+    return html
+      .replace(/^<p[^>]*>/i, '')   // remove first opening <p ...>
+      .replace(/<\/p>\s*$/i, '');  // remove last closing </p>
   }
 
 }

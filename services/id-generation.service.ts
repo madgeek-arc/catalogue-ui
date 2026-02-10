@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Model } from "../domain/dynamic-form-model";
 
 @Injectable({ providedIn: 'root' })
+
 export class IdGenerationService {
   private currentId = 0;
 

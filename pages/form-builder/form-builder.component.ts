@@ -1,90 +1,46 @@
-import { AfterViewInit, Component } from "@angular/core";
-import { Field, Model, Section } from "../../domain/dynamic-form-model";
-import { FormGroup } from "@angular/forms";
+import { AfterViewInit, Component, inject } from "@angular/core";
+import { JsonPipe, NgClass } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Field, SelectedSection } from "../../domain/dynamic-form-model";
 import { FormControlService } from "../../services/form-control.service";
-import { WebsocketService } from "../../../app/services/websocket.service";
-import { cloneDeep } from 'lodash';
-import * as UIkit from 'uikit';
 import { IdGenerationService } from "../../services/id-generation.service";
-
-export class SelectedSection {
-  chapter: Section | null = null;
-  section: Section | null = null;
-  field: Field | null = null;
-  sideMenuSettingsType: 'main' | 'chapter' | 'section' | 'field' | 'fieldSelector' = 'main';
-}
+import { FormBuilderService } from "../../services/form-builder.service";
+import { SideMenuComponent } from "./side-menu/side-menu.component";
+import { MainInfoComponent } from "./main-info/main-info.component";
+import { FieldTemplatesComponent } from "./field-templates/field-templates.component";
+import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
+import * as UIkit from 'uikit';
 
 @Component({
-    selector: 'app-form-builder',
-    templateUrl: 'form-builder.component.html',
-    styleUrls: ['form-builder.component.scss'],
-    providers: [FormControlService, WebsocketService],
-    standalone: false
+  selector: 'app-form-builder',
+  templateUrl: 'form-builder.component.html',
+  styleUrls: ['form-builder.component.scss'],
+  providers: [FormControlService],
+  imports: [
+    NgClass,
+    FormsModule,
+    JsonPipe,
+    SideMenuComponent,
+    MainInfoComponent,
+    FieldTemplatesComponent,
+    SettingsSideMenuComponent
+  ]
 })
 
 export class FormBuilderComponent implements AfterViewInit {
-
-  model: Model = new Model();
-  chapter: Section | null = null;
-  currentSection: Section | null = null;
-  currentField: Field | null = null;
-  sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
-
-  constructor(private idService: IdGenerationService) {}
+  private idService = inject(IdGenerationService);
+  protected fbService = inject(FormBuilderService);
 
   ngAfterViewInit() {
     UIkit.modal('#fb-modal-full').show();
-    this.idService.findMaxId(this.model);
+    this.idService.findMaxId(this.fbService.model());
   }
 
-  setCurrentSection(selection: SelectedSection) {
-    this.chapter = this.currentSection = this.currentField = null;
+  setCurrentSection(selection: SelectedSection) { this.fbService.setCurrentSelection(selection); }
+  fieldSelection(field: Field) { this.fbService.fieldSelection(field); }
+  deleteField(i: number, parentField?: Field) { this.fbService.deleteField(i, parentField); }
+  duplicateField(f: Field, parentField?: Field) { this.fbService.duplicateField(f, parentField); }
+  move(a: number, b: number, parentField?: Field) { this.fbService.move(a, b, parentField); }
+  updateReference(): void { this.fbService.updateReference(); }
 
-    this.chapter = selection.chapter;
-    if (selection.section) {
-      this.currentSection = selection.section;
-    }
-    if (selection.field) {
-      this.currentField = selection.field;
-    }
-
-    this.sideMenuSettingsType = selection.sideMenuSettingsType;
-
-  }
-
-  fieldSelection(field: Field): void {
-    this.currentField = field;
-    this.sideMenuSettingsType = 'field'
-  }
-
-  /** Field manipulation **/
-  deleteField(position: number): void {
-    this.currentSection.fields.splice(position, 1);
-    this.sideMenuSettingsType = 'section';
-  }
-
-  duplicateField(field: Field): void {
-    this.currentSection.fields.push(cloneDeep(field));
-    // this.currentField = this.section.fields[this.section.fields.length - 1];
-  }
-
-  move(from: number, to: number): void {
-    console.log('from: %d - to: %d',from, to);
-    if (from >= this.currentSection.fields.length || to >= this.currentSection.fields.length || from < 0 || to < 0) {
-      console.error('Invalid move position');
-      return;
-    }
-    this.currentSection.fields.splice(to, 0, this.currentSection.fields.splice(from, 1)[0]);
-
-    console.log(this.currentSection.fields);
-  }
-
-  /** Other **/
-  updateReference(): void {
-    for (let i = 0; i < this.currentSection.fields.length; i++) {
-      this.currentSection.fields[i] = {...this.currentSection.fields[i]};
-    }
-    // this.section.fields
-    console.log(this.currentSection);
-  }
 }

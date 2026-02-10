@@ -1,45 +1,98 @@
-<div [ngClass]="{'uk-disabled': readonly}">
+<div>
   <div class="uk-margin-bottom">
-    @if (fieldData.label.text) {
-      <label class="uk-form-label {{fieldData.label.cssClasses}}"
-            [for]="fieldData.name" style="{{fieldData.label.style}}"
-            [innerHTML]="fieldData.form.mandatory ? appendAsterisk(fieldData.label.text) : fieldData.label.text">
+    @if (field?.label.text) {
+      <label class="uk-form-label {{field.label.cssClasses}}"
+            [for]="field.name" style="{{field.label.style}}"
+            [innerHTML]="field.form.mandatory ? appendAsterisk(field.label.text) : field.label.text">
       </label>
     }
   </div>
 
-  @if (fieldData.form.description?.showLess) {
-    @if (fieldData.form.description.text) {
-      <div class="uk-form-description uk-text-small uk-margin-bottom {{fieldData.form.description.cssClasses}}"
-           style="{{fieldData.form.description.style}}">
-        <read-more-text [maxHeight]="46" [text]="fieldData.form.description.text"></read-more-text>
+  @if (field?.form.description?.showLess) {
+    @if (field.form.description.text) {
+      <div class="uk-form-description uk-text-small uk-margin-bottom {{field.form.description.cssClasses}}"
+           style="{{field.form.description.style}}">
+        <read-more-text [maxHeight]="46" [text]="field.form.description.text"></read-more-text>
       </div>
     }
   } @else {
-    @if (fieldData.form.description?.text) {
-      <div class="uk-form-description uk-text-small uk-margin-bottom {{fieldData.form.description.cssClasses}}"
-           style="{{fieldData.form.description.style}}"
-           [innerHTML]="fieldData.form.description.text | safeUrl: 'html'">
+    @if (field?.form.description?.text) {
+      <div class="uk-form-description uk-text-small uk-margin-bottom {{field.form.description.cssClasses}}"
+           style="{{field.form.description.style}}"
+           [innerHTML]="field.form.description.text | safeUrl: 'html'">
       </div>
     }
   }
 
-  @switch (fieldData.typeInfo.type) {
+  @switch (field?.typeInfo.type) {
     @case ('composite') {
       <div class="uk-card uk-card-default uk-card-body uk-animation-scale-up">
 
+        @for (subField of field.subFields; track subField; let i = $index) {
+          <div class="uk-margin-bottom">
+            <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
+                 [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}" (click)="fbService.fieldSelection(subField)">
+              <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right" (click)="$event.stopPropagation()">
+                <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                  <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.form.mandatory">
+                  <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
+                </span>
+                <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                  <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.typeInfo.multiplicity">
+                  <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
+                </span>
+                <span class="material-icons uk-margin-small-right" (click)="fbService.duplicateField(subField, field)" style="cursor: pointer">content_copy</span>
+                <span class="material-icons" (click)="fbService.deleteField(i, field)" style="cursor: pointer">delete</span>
+              </div>
+              <div class="uk-grid uk-grid-column-collapse">
+                <app-field-templates [field]="subField" [readonly]="true" class="uk-width-expand"></app-field-templates>
+                @if (field.subFields.length > 1) {
+                  <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
+                    @if (i !== 0) {
+                      <div class="uk-margin-small" data-uk-tooltip="Move up">
+                        <span class="material-icons" style="cursor: pointer" (click)="fbService.move(i, i-1, field)">north</span>
+                      </div>
+                    }
+                    @if (i !== field.subFields.length-1) {
+                      <div class="uk-margin-small" data-uk-tooltip="Move down">
+                        <span class="material-icons" style="cursor: pointer" (click)="fbService.move(i, i+1, field)">south</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+          <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+            <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+               (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
+              Add group <span class="material-icons">add</span>
+            </a>
+          </div>
+        </div>
+        <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+          <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
+            <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+               (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
+              Add Question <span class="material-icons">add</span>
+            </a>
+          </div>
+        </div>
       </div>
     }
     @case ('richText') {
       <div class="uk-margin-medium-top uk-animation-scale-up">
-        <ckeditor [editor]="editor" [config]="{placeholder: fieldData.form.placeholder}"></ckeditor>
+        <ckeditor [editor]="editor" [config]="{placeholder: field.form.placeholder}"></ckeditor>
       </div>
     }
     @case ('string') {
-      <input class="uk-input uk-animation-scale-up" [placeholder]="fieldData.form.placeholder ?? ''">
+      <input class="uk-input uk-animation-scale-up" [placeholder]="field.form.placeholder ?? ''">
     }
     @case ('largeText') {
-      <textarea class="uk-textarea uk-animation-scale-up" [placeholder]="fieldData.form.placeholder ?? ''"></textarea>
+      <textarea class="uk-textarea uk-animation-scale-up" [placeholder]="field.form.placeholder ?? ''"></textarea>
       @if (textProperties.maxLength) {
         <div class="uk-animation-scale-up" style="float: right;">
           <span> 0/ {{textProperties.maxLength}}</span>
@@ -48,14 +101,14 @@
     }
   }
 
-  @if (fieldData.form.suggestion.text) {
+  @if (field?.form.suggestion.text) {
     <div class="uk-margin-top">
-      <div class="uk-suggestion {{fieldData.form.suggestion.cssClasses}}"
-           style="{{fieldData.form.suggestion.style}}" [innerHTML]="fieldData.form.suggestion.text">
+      <div class="uk-suggestion {{field.form.suggestion.cssClasses}}"
+           style="{{field.form.suggestion.style}}" [innerHTML]="field.form.suggestion.text">
       </div>
     </div>
   }
 
 </div>
 
-<!--<pre>{{ fieldData | json }}</pre>-->
+<!--<pre>{{ fbService.currentField() | json }}</pre>-->

@@ -1,13 +1,14 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { Field, PatternProperties, TextProperties, TypeProperties } from "../../../domain/dynamic-form-model";
+import { Component, inject, Input } from "@angular/core";
+import { Field, TextProperties, TypeProperties } from "../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CommonModule, NgClass, NgIf, NgSwitch, NgSwitchCase } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import {
   CatalogueUiReusableComponentsModule
 } from "../../../shared/reusable-components/catalogue-ui-reusable-components.module";
 import { SafeUrlPipe } from "../../../shared/pipes/safeUrlPipe";
-import editor from "@ckeditor/ckeditor5-build-classic";
+import { FormBuilderService } from "../../../services/form-builder.service";
+import { FormsModule } from "@angular/forms";
 
 @Component(({
   selector: 'app-field-templates',
@@ -17,15 +18,15 @@ import editor from "@ckeditor/ckeditor5-build-classic";
     CKEditorModule,
     CatalogueUiReusableComponentsModule,
     SafeUrlPipe,
+    FormsModule,
   ],
-  standalone: true
 }))
 
 export class FieldTemplatesComponent {
-  @Input() fieldData: Field;
-  @Input() readonly!: boolean;
+  protected fbService = inject(FormBuilderService);
 
-  properties: TypeProperties  = {};
+  @Input() field: Field | null = null;
+  @Input() readonly!: boolean;
 
   public editor = ClassicEditor;
 
@@ -39,7 +40,7 @@ export class FieldTemplatesComponent {
   }
 
   get textProperties(): TextProperties {
-    return this.properties as TextProperties;
+    return this.field?.typeInfo.properties as TextProperties;
   }
 
 }

@@ -1,11 +1,15 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { CKEditorComponent, CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditorComponent } from "@ckeditor/ckeditor5-angular";
+import { FormsModule } from "@angular/forms";
 
 @Component({
-    selector: 'app-main-info',
-    templateUrl: './main-info.component.html',
-    standalone: false
+  selector: 'app-main-info',
+  templateUrl: './main-info.component.html',
+  imports: [
+    CKEditorModule,
+    FormsModule
+  ]
 })
 
 export class MainInfoComponent {

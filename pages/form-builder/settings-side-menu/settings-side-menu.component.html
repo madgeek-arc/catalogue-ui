@@ -1,8 +1,9 @@
 <div class="uk-padding-small">
-  @switch (sideMenuSettingsType) {
+  {{fbService.sideMenuSettingsType()}}
+  @switch (fbService.sideMenuSettingsType()) {
     @case ('chapter') {
       <div>
-        <app-chapter-settings [chapter]="chapter"></app-chapter-settings>
+        <app-chapter-settings></app-chapter-settings>
       </div>
     }
     @case ('section') {
@@ -17,7 +18,7 @@
     }
     @case ('fieldSelector') {
       <div>
-        <app-field-type-selections [section]="section" (emitField)="fieldSettings($event)"></app-field-type-selections>
+        <app-field-type-selections></app-field-type-selections>
       </div>
     }
   }
