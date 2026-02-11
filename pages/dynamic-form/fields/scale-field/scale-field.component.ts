@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from "@angular/core";
-import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -26,14 +26,14 @@ export class ScaleFieldComponent extends BaseFieldComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    const properties = this.fieldData.typeInfo.properties as CustomProperties;
+    const properties = this.fieldData.typeInfo.properties;
 
     if (properties && 'textLeft' in properties) {
-      this.text_left = properties.textLeft;
+      this.text_left = properties.textLeft as string;
     }
 
     if (properties && 'textRight' in properties) {
-      this.text_right = properties.textRight;
+      this.text_right = properties.textRight as string;
     }
   }
 }

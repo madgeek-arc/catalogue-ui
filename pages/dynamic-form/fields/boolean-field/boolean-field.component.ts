@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { BaseFieldComponent } from "../utils/base-field.component";
-import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
 import { NgClass } from "@angular/common";
@@ -24,8 +24,8 @@ export class BooleanFieldComponent extends BaseFieldComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    if ((this.fieldData.typeInfo.properties as CustomProperties).hasOwnProperty('label'))
-      this.label = (this.fieldData.typeInfo.properties as CustomProperties).label;
+    if (this.fieldData.typeInfo.properties.hasOwnProperty('label'))
+      this.label = this.fieldData.typeInfo.properties.label as string;
   }
 
   /** Bitsets--> **/

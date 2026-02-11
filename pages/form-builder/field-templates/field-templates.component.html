@@ -1,9 +1,8 @@
 <div>
   <div class="uk-margin-bottom">
     @if (field?.label.text) {
-      <label class="uk-form-label {{field.label.cssClasses}}"
-            [for]="field.name" style="{{field.label.style}}"
-            [innerHTML]="field.form.mandatory ? appendAsterisk(field.label.text) : field.label.text">
+      <label [for]="field.name" class="uk-form-label {{field.label.cssClasses}}"  style="{{field.label.style}}"
+             [innerHTML]="field.form.mandatory ? appendAsterisk(field.label.text) : field.label.text">
       </label>
     }
   </div>
@@ -31,17 +30,20 @@
         @for (subField of field.subFields; track subField; let i = $index) {
           <div class="uk-margin-bottom">
             <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
-                 [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}" (click)="fbService.fieldSelection(subField)">
-              <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right" (click)="$event.stopPropagation()">
+                 [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}"
+                 (click)="$event.stopPropagation(); fbService.fieldSelection(subField)">
+              <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
                 <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
-                  <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.form.mandatory">
-                  <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
+                  <input id="fieldMandatory-{{subField.id}}" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.form.mandatory">
+                  <label for="fieldMandatory-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
                 </span>
                 <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
-                  <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.typeInfo.multiplicity">
-                  <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
+                  <input id="multiplicity-{{subField.id}}" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.typeInfo.multiplicity">
+                  <label for="multiplicity-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
                 </span>
-                <span class="material-icons uk-margin-small-right" (click)="fbService.duplicateField(subField, field)" style="cursor: pointer">content_copy</span>
+                <span class="material-icons uk-margin-small-right" style="cursor: pointer" (click)="fbService.duplicateField(subField, field)">
+                  content_copy
+                </span>
                 <span class="material-icons" (click)="fbService.deleteField(i, field)" style="cursor: pointer">delete</span>
               </div>
               <div class="uk-grid uk-grid-column-collapse">
@@ -65,34 +67,40 @@
           </div>
         }
 
-        <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-          <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
-            <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-               (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
-              Add group <span class="material-icons">add</span>
-            </a>
+        <div class="uk-grid uk-child-width-1-2">
+          <div>
+            <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+              <div class="uk-border-rounded border-dashed">
+                <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                   (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
+                  Add group <span class="material-icons">add</span>
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-          <div class="uk-border-rounded" style="border: 2px dashed var(--primary-color)">
-            <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-               (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
-              Add Question <span class="material-icons">add</span>
-            </a>
+          <div>
+            <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+              <div class="uk-border-rounded border-dashed">
+                <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                   (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
+                  Add Question <span class="material-icons">add</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     }
     @case ('richText') {
-      <div class="uk-margin-medium-top uk-animation-scale-up">
+      <div class="uk-margin-medium-top uk-animation-scale-up uk-disabled">
         <ckeditor [editor]="editor" [config]="{placeholder: field.form.placeholder}"></ckeditor>
       </div>
     }
     @case ('string') {
-      <input class="uk-input uk-animation-scale-up" [placeholder]="field.form.placeholder ?? ''">
+      <input class="uk-input uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''">
     }
     @case ('largeText') {
-      <textarea class="uk-textarea uk-animation-scale-up" [placeholder]="field.form.placeholder ?? ''"></textarea>
+      <textarea class="uk-textarea uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''"></textarea>
       @if (textProperties.maxLength) {
         <div class="uk-animation-scale-up" style="float: right;">
           <span> 0/ {{textProperties.maxLength}}</span>

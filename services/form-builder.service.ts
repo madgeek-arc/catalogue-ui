@@ -35,7 +35,6 @@ export class FormBuilderService {
   }
 
   setSideMenuSettingsType(type: typeof SelectedSection.prototype.sideMenuSettingsType) {
-    console.log(type)
     this._sideMenuSettingsType.set(type);
   }
 
@@ -58,7 +57,9 @@ export class FormBuilderService {
 
       return section;
     });
-    this.setCurrentField(tmpField);
+    if (tmpField.typeInfo.type !== 'composite')
+      this.setCurrentField(tmpField);
+
     this.setSideMenuSettingsType('field');
   }
 
@@ -131,7 +132,6 @@ export class FormBuilderService {
 
   addFieldToComposite(type: FieldType) {
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
-    console.log(this._currentField());
 
     this._currentField.update( field => {
       if (field.subFields === null)
@@ -140,6 +140,8 @@ export class FormBuilderService {
       field.subFields.push(tmpField);
       return field;
     });
+    this.setCurrentField(tmpField);
+    this.setSideMenuSettingsType('field');
   }
 
 

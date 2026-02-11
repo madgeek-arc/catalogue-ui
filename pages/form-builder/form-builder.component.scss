@@ -1,3 +1,7 @@
 .highlight-field {
   border: var(--primary-color) solid 1px;
 }
+
+.border-dashed {
+  border: 2px dashed var(--primary-color)
+}

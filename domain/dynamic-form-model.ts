@@ -18,23 +18,26 @@ export class Dependent {
   value: string;
 }
 
-export class TypeInfo {
+export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string> {
   vocabulary: string;
   type: FieldType;
   defaultValue: string;
   values: IdLabel[];
-  properties: TypeProperties;
+  properties: FieldTypePropertiesMap[T];
   multiplicity: boolean;
   prefill: DataRequest;
 
-  constructor(type: FieldType) {
-    if (type)
-      this.type = type;
-    else
-      this.type = FieldType.string;
+  constructor(type: FieldType = FieldType.string) {
+    this.type = type;
     this.values = [];
     this.vocabulary = null;
     this.multiplicity = false;
+    this.properties = this.createDefaultProperties(type);
+  }
+
+  private createDefaultProperties(type: FieldType): TypeProperties {
+    const PropertyClass = propertiesFactory[type];
+    return new PropertyClass();
   }
 }
 
@@ -92,7 +95,7 @@ export class StyledText {
   }
 }
 
-export class Field {
+export class Field<T extends FieldType = FieldType.string> {
   id: string;
   name: string;
   parentId: string;
@@ -287,42 +290,43 @@ export class Series {
   referenceYear: string;
 }
 
-export interface TypeProperties {
+export class TypeProperties {
+  [key: string]: string | number | boolean | UrlParameter[];
 }
 
-export interface CustomProperties extends TypeProperties {
-  [key: string]: string;
+// export interface CustomProperties extends TypeProperties {
+//  [key: string]: string | number | boolean | UrlParameter[];
+// }
+
+export class DateProperties extends TypeProperties {
+  formatToString: boolean | null = null;
 }
 
-export interface DateProperties extends TypeProperties {
-  formatToString: boolean;
+export class NumberProperties extends TypeProperties {
+  min: number | null = null;
+  max: number | null = null;
+  decimals: number | null = null;
+  pattern: string | null = null;
 }
 
-export interface NumberProperties extends TypeProperties {
-  min: number;
-  max: number;
-  decimals: number;
-  pattern: string;
+export class PatternProperties extends TypeProperties {
+  pattern: string | null = null;
 }
 
-export interface PatternProperties extends TypeProperties {
-  pattern: string;
+export class TextProperties extends TypeProperties {
+  minLength: number | null = null;
+  maxLength: number | null = null;
 }
 
-export interface TextProperties extends TypeProperties {
-  minLength: number;
-  maxLength: number;
+export class UrlProperties extends TypeProperties { // Probably needed for backend, but not used in frontend
+  strictValidation: boolean | null = null;
 }
 
-export interface UrlProperties extends TypeProperties {
-  strictValidation: boolean;
-}
-
-export interface VocabularyProperties extends TypeProperties {
-  url: string;
-  idField: string;
-  labelField: string;
-  urlParams: UrlParameter[];
+export class VocabularyProperties extends TypeProperties {
+  url: string | null = null;
+  idField: string | null = null;
+  labelField: string | null = null;
+  urlParams: UrlParameter[] = [];
 }
 
 export interface UrlParameter {
@@ -349,3 +353,27 @@ export enum FieldType {
   scale = "scale",
   array = "array",
 }
+
+export type FieldTypePropertiesMap = {
+  [K in keyof typeof propertiesFactory]: InstanceType<(typeof propertiesFactory)[K]>;
+};
+
+const propertiesFactory: Record<FieldType, new () => TypeProperties> = {
+  [FieldType.string]: TextProperties,
+  [FieldType.url]: PatternProperties,
+  [FieldType.email]: PatternProperties,
+  [FieldType.phone]: PatternProperties,
+  [FieldType.largeText]: TextProperties,
+  [FieldType.richText]: TextProperties,
+  [FieldType.date]: DateProperties,
+  [FieldType.number]: NumberProperties,
+  [FieldType.vocabulary]: VocabularyProperties,
+  [FieldType.select]: TypeProperties,
+  [FieldType.radio]: TypeProperties,
+  [FieldType.checkbox]: TypeProperties,
+  [FieldType.bool]: TypeProperties,
+  [FieldType.scale]: TypeProperties,
+  [FieldType.composite]: TypeProperties,
+  [FieldType.chooseOne]: TypeProperties,
+  [FieldType.array]: TypeProperties,
+};

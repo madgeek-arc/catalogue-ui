@@ -13,6 +13,7 @@ import { FormsModule } from "@angular/forms";
 @Component(({
   selector: 'app-field-templates',
   templateUrl: './field-templates.component.html',
+  styleUrl: '../form-builder.component.scss',
   imports: [
     CommonModule,
     CKEditorModule,

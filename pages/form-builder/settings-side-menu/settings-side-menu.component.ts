@@ -3,7 +3,7 @@ import { Field, Section, SelectedSection } from "../../../domain/dynamic-form-mo
 import { ChapterSettingsComponent } from "./chapter-settings/chapter-settings.component";
 import { SectionSettingsComponent } from "./section-settings/section-settings.component";
 import { FieldSettingsComponent } from "./field-settings/field-settings.component";
-import { FieldTypeSelectionComponent } from "./field-type-selection/field-type-selection.component";
+import { FieldTypeSelectorComponent } from "./field-type-selection/field-type-selector.component";
 import { FormBuilderService } from "../../../services/form-builder.service";
 
 @Component({
@@ -13,7 +13,7 @@ import { FormBuilderService } from "../../../services/form-builder.service";
     ChapterSettingsComponent,
     SectionSettingsComponent,
     FieldSettingsComponent,
-    FieldTypeSelectionComponent
+    FieldTypeSelectorComponent
   ]
 })
 
