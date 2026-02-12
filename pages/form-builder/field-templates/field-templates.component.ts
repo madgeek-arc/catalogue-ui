@@ -1,5 +1,5 @@
 import { Component, inject, Input } from "@angular/core";
-import { Field, TextProperties, TypeProperties } from "../../../domain/dynamic-form-model";
+import { Field, TextProperties } from "../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CommonModule } from "@angular/common";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
@@ -27,7 +27,6 @@ export class FieldTemplatesComponent {
   protected fbService = inject(FormBuilderService);
 
   @Input() field: Field | null = null;
-  @Input() readonly!: boolean;
 
   public editor = ClassicEditor;
 

@@ -18,26 +18,20 @@
 
             <div class="uk-width-1-6 uk-section-primary uk-preserve-color">
               <aside class="">
-                <app-side-menu [chapterModel]="fbService.model().sections" (userSelection)="setCurrentSection($event)">
-                </app-side-menu>
+                <app-side-menu></app-side-menu>
               </aside>
             </div>
 
             <div class="uk-width-expand uk-padding" style="min-height: 80vh">
               @if (fbService.sideMenuSettingsType() === 'main') {
-                <app-main-info [formTitle]="fbService.model().name" [description]="fbService.model().description"
-                               [notice]="fbService.model().notice"
-                               (emitTitle)="fbService.model().name = $event"
-                               (emitDescription)="fbService.model().description = $event"
-                               (emitNotice)="fbService.model().notice = $event">
-                </app-main-info>
+                <app-main-info></app-main-info>
               }
-              @if (fbService.chapter()) {
-                <h3>{{ fbService.chapter().name ?? 'Untitled Chapter' }}</h3>
-                <p [innerHTML]="fbService.chapter().description"></p>
-                @if (!fbService.currentSection()) {
+              @if (fbService.currentSection()) {
+                <h3>{{ fbService.currentSection().name?.trim() || 'Untitled Chapter' }}</h3>
+                <p [innerHTML]="fbService.currentSection().description"></p>
+                @if (!fbService.currentSubSection()) {
                   <div>
-                    @for (section of fbService.chapter().subSections; track section; let i = $index) {
+                    @for (section of fbService.currentSection().subSections; track section; let i = $index) {
                       <div class="uk-margin-bottom">
                         <a (click)="fbService.setCurrentSection(section); fbService.setSideMenuSettingsType('section')">
                           {{ section.name ?? 'Untitled Section ' + (i+1) }}
@@ -47,10 +41,10 @@
                   </div>
                 }
               }
-              @if (fbService.currentSection()) {
-                <h5>{{ fbService.currentSection().name ?? 'Untitled Section' }}</h5>
-                <p [innerHTML]="fbService.currentSection().description"></p>
-                @for (field of fbService.currentSection().fields; track field; let i = $index) {
+              @if (fbService.currentSubSection()) {
+                <h5>{{ fbService.currentSubSection().name ?? 'Untitled Section' }}</h5>
+                <p [innerHTML]="fbService.currentSubSection().description"></p>
+                @for (field of fbService.currentSubSection().fields; track field; let i = $index) {
                   <div class="uk-margin-bottom">
                     <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
                       [ngClass]="{'highlight-field': fbService.currentField()?.id === field.id}" (click)="fieldSelection(field)">
@@ -67,16 +61,16 @@
                         <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
                       </div>
                       <div class="uk-grid uk-grid-column-collapse">
-                        <app-field-templates [field]="field" [readonly]="true" class="uk-width-expand"></app-field-templates>
-                        @if (fbService.currentSection().fields.length > 1) {
+                        <app-field-templates [field]="field" class="uk-width-expand"></app-field-templates>
+                        @if (fbService.currentSubSection().fields.length > 1) {
                           <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
                             @if (i !== 0) {
                               <div class="uk-margin-small" data-uk-tooltip="Move up">
                                 <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
                               </div>
                             }
-                            @if (i !== fbService.currentSection().fields.length-1) {
-                              <div class="uk-margin-small" data-uk-tooltip="Move down" >
+                            @if (i !== fbService.currentSubSection().fields.length-1) {
+                              <div class="uk-margin-small" data-uk-tooltip="Move down">
                                 <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
                               </div>
                             }
@@ -101,7 +95,7 @@
                     <div class="uk-card uk-card-default uk-card-body uk-padding-small">
                       <div class="uk-border-rounded border-dashed">
                         <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                           (click)="fbService.setCurrentSection(fbService.currentSection()); fbService.setSideMenuSettingsType('fieldSelector')">
+                           (click)="fbService.setCurrentSection(fbService.currentSubSection()); fbService.setSideMenuSettingsType('fieldSelector')">
                           Add Question <span class="material-icons">add</span>
                         </a>
                       </div>
@@ -112,10 +106,10 @@
             </div>
 
             <div class="uk-width-1-5 uk-section-primary uk-preserve-color">
-              <app-settings-side-menu [section]="fbService.currentSection()" [field]="fbService.currentField()"
-                (emitFieldReferenceChange)="updateReference()"
-                (emitSideMenuSettingsChange)="fbService.setSideMenuSettingsType($event)"
-                (emitField)="fbService.setCurrentField($event)">
+              <app-settings-side-menu [section]="fbService.currentSubSection()" [field]="fbService.currentField()"
+                                      (emitFieldReferenceChange)="updateReference()"
+                                      (emitSideMenuSettingsChange)="fbService.setSideMenuSettingsType($event)"
+                                      (emitField)="fbService.setCurrentField($event)">
               </app-settings-side-menu>
             </div>
 
@@ -124,7 +118,10 @@
 
         <div class="uk-modal-footer">
           Footer
-          <pre>{{ fbService.currentField() | json }}</pre>
+          <div class="uk-flex uk-flex-between">
+            <pre>{{ fbService.currentField() | json }}</pre>
+            <pre>{{ fbService.model() | json }}</pre>
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from "@angular/core";
 import { CKEditorComponent, CKEditorModule } from "@ckeditor/ckeditor5-angular";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { FormsModule } from "@angular/forms";
+import { FormBuilderService } from "../../../services/form-builder.service";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
   selector: 'app-main-info',
@@ -13,37 +14,13 @@ import { FormsModule } from "@angular/forms";
 })
 
 export class MainInfoComponent {
-  @ViewChild('descriptionEditor') descriptionEditor!: CKEditorComponent;
-  @ViewChild('noticeEditor') noticeEditor!: CKEditorComponent;
+  protected fbService = inject(FormBuilderService);
 
   public editor = ClassicEditor;
-
-  @Input() formTitle: string | null = null;
-  @Input() description: string | null = null;
-  @Input() notice: string | null = null;
-
-  @Output() emitTitle: EventEmitter<string> = new EventEmitter();
-  @Output() emitDescription: EventEmitter<string> = new EventEmitter();
-  @Output() emitNotice: EventEmitter<string> = new EventEmitter();
 
   focusEditor(editor: string) {
     if (this[editor] && this[editor].editorInstance) {
       this[editor].editorInstance.editing.view.focus();
     }
-  }
-
-  titleChange(value: string) {
-    this.formTitle = value;
-    this.emitTitle.emit(value);
-  }
-
-  descriptionChange(value: string) {
-    this.description = value;
-    this.emitDescription.emit(value);
-  }
-
-  noticeChange(value: string) {
-    this.notice = value;
-    this.emitNotice.emit(value);
   }
 }

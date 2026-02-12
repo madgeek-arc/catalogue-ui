@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, inject } from "@angular/core";
 import { JsonPipe, NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Field, SelectedSection } from "../../domain/dynamic-form-model";
+import { Field } from "../../domain/dynamic-form-model";
 import { FormControlService } from "../../services/form-control.service";
 import { IdGenerationService } from "../../services/id-generation.service";
 import { FormBuilderService } from "../../services/form-builder.service";
@@ -36,7 +36,6 @@ export class FormBuilderComponent implements AfterViewInit {
     this.idService.findMaxId(this.fbService.model());
   }
 
-  setCurrentSection(selection: SelectedSection) { this.fbService.setCurrentSelection(selection); }
   fieldSelection(field: Field) { this.fbService.fieldSelection(field); }
   deleteField(i: number, parentField?: Field) { this.fbService.deleteField(i, parentField); }
   duplicateField(f: Field, parentField?: Field) { this.fbService.duplicateField(f, parentField); }

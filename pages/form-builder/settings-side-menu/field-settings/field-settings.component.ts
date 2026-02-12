@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Field } from "../../../../domain/dynamic-form-model";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { FormsModule } from "@angular/forms";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
+import { FormsModule } from "@angular/forms";
+import { Field } from "../../../../domain/dynamic-form-model";
+import { FormBuilderService } from "../../../../services/form-builder.service";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
   selector: 'app-field-settings',
@@ -14,6 +15,7 @@ import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 })
 
 export class FieldSettingsComponent {
+  protected fbService = inject(FormBuilderService);
 
   @Input() field: Field | null = null;
 

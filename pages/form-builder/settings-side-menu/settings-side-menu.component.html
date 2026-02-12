@@ -1,25 +1,19 @@
 <div class="uk-padding-small">
-  {{fbService.sideMenuSettingsType()}}
   @switch (fbService.sideMenuSettingsType()) {
+    @case ('main') {
+      <app-main-settings></app-main-settings>
+    }
     @case ('chapter') {
-      <div>
-        <app-chapter-settings></app-chapter-settings>
-      </div>
+      <app-chapter-settings></app-chapter-settings>
     }
     @case ('section') {
-      <div>
-        <app-section-settings></app-section-settings>
-      </div>
+      <app-section-settings></app-section-settings>
     }
     @case ('field') {
-      <div>
-        <app-field-settings [field]="field" (emitField)="updateFieldReference()"></app-field-settings>
-      </div>
+      <app-field-settings [field]="field" (emitField)="updateFieldReference()"></app-field-settings>
     }
     @case ('fieldSelector') {
-      <div>
-        <app-field-type-selections></app-field-type-selections>
-      </div>
+      <app-field-type-selections></app-field-type-selections>
     }
   }
 </div>

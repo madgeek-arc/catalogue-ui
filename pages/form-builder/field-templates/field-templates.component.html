@@ -47,7 +47,7 @@
                 <span class="material-icons" (click)="fbService.deleteField(i, field)" style="cursor: pointer">delete</span>
               </div>
               <div class="uk-grid uk-grid-column-collapse">
-                <app-field-templates [field]="subField" [readonly]="true" class="uk-width-expand"></app-field-templates>
+                <app-field-templates [field]="subField" class="uk-width-expand"></app-field-templates>
                 @if (field.subFields.length > 1) {
                   <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
                     @if (i !== 0) {

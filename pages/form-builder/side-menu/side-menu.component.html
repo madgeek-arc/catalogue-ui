@@ -1,16 +1,18 @@
 <div class="uk-padding-small">
-  <ul uk-tab="animation: uk-animation-fade" class="uk-grid uk-child-width-1-1">
+  <ul data-uk-tab="animation: uk-animation-fade" class="uk-grid uk-child-width-1-1">
     <li>
       <div class="uk-flex uk-flex-middle uk-width-1-1">
-        <div class="uk-width-4-5"><a (click)="emitSelection(null, null, null, 'main')">Main Info</a></div>
+        <div class="uk-width-4-5">
+          <a (click)="emitSelection(null, null, null, 'main')">Main Info</a>
+        </div>
       </div>
     </li>
-    @for (chapter of chapterModel; track chapter; let i = $index) {
+    @for (chapter of fbService.model().sections; track chapter; let i = $index) {
       <li class="uk-width-1-1 uk-margin-small-bottom">
         <div class="uk-flex uk-flex-middle uk-width-1-1">
           <div class="uk-width-4-5">
             <a (click)="emitSelection(chapter, null, null, 'chapter')">
-              {{ (i + 1) + '. ' + (chapter.name ?? 'Untitled chapter') }}
+              {{ (i + 1) + '. ' + (chapter.name?.trim() || 'Untitled chapter') }}
             </a>
           </div>
           <div class="uk-width-1-5">
@@ -28,7 +30,7 @@
                   </a>
                 </div>
                 <div class="uk-width-1-5">
-                  <a (click)="deleteSection(i, j)"><span class="material-icons">delete</span></a>
+                  <a (click)="deleteSubSection(i, j)"><span class="material-icons">delete</span></a>
                 </div>
                 @for (field of section.fields; track field; let k = $index) {
                   @let fieldLabel = ((i + 1) + '.' + (j + 1) + '.' + (k + 1) + ' ' + unwrapOuterParagraph(field.label.text));
@@ -48,12 +50,12 @@
           }
         </ul>
         <div class="uk-margin-small">
-          <a class="uk-flex uk-flex-middle" (click)="addSection(i)"><span class="material-icons">add</span> Section</a>
+          <a class="uk-flex uk-flex-middle" (click)="addSubSection(i)"><span class="material-icons">add</span> Section</a>
         </div>
       </li>
     }
   </ul>
   <a class="uk-flex uk-flex-middle uk-margin-small" (click)="pushChapter()">
-    <span class="material-icons">add</span> {{ chapterModel.length === 0 ? 'Create the first chapter' : 'Chapter' }}
+    <span class="material-icons">add</span> {{ fbService.model().sections.length === 0 ? 'Create the first chapter' : 'Chapter' }}
   </a>
 </div>

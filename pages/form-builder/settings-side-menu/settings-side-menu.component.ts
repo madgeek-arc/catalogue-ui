@@ -5,6 +5,7 @@ import { SectionSettingsComponent } from "./section-settings/section-settings.co
 import { FieldSettingsComponent } from "./field-settings/field-settings.component";
 import { FieldTypeSelectorComponent } from "./field-type-selection/field-type-selector.component";
 import { FormBuilderService } from "../../../services/form-builder.service";
+import { MainSettingsComponent } from "./main-settings/main-settings.component";
 
 @Component({
   selector: 'app-settings-side-menu',
@@ -13,7 +14,8 @@ import { FormBuilderService } from "../../../services/form-builder.service";
     ChapterSettingsComponent,
     SectionSettingsComponent,
     FieldSettingsComponent,
-    FieldTypeSelectorComponent
+    FieldTypeSelectorComponent,
+    MainSettingsComponent
   ]
 })
 

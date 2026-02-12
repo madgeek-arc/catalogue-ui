@@ -3,14 +3,15 @@
   <div class="uk-margin">
     <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Section Name *</label>
     <div class="uk-form-controls">
-      <input id="sectionName" class="uk-input" [(ngModel)]="fbService.currentSection().name" placeholder="Untitled Section">
+      <input id="sectionName" class="uk-input" [ngModel]="fbService.currentSubSection().name"
+             (ngModelChange)="fbService.setSubSectionName($event)" placeholder="Untitled Section">
     </div>
   </div>
   <div class="uk-margin">
     <label for="sectionDescription" class="uk-form-label uk-margin-small-bottom">Description *</label>
     <div class="uk-form-controls">
-      <ckeditor id="sectionDescription" [editor]="editor"
-                [(ngModel)]="fbService.currentSection().description"
+      <ckeditor id="sectionDescription" [editor]="editor" [ngModel]="fbService.currentSubSection().description"
+                (ngModelChange)="fbService.setSubSectionDescription($event)"
                 [config]="{placeholder: 'Give a short description for the section'}">
       </ckeditor>
     </div>
