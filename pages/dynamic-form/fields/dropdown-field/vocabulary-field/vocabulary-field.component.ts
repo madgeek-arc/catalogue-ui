@@ -94,6 +94,7 @@ export class VocabularyFieldComponent extends BaseFieldComponent {
     if (this.fieldData.form.dependsOn.value) {
       if (value === this.fieldData.form.dependsOn.value) {
         this.formControl.enable();
+        this.setVocabulary();
       } else {
         this.formControl.disable();
         this.formControl.reset();
