@@ -1,14 +1,12 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
-import { environment } from "../../environments/environment";
 import { HttpClient, HttpParams, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { APP_ENV } from "../config/app-env.token";
 
 declare var SockJS;
 declare var Stomp;
-
-const URL = environment.WS_ENDPOINT;
 
 interface IMessage {
   command: string;
@@ -21,11 +19,13 @@ interface IMessage {
 
 @Injectable()
 export class CommentingWebsocketService {
-  private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
   private xsrf = inject(HttpXsrfTokenExtractor);
+  private http = inject(HttpClient);
+  private environment = inject(APP_ENV);
 
-  private readonly base = environment.API_ENDPOINT;
+  private readonly base = this.environment.API_ENDPOINT;
+  private readonly url = this.environment.WS_ENDPOINT;
   private surveyAnswerId: string | null = null;
   threadSubject: BehaviorSubject<Thread[]> = new BehaviorSubject<Thread[]>([]);
   focusedField: Subject<string> = new Subject();
@@ -35,7 +35,7 @@ export class CommentingWebsocketService {
   count = 0;
 
   initializeWebSocketConnection(sa_id: string) {
-    const ws = new SockJS(URL);
+    const ws = new SockJS(this.url);
     const that = this;
     this.surveyAnswerId = sa_id;
 

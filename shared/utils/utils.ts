@@ -35,3 +35,29 @@ export function collectIdsRecursive(node: any[], out: string[] = []): string[] {
 
   return out;
 }
+
+export function findMaxId(obj: any): number {
+  let max = -Infinity;
+
+  function traverse(value: any) {
+    if (Array.isArray(value)) {
+      value.forEach(traverse);
+    } else if (value && typeof value === 'object') {
+
+      // Check if the object has an id
+      if (value.id !== undefined) {
+        const numericId = Number(value.id);
+        if (!isNaN(numericId)) {
+          max = Math.max(max, numericId);
+        }
+      }
+
+      // Traverse all properties
+      Object.values(value).forEach(traverse);
+    }
+  }
+
+  traverse(obj);
+
+  return max === -Infinity ? 0 : max;
+}

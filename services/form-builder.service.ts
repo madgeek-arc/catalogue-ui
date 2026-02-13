@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from "@angular/core";
 import { Field, FieldType, Model, Section, SelectedSection } from "../domain/dynamic-form-model";
 import { IdGenerationService } from "./id-generation.service";
 import { cloneDeep } from "lodash";
+import { findMaxId } from "../shared/utils/utils";
 
 @Injectable({providedIn: 'root'})
 
@@ -9,20 +10,29 @@ export class FormBuilderService {
   private idService = inject(IdGenerationService);
 
   // state
-  private _model = signal<Model>(new Model());
+  private _model = signal<Model>(null);
   private _currentSection = signal<Section | null>(null);
-  private _currentSubSection = signal<Section | null>(null);
+  private _currentSubsection = signal<Section | null>(null);
   private _currentField = signal<Field | null>(null);
   private _sideMenuSettingsType = signal<typeof SelectedSection.prototype.sideMenuSettingsType>('main');
 
   // expose as readonly where appropriate
   readonly model = this._model.asReadonly();
   readonly currentSection = this._currentSection.asReadonly();
-  readonly currentSubSection = this._currentSubSection.asReadonly();
+  readonly currentSubsection = this._currentSubsection.asReadonly();
   readonly currentField = this._currentField.asReadonly();
   readonly sideMenuSettingsType = this._sideMenuSettingsType.asReadonly();
 
   // Model options
+  setModel(model?: Model) {
+    this._model.set(model ?? new Model());
+    if (!model) {
+      this.addSection();
+    }
+    this.setCurrentSelection({chapter: null, section: null, field: null, sideMenuSettingsType: 'main'});
+    this.idService.findMaxId(this.model());
+  }
+
   setModelId(id: string) {
     this._model.update(model => {
       model.id = id;
@@ -68,7 +78,7 @@ export class FormBuilderService {
   // Set signals on user actions
   setCurrentSelection(selection: SelectedSection) {
     this._currentSection.set(selection.chapter);
-    this._currentSubSection.set(selection.section);
+    this._currentSubsection.set(selection.section);
     this._currentField.set(selection.field);
     this._sideMenuSettingsType.set(selection.sideMenuSettingsType);
   }
@@ -83,7 +93,11 @@ export class FormBuilderService {
   }
 
   setCurrentSection(section: Section) {
-    this._currentSubSection.set(section);
+    this._currentSection.set(section);
+  }
+
+  setCurrentSubsection(section: Section) {
+    this._currentSubsection.set(section);
   }
 
   setCurrentField(field: Field) {
@@ -106,7 +120,7 @@ export class FormBuilderService {
   }
 
   addSection() {
-    const newChapter = new Section();
+    const newChapter = new Section(this.idService.generateId().toString(),);
     this._model.update(model => {
       model.sections.push(newChapter);
       return model;
@@ -133,21 +147,21 @@ export class FormBuilderService {
 
   // Subsection relevant actions
   setSubSectionName(name: string) {
-    this._currentSubSection.update(subsection => {
+    this._currentSubsection.update(subsection => {
       subsection.name = name;
       return subsection;
     });
   }
 
   setSubSectionDescription(description: string) {
-    this._currentSubSection.update(subsection => {
+    this._currentSubsection.update(subsection => {
       subsection.description = description;
       return subsection;
     });
   }
 
   addSubSection(index: number) {
-    const newSection = new Section();
+    const newSection = new Section(this.idService.generateId().toString());
     this._model.update(model => {
       if (model.sections[index].subSections === null)
         model.sections[index].subSections = [];
@@ -155,7 +169,7 @@ export class FormBuilderService {
       model.sections[index].subSections.push(newSection);
       return model;
     });
-    this.setCurrentSection(newSection);
+    this.setCurrentSubsection(newSection);
     this.setSideMenuSettingsType('section');
   }
 
@@ -211,7 +225,7 @@ export class FormBuilderService {
   addField(type: FieldType) {
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
 
-    this._currentSubSection.update( section => {
+    this._currentSubsection.update( section => {
       if (section.fields === null)
         section.fields = [];
 
@@ -233,7 +247,7 @@ export class FormBuilderService {
       }
       return;
     }
-    this._currentSubSection.update(sec => {
+    this._currentSubsection.update(sec => {
       if (sec?.fields) {
         sec.fields.splice(index, 1);
       }
@@ -251,7 +265,7 @@ export class FormBuilderService {
       // this.updateReference();
       return;
     }
-    this._currentSubSection.update(sec => {
+    this._currentSubsection.update(sec => {
       if (sec) {
         if (!sec.fields) sec.fields = [];
         sec.fields.push(newField);
@@ -271,7 +285,7 @@ export class FormBuilderService {
       }
       return;
     }
-    this._currentSubSection.update(sec => {
+    this._currentSubsection.update(sec => {
       if (sec?.fields) {
         if (from >= sec.fields.length || to >= sec.fields.length || from < 0 || to < 0) {
           console.error('Invalid move position');
@@ -308,7 +322,7 @@ export class FormBuilderService {
 
   // Ckeditor specific update
   updateReference(): void {
-    this._currentSubSection.update(sec => {
+    this._currentSubsection.update(sec => {
       if (sec?.fields) {
         for (let i = 0; i < sec.fields.length; i++) {
           sec.fields[i] = {...sec.fields[i]};

@@ -136,8 +136,8 @@ export class Section {
   fields: Field[] | null;
   required: Required;
 
-  constructor() {
-    this.id = null;
+  constructor(id: string) {
+    this.id = id;
     this.name = null;
     this.description = null;
     this.subSections = null;
@@ -192,24 +192,14 @@ export class Model {
 
 
   constructor() {
+    this.id = '1';
     this.name = null;
     this.description = null;
     this.notice = null;
-    this.sections = [new Section()];
+    this.sections = [];
     this.configuration = new Configuration();
     this.locked = false;
     this.active = false;
-  }
-
-  get maxId(): number {
-    let maxId = 0;
-    const ids: string[] = jp.query(this, '$..sections..name');
-    ids.forEach(id => {
-      if (Utils.isNumeric(id) && (parseInt(id) > maxId))
-        maxId = parseInt(id);
-    });
-
-    return maxId;
   }
 
 }

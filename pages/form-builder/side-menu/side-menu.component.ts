@@ -10,7 +10,6 @@ import { FormBuilderService } from "../../../services/form-builder.service";
 export class SideMenuComponent {
   protected fbService = inject(FormBuilderService);
 
-
   pushChapter() {
     this.fbService.addSection();
   }
@@ -25,23 +24,10 @@ export class SideMenuComponent {
 
   deleteSubSection(position: number, index: number) {
     this.fbService.deleteSubSection(position, index);
-    // this.chapterModel[position].subSections.splice(index, 1);
-    //
-    // if (this.chapterModel[position].subSections[index]) {
-    //   this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[index], null, 'section');
-    //   return;
-    // } else if (this.chapterModel[position].subSections[index-1]) {
-    //   this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[index-1], null, 'section');
-    //   return;
-    // }
-    //
-    // this.emitSelection(this.chapterModel[position], null, null, 'chapter');
-    // return;
   }
 
   emitSelection(chapter: Section, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
     this.fbService.setCurrentSelection({chapter: chapter, section: section, field, sideMenuSettingsType: type})
-    // this.userSelection.emit({chapter: chapter, section: section, field, sideMenuSettingsType: type});
   }
 
   unwrapOuterParagraph(html?: string): string {

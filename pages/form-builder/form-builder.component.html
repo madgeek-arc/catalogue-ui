@@ -1,5 +1,60 @@
-<a class="uk-button uk-button-default" href="#fb-modal-full" data-uk-toggle>Open form builder</a>
+<div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom">
+  <div class="uk-container uk-container-expand">
 
+    @if (loading()) {
+      <p>Loading...</p>
+    }
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="uk-flex uk-flex-right">
+      <a class="uk-button uk-button-primary" href="#fb-modal-full" data-uk-toggle (click)="initModel()">Create new form</a>
+    </div>
+
+    <div class="uk-flex uk-flex-center">
+        <input type="text" placeholder="Keyword search" class="uk-input uk-form-width-medium"
+               (input)="onSearchChange($any($event.target).value)"/>
+    </div>
+
+
+
+    @let pageData = paging();
+
+    @if (pageData) {
+
+      <div class="uk-flex uk-flex-right uk-flex-middle">
+        <span class="uk-margin-small-right">Showing {{ pageData.from }} - {{ pageData.to }} of {{ pageData.total }}</span>
+        <div>
+          <button (click)="previousPage()" [disabled]="page() === 0">Previous</button>
+          <button (click)="nextPage()" [disabled]="pageData.to >= pageData.total">Next</button>
+        </div>
+      </div>
+
+      <table class="uk-table uk-table-divider uk-table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Creation Date</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (model of pageData.results; track model.id) {
+            <tr>
+              <td>{{ model.name }}</td>
+              <td>{{ model.creationDate | date: 'dd/MM/yyy' }}</td>
+              <td><a href="#fb-modal-full" data-uk-toggle (click)="initModel(model)">Edit</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+    }
+
+  </div>
+</div>
 
 <div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom">
   <div class="uk-container uk-container-expand">
@@ -7,113 +62,116 @@
     <div id="fb-modal-full" class="uk-modal-full" data-uk-modal style="min-height: 100vh">
       <div class="uk-modal-dialog">
 
-        <button class="uk-modal-close-default" type="button" data-uk-close></button>
-
         <div class="uk-modal-header">
-          <h2 class="uk-modal-title">Title</h2>
+          <div class="uk-flex uk-flex-between">
+            <h2 class="uk-modal-title">Title</h2>
+            <div>
+              <button class="uk-button uk-button-primary" type="button" (click)="saveModel()">Save</button>
+              <button class="uk-button uk-button-secondary uk-margin-small-left" type="button" (click)="hideModal()">Close</button>
+            </div>
+          </div>
         </div>
 
-        <div class="uk-modal-body uk-padding-remove" >
-          <div class="uk-grid uk-grid-column-collapse">
+        <div class="uk-modal-body uk-padding-remove">
+          @if (fbService.model()) {
+            <div class="uk-grid uk-grid-column-collapse">
 
-            <div class="uk-width-1-6 uk-section-primary uk-preserve-color">
-              <aside class="">
-                <app-side-menu></app-side-menu>
-              </aside>
-            </div>
+              <div class="uk-width-1-6 uk-section-primary uk-preserve-color">
+                <aside class="">
+                  <app-side-menu></app-side-menu>
+                </aside>
+              </div>
 
-            <div class="uk-width-expand uk-padding" style="min-height: 80vh">
-              @if (fbService.sideMenuSettingsType() === 'main') {
-                <app-main-info></app-main-info>
-              }
-              @if (fbService.currentSection()) {
-                <h3>{{ fbService.currentSection().name?.trim() || 'Untitled Chapter' }}</h3>
-                <p [innerHTML]="fbService.currentSection().description"></p>
-                @if (!fbService.currentSubSection()) {
-                  <div>
-                    @for (section of fbService.currentSection().subSections; track section; let i = $index) {
-                      <div class="uk-margin-bottom">
-                        <a (click)="fbService.setCurrentSection(section); fbService.setSideMenuSettingsType('section')">
-                          {{ section.name ?? 'Untitled Section ' + (i+1) }}
-                        </a>
-                      </div>
-                    }
-                  </div>
+              <div class="uk-width-expand uk-padding" style="min-height: 80vh">
+                @if (fbService.sideMenuSettingsType() === 'main') {
+                  <app-main-info></app-main-info>
                 }
-              }
-              @if (fbService.currentSubSection()) {
-                <h5>{{ fbService.currentSubSection().name ?? 'Untitled Section' }}</h5>
-                <p [innerHTML]="fbService.currentSubSection().description"></p>
-                @for (field of fbService.currentSubSection().fields; track field; let i = $index) {
-                  <div class="uk-margin-bottom">
-                    <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
-                      [ngClass]="{'highlight-field': fbService.currentField()?.id === field.id}" (click)="fieldSelection(field)">
-                      <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+                @if (fbService.currentSection()) {
+                  <h3>{{ fbService.currentSection().name?.trim() || 'Untitled Chapter' }}</h3>
+                  <p [innerHTML]="fbService.currentSection().description"></p>
+                  @if (!fbService.currentSubsection()) {
+                    <div>
+                      @for (subsection of fbService.currentSection().subSections; track subsection; let i = $index) {
+                        <div class="uk-margin-bottom">
+                          <a (click)="fbService.setCurrentSubsection(subsection); fbService.setSideMenuSettingsType('section')">
+                            {{ subsection.name ?? 'Untitled Section ' + (i+1) }}
+                          </a>
+                        </div>
+                      }
+                    </div>
+                  }
+                }
+                @if (fbService.currentSubsection()) {
+                  <h5>{{ fbService.currentSubsection().name ?? 'Untitled Section' }}</h5>
+                  <p [innerHTML]="fbService.currentSubsection().description"></p>
+                  @for (field of fbService.currentSubsection().fields; track field; let i = $index) {
+                    <div class="uk-margin-bottom">
+                      <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
+                           [ngClass]="{'highlight-field': fbService.currentField()?.id === field.id}" (click)="fieldSelection(field)">
+                        <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
                         <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                           <input id="fieldMandatory-{{field.id}}" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
                           <label for="fieldMandatory-{{field.id}}" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
                         </span>
-                        <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                          <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                           <input id="multiplicity-{{field.id}}" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
                           <label for="multiplicity-{{field.id}}" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
                         </span>
-                        <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
-                        <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
+                          <span class="material-icons uk-margin-small-right" (click)="duplicateField(field)" style="cursor: pointer">content_copy</span>
+                          <span class="material-icons" (click)="deleteField(i)" style="cursor: pointer">delete</span>
+                        </div>
+                        <div class="uk-grid uk-grid-column-collapse">
+                          <app-field-templates [field]="field" class="uk-width-expand"></app-field-templates>
+                          @if (fbService.currentSubsection().fields.length > 1) {
+                            <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
+                              @if (i !== 0) {
+                                <div class="uk-margin-small" data-uk-tooltip="Move up">
+                                  <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
+                                </div>
+                              }
+                              @if (i !== fbService.currentSubsection().fields.length-1) {
+                                <div class="uk-margin-small" data-uk-tooltip="Move down">
+                                  <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
                       </div>
-                      <div class="uk-grid uk-grid-column-collapse">
-                        <app-field-templates [field]="field" class="uk-width-expand"></app-field-templates>
-                        @if (fbService.currentSubSection().fields.length > 1) {
-                          <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
-                            @if (i !== 0) {
-                              <div class="uk-margin-small" data-uk-tooltip="Move up">
-                                <span class="material-icons" style="cursor: pointer" (click)="move(i, i-1)">north</span>
-                              </div>
-                            }
-                            @if (i !== fbService.currentSubSection().fields.length-1) {
-                              <div class="uk-margin-small" data-uk-tooltip="Move down">
-                                <span class="material-icons" style="cursor: pointer" (click)="move(i, i+1)">south</span>
-                              </div>
-                            }
-                          </div>
-                        }
+                    </div>
+                  }
+                  <div class="uk-grid uk-child-width-1-2">
+                    <div>
+                      <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                        <div class="uk-border-rounded border-dashed">
+                          <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                             (click)="fbService.addCompositeField(); fbService.setSideMenuSettingsType('field')">
+                            Add group <span class="material-icons">add</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                        <div class="uk-border-rounded border-dashed">
+                          <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                             (click)="fbService.setCurrentSubsection(fbService.currentSubsection()); fbService.setSideMenuSettingsType('fieldSelector')">
+                            Add Question <span class="material-icons">add</span>
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
                 }
-                <div class="uk-grid uk-child-width-1-2">
-                  <div>
-                    <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-                      <div class="uk-border-rounded border-dashed">
-                        <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                           (click)="fbService.addCompositeField(); fbService.setSideMenuSettingsType('field')">
-                          Add group <span class="material-icons">add</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-                      <div class="uk-border-rounded border-dashed">
-                        <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                           (click)="fbService.setCurrentSection(fbService.currentSubSection()); fbService.setSideMenuSettingsType('fieldSelector')">
-                          Add Question <span class="material-icons">add</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
+              </div>
 
-            <div class="uk-width-1-5 uk-section-primary uk-preserve-color">
-              <app-settings-side-menu [section]="fbService.currentSubSection()" [field]="fbService.currentField()"
-                                      (emitFieldReferenceChange)="updateReference()"
-                                      (emitSideMenuSettingsChange)="fbService.setSideMenuSettingsType($event)"
-                                      (emitField)="fbService.setCurrentField($event)">
-              </app-settings-side-menu>
-            </div>
+              <div class="uk-width-1-5 uk-section-primary uk-preserve-color">
+                <app-settings-side-menu [field]="fbService.currentField()" (emitFieldReferenceChange)="updateReference()">
+                </app-settings-side-menu>
+              </div>
 
-          </div>
+            </div>
+          }
         </div>
 
         <div class="uk-modal-footer">

@@ -22,19 +22,9 @@ import { MainSettingsComponent } from "./main-settings/main-settings.component";
 export class SettingsSideMenuComponent {
   protected fbService = inject(FormBuilderService);
 
-  @Input() section: Section | null = null;
   @Input() field: Field | null = null;
 
-  @Output() emitSideMenuSettingsChange = new EventEmitter<typeof SelectedSection.prototype.sideMenuSettingsType>();
   @Output() emitFieldReferenceChange = new EventEmitter<void>();
-  @Output() emitField = new EventEmitter<Field>();
-
-  // fieldSettings(position: number) {
-  //   this.field = this.section.fields[position];
-  //   console.log(this.field.id);
-  //   this.emitSideMenuSettingsChange.emit('field');
-  //   this.emitField.emit(this.field);
-  // }
 
   updateFieldReference() {
     if (this.field.typeInfo.type === 'richText') {

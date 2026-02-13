@@ -12,12 +12,10 @@ import { FormBuilderService } from "../../../../services/form-builder.service";
     CKEditorModule,
     FormsModule
   ],
-  standalone: true
 }))
 
 export class ChapterSettingsComponent {
   protected fbService = inject(FormBuilderService);
-  // @Input() chapter: Section | null = null;
 
   public editor = ClassicEditor;
 }

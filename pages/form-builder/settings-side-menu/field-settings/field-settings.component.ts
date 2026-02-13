@@ -19,16 +19,7 @@ export class FieldSettingsComponent {
 
   @Input() field: Field | null = null;
 
-  @Output() emitField: EventEmitter<void> = new EventEmitter();
-
-
   public editor = ClassicEditor;
-
-  setPlaceholderWithReferenceUpdate() {
-    // console.log(newPlaceholder);
-
-    this.emitField.emit()
-  }
 
   setVisibility(event: boolean): void {
     this.field.form.display.visible = !event;

@@ -27,8 +27,6 @@ import { SafeUrlPipe } from "../../shared/pipes/safeUrlPipe";
     DynamicFormModule,
     CatalogueUiReusableComponentsModule,
     CatalogueUiSharedModule,
-    SafeUrlPipe,
-    ChapterSettingsComponent,
   ],
   providers: []
 })
