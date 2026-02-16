@@ -1,7 +1,7 @@
 <section>
   <h6>Field settings</h6>
   <ul data-uk-accordion="multiple: true">
-    @if (field.typeInfo.type !== 'composite') {
+    @if (field.typeInfo.type !== 'composite' && field.typeInfo.type !== 'radio') {
       <li class="uk-open">
         <a class="uk-accordion-title" href>General</a>
         <div class="uk-accordion-content">
@@ -16,7 +16,7 @@
           </div>
           <div class="uk-margin">
             <label for="placeholder" class="uk-text-muted uk-text-bold">Placeholder</label>
-            <input id="placeholder" type="text" class="uk-input" [ngModel]="field.form.placeholder"
+            <input id="placeholder" type="text" class="uk-input" [ngModel]="fbService.currentField().form.placeholder"
                    (ngModelChange)="fbService.setFieldPlaceholder($event)">
           </div>
         </div>
@@ -98,10 +98,12 @@
           <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
           <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
         </div>
-        <div class="uk-text-muted uk-text-bold">
-          <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
-          <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
-        </div>
+        @if (field.typeInfo.type !== 'radio') {
+          <div class="uk-text-muted uk-text-bold">
+            <input id="multiplicity" class="uk-checkbox" type="checkbox" [(ngModel)]="field.typeInfo.multiplicity">
+            <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
+          </div>
+        }
         <div class="uk-text-muted uk-text-bold">
           <input id="hidden" class="uk-checkbox" type="checkbox" [ngModel]="!field.form.display.visible"
                  (ngModelChange)="setVisibility($event)">

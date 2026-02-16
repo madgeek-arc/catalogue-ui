@@ -1,16 +1,16 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
 import { DatePipe, JsonPipe, NgClass } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Field, Model } from "../../domain/dynamic-form-model";
+import { Paging } from "../../domain/paging";
+import { DynamicCatalogueService } from "../../services/dynamic-catalogue.service";
 import { FormControlService } from "../../services/form-control.service";
 import { FormBuilderService } from "../../services/form-builder.service";
+import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
+import { FieldTemplatesComponent } from "./field-templates/field-templates.component";
 import { SideMenuComponent } from "./side-menu/side-menu.component";
 import { MainInfoComponent } from "./main-info/main-info.component";
-import { FieldTemplatesComponent } from "./field-templates/field-templates.component";
-import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
-import { DynamicCatalogueService } from "../../services/dynamic-catalogue.service";
-import { Paging } from "../../domain/paging";
-import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged, switchMap, tap } from "rxjs/operators";
 import { combineLatest } from "rxjs";
 import UIkit from "uikit";
@@ -112,7 +112,7 @@ export class FormBuilderComponent implements OnInit {
   deleteField(i: number, parentField?: Field) { this.fbService.deleteField(i, parentField); }
   duplicateField(f: Field, parentField?: Field) { this.fbService.duplicateField(f, parentField); }
   move(a: number, b: number, parentField?: Field) { this.fbService.move(a, b, parentField); }
-  updateReference(): void { this.fbService.updateReference(); }
+  // updateReference(): void { this.fbService.updateReference(); }
 
   // Search results
   nextPage() {

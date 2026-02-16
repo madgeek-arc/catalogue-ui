@@ -1,14 +1,28 @@
-<div>
-  <h6 class="uk-flex uk-flex-middle"><span class="material-icons uk-margin-small-right">chat</span> Create New Question</h6>
+<section>
+  <h6 class="uk-flex uk-flex-middle"><span class="material-symbols-outlined uk-margin-small-right">chat</span> Create New Question</h6>
   <p class="uk-text-muted">Text field</p>
-  <a class="uk-flex uk-flex-middle" (click)="addField(FieldType.string)">
-    <span class="material-icons uk-margin-small-right">horizontal_rule</span>Simple input
+  <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.string)">
+    <span class="material-symbols-outlined uk-margin-small-right">horizontal_rule</span>Simple input
   </a>
-  <a class="uk-flex uk-flex-middle" (click)="addField(FieldType.richText)">
-    <span class="material-icons uk-margin-small-right">data_object</span>Rich text
+  <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.richText)">
+    <span class="material-symbols-outlined uk-margin-small-right">data_object</span>Rich text
   </a>
-  <a class="uk-flex uk-flex-middle" (click)="addField(FieldType.largeText)">
-    <span class="material-icons uk-margin-small-right">dehaze</span>Text area
+  <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.largeText)">
+    <span class="material-symbols-outlined uk-margin-small-right">dehaze</span>Text area
   </a>
 
-</div>
+  <hr>
+
+  <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.radio)">
+    <span class="material-symbols-outlined uk-margin-small-right">radio_button_checked</span>Radio
+  </a>
+<!--  <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.checkbox)">-->
+<!--    <span class="material-symbols-outlined uk-margin-small-right">select_check_box</span>Check box-->
+<!--  </a>-->
+
+  <hr>
+
+  <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.select)">
+    <span class="material-symbols-outlined uk-margin-small-right">arrow_drop_down_circle</span>Select
+  </a>
+</section>

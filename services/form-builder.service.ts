@@ -212,6 +212,7 @@ export class FormBuilderService {
       field.form.placeholder = placeholder;
       return field;
     });
+    // this.updateReference();
   }
 
   setFieldLabel(text: string) {
@@ -317,18 +318,6 @@ export class FormBuilderService {
     });
     this.setCurrentField(tmpField);
     this.setSideMenuSettingsType('field');
-  }
-
-  // Ckeditor specific update
-  updateReference(): void {
-    this._currentSubsection.update(sec => {
-      if (sec?.fields) {
-        for (let i = 0; i < sec.fields.length; i++) {
-          sec.fields[i] = {...sec.fields[i]};
-        }
-      }
-      return sec;
-    });
   }
 
 }

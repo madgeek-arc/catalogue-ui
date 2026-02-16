@@ -9,7 +9,6 @@ export class IdGenerationService {
 
   findMaxId(model: Model) {
     this.currentId = findMaxId(model);
-    console.log(this.currentId);
   }
 
   generateId(): number {

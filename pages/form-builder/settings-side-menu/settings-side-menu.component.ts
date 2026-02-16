@@ -1,5 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
-import { Field, Section, SelectedSection } from "../../../domain/dynamic-form-model";
+import { Component, inject } from "@angular/core";
 import { ChapterSettingsComponent } from "./chapter-settings/chapter-settings.component";
 import { SectionSettingsComponent } from "./section-settings/section-settings.component";
 import { FieldSettingsComponent } from "./field-settings/field-settings.component";
@@ -21,17 +20,5 @@ import { MainSettingsComponent } from "./main-settings/main-settings.component";
 
 export class SettingsSideMenuComponent {
   protected fbService = inject(FormBuilderService);
-
-  @Input() field: Field | null = null;
-
-  @Output() emitFieldReferenceChange = new EventEmitter<void>();
-
-  updateFieldReference() {
-    if (this.field.typeInfo.type === 'richText') {
-      this.emitFieldReferenceChange.emit();
-    }
-
-    return;
-  }
 
 }
