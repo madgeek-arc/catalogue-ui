@@ -2,7 +2,6 @@ import { inject, Injectable, signal } from "@angular/core";
 import { Field, FieldType, Model, Section, SelectedSection } from "../domain/dynamic-form-model";
 import { IdGenerationService } from "./id-generation.service";
 import { cloneDeep } from "lodash";
-import { findMaxId } from "../shared/utils/utils";
 
 @Injectable({providedIn: 'root'})
 
