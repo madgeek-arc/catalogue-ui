@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { NgClass } from "@angular/common";
 import { BaseFieldComponent } from "../utils/base-field.component";
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
-import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 
 @Component({
   selector: 'app-checkbox-field',
@@ -21,11 +21,13 @@ export class CheckboxFieldComponent extends BaseFieldComponent {
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   label?: string;
+  properties: CustomProperties = {};
 
   ngOnInit() {
     super.ngOnInit();
-    if (this.fieldData.typeInfo.properties.hasOwnProperty('label'))
-      this.label = this.fieldData.typeInfo.properties.label as string;
+    this.properties = this.fieldData.typeInfo.properties as CustomProperties;
+    if (this.properties.hasOwnProperty('label'))
+      this.label = this.properties.label as string;
   }
 
   /** Bitsets--> **/

@@ -10,7 +10,6 @@ import { SafeUrlPipe } from "../../../shared/pipes/safeUrlPipe";
 import { FormBuilderService } from "../../../services/form-builder.service";
 import { FormsModule } from "@angular/forms";
 import UIkit from "uikit";
-import { NgSelectComponent } from "@ng-select/ng-select";
 
 @Component(({
   selector: 'app-field-templates',
@@ -22,7 +21,6 @@ import { NgSelectComponent } from "@ng-select/ng-select";
     CatalogueUiReusableComponentsModule,
     SafeUrlPipe,
     FormsModule,
-    NgSelectComponent,
   ],
 }))
 
@@ -71,6 +69,15 @@ export class FieldTemplatesComponent {
     this.field.typeInfo.values.push(this.option);
     this.field.typeInfo.values = [...this.field.typeInfo.values];
     this.option = {id: '', label: ''};
+  }
+
+  removeOption(index: number) {
+    this.field.typeInfo.values.splice(index, 1);
+    this.field.typeInfo.values = [...this.field.typeInfo.values];
+  }
+
+  move(fromIndex: number, toIndex: number) {
+    this.field.typeInfo.values.splice(toIndex, 0, this.field.typeInfo.values.splice(fromIndex, 1)[0]);
   }
 
 }

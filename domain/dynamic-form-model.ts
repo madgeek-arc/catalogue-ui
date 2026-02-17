@@ -281,12 +281,11 @@ export class Series {
 }
 
 export class TypeProperties {
-  [key: string]: string | number | boolean | UrlParameter[];
 }
 
-// export interface CustomProperties extends TypeProperties {
-//  [key: string]: string | number | boolean | UrlParameter[];
-// }
+export class CustomProperties extends TypeProperties {
+ [key: string]: string;
+}
 
 export class DateProperties extends TypeProperties {
   formatToString: boolean | null = null;
@@ -360,9 +359,9 @@ const propertiesFactory: Record<FieldType, new () => TypeProperties> = {
   [FieldType.vocabulary]: VocabularyProperties,
   [FieldType.select]: TypeProperties,
   [FieldType.radio]: TypeProperties,
-  [FieldType.checkbox]: TypeProperties,
-  [FieldType.bool]: TypeProperties,
-  [FieldType.scale]: TypeProperties,
+  [FieldType.checkbox]: CustomProperties,
+  [FieldType.bool]: CustomProperties,
+  [FieldType.scale]: CustomProperties,
   [FieldType.composite]: TypeProperties,
   [FieldType.chooseOne]: TypeProperties,
   [FieldType.array]: TypeProperties,

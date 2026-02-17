@@ -23,176 +23,160 @@
     }
   }
 
-  @switch (field?.typeInfo.type) {
-    @case ('composite') {
-      <div class="uk-card uk-card-default uk-card-body uk-animation-scale-up">
 
-        @for (subField of field.subFields; track subField; let i = $index) {
-          <div class="uk-margin-bottom">
-            <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
-                 [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}"
-                 (click)="$event.stopPropagation(); fbService.fieldSelection(subField)">
-              <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+  @if (field?.typeInfo.type === 'composite') {
+    <div class="uk-card uk-card-default uk-card-body uk-animation-scale-up">
+
+      @for (subField of field.subFields; track subField; let i = $index) {
+        <div class="uk-margin-bottom">
+          <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
+               [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}"
+               (click)="$event.stopPropagation(); fbService.fieldSelection(subField)">
+            <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+              <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                <input id="fieldMandatory-{{subField.id}}" class="uk-checkbox" type="checkbox"
+                       [(ngModel)]="subField.form.mandatory">
+                <label for="fieldMandatory-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
+              </span>
+              @if (subField.typeInfo.type !== 'radio') {
                 <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
-                  <input id="fieldMandatory-{{subField.id}}" class="uk-checkbox" type="checkbox" [(ngModel)]="subField.form.mandatory">
-                  <label for="fieldMandatory-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
-                </span>
-                @if (subField.typeInfo.type !== 'radio') {
-                  <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                     <input id="multiplicity-{{subField.id}}" class="uk-checkbox" type="checkbox"
                            [(ngModel)]="subField.typeInfo.multiplicity">
                     <label for="multiplicity-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">
                       Allow multiplicity
                     </label>
                   </span>
-                }
-                <span class="material-icons uk-margin-small-right" (click)="fbService.duplicateField(subField, field)">
-                  content_copy
-                </span>
-                <span class="material-icons uk-cursor-pointer" (click)="fbService.deleteField(i, field)">delete</span>
-              </div>
-              <div class="uk-grid uk-grid-column-collapse">
-                <app-field-templates [field]="subField" class="uk-width-expand"></app-field-templates>
-                @if (field.subFields.length > 1) {
-                  <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
-                    @if (i !== 0) {
-                      <div class="uk-margin-small" data-uk-tooltip="Move up">
-                        <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i-1, field)">north</span>
-                      </div>
-                    }
-                    @if (i !== field.subFields.length-1) {
-                      <div class="uk-margin-small" data-uk-tooltip="Move down">
-                        <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i+1, field)">south</span>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
+              }
+              <span class="material-icons uk-margin-small-right" (click)="fbService.duplicateField(subField, field)">
+                content_copy
+              </span>
+              <span class="material-icons uk-cursor-pointer" (click)="fbService.deleteField(i, field)">delete</span>
+            </div>
+            <div class="uk-grid uk-grid-column-collapse">
+              <app-field-templates [field]="subField" class="uk-width-expand"></app-field-templates>
+              @if (field.subFields.length > 1) {
+                <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
+                  @if (i !== 0) {
+                    <div class="uk-margin-small" data-uk-tooltip="Move up">
+                      <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i-1, field)">north</span>
+                    </div>
+                  }
+                  @if (i !== field.subFields.length - 1) {
+                    <div class="uk-margin-small" data-uk-tooltip="Move down">
+                      <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i+1, field)">south</span>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
-        }
+        </div>
+      }
 
-        <div class="uk-grid uk-child-width-1-2">
-          <div>
-            <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-              <div class="uk-border-rounded border-dashed">
-                <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                   (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
-                  Add group <span class="material-icons">add</span>
-                </a>
-              </div>
+      <div class="uk-grid uk-child-width-1-2">
+        <div>
+          <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+            <div class="uk-border-rounded border-dashed">
+              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                 (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
+                Add group <span class="material-icons">add</span>
+              </a>
             </div>
           </div>
-          <div>
-            <div class="uk-card uk-card-default uk-card-body uk-padding-small">
-              <div class="uk-border-rounded border-dashed">
-                <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                   (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
-                  Add Question <span class="material-icons">add</span>
-                </a>
-              </div>
+        </div>
+        <div>
+          <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+            <div class="uk-border-rounded border-dashed">
+              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                 (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
+                Add Question <span class="material-icons">add</span>
+              </a>
             </div>
           </div>
         </div>
       </div>
-    }
-    @case ('richText') {
-      <div class="uk-margin-medium-top uk-animation-scale-up uk-disabled">
-        <!-- This loop is needed to reinitialize ckeditor, because config is only read at initialization -->
-        @for (placeholder of [field.form.placeholder ?? '']; track placeholder) {
-          <ckeditor [editor]="editor" [config]="{placeholder: placeholder}"></ckeditor>
-        }
+    </div>
+  }
+  @if (field?.typeInfo.type === 'richText') {
+    <div class="uk-margin-medium-top uk-animation-scale-up uk-disabled">
+      <!-- This loop is needed to reinitialize ckeditor, because config is only read at initialization -->
+      @for (placeholder of [field.form.placeholder ?? '']; track placeholder) {
+        <ckeditor [editor]="editor" [config]="{placeholder: placeholder}"></ckeditor>
+      }
+    </div>
+  } @else if (field?.typeInfo.type === 'string') {
+    <input class="uk-input uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''">
+  } @else if (field?.typeInfo.type === 'largeText') {
+    <textarea class="uk-textarea uk-animation-scale-up uk-disabled"
+              [placeholder]="field.form.placeholder ?? ''"></textarea>
+    @if (textProperties.maxLength) {
+      <div class="uk-animation-scale-up" style="float: right;">
+        <span> 0/ {{ textProperties.maxLength }}</span>
       </div>
     }
-    @case ('string') {
-      <input class="uk-input uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''">
-    }
-    @case ('largeText') {
-      <textarea class="uk-textarea uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''"></textarea>
-      @if (textProperties.maxLength) {
-        <div class="uk-animation-scale-up" style="float: right;">
-          <span> 0/ {{textProperties.maxLength}}</span>
-        </div>
-      }
-    }
-    @case ('radio') {
+  } @else if (field?.typeInfo.type === 'select' || field?.typeInfo.type === 'radio') {
 
-      @for (value of field.typeInfo.values; track value.id) {
-        <div class="uk-margin-small-top">
-          <input [id]="value.id" [name]="field.id" type="radio" [value]="value.id"
-                 class="uk-radio uk-margin-small-right" [disabled]="field.form.mandatory">
-          <label [for]="value.id">{{value.label}}</label>
-        </div>
-      }
+    <form class="uk-margin-top uk-grid-small" data-uk-grid>
 
-      <form class="uk-margin-top uk-grid-small" data-uk-grid>
-        <div class="uk-width-1-3">
-          <label class="uk-form-label" for="radio-label">Label</label>
+      <div class="uk-width-1-3">
+        <label class="uk-form-label" for="radio-label">Label</label>
+        <div class="uk-form-controls">
+          <input id="radio-label" class="uk-input" type="text" placeholder="Set the label"
+                 [(ngModel)]="option.label"
+                 [ngModelOptions]="{standalone: true}">
+        </div>
+      </div>
+      <div class="uk-width-1-3">
+        <div>
+          <label class="uk-form-label" for="radio-value">Value</label>
+        </div>
+        <div class="uk-inline uk-width-1-1">
+          @if (sameLabelValue) {
+            <span class="uk-form-icon uk-form-icon-flip " data-uk-icon="icon: lock"></span>
+          }
+          <input id="radio-value" class="uk-input" type="text" [disabled]="sameLabelValue"
+                 [(ngModel)]="option.id" [ngModelOptions]="{standalone: true}"
+                 [placeholder]="sameLabelValue ? 'Same as label' : 'Set a Value'">
+        </div>
+      </div>
+      <div class="uk-width-1-3 uk-flex uk-flex-bottom">
+        <button class="uk-button uk-button-default" (click)="addOption()">Add option</button>
+      </div>
+
+      <div class="uk-width-1-1">
+        <input id="value" type="checkbox" class="uk-checkbox uk-margin-small-right"
+               [(ngModel)]="sameLabelValue" [ngModelOptions]="{standalone: true}">
+        <label for="value" class="uk-radio-label">Same value as the label</label>
+      </div>
+
+      @for (value of field.typeInfo.values; let i = $index; let first = $first; let last = $last; track value.id + '-' + $index) {
+        <div class="uk-width-1-3 uk-animation-slide-top-small">
           <div class="uk-form-controls">
             <input id="radio-label" class="uk-input" type="text" placeholder="Set the label"
-                   [(ngModel)]="option.label"
-                   [ngModelOptions]="{standalone: true}">
+                   [(ngModel)]="value.label" [ngModelOptions]="{standalone: true}">
           </div>
         </div>
-        <div class="uk-width-1-3">
-          <div>
-            <label class="uk-form-label" for="radio-value">Value</label>
-          </div>
+        <div class="uk-width-1-3 uk-animation-slide-top-small">
           <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon uk-form-icon-flip " data-uk-icon="icon: lock"></span>
-            <input id="radio-value" class="uk-input" type="text" [ngClass]="{'uk-disabled': sameLabelValue}"
-                   [(ngModel)]="option.id" [ngModelOptions]="{standalone: true}"
-                   [placeholder]="sameLabelValue ? 'Same as label' : 'Set a Value'">
-          </div>
-        </div>
-        <div class="uk-width-1-3 uk-flex uk-flex-bottom">
-          <button class="uk-button uk-button-default" (click)="addOption()">Add option</button>
-        </div>
-
-        <div class="uk-width-1-1">
-          <input id="value" type="checkbox" class="uk-checkbox uk-margin-small-right"
-                 [(ngModel)]="sameLabelValue" [ngModelOptions]="{standalone: true}">
-          <label for="value" class="uk-radio-label">Same value as the label</label>
-        </div>
-
-      </form>
-    }
-    @case ('select') {
-
-      <ng-select [items]="field.typeInfo.values" bindLabel="label" bindValue="id"></ng-select>
-
-      <form class="uk-margin-top uk-grid-small" data-uk-grid>
-        <div class="uk-width-1-3">
-          <label class="uk-form-label" for="radio-label">Label</label>
-          <div class="uk-form-controls">
-            <input id="radio-label" class="uk-input" type="text" placeholder="Set the label"
-                   [(ngModel)]="option.label"
-                   [ngModelOptions]="{standalone: true}">
-          </div>
-        </div>
-        <div class="uk-width-1-3">
-          <div>
-            <label class="uk-form-label" for="radio-value">Value</label>
-          </div>
-          <div class="uk-inline uk-width-1-1">
-            <span class="uk-form-icon uk-form-icon-flip " data-uk-icon="icon: lock"></span>
+            @if (sameLabelValue) {
+              <span class="uk-form-icon uk-form-icon-flip " data-uk-icon="icon: lock"></span>
+            }
             <input id="radio-value" class="uk-input" type="text" [disabled]="sameLabelValue"
-                   [(ngModel)]="option.id" [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="value.id" [ngModelOptions]="{standalone: true}"
                    [placeholder]="sameLabelValue ? 'Same as label' : 'Set a Value'">
           </div>
         </div>
-        <div class="uk-width-1-3 uk-flex uk-flex-bottom">
-          <button class="uk-button uk-button-default" (click)="addOption()">Add option</button>
+        <div class="uk-width-1-3 uk-flex uk-flex-middle uk-animation-slide-top-small">
+          @if (!first) {
+            <span class="material-symbols-outlined uk-cursor-pointer" (click)="move(i, i-1)">arrow_circle_up</span>
+          }
+          @if (!last) {
+            <span class="material-symbols-outlined uk-cursor-pointer" (click)="move(i, i+1)">arrow_circle_down</span>
+          }
+          <span class="material-symbols-outlined uk-cursor-pointer" (click)="removeOption(i)">delete</span>
         </div>
-
-        <div class="uk-width-1-1">
-          <input id="value" type="checkbox" class="uk-checkbox uk-margin-small-right"
-                 [(ngModel)]="sameLabelValue" [ngModelOptions]="{standalone: true}">
-          <label for="value" class="uk-radio-label">Same value as the label</label>
-        </div>
-
-      </form>
-    }
+      }
+    </form>
   }
 
   @if (field?.form.suggestion.text) {
