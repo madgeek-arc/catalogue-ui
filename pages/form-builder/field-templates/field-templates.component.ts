@@ -1,4 +1,4 @@
-import { Component, inject, Input } from "@angular/core";
+import { Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
 import { Field, IdLabel, TextProperties } from "../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CommonModule } from "@angular/common";
@@ -26,6 +26,8 @@ import UIkit from "uikit";
 
 export class FieldTemplatesComponent {
   protected fbService = inject(FormBuilderService);
+
+  @ViewChild('labelInput') inputEl!: ElementRef<HTMLInputElement>;
 
   @Input() field: Field | null = null;
 
@@ -69,6 +71,7 @@ export class FieldTemplatesComponent {
     this.field.typeInfo.values.push(this.option);
     this.field.typeInfo.values = [...this.field.typeInfo.values];
     this.option = {id: '', label: ''};
+    this.inputEl.nativeElement.focus();
   }
 
   removeOption(index: number) {
@@ -78,6 +81,11 @@ export class FieldTemplatesComponent {
 
   move(fromIndex: number, toIndex: number) {
     this.field.typeInfo.values.splice(toIndex, 0, this.field.typeInfo.values.splice(fromIndex, 1)[0]);
+  }
+
+  updateValue(index: number, event: string) {
+    this.field.typeInfo.values[index].label = event;
+    this.field.typeInfo.values[index].id = event;
   }
 
 }

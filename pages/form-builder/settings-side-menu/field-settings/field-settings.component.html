@@ -1,6 +1,29 @@
 <section>
   <h6>Field settings</h6>
   <ul data-uk-accordion="multiple: true">
+    @if (options().length) {
+      <li class="uk-open">
+        <a class="uk-accordion-title" href>General</a>
+        <div class="uk-accordion-content">
+          <div class="uk-margin">
+            <label for="fieldType" class="uk-text-muted uk-text-bold">Input type</label>
+            <select id="fieldType" type="select" class="uk-select" [ngModel]="fbService.currentField().typeInfo.type"
+                    (ngModelChange)="fbService.setFieldType($event)">
+              @for (option of options(); track option.value +''+ $index) {
+                <option value="{{option.value}}">{{option.label}}</option>
+              }
+            </select>
+          </div>
+          @if (!['select', 'radio', 'checkbox'].includes(fbService.currentField().typeInfo.type)) {
+            <div class="uk-margin">
+              <label for="placeholder" class="uk-text-muted uk-text-bold">Placeholder</label>
+              <input id="placeholder" type="text" class="uk-input" [ngModel]="fbService.currentField().form.placeholder"
+                     (ngModelChange)="fbService.setFieldPlaceholder($event)">
+            </div>
+          }
+        </div>
+      </li>
+    }
     <li class="uk-open">
       <a class="uk-accordion-title" href>Label</a>
       <div class="uk-accordion-content">
