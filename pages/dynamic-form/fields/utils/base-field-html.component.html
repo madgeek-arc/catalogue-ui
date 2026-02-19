@@ -12,11 +12,13 @@
                style="{{fieldData.label.style}}" [for]="inputId" [innerHTML]="label">
         </label>
 
-        <div class="uk-width-auto">
-          <ul class="uk-invisible-hover uk-iconnav">
-            <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
-          </ul>
-        </div>
+        @if (commentingService.hasCommenting()) {
+          <div class="uk-width-auto">
+            <ul class="uk-invisible-hover uk-iconnav">
+              <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
+            </ul>
+          </div>
+        }
       </div>
     </div>
   }

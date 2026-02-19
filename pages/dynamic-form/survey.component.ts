@@ -178,6 +178,8 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.readonly = true;
     } else if (this.router.url.includes('/freeView')) {
       this.freeView = true;
+      this.enableCommenting = false;
+      this.wsComments.setCommenting(false);
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
     }
@@ -284,6 +286,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   initializeCommenting() {
+    this.wsComments.setCommenting(this.enableCommenting);
     if (this.enableCommenting && this.payload?.id && !this.commentingInitialized) {
       // console.log('Starting websocket for comments')
       this.wsComments.initializeWebSocketConnection(this.payload.id);

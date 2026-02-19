@@ -35,7 +35,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 export class BaseFieldHtmlComponent implements OnInit, OnChanges {
   private destroyRef = inject(DestroyRef);
-  private commentingService = inject(CommentingWebsocketService);
+  protected commentingService = inject(CommentingWebsocketService);
 
   @Input() form!: UntypedFormGroup;
   @Input() fieldData: Field;
@@ -142,15 +142,7 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
   }
 
   createThread() {
-    // if (!this.comment) {
-    //   UIkit.notification({message: 'Please enter a comment', status: 'warning'});
-    //   return;
-    // }
-    // console.log('createThread');
-    // console.log(this.fieldData.id);
     this.commentingService.temporaryThreadAdd(this.fieldData.id);
-    // this.commentingService.addThread(this.fieldData.id, this.comment);
-    // UIkit.modal(`#comment-modal-${this.fieldData.id}`).hide();
   }
 
 }

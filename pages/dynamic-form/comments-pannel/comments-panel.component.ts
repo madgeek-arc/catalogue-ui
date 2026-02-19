@@ -10,18 +10,18 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { CommentAnchorService } from "../../../services/comment-anchor.service";
-import { combineLatest, Observable, fromEvent } from 'rxjs';
-import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
+import { FormsModule } from "@angular/forms";
+import { NgClass } from "@angular/common";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { combineLatest, fromEvent, Observable } from 'rxjs';
+import { debounceTime } from "rxjs/operators";
+import { CommentAnchorService } from "../../../services/comment-anchor.service";
+import { CommentingWebsocketService } from "../../../services/commenting-websocket.service";
 import { Comment, Thread } from "../../../domain/comment.model";
 import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
-import { debounceTime } from "rxjs/operators";
-import { FormsModule } from "@angular/forms";
-import { JsonPipe, NgClass } from "@angular/common";
-import UIkit from "uikit";
 import { Section } from "../../../domain/dynamic-form-model";
+import UIkit from "uikit";
 
 type SubSectionComments = {
   subSectionId: string;

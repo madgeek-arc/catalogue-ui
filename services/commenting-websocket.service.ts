@@ -1,4 +1,4 @@
-import { DestroyRef, inject, Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { environment } from "../../environments/environment";
 import { HttpClient, HttpParams, HttpXsrfTokenExtractor } from "@angular/common/http";
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
@@ -24,6 +24,8 @@ export class CommentingWebsocketService {
   private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
   private xsrf = inject(HttpXsrfTokenExtractor);
+
+  hasCommenting = signal<boolean>(false);
 
   private readonly base = environment.API_ENDPOINT;
   private surveyAnswerId: string | null = null;
@@ -183,6 +185,10 @@ export class CommentingWebsocketService {
         console.error(error);
       }
     });
+  }
+
+  setCommenting(value: boolean) {
+    this.hasCommenting.set(value);
   }
 
 }
