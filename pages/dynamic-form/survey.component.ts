@@ -41,7 +41,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: Model = null;
   @Input() subType: string = null;
   @Input() userId: string | null = null;
-  @Input() activeUsers: UserActivity[] = null;
   @Input() enableWebsocket = false;
   @Input() vocabulariesMap: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
@@ -267,16 +266,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       }
       this.ready = true;
 
-    }
-
-    if (this.activeUsers?.length > 0) {
-      setTimeout(()=> {
-        let users = [];
-        this.activeUsers.forEach(user => {
-          users.push(' '+user.fullname);
-        });
-        UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
-      }, 0);
     }
   }
 
