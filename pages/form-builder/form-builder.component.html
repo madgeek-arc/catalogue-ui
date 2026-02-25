@@ -62,9 +62,9 @@
     <div id="fb-modal-full" class="uk-modal-full" data-uk-modal style="min-height: 100vh">
       <div class="uk-modal-dialog">
 
-        <div class="uk-modal-header">
+        <div class="uk-modal-header uk-background-secondary">
           <div class="uk-flex uk-flex-between">
-            <h2 class="uk-modal-title">Title</h2>
+            <h2 class="uk-modal-title uk-margin-remove uk-text-white">Title</h2>
             <div>
               <button class="uk-button uk-button-primary" type="button" (click)="saveModel()">Save</button>
               <button class="uk-button uk-button-secondary uk-margin-small-left" type="button" (click)="hideModal()">Close</button>
@@ -87,8 +87,8 @@
                   <app-main-info></app-main-info>
                 }
                 @if (fbService.currentSection()) {
-                  <h3>{{ fbService.currentSection().name?.trim() || 'Untitled Chapter' }}</h3>
-                  <p [innerHTML]="fbService.currentSection().description"></p>
+                  <h5>{{ fbService.currentSection().name?.trim() || 'Untitled Chapter' }}</h5>
+                  <p [innerHTML]="fbService.currentSection().description" class="uk-text-light"></p>
                   @if (!fbService.currentSubsection()) {
                     <div>
                       @for (subsection of fbService.currentSection().subSections; track subsection; let i = $index) {
@@ -102,11 +102,11 @@
                   }
                 }
                 @if (fbService.currentSubsection()) {
-                  <h5>{{ fbService.currentSubsection().name ?? 'Untitled Section' }}</h5>
-                  <p [innerHTML]="fbService.currentSubsection().description"></p>
+                  <h6 class="uk-text-normal uk-margin-top">{{ fbService.currentSubsection().name ?? 'Untitled Section' }}</h6>
+                  <p [innerHTML]="fbService.currentSubsection().description" class="uk-text-light"></p>
                   @for (field of fbService.currentSubsection().fields; track field.id; let i = $index) {
                     <div class="uk-margin-bottom">
-                      <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
+                      <div class="uk-card uk-card-body card-simple uk-padding-small uk-animation-scale-up"
                            [ngClass]="{'highlight-field': fbService.currentField()?.id === field.id}" (click)="fieldSelection(field)">
                         <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
                           <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
@@ -144,7 +144,7 @@
                   }
                   <div class="uk-grid uk-child-width-1-2">
                     <div>
-                      <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                      <div class="uk-card card-simple">
                         <div class="uk-border-rounded border-dashed">
                           <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
                              (click)="fbService.addCompositeField(); fbService.setSideMenuSettingsType('field')">
@@ -154,7 +154,7 @@
                       </div>
                     </div>
                     <div>
-                      <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+                      <div class="uk-card card-simple">
                         <div class="uk-border-rounded border-dashed">
                           <!-- Set current field to null, because if the last selected field is composite the addition will happen inside the composite -->
                           <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
@@ -176,13 +176,13 @@
           }
         </div>
 
-        <div class="uk-modal-footer">
-          Footer
-          <div class="uk-flex uk-flex-between">
-            <pre>{{ fbService.currentField() | json }}</pre>
-            <pre>{{ fbService.model() | json }}</pre>
-          </div>
-        </div>
+<!--        <div class="uk-modal-footer">-->
+<!--          Footer-->
+<!--          <div class="uk-flex uk-flex-between">-->
+<!--            <pre>{{ fbService.currentField() | json }}</pre>-->
+<!--            <pre>{{ fbService.model() | json }}</pre>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
     </div>
 

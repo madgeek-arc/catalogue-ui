@@ -25,11 +25,11 @@
 
 
   @if (field?.typeInfo.type === 'composite') {
-    <div class="uk-card uk-card-default uk-card-body uk-animation-scale-up">
+    <div class="uk-card card-simple uk-card-body uk-animation-scale-up">
 
       @for (subField of field.subFields; track subField; let i = $index) {
         <div class="uk-margin-bottom">
-          <div class="uk-card uk-card-body uk-card-default uk-padding-small uk-animation-scale-up"
+          <div class="uk-card uk-card-body card-simple uk-padding-small uk-animation-scale-up"
                [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}"
                (click)="$event.stopPropagation(); fbService.fieldSelection(subField)">
             <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
@@ -75,7 +75,7 @@
 
       <div class="uk-grid uk-child-width-1-2">
         <div>
-          <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+          <div class="uk-card card-simple">
             <div class="uk-border-rounded border-dashed">
               <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
                  (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
@@ -85,7 +85,7 @@
           </div>
         </div>
         <div>
-          <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+          <div class="uk-card card-simple">
             <div class="uk-border-rounded border-dashed">
               <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
                  (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
