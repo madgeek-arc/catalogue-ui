@@ -38,9 +38,8 @@
       </div>
     }
   }
-  @if (fieldData.kind === 'paused') {
-    Question is paused.
-  } @else {
+  <!-- Don't show content for paused and external fields -->
+  @if (fieldData.kind !== 'paused' && fieldData.kind !== 'external') {
     <ng-content></ng-content>
   }
 
