@@ -1,11 +1,12 @@
 <section>
-  <h6>Field settings</h6>
+  <h6 class="uk-flex uk-flex-middle"><span class="material-symbols-outlined uk-margin-small-right">settings</span>Main info settings</h6>
   <ul data-uk-accordion="multiple: true">
     <li class="uk-open">
-      <a class="uk-accordion-title" href>Advanced</a>
+      <a class="uk-accordion-title uk-text-normal uk-text-default" href>Advanced</a>
       <div class="uk-accordion-content">
         <div class="uk-margin">
-          <label for="placeholder" class="uk-text-muted uk-text-bold">Survey id</label>
+          <div for="placeholder" class="uk-margin-small-bottom uk-text-muted">Survey id</div>
+<!--          <label for="placeholder" class="uk-text-muted uk-text-bold">Survey id</label>-->
           <input id="placeholder" type="text" class="uk-input" [ngModel]="fbService.model().id"
                  (ngModelChange)="fbService.setModelId($event)">
         </div>

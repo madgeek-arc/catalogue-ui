@@ -1,14 +1,16 @@
 <section>
-  <h6>Section settings</h6>
+  <h6 class="uk-flex uk-flex-middle"><span class="material-symbols-outlined uk-margin-small-right">settings</span>Section settings</h6>
   <div class="uk-margin">
-    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Section Name *</label>
+    <div for="sectionName" class="uk-margin-small-bottom uk-text-muted">Section Name *</div>
+<!--    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Section Name *</label>-->
     <div class="uk-form-controls">
       <input id="sectionName" class="uk-input" [ngModel]="fbService.currentSubsection().name"
              (ngModelChange)="fbService.setSubSectionName($event)" placeholder="Untitled Section">
     </div>
   </div>
   <div class="uk-margin">
-    <label for="sectionDescription" class="uk-form-label uk-margin-small-bottom">Description *</label>
+    <div for="sectionDescription" class="uk-margin-small-bottom uk-text-muted">Description *</div>
+<!--    <label for="sectionDescription" class="uk-form-label uk-margin-small-bottom">Description *</label>-->
     <div class="uk-form-controls">
       <ckeditor id="sectionDescription" [editor]="editor" [ngModel]="fbService.currentSubsection().description"
                 (ngModelChange)="fbService.setSubSectionDescription($event)"

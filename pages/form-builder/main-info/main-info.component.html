@@ -1,14 +1,16 @@
 <!--<div class="uk-card uk-card-body uk-card-default uk-margin-medium-bottom">-->
 <div>
   <div class="uk-margin">
-    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Title *</label>
+    <h6 for="sectionName" class="uk-margin-small-bottom uk-form-label">Title *</h6>
+<!--    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Title *</label>-->
     <div class="uk-form-controls">
       <input id="sectionName" class="uk-input" placeholder="Untitled Section"
              [ngModel]="fbService.model().name" (ngModelChange)="fbService.setModelTitle($event)">
     </div>
   </div>
   <div class="uk-margin">
-    <label (click)="focusEditor('descriptionEditor')" class="uk-form-label uk-margin-small-bottom">Description *</label>
+    <h6 (click)="focusEditor('descriptionEditor')" class="uk-margin-small-bottom uk-form-label">Description *</h6>
+<!--    <label (click)="focusEditor('descriptionEditor')" class="uk-form-label uk-margin-small-bottom">Description *</label>-->
     <div class="uk-form-controls">
       <ckeditor #descriptionEditor [editor]="editor"
                 [ngModel]="fbService.model().description" (ngModelChange)="fbService.setModelDescription($event)"
@@ -17,7 +19,8 @@
     </div>
   </div>
   <div class="uk-margin">
-    <label (click)="focusEditor('noticeEditor')" class="uk-form-label uk-margin-small-bottom">Notice </label>
+    <h6 (click)="focusEditor('noticeEditor')" class="uk-margin-small-bottom uk-form-label">Notice </h6>
+<!--    <label (click)="focusEditor('noticeEditor')" class="uk-form-label uk-margin-small-bottom">Notice </label>-->
     <div class="uk-form-controls">
       <ckeditor #noticeEditor [editor]="editor"
                 [ngModel]="fbService.model().notice" (ngModelChange)="fbService.setModelNotice($event)"
