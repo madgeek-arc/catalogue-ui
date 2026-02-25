@@ -14,14 +14,11 @@
     </div>
 
     <div class="uk-flex uk-flex-center">
-        <input type="text" placeholder="Keyword search" class="uk-input uk-form-width-medium"
-               (input)="onSearchChange($any($event.target).value)"/>
+      <input type="text" placeholder="Keyword search" class="uk-input uk-form-width-medium"
+             (input)="onSearchChange($any($event.target).value)"/>
     </div>
 
-
-
     @let pageData = paging();
-
     @if (pageData) {
 
       <div class="uk-flex uk-flex-right uk-flex-middle">
@@ -64,7 +61,7 @@
 
         <div class="uk-modal-header uk-background-secondary">
           <div class="uk-flex uk-flex-between">
-            <h2 class="uk-modal-title uk-margin-remove uk-text-white">Title</h2>
+            <h2 class="uk-modal-title uk-margin-remove uk-text-white">{{ fbService.model()?.name?.trim() || 'Untitled survey' }}</h2>
             <div>
               <button class="uk-button uk-button-primary" type="button" (click)="saveModel()">Save</button>
               <button class="uk-button uk-button-secondary uk-margin-small-left" type="button" (click)="hideModal()">Close</button>
@@ -142,18 +139,18 @@
                       </div>
                     </div>
                   }
-                  <div class="uk-grid uk-child-width-1-2">
-                    <div>
-                      <div class="uk-card card-simple">
-                        <div class="uk-border-rounded border-dashed">
-                          <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                             (click)="fbService.addCompositeField(); fbService.setSideMenuSettingsType('field')">
-                            Add group <span class="material-icons">add</span>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
+                  <div class="uk-grid ">
+<!--                    <div>-->
+<!--                      <div class="uk-card card-simple">-->
+<!--                        <div class="uk-border-rounded border-dashed">-->
+<!--                          <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"-->
+<!--                             (click)="fbService.addCompositeField(); fbService.setSideMenuSettingsType('field')">-->
+<!--                            Add group <span class="material-icons">add</span>-->
+<!--                          </a>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+                    <div class="uk-width-1-1">
                       <div class="uk-card card-simple">
                         <div class="uk-border-rounded border-dashed">
                           <!-- Set current field to null, because if the last selected field is composite the addition will happen inside the composite -->
@@ -176,13 +173,13 @@
           }
         </div>
 
-<!--        <div class="uk-modal-footer">-->
-<!--          Footer-->
-<!--          <div class="uk-flex uk-flex-between">-->
-<!--            <pre>{{ fbService.currentField() | json }}</pre>-->
-<!--            <pre>{{ fbService.model() | json }}</pre>-->
-<!--          </div>-->
-<!--        </div>-->
+        <div class="uk-modal-footer">
+          Footer
+          <div class="uk-child-width-1-2" data-uk-grid>
+            <pre>{{ fbService.currentField() | json }}</pre>
+            <pre>{{ fbService.model() | json }}</pre>
+          </div>
+        </div>
       </div>
     </div>
 

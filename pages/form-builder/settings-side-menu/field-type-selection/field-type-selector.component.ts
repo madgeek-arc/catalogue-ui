@@ -13,9 +13,7 @@ export class FieldTypeSelectorComponent {
   protected readonly FieldType = FieldType;
 
   addField(type: FieldType) {
-    // console.log(this.fbService.currentField().typeInfo.type);
     if (this.fbService.currentField()?.typeInfo.type === 'composite') {
-      console.log('Adding to composite');
       this.fbService.addFieldToComposite(type);
     } else
       this.fbService.addField(type);

@@ -6,7 +6,7 @@
         <a class="uk-accordion-title uk-text-normal uk-text-default" href>General</a>
         <div class="uk-accordion-content">
           <div class="uk-margin">
-            <div for="fieldType" class="uk-text-muted uk-margin-small-bottom">Input type</div>
+            <label for="fieldType" class="uk-text-muted uk-margin-small-bottom">Input type</label>
             <select id="fieldType" type="select" class="uk-select" [ngModel]="fbService.currentField().typeInfo.type"
                     (ngModelChange)="fbService.setFieldType($event)">
               @for (option of options(); track option.value +''+ $index) {
@@ -16,7 +16,7 @@
           </div>
           @if (!['select', 'radio', 'checkbox'].includes(fbService.currentField().typeInfo.type)) {
             <div class="uk-margin">
-              <div for="placeholder" class="uk-text-muted uk-margin-small-bottom">Placeholder</div>
+              <label for="placeholder" class="uk-text-muted uk-margin-small-bottom">Placeholder</label>
               <input id="placeholder" type="text" class="uk-input" [ngModel]="fbService.currentField().form.placeholder"
                      (ngModelChange)="fbService.setFieldPlaceholder($event)">
             </div>
@@ -28,7 +28,7 @@
       <a class="uk-accordion-title uk-text-normal uk-text-default" href>Label</a>
       <div class="uk-accordion-content">
         <div class="uk-margin">
-          <div for="label" class="uk-text-muted uk-margin-small-bottom">Text</div>
+          <label for="label" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
             <ckeditor id="label" [editor]="editor" [ngModel]="fbService.currentField().label.text"
                       (ngModelChange)="fbService.setFieldLabel($event)" [config]="{placeholder: 'Field label'}">
@@ -36,11 +36,11 @@
           </div>
         </div>
         <div class="uk-margin">
-          <div for="labelCSS" class="uk-text-muted uk-margin-small-bottom">CSS classes</div>
+          <label for="labelCSS" class="uk-text-muted uk-margin-small-bottom">CSS classes</label>
           <input id="labelCSS" type="text" class="uk-input" [(ngModel)]="field.label.cssClasses">
         </div>
         <div class="uk-margin">
-          <div for="labelStyles" class="uk-text-muted uk-margin-small-bottom">Styles</div>
+          <label for="labelStyles" class="uk-text-muted uk-margin-small-bottom">Styles</label>
           <input id="labelStyles" type="text" class="uk-input" [(ngModel)]="field.label.style">
         </div>
       </div>
@@ -49,7 +49,7 @@
       <a class="uk-accordion-title uk-text-normal uk-text-default" href>Description</a>
       <div class="uk-accordion-content">
         <div class="uk-margin">
-          <div for="descriptionText" class="uk-text-muted uk-margin-small-bottom">Text</div>
+          <label for="descriptionText" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
             <ckeditor id="descriptionText" [editor]="editor"
                       [(ngModel)]="field.form.description.text"
@@ -63,11 +63,11 @@
           <label for="descriptionShowMore" class="uk-checkbox-label uk-margin-small-left">Show less</label>
         </div>
         <div class="uk-margin">
-          <div for="descriptionCSS" class="uk-text-muted uk-margin-small-bottom">CSS classes</div>
+          <label for="descriptionCSS" class="uk-text-muted uk-margin-small-bottom">CSS classes</label>
           <input id="descriptionCSS" type="text" class="uk-input" [(ngModel)]="field.form.description.cssClasses">
         </div>
         <div class="uk-margin">
-          <div for="descriptionStyles" class="uk-text-muted uk-margin-small-bottom">Styles</div>
+          <label for="descriptionStyles" class="uk-text-muted uk-margin-small-bottom">Styles</label>
           <input id="descriptionStyles" type="text" class="uk-input" [(ngModel)]="field.form.description.style">
         </div>
       </div>
@@ -76,7 +76,7 @@
       <a class="uk-accordion-title uk-text-normal uk-text-default" href>Suggestion</a>
       <div class="uk-accordion-content">
         <div class="uk-margin">
-          <div for="suggestionText" class="uk-text-muted uk-margin-small-bottom">Text</div>
+          <label for="suggestionText" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
             <ckeditor id="suggestionText" [editor]="editor"
                       [(ngModel)]="field.form.suggestion.text"
@@ -85,11 +85,11 @@
           </div>
         </div>
         <div class="uk-margin">
-          <div for="suggestionCSS" class="uk-text-muted uk-margin-small-bottom">CSS classes</div>
+          <label for="suggestionCSS" class="uk-text-muted uk-margin-small-bottom">CSS classes</label>
           <input id="suggestionCSS" type="text" class="uk-input" [(ngModel)]="field.form.suggestion.cssClasses">
         </div>
         <div class="uk-margin">
-          <div for="suggestionStyles" class="uk-text-muted uk-margin-small-bottom">Styles</div>
+          <label for="suggestionStyles" class="uk-text-muted uk-margin-small-bottom">Styles</label>
           <input id="suggestionStyles" type="text" class="uk-input" [(ngModel)]="field.form.suggestion.style">
         </div>
       </div>
@@ -113,10 +113,10 @@
         </div>
         <div class="uk-margin">
           <div class="uk-flex uk-flex-middle">
-            <div for="fieldName" class="uk-text-muted uk-margin-small-bottom uk-flex uk-flex-middle">JSON model field name
-              <span class="material-symbols-sharp"
-                    data-uk-tooltip="Define the property name in the answer JSON object. If none provided the field id will be used instead. (A unique name is recommended).">info</span>
-            </div>
+            <label for="fieldName" class="uk-text-muted uk-margin-small-bottom uk-flex uk-flex-middle">
+              JSON model field name
+              <span class="material-symbols-sharp" data-uk-tooltip="Define the property name in the answer JSON object. If none provided the field id will be used instead. (A unique name is recommended).">info</span>
+            </label>
           </div>
           <input id="fieldName" type="text" class="uk-input" [(ngModel)]="field.name">
         </div>

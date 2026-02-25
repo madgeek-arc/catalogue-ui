@@ -2,50 +2,49 @@
   <ul data-uk-tab="animation: uk-animation-fade" class="uk-grid uk-child-width-1-1">
     <li>
       <div class="uk-flex uk-flex-middle uk-width-1-1">
-        <div class="uk-width-4-5">
+        <div class="uk-width-expand" [class.uk-text-bolder]="highlightedId() === null">
           <a (click)="emitSelection(null, null, null, 'main')">Main Info</a>
         </div>
       </div>
     </li>
-    @for (chapter of fbService.model().sections; track chapter; let i = $index) {
+    @for (chapter of fbService.model().sections; track chapter.id; let i = $index) {
       <li class="uk-width-1-1 uk-margin-small-bottom">
-        <div class="uk-flex uk-flex-middle uk-width-1-1">
-          <div class="uk-width-4-5">
+        <div class="uk-flex uk-flex-middle uk-width-1-1 uk-visible-toggle">
+          <div class="uk-width-expand" [class.uk-text-bolder]="highlightedId() === chapter.id">
             <a (click)="emitSelection(chapter, null, null, 'chapter')">
               {{ (i + 1) + '. ' + (chapter.name?.trim() || 'Untitled chapter') }}
             </a>
           </div>
-          <div class="uk-width-1-5">
-            <a class="" (click)="deleteChapter(i)"><span class="material-icons">delete</span></a>
+          <div class="uk-width-auto">
+            <div class="uk-invisible-hover">
+              <a class="" (click)="deleteChapter(i)"><span class="material-icons">delete</span></a>
+            </div>
           </div>
         </div>
         <!--      <ul [attr.uk-tab]="'connect: #section-tabs-'+chapter.chapter.id">-->
         <ul data-uk-tab="animation: uk-animation-fade">
-          @for (section of chapter.subSections; track section; let j = $index) {
-            <li class="uk-width-1-1 ">
-              <div class="uk-flex uk-flex-middle uk-grid uk-grid-column-collapse uk-margin-small-left">
-                <div class="uk-width-4-5">
+          @for (section of chapter.subSections; track section.id; let j = $index) {
+            <li class="uk-width-1-1">
+              <div class="uk-width-1-1 uk-flex uk-flex-middle uk-margin-small-left uk-visible-toggle">
+                <div class="uk-width-expand" [class.uk-text-bolder]="highlightedId() === section.id">
                   <a (click)="emitSelection(chapter, section, null, 'section')">
                     {{ (i + 1) + '.' + (j + 1) + '. ' + (section.name ?? 'Untitled section') }}
                   </a>
                 </div>
-                <div class="uk-width-1-5">
-                  <a (click)="deleteSubSection(i, j)"><span class="material-icons">delete</span></a>
-                </div>
-                @for (field of section.fields; track field; let k = $index) {
-                  @let fieldLabel = ((i + 1) + '.' + (j + 1) + '.' + (k + 1) + ' ' + unwrapOuterParagraph(field.label.text));
-                  <div class="uk-margin-small uk-width-1-1">
-                    <a class="uk-margin-small-left" (click)="emitSelection(chapter, section, field, 'field')"
-                       [innerHTML]=fieldLabel>
-                    </a>
+                <div class="uk-width-auto">
+                  <div class="uk-invisible-hover">
+                    <a (click)="deleteSubSection(i, j)"><span class="material-icons">delete</span></a>
                   </div>
-                }
-                <!--          <div class="uk-margin-small">-->
-                <!--            <a class="uk-flex uk-flex-middle" (click)="addField(i, j)">-->
-                <!--              <span class="material-icons">add</span> Question-->
-              <!--            </a>-->
-            <!--          </div>-->
+                </div>
               </div>
+              @for (field of section.fields; track field.id; let k = $index) {
+                @let fieldLabel = ((i + 1) + '.' + (j + 1) + '.' + (k + 1) + ' ' + unwrapOuterParagraph(field.label.text));
+                <div class="uk-margin-small uk-width-1-1" [class.uk-text-bolder]="highlightedId() === field.id">
+                  <a class="uk-margin-left" (click)="emitSelection(chapter, section, field, 'field')"
+                     [innerHTML]=fieldLabel>
+                  </a>
+                </div>
+              }
             </li>
           }
         </ul>

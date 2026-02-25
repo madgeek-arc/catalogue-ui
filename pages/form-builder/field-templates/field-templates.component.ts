@@ -14,7 +14,7 @@ import UIkit from "uikit";
 @Component(({
   selector: 'app-field-templates',
   templateUrl: './field-templates.component.html',
-  styleUrl: '../form-builder.component.scss',
+  styleUrl: '../form-builder.component.less',
   imports: [
     CommonModule,
     CKEditorModule,

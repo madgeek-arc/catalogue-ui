@@ -27,7 +27,7 @@
   @if (field?.typeInfo.type === 'composite') {
     <div class="uk-card card-simple uk-card-body uk-animation-scale-up">
 
-      @for (subField of field.subFields; track subField; let i = $index) {
+      @for (subField of field.subFields; track subField.id; let i = $index; let first = $first; let last = $last;) {
         <div class="uk-margin-bottom">
           <div class="uk-card uk-card-body card-simple uk-padding-small uk-animation-scale-up"
                [ngClass]="{'highlight-field': fbService.currentField()?.id === subField.id}"
@@ -56,12 +56,12 @@
               <app-field-templates [field]="subField" class="uk-width-expand"></app-field-templates>
               @if (field.subFields.length > 1) {
                 <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
-                  @if (i !== 0) {
+                  @if (!first) {
                     <div class="uk-margin-small" data-uk-tooltip="Move up">
                       <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i-1, field)">north</span>
                     </div>
                   }
-                  @if (i !== field.subFields.length - 1) {
+                  @if (!last) {
                     <div class="uk-margin-small" data-uk-tooltip="Move down">
                       <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i+1, field)">south</span>
                     </div>
@@ -73,18 +73,18 @@
         </div>
       }
 
-      <div class="uk-grid uk-child-width-1-2">
-        <div>
-          <div class="uk-card card-simple">
-            <div class="uk-border-rounded border-dashed">
-              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                 (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">
-                Add group <span class="material-icons">add</span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div>
+      <div class="uk-grid">
+<!--        <div>-->
+<!--          <div class="uk-card card-simple">-->
+<!--            <div class="uk-border-rounded border-dashed">-->
+<!--              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"-->
+<!--                 (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">-->
+<!--                Add group <span class="material-icons">add</span>-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+        <div class="uk-width-1-1">
           <div class="uk-card card-simple">
             <div class="uk-border-rounded border-dashed">
               <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"

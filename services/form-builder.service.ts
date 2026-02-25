@@ -297,14 +297,14 @@ export class FormBuilderService {
     });
   }
 
-  addCompositeField(parent?: Field) {
-    if (parent) {
-      this.setCurrentField(parent);
-      this.addFieldToComposite(FieldType.composite);
-      return;
-    }
-    this.addField(FieldType.composite);
-  }
+  // addCompositeField(parent?: Field) {
+  //   if (parent) {
+  //     this.setCurrentField(parent);
+  //     this.addFieldToComposite(FieldType.composite);
+  //     return;
+  //   }
+  //   this.addField(FieldType.composite);
+  // }
 
   addFieldToComposite(type: FieldType) {
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);

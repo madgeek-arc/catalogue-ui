@@ -8,7 +8,7 @@ import { NgClass } from "@angular/common";
 @Component({
   selector: 'app-scale-field',
   templateUrl: 'scale-field.component.html',
-  styleUrls: ['scale-field.component.scss'],
+  styleUrls: ['scale-field.component.less'],
   imports: [
     BaseFieldHtmlComponent,
     ReactiveFormsModule,
