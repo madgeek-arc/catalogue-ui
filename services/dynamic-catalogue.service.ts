@@ -26,6 +26,10 @@ export class DynamicCatalogueService {
     return this.http.get<Paging<Model>>(this.baseUrl + '/forms/models', {params});
   }
 
+  getFormModel(id: string) {
+    return this.http.get<Model>(this.baseUrl + `/forms/models/${id}`);
+  }
+
   postFormModel(model: Model, editMode: boolean) {
     if (editMode) {
       return this.http.put(this.baseUrl + `/forms/models/${model.id}`, model);

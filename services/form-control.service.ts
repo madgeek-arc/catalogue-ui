@@ -10,7 +10,7 @@ type CleanOptions = {
   removeUndefined?: boolean; // optional extra
 };
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class FormControlService {
   constructor(public http: HttpClient) { }
 
@@ -80,7 +80,13 @@ export class FormControlService {
 
   createCompositeField(formField: Field) {
     const subGroup: any = {};
-    // console.log(formField);
+    // Un comment this to remove the paused fields from the form
+    // if (formField.kind === 'paused') {
+    //   formField.subFields = [];
+    //   console.log(formField);
+    // }
+    //   return new UntypedFormGroup({});
+
     formField.subFields?.sort((a, b) => a.form.display?.order - b.form.display?.order)
     formField.subFields?.forEach(subField => {
       if (subField.deprecated)

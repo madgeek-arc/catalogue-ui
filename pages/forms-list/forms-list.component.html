@@ -1,0 +1,57 @@
+<div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom">
+  <div class="uk-container uk-container-expand">
+
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="uk-flex uk-flex-right">
+      <a class="uk-button uk-button-primary" type="button" [routerLink]="['new-form']">Create new form</a>
+    </div>
+
+    <div class="uk-flex uk-flex-center">
+      <input type="text" placeholder="Keyword search" class="uk-input uk-form-width-medium"
+             (input)="onSearchChange($any($event.target).value)"/>
+
+    </div>
+    @if (loading()) {
+      <div class="uk-flex uk-flex-center uk-margin-medium-top">
+        <span data-uk-spinner></span>
+      </div>
+    }
+
+    @let pageData = paging();
+    @if (pageData) {
+
+      <div class="uk-flex uk-flex-right uk-flex-middle">
+        <span class="uk-margin-small-right">Showing {{ pageData.from }} - {{ pageData.to }} of {{ pageData.total }}</span>
+        <div>
+          <button (click)="previousPage()" [disabled]="page() === 0">Previous</button>
+          <button (click)="nextPage()" [disabled]="pageData.to >= pageData.total">Next</button>
+        </div>
+      </div>
+
+      <table class="uk-table uk-table-divider uk-table-striped uk-animation-fade">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Creation Date</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (model of pageData.results; track model.id) {
+            <tr>
+              <td>{{ model.name }}</td>
+              <td>{{ model.creationDate | date: 'dd/MM/yyy' }}</td>
+              <td><a [routerLink]="[model.id, 'edit']" (click)="initModel(model)">Edit</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+    }
+
+  </div>
+</div>
