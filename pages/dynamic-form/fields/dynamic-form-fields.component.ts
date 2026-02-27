@@ -10,8 +10,6 @@ import { Field, HandleBitSet } from '../../../domain/dynamic-form-model';
 export class DynamicFormFieldsComponent {
   @Input() fieldData: Field;
   @Input() form: UntypedFormGroup;
-  @Input() vocabularies: Map<string, object[]>;
-  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: boolean;
   @Input() readonly: boolean = null;
   @Input() scrollContainer: HTMLElement | null = null;

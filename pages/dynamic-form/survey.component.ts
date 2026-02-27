@@ -43,14 +43,13 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() userId: string | null = null;
   @Input() activeUsers: UserActivity[] = null;
   @Input() enableWebsocket = false;
-  @Input() vocabulariesMap: Map<string, object[]> = null;
-  @Input() subVocabularies: Map<string, object[]> = null;
-  @Input() tabsHeader: string = null;
-  @Input() mandatoryFieldsText: string = null;
-  @Input() downloadPDF: boolean = false;
   @Input() enableCommenting: boolean = false;
+  @Input() downloadPDF: boolean = false;
+  @Input() mandatoryFieldsText: string = null;
+  @Input() tabsHeader: string = null;
   @Input() errorMessage = '';
   @Input() successMessage = '';
+  @Input() freeView: boolean = false;
 
   @Output() valid = new EventEmitter<boolean>();
   @Output() submitForm = new EventEmitter<UntypedFormGroup>();
@@ -65,7 +64,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   editMode: boolean = false;
   readonly: boolean = false;
-  freeView: boolean = false;
   validate: boolean = false;
 
   form = new FormGroup({});

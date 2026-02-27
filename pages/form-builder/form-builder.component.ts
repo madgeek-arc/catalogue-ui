@@ -1,4 +1,14 @@
-import { Component, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild
+} from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { JsonPipe, NgClass } from "@angular/common";
@@ -16,6 +26,8 @@ import { MainInfoComponent } from "./main-info/main-info.component";
 import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
 import UIkit from "uikit";
 import { WebsocketService } from "../../../app/services/websocket.service";
+import Modal = UIkit.Modal;
+import UIkitModalElement = UIkit.UIkitModalElement;
 
 @Component({
   selector: 'app-form-builder',
@@ -35,19 +47,35 @@ import { WebsocketService } from "../../../app/services/websocket.service";
   ]
 })
 
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroyRef = inject(DestroyRef)
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private wsService = inject(WebsocketService);
   private catalogueService = inject(DynamicCatalogueService);
   private fileDownloadService = inject(FileDownloadService);
   protected fbService = inject(FormBuilderService);
+
+  @ViewChild('modalPreview') formPreviewModalElement!: ElementRef;
+  @ViewChild('modalJson') jsonModalElement!: ElementRef;
 
   loading = signal(false);
   error = signal<string | null>(null);
 
   editMode = false;
+  jsonModal: UIkitModalElement;
+  formPreviewModal: UIkitModalElement;
+  showPreview = false;
+
+  ngAfterViewInit(): void {
+    const element = this.formPreviewModalElement.nativeElement;
+
+    // Create UIkit modal instances
+    this.formPreviewModal = UIkit.modal(element);
+    this.jsonModal = UIkit.modal(this.jsonModalElement.nativeElement);
+
+    element.addEventListener('beforeshow', this.onBeforeShow);
+    element.addEventListener('hidden', this.onHidden);
+  }
 
   ngOnInit() {
     if (this.route.snapshot.routeConfig?.path === 'fb/new-form') {
@@ -74,6 +102,29 @@ export class FormBuilderComponent implements OnInit {
         });
       }
     }
+
+
+  }
+
+  ngOnDestroy(): void {
+    const formModal = this.formPreviewModalElement?.nativeElement;
+    if (formModal) {
+      formModal.removeEventListener('beforeshow', this.onBeforeShow);
+      formModal.removeEventListener('hidden', this.onHidden);
+    }
+    if (this.formPreviewModal) {
+      try {
+        this.formPreviewModal.hide();
+        this.formPreviewModal.$destroy(true); // also removes the element from the DOM.
+      } catch {}
+    }
+
+    if (this.jsonModal) {
+      try {
+        this.jsonModal.hide();
+        this.jsonModal.$destroy(true); // also removes the element from the DOM.
+      } catch {}
+    }
   }
 
   initModel(model: Model) {
@@ -92,8 +143,11 @@ export class FormBuilderComponent implements OnInit {
   }
 
   fieldSelection(field: Field) { this.fbService.fieldSelection(field); }
+
   deleteField(i: number, parentField?: Field) { this.fbService.deleteField(i, parentField); }
+
   duplicateField(f: Field, parentField?: Field) { this.fbService.duplicateField(f, parentField); }
+
   move(a: number, b: number, parentField?: Field) { this.fbService.move(a, b, parentField); }
 
   // Modal
@@ -101,6 +155,15 @@ export class FormBuilderComponent implements OnInit {
     UIkit.modal(document.getElementById(id)).hide();
   }
 
+  onBeforeShow = () => {
+    this.showPreview = true;
+  };
+
+  onHidden = () => {
+    this.showPreview = false;
+  };
+
+  // Other
   downloadJson() {
     this.fileDownloadService.downloadJson(this.fbService.model());
   }

@@ -104,7 +104,7 @@ export class Field<T extends FieldType = FieldType.string> {
   accessPath: string;
   deprecated: boolean;
   kind: string;
-  typeInfo: TypeInfo;
+  typeInfo: TypeInfo<T>;
   includedInSnippet: boolean;
   form: Form;
   display: Display;
@@ -112,7 +112,7 @@ export class Field<T extends FieldType = FieldType.string> {
 
   constructor(id: string, type?: FieldType) {
     this.id = id;
-    this.name = '';
+    this.name = id;
     this.parentId = '';
     this.parent = '';
     this.label = new StyledText();

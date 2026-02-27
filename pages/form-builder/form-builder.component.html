@@ -136,33 +136,57 @@
   </div>
 </div>
 
-<div id="modal-json" class="uk-modal-full" data-uk-modal>
+<div #modalJson id="modal-json" class="uk-modal-full" data-uk-modal>
   <div class="uk-modal-dialog">
-    <div class="uk-flex uk-flex-middle uk-flex-between uk-padding-small">
-      <h2 class="uk-modal-title uk-margin-remove">Model json</h2>
-      <div class="uk-margin-small">
-        <button class="uk-button uk-button-primary" type="button" (click)="downloadJson()">Download</button>
-        <button class="uk-button uk-button-secondary uk-margin-small-left" type="button" (click)="hideModal('modal-json')">Close</button>
+
+    <div class="uk-background-secondary uk-padding-small uk-padding-remove-vertical">
+      <div class="uk-flex uk-flex-middle uk-flex-between">
+        <h2 class="uk-modal-title uk-margin-remove uk-text-white">Model json</h2>
+        <div class="uk-margin-small">
+          <button class="uk-button uk-button-primary" type="button" (click)="downloadJson()">Download</button>
+          <button class="uk-button uk-button-secondary uk-margin-small-left" type="button" (click)="hideModal('modal-json')">Close</button>
+        </div>
       </div>
     </div>
-    <pre>
-      {{ fbService.model() | json }}
-    </pre>
+
+    <div class="uk-section-default uk-section uk-section-xsmall">
+      <div class="uk-container uk-container-expand ">
+        <pre>
+          {{ fbService.model() | json }}
+        </pre>
+      </div>
+    </div>
+
   </div>
 </div>
 
 
-
-<div id="modal-preview" class="uk-modal-full" data-uk-modal>
+<div #modalPreview id="modal-preview" class="uk-modal-full" data-uk-modal>
   <div class="uk-modal-dialog">
-    <div class="uk-flex uk-flex-middle uk-flex-between uk-padding-small">
-      <h2 class="uk-modal-title uk-margin-remove">Form preview</h2>
-      <div class="uk-margin-small">
-        <button class="uk-button uk-button-primary" type="button" (click)="downloadJson()">Download</button>
-        <button class="uk-button uk-button-secondary uk-margin-small-left" type="button" (click)="hideModal('modal-preview')">Close</button>
+
+    <div class="uk-background-secondary uk-padding-small uk-padding-remove-vertical">
+      <div class="uk-flex uk-flex-middle uk-flex-between">
+        <h2 class="uk-modal-title uk-margin-remove uk-text-white">Form preview</h2>
+        <div class="uk-margin-small">
+          <button class="uk-button uk-button-secondary" type="button" (click)="hideModal('modal-preview')">Close</button>
+        </div>
       </div>
     </div>
-    <app-survey [model]="fbService.model()"></app-survey>
+
+    <div class="uk-section-default uk-section uk-section-xsmall">
+      <div class="uk-container uk-container-expand">
+        @if (showPreview) {
+          <app-survey [model]="fbService.model()" [freeView]="true">
+            <div class="uk-grid form-top-section">
+              <h5 class="uk-width-1-1 uk-margin-bottom">{{ fbService.model()?.name }}</h5>
+              <p class="uk-margin-bottom" [innerHTML]="fbService.model()?.notice"></p>
+            </div>
+            <div class="form-action-bar titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px"></div>
+
+          </app-survey>
+        }
+      </div>
+    </div>
 
   </div>
 </div>
