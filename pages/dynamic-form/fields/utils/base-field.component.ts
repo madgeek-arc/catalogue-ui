@@ -22,11 +22,11 @@ interface PositionChange {
 
 @Directive()
 export abstract class BaseFieldComponent implements OnInit {
+  protected destroyRef = inject(DestroyRef);
   protected rootFormGroup = inject(FormGroupDirective);
+
   private formControlService = inject(FormControlService);
   private wsService = inject(WebsocketService);
-
-  protected destroyRef = inject(DestroyRef);
 
   @Input() fieldData: Field;
   @Input() editMode: boolean;
@@ -175,7 +175,6 @@ export abstract class BaseFieldComponent implements OnInit {
     }
   }
 
-
   onPositionChanged(change: PositionChange): void {
     console.log(`Element ${change.element.id} moved from index ${change.oldIndex} to ${change.newIndex}`);
     this.move(change.newIndex, change.oldIndex)
@@ -243,17 +242,12 @@ export abstract class BaseFieldComponent implements OnInit {
     }
   }
 
-  unsavedChangesPrompt() {
-    this.hasChanges.emit(true);
+  clearControl() {
+    this.formControl.reset(null);
   }
 
-  appendAsterisk(content: string): string {
-    const closingTag = '</p>';
-
-    if (content.trim().endsWith(closingTag)) // Insert (*) before the </p>
-      return content.replace(/<\/p>\s*$/, ' (*)</p>');
-    else // Just append (*) at the end
-      return content + ' (*)';
+  unsavedChangesPrompt() {
+    this.hasChanges.emit(true);
   }
 
   timeOut(ms: number) {

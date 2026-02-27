@@ -41,7 +41,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: Model = null;
   @Input() subType: string = null;
   @Input() userId: string | null = null;
-  @Input() activeUsers: UserActivity[] = null;
   @Input() enableWebsocket = false;
   @Input() enableCommenting: boolean = false;
   @Input() downloadPDF: boolean = false;
@@ -176,6 +175,8 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.readonly = true;
     } else if (this.router.url.includes('/freeView')) {
       this.freeView = true;
+      this.enableCommenting = false;
+      this.wsComments.setCommenting(false);
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
     }
@@ -264,16 +265,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.ready = true;
 
     }
-
-    if (this.activeUsers?.length > 0) {
-      setTimeout(()=> {
-        let users = [];
-        this.activeUsers.forEach(user => {
-          users.push(' '+user.fullname);
-        });
-        UIkit.tooltip('#concurrentEdit', {title: users.toString(), pos: 'bottom'});
-      }, 0);
-    }
   }
 
   ngOnDestroy() {
@@ -282,6 +273,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   initializeCommenting() {
+    this.wsComments.setCommenting(this.enableCommenting);
     if (this.enableCommenting && this.payload?.id && !this.commentingInitialized) {
       // console.log('Starting websocket for comments')
       this.wsComments.initializeWebSocketConnection(this.payload.id);

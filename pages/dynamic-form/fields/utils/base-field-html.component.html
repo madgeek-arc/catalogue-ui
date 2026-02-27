@@ -12,11 +12,13 @@
                style="{{fieldData.label.style}}" [for]="inputId" [innerHTML]="label">
         </label>
 
-        <div class="uk-width-auto">
-          <ul class="uk-invisible-hover uk-iconnav">
-            <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
-          </ul>
-        </div>
+        @if (commentingService.hasCommenting()) {
+          <div class="uk-width-auto">
+            <ul class="uk-invisible-hover uk-iconnav">
+              <li><a class="material-symbols-outlined" (click)="createThread()">add_comment</a></li>
+            </ul>
+          </div>
+        }
       </div>
     </div>
   }
@@ -36,9 +38,8 @@
       </div>
     }
   }
-  @if (fieldData.kind === 'paused') {
-    Question is paused.
-  } @else {
+  <!-- Don't show content for paused and external fields -->
+  @if (fieldData.kind !== 'paused' && fieldData.kind !== 'external') {
     <ng-content></ng-content>
   }
 
