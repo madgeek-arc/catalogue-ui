@@ -19,7 +19,9 @@ interface IMessage {
   nack: () => void;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class CommentingWebsocketService {
   private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
