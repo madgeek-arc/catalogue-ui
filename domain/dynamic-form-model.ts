@@ -185,6 +185,8 @@ export class Model {
   configuration: Configuration;
   locked: boolean;
   active: boolean;
+  submissionStartAt: string | null;
+  submissionCloseAt: string | null;
 
 
   constructor() {
@@ -195,6 +197,8 @@ export class Model {
     this.configuration = new Configuration();
     this.locked = false;
     this.active = false;
+    this.submissionStartAt = null;
+    this.submissionCloseAt = null;
   }
 
   get maxId(): number {
