@@ -116,14 +116,14 @@ export class CommentingWebsocketService {
     this.threadSubject.next(current);
   }
 
-  addThread(fieldId: string, body: string) {
+  addThread(fieldId: string, body: string, mentions: string[] = []) {
     // console.log(this.surveyAnswerId);
     const thread: CreateThread = {
       targetId: this.surveyAnswerId,
       fieldId: fieldId,
       message: {
         body: body,
-        mentions: []
+        mentions: mentions
       }
     }
     this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}`, {}, JSON.stringify(thread)));

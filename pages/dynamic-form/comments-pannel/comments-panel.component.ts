@@ -184,7 +184,8 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   createThread(fieldId: string, comment: string) {
-    this.commentingService.addThread(fieldId, comment);
+    const mentions = this.extractMentions(comment);
+    this.commentingService.addThread(fieldId, comment, mentions);
     this.commentingService.clearTmpThread();
     this.createThreadComment = new Comment();
   }
@@ -259,13 +260,19 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   sendComment(threadId: string) {
+    console.log('mentions:', this.extractMentions(this.inputMessage));
     let comment: Comment = {
       body: this.inputMessage,
-      mentions: []
+      mentions: this.extractMentions(this.inputMessage)
     }
 
     this.commentingService.addMessage(threadId, comment);
     this.toggleInput(threadId);
+  }
+
+  private extractMentions(body: string): string[] {
+    const regex = /@([\w.+-]+@[\w.-]+\.[a-zA-Z]{2,})/g;
+    return [...body.matchAll(regex)].map(m => m[1]);
   }
 
   updateComment(threadId: string, comment: Comment) {
