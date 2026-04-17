@@ -21,6 +21,8 @@ import { Comment, Thread } from "../../../domain/comment.model";
 import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { Section } from "../../../domain/dynamic-form-model";
+import { StakeholdersService } from "../../../../app/services/stakeholders.service";
+import { User } from "../../../../app/domain/userInfo";
 import UIkit from "uikit";
 
 type SubSectionComments = {
@@ -42,12 +44,14 @@ type SubSectionComments = {
 export class CommentsPanelComponent implements OnInit {
   private commentingService = inject(CommentingWebsocketService);
   private anchorService = inject(CommentAnchorService);
+  private stakeholdersService = inject(StakeholdersService);
   private destroyRef = inject(DestroyRef);
   private ngZone = inject(NgZone);
 
   @Input() scrollContainer?: HTMLElement; // form scroll container (passed from parent)
   @Input() subSection?: Section;
   @Input() userId: string | null = null;
+  @Input() stakeholderId: string | null = null;
 
   @Output() commentCount = new EventEmitter<SubSectionComments>();
 
@@ -76,6 +80,11 @@ export class CommentsPanelComponent implements OnInit {
 
   editingComment?: Comment;
   createThreadComment: Comment = new Comment();
+  mentionableUsers: User[] = [];
+  showMentionDropdown: boolean = false;
+  mentionFilter: string = '';
+  filteredUsers: User[] = [];
+  activeThreadIdForMention: string | null = null;
   // overlay state
   overlayCommentId: string | null = null;   // comment-level overlay
   overlayThreadId: string | null = null;    // card-level overlay (delete whole thread)
@@ -107,6 +116,32 @@ export class CommentsPanelComponent implements OnInit {
         this.observablesReady = true;
         this.recomputeLayout(pos, heights);
       });
+
+    if (this.stakeholderId) {
+      combineLatest([
+        this.stakeholdersService.getStakeholderMembers(this.stakeholderId),
+        this.stakeholdersService.getStakeholderManagersPublic(this.stakeholderId)
+      ]).pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: ([groupMembers, managers]) => {
+            const allUsers = [
+              ...groupMembers.members,
+              ...groupMembers.admins,
+              ...managers
+            ];
+
+            this.mentionableUsers = allUsers
+              .filter((user, index, self) =>
+                user.email &&
+                index === self.findIndex(u => u.email === user.email)
+              )
+              .filter(user => user.email !== this.userId);
+
+            console.log(this.mentionableUsers);
+          },
+          error: (err) => console.error('Failed to fetch mentionable users', err)
+        });
+    }
 
     // Scroll synchronization
     this.ngZone.runOutsideAngular(() => {
@@ -156,6 +191,71 @@ export class CommentsPanelComponent implements OnInit {
 
   clearTemporaryThread() {
     this.commentingService.clearTmpThread();
+  }
+
+  onInputChange(value: string, threadId: string) {
+    this.inputMessage = value;
+    this.activeThreadIdForMention = threadId;
+
+    const atIndex = value.lastIndexOf('@');
+    if (atIndex === -1) {
+      this.showMentionDropdown = false;
+      return;
+    }
+
+    const textAfterAt = value.slice(atIndex + 1);
+
+    if (textAfterAt.includes(' ')) {
+      this.showMentionDropdown = false;
+      return;
+    }
+
+    this.mentionFilter = textAfterAt;
+    this.filteredUsers = this.mentionableUsers.filter(user =>
+      user.email?.toLowerCase().includes(textAfterAt.toLowerCase())
+    );
+
+    this.showMentionDropdown = this.filteredUsers.length > 0;
+  }
+
+  selectMention(user: User, threadId: string) {
+    if (!user.email) return;
+    const atIndex = this.inputMessage.lastIndexOf('@');
+    this.inputMessage = this.inputMessage.slice(0, atIndex) + '@' + user.email + ' ';
+    this.showMentionDropdown = false;
+    this.filteredUsers = [];
+  }
+
+  onThreadCreationInputChange(value: string) {
+    this.createThreadComment.body = value;
+    this.activeThreadIdForMention = 'tmpThreadId';
+
+    const atIndex = value.lastIndexOf('@');
+    if (atIndex === -1) {
+      this.showMentionDropdown = false;
+      return;
+    }
+
+    const textAfterAt = value.slice(atIndex + 1);
+    if (textAfterAt.includes(' ')) {
+      this.showMentionDropdown = false;
+      return;
+    }
+
+    this.filteredUsers = this.mentionableUsers.filter(user =>
+      user.email?.toLowerCase().includes(textAfterAt.toLowerCase())
+    );
+
+    this.showMentionDropdown = this.filteredUsers.length > 0;
+  }
+
+  selectMentionForThread(user: User) {
+    if (!user.email) return;
+    const atIndex = this.createThreadComment.body.lastIndexOf('@');
+    this.createThreadComment.body =
+      this.createThreadComment.body.slice(0, atIndex) + '@' + user.email + ' ';
+    this.showMentionDropdown = false;
+    this.filteredUsers = [];
   }
 
   sendComment(threadId: string) {

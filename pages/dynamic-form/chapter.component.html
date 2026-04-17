@@ -120,7 +120,7 @@
 
                               <div [ngClass]="enableCommenting ? 'uk-width-expand' : 'uk-hidden'">
                                 <app-comments-panel [scrollContainer]="scrollContainer" [subSection]="group"
-                                                    [userId]="userId"
+                                                    [userId]="userId" [stakeholderId]="stakeholderId"
                                                     (commentCount)="setCommentCount($event.subSectionId, $event.comments)">
                                 </app-comments-panel>
                               </div>
