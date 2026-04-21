@@ -22,9 +22,24 @@
                 <div class="uk-width-expand">
                   <p class="uk-margin-small-top uk-margin-remove-bottom">{{ userId }}</p>
                 </div>
-                <textarea id="thread-creation-text-area" class="uk-textarea" [(ngModel)]="createThreadComment.body"
-                          [ngModelOptions]="{standalone: true}">
-                </textarea>
+                <div style="position: relative;">
+                  <textarea id="thread-creation-text-area" class="uk-textarea"
+                            [value]="createThreadComment.body ?? ''"
+                            (input)="onThreadCreationInputChange($any($event.target).value)">
+                  </textarea>
+                  @if (showMentionDropdown && activeThreadIdForMention === 'tmpThreadId') {
+                    <div class="mention-dropdown uk-card uk-card-default uk-card-small"
+                         style="position: absolute; bottom: 100%; left: 0; z-index: 1000; min-width: 300px; width: max-content; max-height: 200px; overflow-y: auto;">
+                      @for (user of filteredUsers; track user.email) {
+                        <div class="mention-option uk-padding-xsmall"
+                             style="cursor: pointer;"
+                             (click)="selectMentionForThread(user)">
+                          {{ user.email }}
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
                 <div class="uk-flex uk-flex-center uk-margin-small-top">
                   <button class="uk-button uk-button-default" (click)="clearTemporaryThread()">Cancel</button>
                   <button class="uk-button uk-button-primary" (click)="createThread(thread.fieldId, createThreadComment.body)"
@@ -112,10 +127,23 @@
                   <div class="uk-flex uk-flex-middle">
                     <!-- Input fields inside forms trigger form submission by default when Enter is pressed.
                          This is standard HTML behavior as per HTML5 spec for backward compatibility. -->
-                    <div class="uk-width-expand uk-margin-xsmall-right">
+                    <div class="uk-width-expand uk-margin-xsmall-right" style="position: relative;">
                       <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply"
-                             [(ngModel)]="inputMessage" [ngModelOptions]="{standalone: true}"
+                             [value]="inputMessage"
+                             (input)="onInputChange($any($event.target).value, thread.id)"
                              (keydown.enter)="$event.preventDefault()">
+                      @if (showMentionDropdown && activeThreadIdForMention === thread.id) {
+                        <div class="mention-dropdown uk-card uk-card-default uk-card-small"
+                             style="position: absolute; bottom: 100%; left: 0; z-index: 1000; min-width: 300px; width: max-content; max-height: 200px; overflow-y: auto;">
+                          @for (user of filteredUsers; track user.email) {
+                            <div class="mention-option uk-padding-xsmall"
+                                 style="cursor: pointer;"
+                                 (click)="selectMention(user, thread.id)">
+                              {{ user.email }}
+                            </div>
+                          }
+                        </div>
+                      }
                     </div>
                     <div class="uk-width-auto">
                       <a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 24px"

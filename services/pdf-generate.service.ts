@@ -38,7 +38,7 @@ export class PdfGenerateService {
 
   documentDefinitionRecursion(model: Model, fields: Field[], payload, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
-      if (field.deprecated)
+      if (field.deprecated || field.kind === 'paused')
         continue;
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
@@ -113,11 +113,15 @@ export class PdfGenerateService {
       // console.log(answerValues);
       if (field.typeInfo.type === 'radio') {
         let values = field.typeInfo.values
+        // extract the user's answer into a constant for easier comparison
+        const currentAnswer = answerValues?.[0];
         // if (field.kind === 'conceal-reveal')
         //   values = this.getModelData(this.model.sections, field.parent).typeInfo.values;
         for (const value of values) {
           let content = new Columns();
-          if (value === answerValues?.[0]){
+          // Check if an answer exists and if it matches either the entire object or the choice label string.
+          const isChecked = currentAnswer && value.label === currentAnswer;
+          if (isChecked){
             content.columns.push(new PdfImage('radioChecked', 10, 10, ['marginTopCheckBox']));
           }
           else {
@@ -144,14 +148,30 @@ export class PdfGenerateService {
         }
       } else if (answerValues && field.typeInfo.type !== 'composite') {
 
-        if (answerValues?.[0] instanceof Array && answerValues[0].length === 1 && answerValues[0]?.[0] === null)
-          answerValues[0] = null;
+        // 1. If it's an array with a single null, treat it as null
+        if (answerValues instanceof Array && answerValues.length === 1 && answerValues[0] === null) {
+          answerValues = null;
+        }
 
-        if (answerValues?.[0]) {
-          docDefinition.content.push(new PdfTable(new TableDefinition([[answerValues[0]]], ['*']), ['mt_1']));
-        } else if (field.form.placeholder) {
+        if (answerValues) {
+          // 2. Instead of taking just [0], we check if we have multiple answers
+          // We filter out any null/undefined and join them with a newline or comma
+          const allAnswers = Array.isArray(answerValues)
+            ? answerValues.filter(v => v !== null && typeof v !== 'object').join('\n')
+            : answerValues;
+
+          if (allAnswers && allAnswers.toString().trim() !== '') {
+            // 3. Render all answers in the table
+            docDefinition.content.push(new PdfTable(new TableDefinition([[allAnswers]], ['*']), ['mt_1']));
+          } else {
+            // Render empty row if no actual text content exists
+            docDefinition.content.push(new PdfTable(new TableDefinition([['']], ['*'], [16]), ['mt_1']));
+          }
+        }
+        else if (field.form.placeholder) {
           docDefinition.content.push(new PdfTable(new TableDefinition([[{text: field.form.placeholder, color: 'gray'}]],['*']), ['mt_1']));
-        } else {
+        }
+        else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
       } else if (field.kind === 'external' && field.typeInfo.type === 'composite') {
@@ -239,28 +259,29 @@ export class PdfGenerateService {
   }
 
   findVal(obj: any, key: string) {
-    if (!obj)
-      return null;
+    if (!obj) return null;
 
-    // console.log(obj);
-    let seen = new Set, active = [obj];
+    let active = [obj];
+    let seen = new Set();
+
     while (active.length) {
-      let new_active = [], found = [];
-      for (let i=0; i < active.length; i++) {
-        Object.keys(active[i]).forEach(function(k){
-          let x = active[i][k];
-          if (k === key) {
-            if (x?.hasOwnProperty('text'))
-              found.push(x.text)
-            else
-              found.push(x);
-          } else if (x && typeof x === "object" && !seen.has(x)) {
+      let new_active = [];
+      for (let i = 0; i < active.length; i++) {
+        let current = active[i];
+
+        for (let k in current) {
+          let x = current[k];
+
+          if (k.includes(key)) {
+            if (x !== null && typeof x !== 'object') return [x];
+            if (Array.isArray(x) && x.length > 0) return x;
+          }
+          if (x && typeof x === "object" && !seen.has(x)) {
             seen.add(x);
             new_active.push(x);
           }
-        });
+        }
       }
-      if (found.length) return found;
       active = new_active;
     }
     return null;
