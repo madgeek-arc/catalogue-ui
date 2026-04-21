@@ -48,6 +48,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mandatoryFieldsText: string = null;
   @Input() downloadPDF: boolean = false;
   @Input() enableCommenting: boolean = false;
+  @Input() stakeholderId: string | null = null;
   @Input() errorMessage = '';
   @Input() successMessage = '';
 

@@ -58,6 +58,7 @@
                        [fields]="model.sections[i].subSections ?? model.sections"
                        [subVocabularies]="subVocabularies" [mandatoryFieldsText]="mandatoryFieldsText"
                        [editMode]=editMode [enableCommenting]="enableCommenting" [userId]="userId"
+                       [stakeholderId]="stakeholderId"
                        (totalComments)="setCommentCount($event.sectionId, $event.comments)"
                        (chapterHasChanges)="setChapterChangesMap($event)">
           </app-chapter>

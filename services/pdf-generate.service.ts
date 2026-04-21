@@ -38,7 +38,7 @@ export class PdfGenerateService {
 
   documentDefinitionRecursion(model: Model, fields: Field[], payload, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
-      if (field.deprecated)
+      if (field.deprecated || field.kind === 'paused')
         continue;
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
