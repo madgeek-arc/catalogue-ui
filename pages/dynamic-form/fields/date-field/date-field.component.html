@@ -22,6 +22,12 @@
                 <div class="input uk-text-truncate">
                   {{ formControl.getRawValue() | date: 'dd-MM-yyyy' }}
                 </div>
+
+                <div class="uk-margin-small-left icon" (click)="clearDate($event)" style="cursor: pointer">
+                  <span class="uk-flex">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+                  </span>
+                </div>
               }
               <div class="uk-margin-small-left icon">
                 <span class="uk-flex">

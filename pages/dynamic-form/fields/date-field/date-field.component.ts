@@ -105,4 +105,10 @@ export class DateFieldComponent extends BaseFieldComponent implements OnInit {
     });
   }
 
+  clearDate(event: Event) {
+    event.stopPropagation();
+    this.formControl.setValue(null);
+    this.updateBitSet(this.fieldData);
+  }
+
 }
