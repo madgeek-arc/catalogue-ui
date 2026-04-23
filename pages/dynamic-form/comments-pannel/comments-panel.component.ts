@@ -21,8 +21,7 @@ import { Comment, Thread } from "../../../domain/comment.model";
 import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { Section } from "../../../domain/dynamic-form-model";
-import { StakeholdersService } from "../../../../app/services/stakeholders.service";
-import { User } from "../../../../app/domain/userInfo";
+import { MentionableUser, MentionableUsersProvider } from "../../../domain/mentionable-user";
 import UIkit from "uikit";
 
 type SubSectionComments = {
@@ -44,7 +43,7 @@ type SubSectionComments = {
 export class CommentsPanelComponent implements OnInit {
   private commentingService = inject(CommentingWebsocketService);
   private anchorService = inject(CommentAnchorService);
-  private stakeholdersService = inject(StakeholdersService);
+  private mentionableUsersProvider = inject(MentionableUsersProvider);
   private destroyRef = inject(DestroyRef);
   private ngZone = inject(NgZone);
 
@@ -80,10 +79,10 @@ export class CommentsPanelComponent implements OnInit {
 
   editingComment?: Comment;
   createThreadComment: Comment = new Comment();
-  mentionableUsers: User[] = [];
+  mentionableUsers: MentionableUser[] = [];
   showMentionDropdown: boolean = false;
   mentionFilter: string = '';
-  filteredUsers: User[] = [];
+  filteredUsers: MentionableUser[] = [];
   activeThreadIdForMention: string | null = null;
   // overlay state
   overlayCommentId: string | null = null;   // comment-level overlay
@@ -118,26 +117,11 @@ export class CommentsPanelComponent implements OnInit {
       });
 
     if (this.stakeholderId) {
-      combineLatest([
-        this.stakeholdersService.getStakeholderMembers(this.stakeholderId),
-        this.stakeholdersService.getStakeholderManagersPublic(this.stakeholderId)
-      ]).pipe(takeUntilDestroyed(this.destroyRef))
+      this.mentionableUsersProvider.getUsers(this.stakeholderId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: ([groupMembers, managers]) => {
-            const allUsers = [
-              ...groupMembers.members,
-              ...groupMembers.admins,
-              ...managers
-            ];
-
-            this.mentionableUsers = allUsers
-              .filter((user, index, self) =>
-                user.email &&
-                index === self.findIndex(u => u.email === user.email)
-              )
-              .filter(user => user.email !== this.userId);
-
-            console.log(this.mentionableUsers);
+          next: users => {
+            this.mentionableUsers = users.filter(user => user.email !== this.userId);
           },
           error: (err) => console.error('Failed to fetch mentionable users', err)
         });
@@ -219,7 +203,7 @@ export class CommentsPanelComponent implements OnInit {
     this.showMentionDropdown = this.filteredUsers.length > 0;
   }
 
-  selectMention(user: User, threadId: string) {
+  selectMention(user: MentionableUser, threadId: string) {
     if (!user.email) return;
     const atIndex = this.inputMessage.lastIndexOf('@');
     this.inputMessage = this.inputMessage.slice(0, atIndex) + '@' + user.email + ' ';
@@ -250,7 +234,7 @@ export class CommentsPanelComponent implements OnInit {
     this.showMentionDropdown = this.filteredUsers.length > 0;
   }
 
-  selectMentionForThread(user: User) {
+  selectMentionForThread(user: MentionableUser) {
     if (!user.email) return;
     const atIndex = this.createThreadComment.body.lastIndexOf('@');
     this.createThreadComment.body =
