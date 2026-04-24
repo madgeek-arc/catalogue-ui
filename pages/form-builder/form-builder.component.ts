@@ -64,7 +64,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   editMode = false;
   jsonModal: UIkitModalElement;
   formPreviewModal: UIkitModalElement;
-  showPreview = false;
+  showPreview = signal(false);
 
   ngAfterViewInit(): void {
     const element = this.formPreviewModalElement.nativeElement;
@@ -155,12 +155,16 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
     UIkit.modal(document.getElementById(id)).hide();
   }
 
-  onBeforeShow = () => {
-    this.showPreview = true;
+  onBeforeShow = (event: any) => {
+    if (event.target === this.formPreviewModalElement.nativeElement) {
+      this.showPreview.set(true);
+    }
   };
 
-  onHidden = () => {
-    this.showPreview = false;
+  onHidden = (event: any) => {
+    if (event.target === this.formPreviewModalElement.nativeElement) {
+      this.showPreview.set(false);
+    }
   };
 
   // Other
