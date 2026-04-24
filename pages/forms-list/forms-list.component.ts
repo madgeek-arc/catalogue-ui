@@ -25,7 +25,7 @@ export class FormsListComponent implements OnInit {
   // State signals
   paging = signal<Paging<Model>>(null);
   from = signal(0);
-  quantity = signal(3);
+  quantity = signal(10);
   sortBy = signal<'name' | 'creationDate'>('creationDate');
   order = signal<'asc' | 'desc'>('desc');
   keyword = signal<string>('');
