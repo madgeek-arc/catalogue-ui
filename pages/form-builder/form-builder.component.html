@@ -56,7 +56,7 @@
               @for (field of fbService.currentSubsection().fields; track field.id; let i = $index) {
                 <div class="uk-margin-bottom">
                   <div class="uk-card uk-card-body card-simple uk-padding-small uk-animation-scale-up"
-                       [ngClass]="{'highlight-field': fbService.currentField()?.id === field.id}" (click)="fieldSelection(field)">
+                       [ngClass]="{'highlight-field': fbService.isFieldActive(field)}" (click)="fieldSelection(field)">
                     <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
                       <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                         <input id="fieldMandatory-{{field.id}}" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">

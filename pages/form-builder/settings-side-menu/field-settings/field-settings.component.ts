@@ -18,8 +18,14 @@ export class FieldSettingsComponent {
   protected fbService = inject(FormBuilderService);
 
   options = computed(() => {
-    if (['string', 'largeText', 'richText', 'url' ].includes(this.fbService.currentField().typeInfo.type))
-      return [{label: 'Simple input', value: 'string'}, {label: 'Rich text', value: 'richText'}, {label: 'Text area', value: 'largeText'}];
+    if (['string', 'largeText', 'richText', 'url', 'date', 'number' ].includes(this.fbService.currentField().typeInfo.type))
+      return [
+        {label: 'Simple input', value: 'string'},
+        {label: 'Rich text', value: 'richText'},
+        {label: 'Text area', value: 'largeText'},
+        {label: 'Date input', value: 'date'},
+        {label: 'Number input', value: 'number'}
+      ];
     else if (['radio', 'select' ].includes(this.fbService.currentField().typeInfo.type))
       return [{label: 'Radio buttons', value: 'radio'}, {label: 'Drop down', value: 'select'}];
     return []

@@ -9,6 +9,8 @@ import {
 import { SafeUrlPipe } from "../../../shared/pipes/safeUrlPipe";
 import { FormBuilderService } from "../../../services/form-builder.service";
 import { FormsModule } from "@angular/forms";
+import { MatCalendar } from "@angular/material/datepicker";
+import { provideNativeDateAdapter } from "@angular/material/core";
 import UIkit from "uikit";
 
 @Component(({
@@ -21,6 +23,10 @@ import UIkit from "uikit";
     CatalogueUiReusableComponentsModule,
     SafeUrlPipe,
     FormsModule,
+    MatCalendar,
+  ],
+  providers: [
+    provideNativeDateAdapter(),
   ],
 }))
 
@@ -88,4 +94,5 @@ export class FieldTemplatesComponent {
     this.field.typeInfo.values[index].id = event;
   }
 
+  protected readonly Date = Date;
 }

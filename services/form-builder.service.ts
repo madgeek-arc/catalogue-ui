@@ -320,4 +320,21 @@ export class FormBuilderService {
     this.setSideMenuSettingsType('field');
   }
 
+  isFieldActive(field: Field): boolean {
+    const current = this._currentField();
+    if (!field || !current) return false;
+
+    const checkActive = (f: Field): boolean => {
+      if (f.id === current.id) return true;
+      if (f.subFields) {
+        for (const sub of f.subFields) {
+          if (checkActive(sub)) return true;
+        }
+      }
+      return false;
+    };
+
+    return checkActive(field);
+  }
+
 }

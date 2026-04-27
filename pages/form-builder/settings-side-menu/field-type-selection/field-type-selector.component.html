@@ -26,6 +26,20 @@
   </div>
 
   <div class="uk-margin-bottom">
+    <div class="uk-text-muted uk-text-small uk-margin-bottom">Number</div>
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.number)">
+      <span class="material-symbols-outlined uk-margin-small-right">numbers</span>Number input
+    </a>
+  </div>
+
+  <div class="uk-margin-bottom">
+    <div class="uk-text-muted uk-text-small uk-margin-bottom">Date</div>
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.date)">
+      <span class="material-symbols-outlined uk-margin-small-right">calendar_month</span>Date input
+    </a>
+  </div>
+
+  <div class="uk-margin-bottom">
     <div class="uk-text-muted uk-text-small uk-margin-bottom">Group</div>
     <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.composite)">
       <span class="material-symbols-outlined uk-margin-small-right">ballot</span>Group
