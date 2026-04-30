@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
-import { Field, IdLabel, TextProperties } from "../../../domain/dynamic-form-model";
+import { Field, FieldType, IdLabel, TextProperties } from "../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CommonModule } from "@angular/common";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
@@ -41,6 +41,7 @@ export class FieldTemplatesComponent {
 
   sameLabelValue: boolean = true;
   option: IdLabel = {id: '', label: ''};
+  checkboxLabel: string | null = null;
 
   message: string | null = null;
 
@@ -57,6 +58,8 @@ export class FieldTemplatesComponent {
     return this.field?.typeInfo.properties as TextProperties;
   }
 
+
+  /** Select and radio button options crud **/
   addOption() {
     if (this.sameLabelValue)
       this.option.id = this.option.label;
@@ -94,5 +97,18 @@ export class FieldTemplatesComponent {
     this.field.typeInfo.values[index].id = event;
   }
 
-  protected readonly Date = Date;
+  /** Check box options crud **/
+
+  addCheckbox() {
+    this.fbService.addFieldToComposite(FieldType.checkbox, false, this.checkboxLabel);
+    this.checkboxLabel = null;
+  }
+
+  deleteCheckbox(index: number) {
+    this.fbService.deleteField(index, this.field);
+  }
+
+  moveCheckbox(fromIndex: number, toIndex: number) {
+    this.fbService.move(fromIndex, toIndex, this.field);
+  }
 }

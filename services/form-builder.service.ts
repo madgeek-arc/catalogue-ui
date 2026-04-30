@@ -224,6 +224,12 @@ export class FormBuilderService {
 
   addField(type: FieldType) {
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
+    if (type === FieldType.checkbox) {
+      tmpField.typeInfo.type = FieldType.composite;
+      tmpField.typeInfo.properties = {
+        checkbox: true
+      }
+    }
 
     this._currentSubsection.update( section => {
       if (section.fields === null)
@@ -233,9 +239,7 @@ export class FormBuilderService {
 
       return section;
     });
-    // if (tmpField.typeInfo.type !== 'composite')
-      this.setCurrentField(tmpField);
-
+    this.setCurrentField(tmpField);
     this.setSideMenuSettingsType('field');
   }
 
@@ -281,7 +285,7 @@ export class FormBuilderService {
           return;
         }
         parentField.subFields.splice(to, 0, parentField.subFields.splice(from, 1)[0]);
-        // this.updateReference();
+        this.assignOrder(parentField.subFields);
       }
       return;
     }
@@ -292,22 +296,25 @@ export class FormBuilderService {
           return sec;
         }
         sec.fields.splice(to, 0, sec.fields.splice(from, 1)[0]);
+        this.assignOrder(sec.fields);
       }
       return sec;
     });
   }
 
-  // addCompositeField(parent?: Field) {
-  //   if (parent) {
-  //     this.setCurrentField(parent);
-  //     this.addFieldToComposite(FieldType.composite);
-  //     return;
-  //   }
-  //   this.addField(FieldType.composite);
-  // }
-
-  addFieldToComposite(type: FieldType) {
+  addFieldToComposite(type: FieldType, isOuterCompositeCheckboxCreation = false, checkboxLabel?: string) {
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
+    if (isOuterCompositeCheckboxCreation === true) {
+      tmpField.typeInfo.type = FieldType.composite;
+      tmpField.typeInfo.properties = {
+        checkbox: true
+      }
+    }
+    if (type === FieldType.checkbox) {
+      tmpField.typeInfo.properties = {
+        label: checkboxLabel || ''
+      }
+    }
 
     this._currentField.update( field => {
       if (field.subFields === null)
@@ -335,6 +342,12 @@ export class FormBuilderService {
     };
 
     return checkActive(field);
+  }
+
+  assignOrder(fields: Field[]) {
+    fields.forEach((field, index) => {
+      field.form.display.order = index;
+    });
   }
 
 }

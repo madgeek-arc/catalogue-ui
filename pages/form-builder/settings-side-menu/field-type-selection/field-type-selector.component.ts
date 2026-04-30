@@ -14,7 +14,7 @@ export class FieldTypeSelectorComponent {
 
   addField(type: FieldType) {
     if (this.fbService.currentField()?.typeInfo.type === 'composite') {
-      this.fbService.addFieldToComposite(type);
+      this.fbService.addFieldToComposite(type, type === FieldType.checkbox);
     } else
       this.fbService.addField(type);
   }

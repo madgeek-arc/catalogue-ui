@@ -23,100 +23,141 @@
     }
   }
 
-
-  @if (field?.typeInfo.type === 'composite') {
+  @let fieldType = field?.typeInfo.type || null;
+  @if (fieldType === 'composite') {
     <div class="uk-card card-simple uk-card-body uk-animation-scale-up">
 
-      @for (subField of field.subFields; track subField.id; let i = $index; let first = $first; let last = $last;) {
-        <div class="uk-margin-bottom">
-          <div class="uk-card uk-card-body card-simple uk-padding-small uk-animation-scale-up"
-               [ngClass]="{'highlight-field': fbService.isFieldActive(subField)}"
-               (click)="$event.stopPropagation(); fbService.fieldSelection(subField)">
-            <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
+      @if (field.typeInfo.properties['checkbox']) {
+
+        <form class="uk-margin-top uk-grid-small" data-uk-grid>
+
+          <div class="uk-width-2-3">
+            <label class="uk-form-label" for="checkbox-label">Label</label>
+            <div class="uk-form-controls">
+              <input id="checkbox-label" #labelInput class="uk-input" type="text" placeholder="Set the label"
+                     [(ngModel)]="checkboxLabel"
+                     [ngModelOptions]="{standalone: true}">
+            </div>
+          </div>
+          <div class="uk-width-1-3 uk-flex uk-flex-bottom">
+            <button class="uk-button uk-button-default" (click)="addCheckbox()">Add option</button>
+          </div>
+
+          @for (subField of field.subFields; let i = $index; let first = $first; let last = $last; track subField.id) {
+            <div class="uk-width-2-3 uk-animation-slide-top-small">
+              <div class="uk-form-controls uk-disabled">
+                <input id="checkbox-{{i}}" class="uk-checkbox" type="checkbox">
+                <label for="checkbox-{{i}}" class="uk-checkbox-label uk-margin-small-left">
+                  {{ subField.typeInfo.properties['label'] || 'undefined' }}
+                </label>
+              </div>
+            </div>
+            <div class="uk-width-1-3 uk-flex uk-flex-middle uk-animation-slide-top-small">
+              @if (!first) {
+                <span class="material-symbols-outlined uk-cursor-pointer" (click)="moveCheckbox(i, i-1)">arrow_circle_up</span>
+              }
+              @if (!last) {
+                <span class="material-symbols-outlined uk-cursor-pointer" (click)="moveCheckbox(i, i+1)">arrow_circle_down</span>
+              }
+              <span class="material-symbols-outlined uk-cursor-pointer" (click)="deleteCheckbox(i)">delete</span>
+            </div>
+          }
+
+        </form>
+      } @else {
+
+        @for (subField of field.subFields; track subField.id; let i = $index; let first = $first; let last = $last;) {
+          <div class="uk-margin-bottom">
+            <div class="uk-card uk-card-body card-simple uk-padding-small uk-animation-scale-up"
+                 [ngClass]="{'highlight-field': fbService.isFieldActive(subField)}"
+                 (click)="$event.stopPropagation(); fbService.fieldSelection(subField)">
+              <div class="uk-card-title uk-flex uk-flex-middle uk-flex-right">
               <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                 <input id="fieldMandatory-{{subField.id}}" class="uk-checkbox" type="checkbox"
                        [(ngModel)]="subField.form.mandatory">
                 <label for="fieldMandatory-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
               </span>
-              @if (subField.typeInfo.type !== 'radio') {
-                <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
+                @if (subField.typeInfo.type !== 'radio') {
+                  <span class="uk-text-bold uk-margin-small-right uk-flex uk-flex-middle">
                     <input id="multiplicity-{{subField.id}}" class="uk-checkbox" type="checkbox"
                            [(ngModel)]="subField.typeInfo.multiplicity">
                     <label for="multiplicity-{{subField.id}}" class="uk-checkbox-label uk-margin-small-left">
                       Allow multiplicity
                     </label>
                   </span>
-              }
-              <span class="material-icons uk-margin-small-right" (click)="fbService.duplicateField(subField, field)">
+                }
+                <span class="material-icons uk-margin-small-right" (click)="fbService.duplicateField(subField, field)">
                 content_copy
               </span>
-              <span class="material-icons uk-cursor-pointer" (click)="fbService.deleteField(i, field)">delete</span>
+                <span class="material-icons uk-cursor-pointer" (click)="fbService.deleteField(i, field)">delete</span>
+              </div>
+              <div class="uk-grid uk-grid-column-collapse">
+                <app-field-templates [field]="subField" class="uk-width-expand"></app-field-templates>
+                @if (field.subFields.length > 1) {
+                  <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
+                    @if (!first) {
+                      <div class="uk-margin-small" data-uk-tooltip="Move up">
+                        <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i-1, field)">north</span>
+                      </div>
+                    }
+                    @if (!last) {
+                      <div class="uk-margin-small" data-uk-tooltip="Move down">
+                        <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i+1, field)">south</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
             </div>
-            <div class="uk-grid uk-grid-column-collapse">
-              <app-field-templates [field]="subField" class="uk-width-expand"></app-field-templates>
-              @if (field.subFields.length > 1) {
-                <div class="uk-width-auto uk-margin-small-left uk-flex uk-flex-column uk-flex-center">
-                  @if (!first) {
-                    <div class="uk-margin-small" data-uk-tooltip="Move up">
-                      <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i-1, field)">north</span>
-                    </div>
-                  }
-                  @if (!last) {
-                    <div class="uk-margin-small" data-uk-tooltip="Move down">
-                      <span class="material-icons uk-cursor-pointer" (click)="fbService.move(i, i+1, field)">south</span>
-                    </div>
-                  }
-                </div>
-              }
+          </div>
+        }
+
+        <div class="uk-grid">
+          <!--        <div>-->
+          <!--          <div class="uk-card card-simple">-->
+          <!--            <div class="uk-border-rounded border-dashed">-->
+          <!--              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"-->
+          <!--                 (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">-->
+          <!--                Add group <span class="material-icons">add</span>-->
+          <!--              </a>-->
+          <!--            </div>-->
+          <!--          </div>-->
+          <!--        </div>-->
+          <div class="uk-width-1-1">
+            <div class="uk-card card-simple">
+              <div class="uk-border-rounded border-dashed">
+                <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
+                   (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
+                  Add Question <span class="material-icons">add</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
+
       }
 
-      <div class="uk-grid">
-<!--        <div>-->
-<!--          <div class="uk-card card-simple">-->
-<!--            <div class="uk-border-rounded border-dashed">-->
-<!--              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"-->
-<!--                 (click)="$event.stopPropagation(); fbService.addCompositeField(field); fbService.setSideMenuSettingsType('field')">-->
-<!--                Add group <span class="material-icons">add</span>-->
-<!--              </a>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-        <div class="uk-width-1-1">
-          <div class="uk-card card-simple">
-            <div class="uk-border-rounded border-dashed">
-              <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
-                 (click)="$event.stopPropagation(); fbService.setCurrentField(field); fbService.setSideMenuSettingsType('fieldSelector')">
-                Add Question <span class="material-icons">add</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   }
-  @if (field?.typeInfo.type === 'richText') {
+  @else if (fieldType === 'richText') {
     <div class="uk-margin-medium-top uk-animation-scale-up uk-disabled">
       <!-- This loop is needed to reinitialize ckeditor, because config is only read at initialization -->
       @for (placeholder of [field.form.placeholder ?? '']; track placeholder) {
         <ckeditor [editor]="editor" [config]="{placeholder: placeholder}"></ckeditor>
       }
     </div>
-  } @else if (field?.typeInfo.type === 'string') {
+  } @else if (fieldType === 'string' || fieldType === 'email' || fieldType === 'phone' || fieldType === 'url') {
     <input class="uk-input uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''">
-  } @else if (field?.typeInfo.type === 'largeText') {
-    <textarea class="uk-textarea uk-animation-scale-up uk-disabled"
-              [placeholder]="field.form.placeholder ?? ''"></textarea>
+  } @else if (fieldType === 'largeText') {
+    <textarea class="uk-textarea uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''"></textarea>
     @if (textProperties.maxLength) {
       <div class="uk-animation-scale-up" style="float: right;">
         <span> 0/ {{ textProperties.maxLength }}</span>
       </div>
     }
-  } @else if (field?.typeInfo.type === 'number') {
+  } @else if (fieldType === 'number') {
     <input class="uk-input uk-animation-scale-up uk-disabled" [placeholder]="field.form.placeholder ?? ''">
-  } @else if (field?.typeInfo.type === 'date') {
+  } @else if (fieldType === 'date') {
     <div class="input-wrapper flat uk-width-9-10" >
       <div class="input-box" tabindex="0">
 
@@ -136,8 +177,7 @@
          (click)="$event.stopPropagation()">
       <mat-calendar></mat-calendar>
     </div>
-  } @else if (field?.typeInfo.type === 'select' || field?.typeInfo.type === 'radio') {
-
+  } @else if (fieldType === 'select' || fieldType === 'radio') {
     <form class="uk-margin-top uk-grid-small" data-uk-grid>
 
       <div class="uk-width-1-3">

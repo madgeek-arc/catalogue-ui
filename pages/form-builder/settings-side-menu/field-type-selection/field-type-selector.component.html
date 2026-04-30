@@ -7,16 +7,28 @@
     <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.string)">
       <span class="material-symbols-outlined uk-margin-small-right">horizontal_rule</span>Simple input
     </a>
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.largeText)">
+      <span class="material-symbols-outlined uk-margin-small-right">dehaze</span>Text area
+    </a>
     <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.richText)">
       <span class="material-symbols-outlined uk-margin-small-right">data_object</span>Rich text
     </a>
-    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.largeText)">
-      <span class="material-symbols-outlined uk-margin-small-right">dehaze</span>Text area
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.url)">
+      <span class="material-symbols-outlined uk-margin-small-right">http</span>Url
+    </a>
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.email)">
+      <span class="material-symbols-outlined uk-margin-small-right">contact_mail</span>Email
+    </a>
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.phone)">
+      <span class="material-symbols-outlined uk-margin-small-right">call</span>Phone number
     </a>
   </div>
 
   <div class="uk-margin-bottom">
     <div class="uk-text-muted uk-text-small uk-margin-bottom">Choices</div>
+    <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.checkbox)">
+      <span class="material-symbols-outlined uk-margin-small-right">check_box</span>Check box
+    </a>
     <a class="uk-flex uk-flex-middle uk-text-decoration-none" (click)="addField(FieldType.radio)">
       <span class="material-symbols-outlined uk-margin-small-right">radio_button_checked</span>Radio
     </a>
