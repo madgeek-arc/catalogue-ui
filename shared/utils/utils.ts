@@ -17,6 +17,13 @@ export class Utils {
   }
 }
 
+export function stripHtml(htmlString: string): string {
+  if (!htmlString) {
+    return '';
+  }
+  return htmlString.replace(/<[^>]*>/g, '');
+}
+
 export function collectIdsRecursive(node: any[], out: string[] = []): string[] {
   if (node === null || typeof node !== 'object') return out;
 

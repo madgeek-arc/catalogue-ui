@@ -344,6 +344,48 @@ export class FormBuilderService {
     return checkActive(field);
   }
 
+  getFieldsAtSameLevel(field: Field): Field[] {
+    if (!field) return [];
+    const model = this._model();
+    if (!model) return [];
+
+    let result: Field[] = [];
+
+    const searchSections = (sections: Section[]): boolean => {
+      for (const section of sections) {
+        if (section.fields?.some(f => f.id === field.id)) {
+          result = section.fields;
+          return true;
+        }
+        if (section.fields) {
+          for (const f of section.fields) {
+            if (searchFields(f)) return true;
+          }
+        }
+        if (section.subSections && searchSections(section.subSections)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    const searchFields = (f: Field): boolean => {
+      if (f.subFields?.some(sub => sub.id === field.id)) {
+        result = f.subFields;
+        return true;
+      }
+      if (f.subFields) {
+        for (const sub of f.subFields) {
+          if (searchFields(sub)) return true;
+        }
+      }
+      return false;
+    }
+
+    searchSections(model.sections);
+    return result.filter(f => f.id !== field.id);
+  }
+
   assignOrder(fields: Field[]) {
     fields.forEach((field, index) => {
       field.form.display.order = index;

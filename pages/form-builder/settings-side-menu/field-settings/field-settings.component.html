@@ -98,6 +98,21 @@
       <a class="uk-accordion-title uk-text-normal uk-text-default" href>Advanced</a>
       <div class="uk-accordion-content ">
         <div class="uk-text-muted uk-text-bold">
+          <input id="dependsOn" class="uk-checkbox" type="checkbox" [checked]="dependsOn()" (input)="enableFieldList($event)">
+          <label for="dependsOn" class="uk-checkbox-label uk-margin-small-left">This field depends on an other field</label>
+          @if (enableList) {
+            <p class="uk-text-muted uk-margin-small">Select the field</p>
+            <ng-select id="dependsOnSelect" class="uk-margin-small-bottom" [items]="dependsOnList" (change)="setDependsOn($event)">
+              <ng-template ng-label-tmp let-item="item">
+                {{ (stripHtml(item.label.text) || 'Untitled question') +' (id: '+item.id+')' }}
+              </ng-template>
+              <ng-template ng-option-tmp let-item="item">
+                {{ (stripHtml(item.label.text) || 'Untitled question') +' (id: '+item.id+')' }}
+              </ng-template>
+            </ng-select>
+          }
+        </div>
+        <div class="uk-text-muted uk-text-bold">
           <input id="fieldMandatory" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.mandatory">
           <label for="fieldMandatory" class="uk-checkbox-label uk-margin-small-left">Require this field</label>
         </div>

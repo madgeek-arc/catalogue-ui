@@ -13,7 +13,7 @@ export class Required {
 }
 
 export class Dependent {
-  id: number;
+  id: string;
   name: string;
   value: string;
 }
