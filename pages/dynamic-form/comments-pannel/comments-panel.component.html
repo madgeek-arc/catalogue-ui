@@ -20,32 +20,24 @@
             <div class="comment-messages">
               @if (thread.id === 'tmpThreadId') {
                 <div class="uk-width-expand">
-                  <p class="uk-margin-small-top uk-margin-remove-bottom">{{ userId }}</p>
+                  <p class="uk-margin-small-top uk-margin-remove-bottom">{{ getDisplayName(userId) }}</p>
                 </div>
                 <div style="position: relative;">
                   <textarea id="thread-creation-text-area" class="uk-textarea"
+                            placeholder="Comment or add others with @"
                             [value]="createThreadComment.body ?? ''"
                             (input)="onThreadCreationInputChange($any($event.target).value)">
                   </textarea>
                   @if (showMentionDropdown && activeThreadIdForMention === 'tmpThreadId') {
-                    <div class="mention-dropdown uk-card uk-card-default uk-card-small"
-                         style="position: absolute; bottom: 100%; left: 0; z-index: 1000; min-width: 300px; width: max-content; max-height: 200px; overflow-y: auto;">
+                    <div class="mention-dropdown uk-card uk-card-default uk-card-small">
                       @for (user of filteredUsers; track user.email) {
                         <div class="mention-option uk-padding-xsmall"
-                             style="cursor: pointer;"
                              (click)="selectMentionForThread(user)">
-                          {{ user.email }}
+                          {{ user.name ?? user.email }}
                         </div>
                       }
                     </div>
                   }
-                </div>
-                <div class="uk-flex uk-flex-center uk-margin-small-top">
-                  <button class="uk-button uk-button-default" (click)="clearTemporaryThread()">Cancel</button>
-                  <button class="uk-button uk-button-primary" (click)="createThread(thread.fieldId, createThreadComment.body)"
-                          [ngClass]="{'uk-disabled': !createThreadComment?.body || createThreadComment?.body?.trim() === ''}">
-                    Comment
-                  </button>
                 </div>
 
               } @else {
@@ -56,7 +48,7 @@
 
                       <div data-uk-grid>
                         <div class="uk-width-expand">
-                          <p class="uk-margin-small-top uk-margin-remove-bottom">{{ comment.authorId }}</p>
+                          <p class="uk-margin-small-top uk-margin-remove-bottom">{{ getDisplayName(comment.authorId) }}</p>
                         </div>
                         @if (userId === comment.authorId) {
                           <div class="uk-width-auto">
@@ -81,18 +73,11 @@
                       </div>
 
                       @if (comment.id !== editingComment?.id) {
-                        <p class="uk-margin-remove-top">->{{ comment.body }}</p>
+                        <p class="uk-margin-remove-top comment-body">{{ comment.body }}</p>
                       } @else {
                         <textarea id="text-area-{{comment.id}}" class="uk-textarea" [(ngModel)]="editingComment.body"
                                   [ngModelOptions]="{standalone: true}">
                         </textarea>
-                        <div>
-                          <button class="uk-button uk-button-default" (click)="editingComment = null">Cancel</button>
-                          <button class="uk-button uk-button-primary" (click)="updateComment(thread.id, editingComment)"
-                                  [ngClass]="{'uk-disabled': (comment.body === editingComment?.body && editingComment?.body.trim() !== '')}">
-                            Save
-                          </button>
-                        </div>
                       }
                     </div>
 
@@ -124,22 +109,19 @@
                     </a>
                   </div>
                 } @else {
-                  <div class="uk-flex uk-flex-middle">
-                    <!-- Input fields inside forms trigger form submission by default when Enter is pressed.
-                         This is standard HTML behavior as per HTML5 spec for backward compatibility. -->
+                  <div class="uk-flex uk-flex-bottom">
                     <div class="uk-width-expand uk-margin-xsmall-right" style="position: relative;">
-                      <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply"
-                             [value]="inputMessage"
-                             (input)="onInputChange($any($event.target).value, thread.id)"
-                             (keydown.enter)="$event.preventDefault()">
+                      <textarea class="uk-textarea uk-padding-xsmall" rows="2" placeholder="Reply or @mention (Ctrl+Enter to send)"
+                                [value]="inputMessage"
+                                (input)="onInputChange($any($event.target).value, thread.id)"
+                                (keydown.control.enter)="$event.preventDefault(); sendComment(thread.id)">
+                      </textarea>
                       @if (showMentionDropdown && activeThreadIdForMention === thread.id) {
-                        <div class="mention-dropdown uk-card uk-card-default uk-card-small"
-                             style="position: absolute; bottom: 100%; left: 0; z-index: 1000; min-width: 300px; width: max-content; max-height: 200px; overflow-y: auto;">
+                        <div class="mention-dropdown uk-card uk-card-default uk-card-small">
                           @for (user of filteredUsers; track user.email) {
                             <div class="mention-option uk-padding-xsmall"
-                                 style="cursor: pointer;"
                                  (click)="selectMention(user, thread.id)">
-                              {{ user.email }}
+                              {{ user.name ?? user.email }}
                             </div>
                           }
                         </div>
@@ -155,6 +137,30 @@
               }
             </div>
           </div>
+
+          @if (isEditingInThread(thread)) {
+            <div class="uk-card-footer uk-flex uk-flex-between">
+              <button class="uk-button uk-button-default uk-button-small"
+                      (click)="editingComment = null">Cancel</button>
+              <button class="uk-button uk-button-primary uk-button-small"
+                      (click)="updateComment(thread.id, editingComment)"
+                      [ngClass]="{'uk-disabled': editingComment.body.trim() === ''}">
+                Save
+              </button>
+            </div>
+          }
+
+          @if (thread.id === 'tmpThreadId') {
+            <div class="uk-card-footer uk-flex uk-flex-between">
+              <button class="uk-button uk-button-default uk-button-small"
+                      (click)="clearTemporaryThread()">Cancel</button>
+              <button class="uk-button uk-button-primary uk-button-small"
+                      (click)="createThread(thread.fieldId, createThreadComment.body)"
+                      [ngClass]="{'uk-disabled': !createThreadComment?.body || createThreadComment?.body?.trim() === ''}">
+                Comment
+              </button>
+            </div>
+          }
 
           <!-- OVERLAY FOR DELETING ENTIRE THREAD -->
           @if (overlayThreadId === thread.id) {

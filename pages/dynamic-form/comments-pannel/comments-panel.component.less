@@ -69,6 +69,31 @@
   justify-content: center;
 }
 
+.mention-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mention-option {
+  cursor: pointer;
+  word-break: break-all;
+  white-space: normal;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.comment-body {
+  word-break: break-all;
+  white-space: normal;
+}
+
 /* card-level overlay */
 //.card-overlay {
 //  position: absolute;  /* must be absolute inside .film-card */

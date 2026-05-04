@@ -79,6 +79,7 @@ export class CommentsPanelComponent implements OnInit {
 
   editingComment?: Comment;
   createThreadComment: Comment = new Comment();
+  allUsers: MentionableUser[] = [];
   mentionableUsers: MentionableUser[] = [];
   showMentionDropdown: boolean = false;
   mentionFilter: string = '';
@@ -121,6 +122,7 @@ export class CommentsPanelComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: users => {
+            this.allUsers = users;
             this.mentionableUsers = users.filter(user => user.email !== this.userId);
           },
           error: (err) => console.error('Failed to fetch mentionable users', err)
@@ -196,8 +198,10 @@ export class CommentsPanelComponent implements OnInit {
     }
 
     this.mentionFilter = textAfterAt;
+    const replyQuery = textAfterAt.toLowerCase();
     this.filteredUsers = this.mentionableUsers.filter(user =>
-      user.email?.toLowerCase().includes(textAfterAt.toLowerCase())
+      user.email?.toLowerCase().includes(replyQuery) ||
+      user.name?.toLowerCase().includes(replyQuery)
     );
 
     this.showMentionDropdown = this.filteredUsers.length > 0;
@@ -227,8 +231,10 @@ export class CommentsPanelComponent implements OnInit {
       return;
     }
 
+    const threadQuery = textAfterAt.toLowerCase();
     this.filteredUsers = this.mentionableUsers.filter(user =>
-      user.email?.toLowerCase().includes(textAfterAt.toLowerCase())
+      user.email?.toLowerCase().includes(threadQuery) ||
+      user.name?.toLowerCase().includes(threadQuery)
     );
 
     this.showMentionDropdown = this.filteredUsers.length > 0;
@@ -294,6 +300,16 @@ export class CommentsPanelComponent implements OnInit {
   closeOverlay() {
     this.overlayCommentId = null;
     this.overlayThreadId = null;
+  }
+
+  getDisplayName(email: string): string {
+    const user = this.allUsers.find(u => u.email === email);
+    return user?.name ?? user.email;
+  }
+
+  isEditingInThread(thread: Thread): boolean {
+    if (!this.editingComment) return false;
+    return thread.messages?.some(m => m.id === this.editingComment!.id) ?? false;
   }
 
   copyComment(comment: Comment) {
