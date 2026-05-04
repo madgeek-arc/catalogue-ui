@@ -109,14 +109,13 @@
                     </a>
                   </div>
                 } @else {
-                  <div class="uk-flex uk-flex-middle">
-                    <!-- Input fields inside forms trigger form submission by default when Enter is pressed.
-                         This is standard HTML behavior as per HTML5 spec for backward compatibility. -->
+                  <div class="uk-flex uk-flex-bottom">
                     <div class="uk-width-expand uk-margin-xsmall-right" style="position: relative;">
-                      <input class="uk-input uk-padding-xsmall" type="text" placeholder="Reply or @mention"
-                             [value]="inputMessage"
-                             (input)="onInputChange($any($event.target).value, thread.id)"
-                             (keydown.enter)="$event.preventDefault()">
+                      <textarea class="uk-textarea uk-padding-xsmall" rows="2" placeholder="Reply or @mention (Ctrl+Enter to send)"
+                                [value]="inputMessage"
+                                (input)="onInputChange($any($event.target).value, thread.id)"
+                                (keydown.control.enter)="$event.preventDefault(); sendComment(thread.id)">
+                      </textarea>
                       @if (showMentionDropdown && activeThreadIdForMention === thread.id) {
                         <div class="mention-dropdown uk-card uk-card-default uk-card-small">
                           @for (user of filteredUsers; track user.email) {
