@@ -307,6 +307,11 @@ export class CommentsPanelComponent implements OnInit {
     return user?.name ?? user.email;
   }
 
+  isEditingInThread(thread: Thread): boolean {
+    if (!this.editingComment) return false;
+    return thread.messages?.some(m => m.id === this.editingComment!.id) ?? false;
+  }
+
   copyComment(comment: Comment) {
     this.editingComment = new Comment();
     this.editingComment.body = comment.body;
