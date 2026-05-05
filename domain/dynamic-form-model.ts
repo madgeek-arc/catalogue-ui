@@ -15,7 +15,7 @@ export class Required {
 export class Dependent {
   id: string;
   name: string;
-  value: string;
+  value: string | string[];
 }
 
 export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string> {

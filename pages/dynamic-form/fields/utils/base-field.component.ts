@@ -220,6 +220,19 @@ export abstract class BaseFieldComponent implements OnInit {
 
   /** Other -------------------------------------------------------------------------------------------------------> **/
   enableDisableField(value: string | number, enableValue: string | string[] | number[]) {
+    console.log(value, enableValue)
+    if (enableValue === null ) { // Enable for any value functionality
+      if (value !== null && value !== undefined && value.toString().trim() !== '') {
+        this.formControl.enable();
+        this.hideField = false;
+      } else {
+        this.formControl.disable();
+        this.formControl.reset();
+        this.hideField = true;
+      }
+      return;
+    }
+
     if (enableValue instanceof Array) {
       const index = enableValue.findIndex((v: string | number) => v == value)
       if (index >= 0) {

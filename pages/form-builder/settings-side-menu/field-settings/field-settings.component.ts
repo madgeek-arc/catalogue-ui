@@ -1,7 +1,7 @@
-import { Component, computed, inject, Input } from "@angular/core";
+import { Component, computed, effect, inject, Input, signal } from "@angular/core";
 import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { FormsModule } from "@angular/forms";
-import { Dependent, Field } from "../../../../domain/dynamic-form-model";
+import { Field } from "../../../../domain/dynamic-form-model";
 import { FormBuilderService } from "../../../../services/form-builder.service";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from "@ng-select/ng-select";
@@ -42,40 +42,101 @@ export class FieldSettingsComponent {
     return []
   });
 
-  dependsOn = computed(() => {
-    console.log(this.fbService.currentField().form.dependsOn);
-    return !!this.fbService.currentField().form.dependsOn;
+  enableList = signal(false);
+  dependsOnList = computed(() => {
+    if (this.enableList())
+      return this.getPossibleFields();
 
+    return [];
   });
 
-  enableList = this.dependsOn();
-  dependsOnList: Field[] = [];
+  dependsOnSelection: string | null = null;
+  dependsOnValue: string | null = null;
+  dependsOnField: Field | null = null;
+
+  private syncEffect = effect(() => {
+    const field = this.fbService.currentField();
+    if (field) {
+      this.enableList.set(!!field.form.dependsOn);
+
+      if (field.form.dependsOn?.id) {
+        this.dependsOnField = this.dependsOnList().find(f => f.id === field.form.dependsOn.id);
+      } else {
+        this.dependsOnField = null;
+      }
+
+      if (field.form.dependsOn?.value)
+        this.dependsOnSelection = 'specificValue';
+      else if (field.form.dependsOn?.id)
+        this.dependsOnSelection = 'anyValue';
+      else
+        this.dependsOnSelection = null;
+    }
+  });
 
   setVisibility(event: boolean): void {
     this.field.form.display.visible = !event;
   }
 
   getPossibleFields() {
-    console.log(this.fbService.getFieldsAtSameLevel(this.fbService.currentField()));
     return this.fbService.getFieldsAtSameLevel(this.fbService.currentField());
   }
 
 
   enableFieldList(event: Event) {
-    console.log((event.target as HTMLInputElement).checked);
-    let checked = (event.target as HTMLInputElement).checked;
-    this.enableList = checked;
-    if (checked) {
-      this.dependsOnList = this.getPossibleFields();
-    } else
-      this.dependsOnList = [];
+    this.enableList.set((event.target as HTMLInputElement).checked);
+    if (!this.enableList()) {
+      if (this.field?.form)
+        this.field.form.dependsOn = null;
+      this.dependsOnSelection = null;
+      this.dependsOnField = null;
+    }
   }
 
   setDependsOn(event: Field) {
+    if (!event) {
+      this.field.form.dependsOn = null;
+      this.dependsOnField = null;
+      this.dependsOnSelection = null;
+      return;
+    }
     this.field.form.dependsOn = {
       id: event.id,
       name: event.name,
       value: null
     };
+    this.dependsOnField = event;
+    this.dependsOnSelection = 'anyValue';
+  }
+
+  initDependsOnValue(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    if (value === 'specificValue') {
+      this.field.form.dependsOn.value = [];
+    } else if (value === 'anyValue') {
+      this.field.form.dependsOn.value = null;
+    }
+  }
+
+  addDependsOnValue() {
+    if (this.dependsOnValue && this.dependsOnValue.trim() !== '') {
+      if (!Array.isArray(this.field.form.dependsOn.value))
+        this.field.form.dependsOn.value = [this.dependsOnValue];
+      else
+        this.field.form.dependsOn.value.push(this.dependsOnValue);
+
+      this.dependsOnValue = null;
+    }
+  }
+
+
+  removeDependsOnValue(value: string) {
+    if (this.field?.form?.dependsOn) {
+      if (Array.isArray(this.field.form.dependsOn.value)) {
+        this.field.form.dependsOn.value = this.field.form.dependsOn.value.filter(v => v !== value);
+      } else if (this.field.form.dependsOn.value === value) {
+        this.field.form.dependsOn.value = null;
+      }
+    }
   }
 }

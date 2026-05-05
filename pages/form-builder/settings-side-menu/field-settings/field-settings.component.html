@@ -95,14 +95,17 @@
       </div>
     </li>
     <li>
-      <a class="uk-accordion-title uk-text-normal uk-text-default" href>Advanced</a>
+      <a class="uk-accordion-title uk-text-normal uk-text-default">Advanced</a>
       <div class="uk-accordion-content ">
         <div class="uk-text-muted uk-text-bold">
-          <input id="dependsOn" class="uk-checkbox" type="checkbox" [checked]="dependsOn()" (input)="enableFieldList($event)">
+          <input id="dependsOn" class="uk-checkbox" type="checkbox" [checked]="enableList()" (change)="enableFieldList($event)">
           <label for="dependsOn" class="uk-checkbox-label uk-margin-small-left">This field depends on an other field</label>
-          @if (enableList) {
+          @if (enableList()) {
             <p class="uk-text-muted uk-margin-small">Select the field</p>
-            <ng-select id="dependsOnSelect" class="uk-margin-small-bottom" [items]="dependsOnList" (change)="setDependsOn($event)">
+            <ng-select id="dependsOnSelect" class="uk-margin-small-bottom"
+                       [items]="dependsOnList()"
+                       [(ngModel)]="dependsOnField"
+                       (change)="setDependsOn($event)">
               <ng-template ng-label-tmp let-item="item">
                 {{ (stripHtml(item.label.text) || 'Untitled question') +' (id: '+item.id+')' }}
               </ng-template>
@@ -110,6 +113,34 @@
                 {{ (stripHtml(item.label.text) || 'Untitled question') +' (id: '+item.id+')' }}
               </ng-template>
             </ng-select>
+          }
+          @if (fbService.currentField().form.dependsOn?.id) {
+            <div>
+              <input id="anyValue" name="dependsOnValue" class="uk-radio uk-margin-xsmall-right" type="radio"
+                     value="anyValue" [(ngModel)]="dependsOnSelection" (change)="initDependsOnValue($event)">
+              <label for="anyValue" class="uk-radio-label">Enable field for any value.</label>
+            </div>
+            <div class="uk-margin-small-bottom">
+              <input id="specificValue" name="dependsOnValue" class="uk-radio uk-margin-xsmall-right" type="radio"
+                     value="specificValue" [(ngModel)]="dependsOnSelection" (change)="initDependsOnValue($event)">
+              <label for="specificValue" class="uk-radio-label">Enable field for specific value(s).</label>
+            </div>
+            @if (dependsOnSelection === 'specificValue') {
+              <ul class="uk-list uk-list-disc uk-margin-small-top uk-flex uk-flex-column">
+                @for (value of fbService.currentField().form.dependsOn.value; track value) {
+                  <li>
+                    <div class="uk-flex uk-flex-middle">
+                      {{value}}<a class="material-symbols-outlined uk-text-decoration-none" style="font-size: 22px"
+                                  (click)="removeDependsOnValue(value)">delete</a>
+                    </div>
+                  </li>
+                }
+              </ul>
+              <div class="uk-margin-small uk-flex uk-flex-middle">
+                <input id="dependsOnValue" type="text" class="uk-input uk-width-expand" [(ngModel)]="dependsOnValue">
+                <button class="uk-button uk-button-default" type="button" (click)="addDependsOnValue()">Add</button>
+              </div>
+            }
           }
         </div>
         <div class="uk-text-muted uk-text-bold">
