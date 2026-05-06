@@ -263,8 +263,10 @@ export class FormBuilderService {
   duplicateField(field: Field, parentField?: Field) {
     const newField = cloneDeep(field);
     newField.id = this.idService.generateId().toString();
+    newField.name = newField.id;
     if (parentField) {
-      if (!parentField.subFields) parentField.subFields = [];
+      if (!parentField.subFields)
+        parentField.subFields = [];
       parentField.subFields.push(newField);
       // this.updateReference();
       return;

@@ -153,6 +153,12 @@
             <label for="multiplicity" class="uk-checkbox-label uk-margin-small-left">Allow multiplicity</label>
           </div>
         }
+        @if (field.typeInfo.type === 'composite') {
+          <div class="uk-text-muted uk-text-bold">
+            <input id="showBorder" class="uk-checkbox" type="checkbox" [(ngModel)]="field.form.display.hasBorder">
+            <label for="showBorder" class="uk-checkbox-label uk-margin-small-left">Show border</label>
+          </div>
+        }
         <div class="uk-text-muted uk-text-bold">
           <input id="hidden" class="uk-checkbox" type="checkbox" [ngModel]="!field.form.display.visible"
                  (ngModelChange)="setVisibility($event)">
