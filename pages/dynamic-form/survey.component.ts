@@ -19,8 +19,7 @@ import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Field, Model, Section, Tabs } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
-import { WebsocketService } from "../../../app/services/websocket.service";
-import { UserActivity } from "../../../app/domain/userInfo";
+import { WebsocketService } from "../../services/websocket.service";
 import { cloneDeep, isEqual } from "lodash";
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
 import * as UIkit from 'uikit';

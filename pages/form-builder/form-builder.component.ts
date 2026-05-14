@@ -16,7 +16,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { filter, map, switchMap, tap } from "rxjs/operators";
 import { Field, Model } from "../../domain/dynamic-form-model";
 import { DynamicCatalogueService } from "../../services/dynamic-catalogue.service";
-import { FormControlService } from "../../services/form-control.service";
 import { FormBuilderService } from "../../services/form-builder.service";
 import { FileDownloadService } from "../../services/file-download.service";
 import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
@@ -25,8 +24,7 @@ import { SideMenuComponent } from "./side-menu/side-menu.component";
 import { MainInfoComponent } from "./main-info/main-info.component";
 import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
 import UIkit from "uikit";
-import { WebsocketService } from "../../../app/services/websocket.service";
-import Modal = UIkit.Modal;
+import { WebsocketService } from "../../services/websocket.service";
 import UIkitModalElement = UIkit.UIkitModalElement;
 
 @Component({

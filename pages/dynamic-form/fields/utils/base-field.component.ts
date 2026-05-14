@@ -10,7 +10,7 @@ import {
 } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Field } from "../../../../domain/dynamic-form-model";
-import { WebsocketService } from "../../../../../app/services/websocket.service";
+import { WebsocketService } from "../../../../services/websocket.service";
 import { FormControlService } from "../../../../services/form-control.service";
 import { cloneDeep, isEqual } from 'lodash';
 
