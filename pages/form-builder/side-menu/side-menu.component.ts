@@ -54,11 +54,11 @@ export class SideMenuComponent {
     this.fbService.deleteSubSection(position, index);
   }
 
-  emitSelection(chapter: Section, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
+  emitSelection(chapter: Section | null, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
     this.fbService.setCurrentSelection({chapter: chapter, section: section, field, sideMenuSettingsType: type})
   }
 
-  unwrapOuterParagraph(html?: string): string {
+  unwrapOuterParagraph(html: string | null): string {
     if (!html) {
       return 'Untitled question';
     }

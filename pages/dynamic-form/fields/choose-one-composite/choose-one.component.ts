@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet, UiVocabulary} from "../../../../domain/dynamic-form-model";
-import {UntypedFormArray, UntypedFormGroup, FormGroupDirective} from "@angular/forms";
-import {FormControlService} from "../../../../services/form-control.service";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
+import { FormGroupDirective, UntypedFormArray, UntypedFormGroup } from "@angular/forms";
+import { FormControlService } from "../../../../services/form-control.service";
 
 @Component({
     selector: 'app-choose-one',
@@ -11,18 +11,18 @@ import {FormControlService} from "../../../../services/form-control.service";
 })
 
 export class ChooseOneComponent implements OnInit {
-  @Input() fieldData: Field;
+  @Input() fieldData!: Field;
   @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: Map<string, object[]>;
   @Input() editMode: any;
-  @Input() position?: number = null;
+  @Input() position: number | null = null;
 
   @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  form: UntypedFormGroup;
-  hideField: boolean = null;
+  form: UntypedFormGroup = new UntypedFormGroup({});
+  hideField: boolean | null = null;
 
   constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {
   }
@@ -90,9 +90,9 @@ export class ChooseOneComponent implements OnInit {
 
   updateBitSetOfComposite(fieldData: Field, position: number) {
     if (fieldData.form.mandatory) {
-      let tmp = new HandleBitSet();
-      tmp.field = fieldData;
-      tmp.position = position;
+      let tmp: HandleBitSet = { field: fieldData, position: position};
+      // tmp.field = fieldData;
+      // tmp.position = position;
       this.handleBitSetsOfComposite.emit(tmp);
     }
   }
@@ -114,7 +114,7 @@ export class ChooseOneComponent implements OnInit {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  enableDisableField(value) {
+  enableDisableField(value: string) {
     // console.log(value);
     if (value === 'Applicable') {
       this.form.enable();

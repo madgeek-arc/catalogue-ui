@@ -7,7 +7,7 @@
         </div>
       </div>
     </li>
-    @for (chapter of fbService.model().sections; track chapter.id; let i = $index) {
+    @for (chapter of fbService.model()?.sections; track chapter.id; let i = $index) {
       <li class="uk-width-1-1 uk-margin-small-bottom">
         <div class="uk-flex uk-flex-middle uk-width-1-1 uk-visible-toggle">
           <div class="uk-width-expand" [class.uk-text-bolder]="highlightedId() === chapter.id">
@@ -55,6 +55,6 @@
     }
   </ul>
   <a class="uk-flex uk-flex-middle uk-margin-small" (click)="pushChapter()">
-    <span class="material-icons">add</span> {{ fbService.model().sections.length === 0 ? 'Create the first chapter' : 'Chapter' }}
+    <span class="material-icons">add</span> {{ fbService.model()?.sections?.length === 0 ? 'Create the first chapter' : 'Chapter' }}
   </a>
 </div>

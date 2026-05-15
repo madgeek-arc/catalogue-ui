@@ -16,7 +16,7 @@ export class NumberFieldComponent extends BaseFieldComponent implements OnInit {
   step: string = '';
   properties: NumberProperties = new NumberProperties();
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
     if (this.fieldData.typeInfo.type === FieldType.number) {
       this.properties = this.fieldData.typeInfo.properties as NumberProperties;

@@ -1,6 +1,4 @@
 import BitSet from 'bitset';
-import jp from 'jsonpath';
-import { Utils } from "../shared/utils/utils";
 
 export class Required {
   topLevel: number;
@@ -12,14 +10,14 @@ export class Required {
   }
 }
 
-export class Dependent {
+export interface Dependent {
   id: string;
   name: string;
-  value: string | string[];
+  value: string | string[] | null;
 }
 
 export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string> {
-  vocabulary: string;
+  vocabulary: string | null;
   type: FieldType;
   defaultValue: string;
   values: IdLabel[];
@@ -42,7 +40,7 @@ export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string>
 }
 
 export class Form {
-  dependsOn: Dependent;
+  dependsOn: Dependent | null;
   group: string;
   description: StyledText;
   suggestion: StyledText;
@@ -103,7 +101,7 @@ export class Field<T extends FieldType = FieldType.string> {
   label: StyledText;
   accessPath: string;
   deprecated: boolean;
-  kind: string;
+  kind: string | null = null;
   typeInfo: TypeInfo<T>;
   includedInSnippet: boolean;
   form: Form;
@@ -130,11 +128,11 @@ export class Section {
   id: string | null;
   name: string  | null;
   description: string | null;
-  subType: string | null;
+  subType: string | null = null;
   order: number;
   subSections: Section[] | null;
   fields: Field[] | null;
-  required: Required;
+  required: Required = new Required();
 
   constructor(id: string) {
     this.id = id;
@@ -209,8 +207,8 @@ export class Model {
 }
 
 export class Configuration {
-  prefillable: boolean;
-  importFrom: string[]
+  prefillable: boolean = false;
+  importFrom: string[] = []
 }
 
 export interface ImportSurveyData {
@@ -220,7 +218,7 @@ export interface ImportSurveyData {
   surveyId: string;
 }
 
-export class UiVocabulary {
+export interface UiVocabulary {
   id: string;
   name: string;
 }
@@ -230,7 +228,7 @@ export class Tab {
   order: number;
   requiredOnTab: number;
   remainingOnTab: number;
-  bitSet: BitSet;
+  bitSet: BitSet | undefined;
 
   constructor() {
     this.valid = false;
@@ -249,17 +247,17 @@ export class Tabs {
   requiredTotal: number;
 }
 
-export class HandleBitSet {
+export interface HandleBitSet {
   field: Field;
   position: number;
 }
 
-export class IdLabel {
+export interface IdLabel {
   id: string;
   label: string;
 }
 
-export class DataRequest {
+export interface DataRequest {
   request: Request;
   endpoint: string;
   params: { [index: string]: any };
@@ -267,19 +265,19 @@ export class DataRequest {
   expression: string;
 }
 
-export class Request {
+export interface Request {
   method: string;
   url: string;
   headers: { [index: string]: string[] };
   body: string;
 }
 
-export class RequiredFields {
+export interface RequiredFields {
   topLevel: number;
   total: number;
 }
 
-export class Series {
+export interface Series {
   name: string;
   referenceYear: string;
 }
@@ -366,7 +364,7 @@ const propertiesFactory: Record<FieldType, new () => TypeProperties> = {
   [FieldType.checkbox]: CustomProperties,
   [FieldType.bool]: CustomProperties,
   [FieldType.scale]: CustomProperties,
-  [FieldType.composite]: TypeProperties,
+  [FieldType.composite]: CustomProperties,
   [FieldType.chooseOne]: TypeProperties,
   [FieldType.array]: TypeProperties,
 };

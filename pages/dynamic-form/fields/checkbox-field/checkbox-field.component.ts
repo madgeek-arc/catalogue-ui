@@ -23,11 +23,11 @@ export class CheckboxFieldComponent extends BaseFieldComponent {
   label?: string;
   properties: CustomProperties = {};
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
     this.properties = this.fieldData.typeInfo.properties as CustomProperties;
     if (this.properties.hasOwnProperty('label'))
-      this.label = this.properties.label as string;
+      this.label = this.properties['label'] as string;
   }
 
   /** Bitsets--> **/

@@ -1,19 +1,18 @@
 export class DocDefinition {
-  header: Content;
+  header: any;
   content: any[];
-  styles: object;
-  images: object;
-  info: PdfMetadata;
-  defaultStyle: object;
+  styles: any;
+  images: any;
+  info: any;
+  defaultStyle: any;
   // pageMargins: [ 40, 60, 40, 60 ];
   // pageSize: 'A4';
-  footer(currentPage, pageCount) {
+  footer(currentPage: number, pageCount: number): any {
     return {
-      layout: "noBorders",
       fontSize: 8,
       margin: [25, 20, 5, 0],
       columns: [
-        { text: currentPage.toString() + " of " + pageCount, alignment: 'right' },
+        { text: currentPage.toString() + " of " + pageCount.toString(), alignment: 'right' },
       ]
     }
   }
@@ -87,7 +86,7 @@ export class DocDefinition {
 export class Content {
   text: string;
   style: string[];
-  width: number;
+  width: number | undefined;
 
   constructor(text: string, style: string[], width?: number) {
     this.text = text;
@@ -99,7 +98,7 @@ export class Content {
 
 export class Columns {
   columns: any[];
-  style: string[];
+  style: string[] | undefined;
 
   constructor(style?: string[]) {
     this.columns = [];
@@ -141,7 +140,7 @@ export class PdfTable {
 export class TableDefinition {
   body: any[][];
   widths: string[];
-  heights: number[];
+  heights: number[] | undefined;
 
   constructor(body: any[][], widths: string[], heights?: number[]) {
     this.body = body;
@@ -153,9 +152,9 @@ export class TableDefinition {
 
 export class PdfUnorderedList {
   ul: string[];
-  type: string;
+  type: string | undefined;
   markerColor: string;
-  color: string;
+  color: string | undefined;
 
   constructor(ul: string[], type?: string) {
     this.ul = ul;

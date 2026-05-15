@@ -1,13 +1,13 @@
 <div>
   <div class="uk-margin-bottom">
-    @if (field?.label.text) {
+    @if (field?.label?.text) {
       <label [for]="field.name" class="uk-form-label {{field.label.cssClasses}}"  style="{{field.label.style}}"
-             [innerHTML]="field.form.mandatory ? appendAsterisk(field.label.text) : field.label.text">
+             [innerHTML]="field.form.mandatory ? appendAsterisk(field.label?.text) : field.label.text">
       </label>
     }
   </div>
 
-  @if (field?.form.description?.showLess) {
+  @if (field?.form?.description?.showLess) {
     @if (field.form.description.text) {
       <div class="uk-form-description uk-text-small uk-margin-bottom {{field.form.description.cssClasses}}"
            style="{{field.form.description.style}}">
@@ -15,7 +15,7 @@
       </div>
     }
   } @else {
-    @if (field?.form.description?.text) {
+    @if (field?.form?.description?.text) {
       <div class="uk-form-description uk-text-small uk-margin-bottom {{field.form.description.cssClasses}}"
            style="{{field.form.description.style}}"
            [innerHTML]="field.form.description.text | safeUrl: 'html'">
@@ -23,7 +23,7 @@
     }
   }
 
-  @let fieldType = field?.typeInfo.type || null;
+  @let fieldType = field?.typeInfo?.type || null;
   @if (fieldType === 'composite') {
     <div class="uk-card card-simple uk-card-body uk-animation-scale-up">
 

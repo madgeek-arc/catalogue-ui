@@ -23,7 +23,7 @@ export class FormsListComponent implements OnInit {
   protected fbService = inject(FormBuilderService);
 
   // State signals
-  paging = signal<Paging<Model>>(null);
+  paging = signal<Paging<Model> | null>(null);
   from = signal(0);
   quantity = signal(10);
   sortBy = signal<'name' | 'creationDate'>('creationDate');

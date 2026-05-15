@@ -5,7 +5,7 @@ export interface Thread {
 }
 
 export interface CreateThread {
-  targetId: string;
+  targetId: string | null;
   fieldId: string;
   message: Comment;
 }

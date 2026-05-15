@@ -35,7 +35,7 @@ export class FieldTemplatesComponent {
 
   @ViewChild('labelInput') inputEl!: ElementRef<HTMLInputElement>;
 
-  @Input() field: Field | null = null;
+  @Input() field!: Field;
 
   public editor = ClassicEditor;
 

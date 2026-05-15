@@ -7,7 +7,8 @@ import { findMaxId } from "../shared/utils/utils";
 export class IdGenerationService {
   private currentId = 0;
 
-  findMaxId(model: Model) {
+  findMaxId(model: Model | null) {
+    if (!model) return;
     this.currentId = findMaxId(model);
   }
 

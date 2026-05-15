@@ -22,7 +22,7 @@ export class ReadMoreComponent implements AfterContentInit {
   //@Input() text: string;
   //maximum height of the container
   @Input("maxHeight") maxHeight: number = 100;
-  @ViewChild("readMoreDiv", {static: true}) readMoreDiv: ElementRef;
+  @ViewChild("readMoreDiv", {static: true}) readMoreDiv: ElementRef | undefined;
   //set these to false in order to get the height of the expended container
   public isCollapsed: boolean = false;
   public isCollapsable: boolean = false;
@@ -30,9 +30,9 @@ export class ReadMoreComponent implements AfterContentInit {
   constructor(public elementRef: ElementRef) {}
 
   ngAfterContentInit() {
-    setTimeout(_ => {
-      let currentHeight = this.readMoreDiv.nativeElement.offsetHeight;
-      //collapsable only if the contents make container exceed the max height
+    setTimeout((_: any) => {
+      let currentHeight = this.readMoreDiv?.nativeElement.offsetHeight;
+      //collapsable only if the contents make the container exceed the max height
       if (currentHeight > this.maxHeight || currentHeight === 0) {
         this.isCollapsed = true;
         this.isCollapsable = true;

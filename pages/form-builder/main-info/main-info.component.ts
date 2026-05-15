@@ -1,8 +1,9 @@
-import { Component, EventEmitter, inject, Input, Output, ViewChild } from "@angular/core";
-import { CKEditorComponent, CKEditorModule } from "@ckeditor/ckeditor5-angular";
+import { Component, inject } from "@angular/core";
+import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { FormsModule } from "@angular/forms";
 import { FormBuilderService } from "../../../services/form-builder.service";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 @Component({
   selector: 'app-main-info',
@@ -18,9 +19,16 @@ export class MainInfoComponent {
 
   public editor = ClassicEditor;
 
+  editors: Record<string, any> = {
+    descriptionEditor: ClassicEditor,
+    noticeEditor: ClassicEditor,
+  };
+
   focusEditor(editor: string) {
-    if (this[editor] && this[editor].editorInstance) {
-      this[editor].editorInstance.editing.view.focus();
+    const instance = this.editors[editor];
+
+    if (instance?.editorInstance) {
+      instance.editorInstance.editing.view.focus();
     }
   }
 }

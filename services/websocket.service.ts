@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
-import { environment } from "../../environments/environment";
 import { BehaviorSubject, Subject } from "rxjs";
 import { HttpXsrfTokenExtractor } from "@angular/common/http";
+import { APP_ENV } from '../config/app-env.token';
 
 declare var SockJS;
 declare var Stomp;
@@ -31,8 +31,9 @@ interface Action {
 @Injectable()
 export class WebsocketService {
   private xsrf = inject(HttpXsrfTokenExtractor);
+  private environment = inject(APP_ENV);
 
-  private URL = environment.WS_ENDPOINT;
+  private URL = this.environment.WS_ENDPOINT;
 
   private surveyAnswerId: string | null = null;
   private type: string | null = null;

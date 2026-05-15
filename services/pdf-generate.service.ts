@@ -14,7 +14,8 @@ import { cloneDeep } from 'lodash';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
-pdfMake.vfs = pdfFonts.vfs;
+pdfMake.addVirtualFileSystem(pdfFonts);
+
 
 @Injectable()
 
@@ -22,10 +23,10 @@ export class PdfGenerateService {
 
   generatePDF(model: Model, payload: any, form: FormGroup) {
     let docDefinition: DocDefinition = new DocDefinition();
-    docDefinition.content.push(new Content(model.name, ['title']));
+    docDefinition.content.push(new Content(model.name as string, ['title']));
     if (model.notice)
       docDefinition.content.push({text: this.strip(model.notice), italics: true, alignment: 'justify'});
-    docDefinition.info = new PdfMetadata(model.name);
+    docDefinition.info = new PdfMetadata(model.name as string);
 
     let description = 'none';
     if (model.name === 'Survey on National Contributions to EOSC 2022' || model.id === 'm-eosc-sb-2023') {
@@ -33,10 +34,10 @@ export class PdfGenerateService {
     }
     this.createDocumentDefinition(model, payload, form, docDefinition, description);
 
-    pdfMake.createPdf(docDefinition).download(model.name);
+    pdfMake.createPdf(docDefinition as any).download(model.name as string);
   }
 
-  documentDefinitionRecursion(model: Model, fields: Field[], payload, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
+  documentDefinitionRecursion(model: Model, fields: Field[], payload: any, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
       if (field.deprecated || field.kind === 'paused')
         continue;
@@ -70,21 +71,21 @@ export class PdfGenerateService {
               style: ['mt_3'],
               text: []
             }
-            content.text.push({text: questionNumber+' '});
+            content.text.push({text: questionNumber+' '} as never);
             let terms = strArray[1]?.split('<br><br>')
             if (terms?.length > 0) {
               for (let i = 0; i < terms.length; i++) {
-                content.text.push({text:  this.strip(terms[i].split(':')[0])+': ', bold: true});
-                content.text.push({text:  this.strip(terms[i].split(':')[1]).concat('\n')});
+                content.text.push({text: this.strip(terms[i].split(':')[0])+': ', bold: true} as never);
+                content.text.push({text: this.strip(terms[i].split(':')[1]).concat('\n')} as never);
               }
             }
-            content.text.push({text:  strArray[0] ? 'Instructions' : '', bold: true});
-            content.text.push({text: strArray[0] ? ' - '+strArray[0] : ''});
+            content.text.push({text: strArray[0] ? 'Instructions' : '', bold: true} as never);
+            content.text.push({text: strArray[0] ? ' - '+strArray[0] : ''} as never);
 
 
             // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
             if (strArray.length)
-              descriptionAtEnd.content.push(content);
+              descriptionAtEnd?.content.push(content);
 
           } else {
             let components = this.strip(field.form.description.text).split(' - ');
@@ -99,7 +100,7 @@ export class PdfGenerateService {
               ]
             }
             // descriptionAtEnd.content.push(new Content(questionNumber + ' ' + components.shift() + '-' + components.join('-'), ['mt_3']));
-            descriptionAtEnd.content.push(content);
+            descriptionAtEnd?.content.push(content);
           }
 
         }
@@ -138,7 +139,7 @@ export class PdfGenerateService {
         } else {
           content.columns.push(new PdfImage('unchecked', 10, 10, ['mt_1']));
         }
-        content.columns.push(new Content(field.label.text,['ms_1']));
+        content.columns.push(new Content(field.label.text as string, ['ms_1']));
         docDefinition.content.push(content);
       } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
         if (answerValues?.[0] && answerValues?.[0]?.trim() !== '') {
@@ -180,7 +181,7 @@ export class PdfGenerateService {
       }
       if (field.subFields) {
         if (field.typeInfo.type === 'composite' && field.typeInfo.multiplicity) {
-          const tmpCtrl = cloneDeep(formControl.getRawValue());
+          const tmpCtrl = cloneDeep(formControl?.getRawValue());
           if (tmpCtrl instanceof Array) {
             for (let i = 0; i < tmpCtrl.length; i++) {
               this.documentDefinitionRecursion(model, field.subFields, tmpCtrl[i], form, docDefinition, description, descriptionAtEnd);
@@ -193,7 +194,7 @@ export class PdfGenerateService {
     }
   }
 
-  createDocumentDefinition(model: Model, payload, form: FormGroup, docDefinition: DocDefinition, description: string) {
+  createDocumentDefinition(model: Model, payload: any, form: FormGroup, docDefinition: DocDefinition, description: string) {
     let descriptionsAtEnd = new DocDefinition();
 
     if (model.name === 'Survey on National Contributions to EOSC 2022'  || model.id === 'm-eosc-sb-2023') {
@@ -202,17 +203,19 @@ export class PdfGenerateService {
 
     model.sections.sort((a, b) => a.order - b.order);
     for (const section of model.sections) {
-      section.subSections.sort((a, b) => a.order - b.order);
+      section.subSections?.sort((a, b) => a.order - b.order);
       if (model.sections.length > 1) {
-        docDefinition.content.push(new Content(section.name, ['chapterHeader']));
+        docDefinition.content.push(new Content(section.name as string, ['chapterHeader']));
       }
 
-      for (const subSection of section.subSections) {
-        if (section.subSections.length > 1) {
-          docDefinition.content.push(new Content(subSection.name, ['tabHeader']));
+      if (section.subSections) {
+        for (const subSection of section.subSections) {
+          if (section.subSections.length > 1) {
+            docDefinition.content.push(new Content(subSection.name as string, ['tabHeader']));
+          }
+          if (subSection.fields)
+            this.documentDefinitionRecursion(model, subSection.fields, payload, form, docDefinition, description, descriptionsAtEnd);
         }
-        if (subSection.fields)
-          this.documentDefinitionRecursion(model, subSection.fields, payload, form, docDefinition, description, descriptionsAtEnd);
       }
 
     }
@@ -244,13 +247,14 @@ export class PdfGenerateService {
     if (control.get(name)) {
       return control.get(name);
     }
-
-    for (const key in control['controls']) {
-      const nestedControl = control.get(key);
-      if (nestedControl instanceof FormGroup || nestedControl instanceof FormArray) {
-        const foundControl = this.findControlByName(nestedControl, name);
-        if (foundControl) {
-          return foundControl;
+    if (control instanceof FormGroup) {
+      for (const key in control['controls']) {
+        const nestedControl = control.get(key);
+        if (nestedControl instanceof FormGroup || nestedControl instanceof FormArray) {
+          const foundControl = this.findControlByName(nestedControl, name);
+          if (foundControl) {
+            return foundControl;
+          }
         }
       }
     }
@@ -274,7 +278,7 @@ export class PdfGenerateService {
 
           if (k.includes(key)) {
             if (x !== null && typeof x !== 'object') return [x];
-            if (Array.isArray(x) && x.length > 0) return x;
+            if (Array.isArray(x) && x?.length > 0) return x;
           }
           if (x && typeof x === "object" && !seen.has(x)) {
             seen.add(x);

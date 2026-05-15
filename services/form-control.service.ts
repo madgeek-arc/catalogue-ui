@@ -38,9 +38,9 @@ export class FormControlService {
   toFormGroup(form: Section[], checkImmutable: boolean) {
     const group: any = {};
     form.forEach(groups => {
-      groups.fields.sort((a, b) => a.form.display?.order - b.form.display?.order)
+      groups.fields?.sort((a, b) => a.form.display?.order - b.form.display?.order)
       groups.required = new Required();
-      groups.fields.forEach(formField => {
+      groups.fields?.forEach(formField => {
         if (formField.deprecated)
           return;
 

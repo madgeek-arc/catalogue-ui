@@ -5,8 +5,8 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { APP_ENV } from "../config/app-env.token";
 
-declare var SockJS;
-declare var Stomp;
+declare var SockJS: any;
+declare var Stomp: any;
 
 interface IMessage {
   command: string;
@@ -34,11 +34,11 @@ export class CommentingWebsocketService {
   threadSubject: BehaviorSubject<Thread[]> = new BehaviorSubject<Thread[]>([]);
   focusedField: Subject<string> = new Subject();
 
-  stompClient: Promise<typeof Stomp>;
+  stompClient: Promise<typeof Stomp> | undefined;
 
   count = 0;
 
-  initializeWebSocketConnection(sa_id: string) {
+  initializeWebSocketConnection(sa_id: string | null = null) {
     const ws = new SockJS(this.url);
     const that = this;
     this.surveyAnswerId = sa_id;
@@ -48,7 +48,7 @@ export class CommentingWebsocketService {
     this.stompClient = new Promise((resolve, reject) => {
       let stomp = Stomp.over(ws);
       stomp.debug = null;
-      stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function (frame) {
+      stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function () {
         const timer = setInterval(() => {
           if (stomp.connected) {
             clearInterval(timer);
@@ -69,7 +69,7 @@ export class CommentingWebsocketService {
             resolve(stomp);
           }
         }, 1000);
-      }, function (error) {
+      }, function () {
         let timeout = 1000;
         that.count > 20 ? timeout = 10_000 : that.count++ ;
         setTimeout( () => {
@@ -177,7 +177,7 @@ export class CommentingWebsocketService {
   }
 
   getSAComments(status: 'ACTIVE' | 'RESOLVED' | 'DELETED' | 'HIDDEN' = 'ACTIVE') {
-    const params = new HttpParams().set('targetId', this.surveyAnswerId).set('status', status);
+    const params = new HttpParams().set('targetId', this.surveyAnswerId as string).set('status', status);
 
     return this.http.get<Thread[]>(`${this.base}/survey-answer-comments`, {params}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {

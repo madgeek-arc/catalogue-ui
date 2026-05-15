@@ -60,8 +60,8 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   error = signal<string | null>(null);
 
   editMode = false;
-  jsonModal: UIkitModalElement;
-  formPreviewModal: UIkitModalElement;
+  jsonModal!: UIkitModalElement;
+  formPreviewModal!: UIkitModalElement;
   showPreview = signal(false);
 
   ngAfterViewInit(): void {
@@ -130,6 +130,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveModel() {
+    if (!this.fbService.model()) return;
     this.catalogueService.postFormModel(this.fbService.model(), this.editMode).subscribe({
       next: () => {
         this.router.navigate(['/fb']).then();
@@ -150,7 +151,9 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Modal
   hideModal(id: string) {
-    UIkit.modal(document.getElementById(id)).hide();
+    let el = document.getElementById(id);
+    if (el)
+      UIkit.modal(el).hide();
   }
 
   onBeforeShow = (event: any) => {

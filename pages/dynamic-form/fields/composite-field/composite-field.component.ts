@@ -173,9 +173,9 @@ export class CompositeFieldComponent implements OnInit {
 
   updateBitSetOfComposite(fieldData: Field, position: number) {
     if (fieldData.form.mandatory) {
-      let tmp = new HandleBitSet();
-      tmp.field = fieldData;
-      tmp.position = position;
+      let tmp: HandleBitSet = {field: fieldData, position: position};
+      // tmp.field = fieldData;
+      // tmp.position = position;
       this.handleBitSetsOfComposite.emit(tmp);
     }
   }

@@ -24,7 +24,7 @@ export class ScaleFieldComponent extends BaseFieldComponent {
   text_left: string | null = null;
   text_right: string | null = null;
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
     const properties = this.fieldData.typeInfo.properties;
 

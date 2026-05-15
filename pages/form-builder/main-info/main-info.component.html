@@ -5,7 +5,7 @@
 <!--    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Title *</label>-->
     <div class="uk-form-controls">
       <input id="sectionName" class="uk-input" placeholder="Untitled Section"
-             [ngModel]="fbService.model().name" (ngModelChange)="fbService.setModelTitle($event)">
+             [ngModel]="fbService.model()?.name" (ngModelChange)="fbService.setModelTitle($event)">
     </div>
   </div>
   <div class="uk-margin">
@@ -13,7 +13,7 @@
 <!--    <label (click)="focusEditor('descriptionEditor')" class="uk-form-label uk-margin-small-bottom">Description *</label>-->
     <div class="uk-form-controls">
       <ckeditor #descriptionEditor [editor]="editor"
-                [ngModel]="fbService.model().description" (ngModelChange)="fbService.setModelDescription($event)"
+                [ngModel]="fbService.model()?.description" (ngModelChange)="fbService.setModelDescription($event)"
                 [config]="{placeholder: 'A description about the form'}">
       </ckeditor>
     </div>
@@ -23,7 +23,7 @@
 <!--    <label (click)="focusEditor('noticeEditor')" class="uk-form-label uk-margin-small-bottom">Notice </label>-->
     <div class="uk-form-controls">
       <ckeditor #noticeEditor [editor]="editor"
-                [ngModel]="fbService.model().notice" (ngModelChange)="fbService.setModelNotice($event)"
+                [ngModel]="fbService.model()?.notice" (ngModelChange)="fbService.setModelNotice($event)"
                 [config]="{placeholder: 'A small notice about the form'}">
       </ckeditor>
     </div>

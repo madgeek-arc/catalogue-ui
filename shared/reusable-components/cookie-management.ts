@@ -1,4 +1,4 @@
-export function getCookie(name: string): string {
+export function getCookie(name: string): string | null {
   const ca: Array<string> = document.cookie.split(';');
   const caLen: number = ca.length;
   const cookieName = `${name}=`;
@@ -12,7 +12,7 @@ export function getCookie(name: string): string {
   return null;
 }
 
-export function deleteCookie(name) {
+export function deleteCookie(name: string) {
   document.cookie = name+'=; Max-Age=-99999999;';
   // setCookie(name, '', -1);
 }

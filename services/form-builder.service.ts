@@ -9,7 +9,7 @@ export class FormBuilderService {
   private idService = inject(IdGenerationService);
 
   // state
-  private _model = signal<Model>(null);
+  private _model = signal<Model | null>(null);
   private _currentSection = signal<Section | null>(null);
   private _currentSubsection = signal<Section | null>(null);
   private _currentField = signal<Field | null>(null);
@@ -34,42 +34,48 @@ export class FormBuilderService {
 
   setModelId(id: string) {
     this._model.update(model => {
-      model.id = id;
+      if (model)
+        model.id = id;
       return model;
     });
   }
 
   setModelTitle(title: string) {
     this._model.update(model => {
-      model.name = title;
+      if (model)
+        model.name = title;
       return model;
     });
   }
 
   setModelDescription(description: string) {
     this._model.update(model => {
-      model.description = description;
+      if (model)
+        model.description = description;
       return model;
     });
   }
 
   setModelNotice(notice: string) {
     this._model.update(model => {
-      model.notice = notice;
+      if (model)
+        model.notice = notice;
       return model;
     });
   }
 
   setModelLocked(locked: boolean) {
     this._model.update(model => {
-      model.locked = locked;
+      if (model)
+        model.locked = locked;
       return model;
     });
   }
 
   setModelActive(active: boolean) {
     this._model.update(model => {
-      model.active = active;
+      if (model)
+        model.active = active;
       return model;
     });
   }
@@ -106,14 +112,16 @@ export class FormBuilderService {
   // Section relevant action
   setSectionName(name: string) {
     this._currentSection.update(section => {
-      section.name = name;
+      if (section)
+        section.name = name;
       return section;
     });
   }
 
   setSectionDescription(description: string) {
     this._currentSection.update(section => {
-      section.description = description;
+      if (section)
+        section.description = description;
       return section;
     });
   }
@@ -121,7 +129,8 @@ export class FormBuilderService {
   addSection() {
     const newChapter = new Section(this.idService.generateId().toString(),);
     this._model.update(model => {
-      model.sections.push(newChapter);
+      if (model)
+        model.sections.push(newChapter);
       return model;
     });
 
@@ -130,15 +139,16 @@ export class FormBuilderService {
 
   deleteSection(index: number) {
     this._model.update(model => {
-      model.sections.splice(index, 1);
+      if (model)
+        model.sections.splice(index, 1);
       return model;
     });
 
-    if (this._model().sections[index]) {
-      this.setCurrentSelection({chapter: this._model().sections[index], section: null, field: null, sideMenuSettingsType: 'chapter'});
+    if (this._model()?.sections[index]) {
+      this.setCurrentSelection({chapter: this._model()?.sections[index] || null, section: null, field: null, sideMenuSettingsType: 'chapter'});
       return;
-    } else if (this._model().sections[index-1]) {
-      this.setCurrentSelection({chapter: this._model().sections[index-1], section: null, field: null, sideMenuSettingsType: 'chapter'});
+    } else if (this._model()?.sections[index-1]) {
+      this.setCurrentSelection({chapter: this._model()?.sections[index-1] || null, section: null, field: null, sideMenuSettingsType: 'chapter'});
       return;
     }
     this.setCurrentSelection({chapter: null, section: null, field: null, sideMenuSettingsType: 'main'});
@@ -147,14 +157,16 @@ export class FormBuilderService {
   // Subsection relevant actions
   setSubSectionName(name: string) {
     this._currentSubsection.update(subsection => {
-      subsection.name = name;
+      if (subsection)
+        subsection.name = name;
       return subsection;
     });
   }
 
   setSubSectionDescription(description: string) {
     this._currentSubsection.update(subsection => {
-      subsection.description = description;
+      if (subsection)
+        subsection.description = description;
       return subsection;
     });
   }
@@ -162,10 +174,10 @@ export class FormBuilderService {
   addSubSection(index: number) {
     const newSection = new Section(this.idService.generateId().toString());
     this._model.update(model => {
-      if (model.sections[index].subSections === null)
+      if (model?.sections[index].subSections === null)
         model.sections[index].subSections = [];
 
-      model.sections[index].subSections.push(newSection);
+      model?.sections[index].subSections.push(newSection);
       return model;
     });
     this.setCurrentSubsection(newSection);
@@ -174,42 +186,45 @@ export class FormBuilderService {
 
   deleteSubSection(position: number, index: number) {
     this._model.update(model => {
-      model.sections[position].subSections.splice(index, 1);
+      if (model)
+        model.sections[position].subSections?.splice(index, 1);
       return model;
     });
 
-    if (this._model().sections[position].subSections[index]) {
+    if (this._model()?.sections[position].subSections?.[index]) {
       this.setCurrentSelection({
-        chapter: this._model().sections[position],
-        section: this._model().sections[position].subSections[index],
+        chapter: this._model()?.sections[position] || null,
+        section: this._model()?.sections[position].subSections?.[index] || null,
         field: null,
         sideMenuSettingsType: 'section'
       });
       return;
-    } else if (this._model().sections[position].subSections[index-1]) {
+    } else if (this._model()?.sections[position].subSections?.[index-1]) {
       this.setCurrentSelection({
-        chapter: this._model().sections[position],
-        section: this._model().sections[position].subSections[index-1],
+        chapter: this._model()?.sections[position] || null,
+        section: this._model()?.sections[position].subSections?.[index-1] || null,
         field: null,
         sideMenuSettingsType: 'section'
       });
       return;
     }
-    this.setCurrentSelection({chapter: this._model().sections[position], section: null, field: null, sideMenuSettingsType: 'chapter'});
+    this.setCurrentSelection({chapter: this._model()?.sections[position] || null, section: null, field: null, sideMenuSettingsType: 'chapter'});
 
   }
 
   // Field relevant actions
   setFieldType(type: FieldType) {
     this._currentField.update(field => {
-      field.typeInfo.type = type;
+      if (field)
+        field.typeInfo.type = type;
       return field;
     });
   }
 
   setFieldPlaceholder(placeholder: string) {
     this._currentField.update(field => {
-      field.form.placeholder = placeholder;
+      if (field)
+        field.form.placeholder = placeholder;
       return field;
     });
     // this.updateReference();
@@ -217,7 +232,8 @@ export class FormBuilderService {
 
   setFieldLabel(text: string) {
     this._currentField.update(field => {
-      field.label.text = text;
+      if (field)
+        field.label.text = text;
       return field;
     });
   }
@@ -232,10 +248,10 @@ export class FormBuilderService {
     }
 
     this._currentSubsection.update( section => {
-      if (section.fields === null)
+      if (section?.fields === null)
         section.fields = [];
 
-      section.fields.push(tmpField);
+      section?.fields.push(tmpField);
 
       return section;
     });
@@ -304,9 +320,9 @@ export class FormBuilderService {
     });
   }
 
-  addFieldToComposite(type: FieldType, isOuterCompositeCheckboxCreation = false, checkboxLabel?: string) {
+  addFieldToComposite(type: FieldType, isOuterCompositeCheckboxCreation = false, checkboxLabel?: string | null) {
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
-    if (isOuterCompositeCheckboxCreation === true) {
+    if (isOuterCompositeCheckboxCreation) {
       tmpField.typeInfo.type = FieldType.composite;
       tmpField.typeInfo.properties = {
         checkbox: true
@@ -319,10 +335,10 @@ export class FormBuilderService {
     }
 
     this._currentField.update( field => {
-      if (field.subFields === null)
+      if (field?.subFields === null)
         field.subFields = [];
 
-      field.subFields.push(tmpField);
+      field?.subFields.push(tmpField);
       return field;
     });
     this.setCurrentField(tmpField);
@@ -346,7 +362,7 @@ export class FormBuilderService {
     return checkActive(field);
   }
 
-  getFieldsAtSameLevel(field: Field): Field[] {
+  getFieldsAtSameLevel(field: Field | null): Field[] {
     if (!field) return [];
     const model = this._model();
     if (!model) return [];
