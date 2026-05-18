@@ -124,7 +124,7 @@ export class PdfImage {
 
 export class PdfTable {
   table: TableDefinition;
-  styles: string[];
+  style: string[];
   // layout = {
   //   paddingLeft(i, node) { return 2},
   //   paddingTop(i, node) { return 8},
@@ -134,7 +134,7 @@ export class PdfTable {
 
   constructor(table: TableDefinition, styles: string[]) {
     this.table = table;
-    this.styles = styles;
+    this.style = styles;
   }
 }
 
