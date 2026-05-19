@@ -210,7 +210,8 @@ export class CommentsPanelComponent implements OnInit {
   selectMention(user: MentionableUser, threadId: string) {
     if (!user.email) return;
     const atIndex = this.inputMessage.lastIndexOf('@');
-    this.inputMessage = this.inputMessage.slice(0, atIndex) + '@' + user.email + ' ';
+    const display = user.name ?? user.email;
+    this.inputMessage = this.inputMessage.slice(0, atIndex) + '@' + display + ' ';
     this.showMentionDropdown = false;
     this.filteredUsers = [];
   }
@@ -243,8 +244,9 @@ export class CommentsPanelComponent implements OnInit {
   selectMentionForThread(user: MentionableUser) {
     if (!user.email) return;
     const atIndex = this.createThreadComment.body.lastIndexOf('@');
+    const display = user.name ?? user.email;
     this.createThreadComment.body =
-      this.createThreadComment.body.slice(0, atIndex) + '@' + user.email + ' ';
+      this.createThreadComment.body.slice(0, atIndex) + '@' + display + ' ';
     this.showMentionDropdown = false;
     this.filteredUsers = [];
   }
@@ -261,8 +263,14 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   private extractMentions(body: string): string[] {
-    const regex = /@([\w.+-]+@[\w.-]+\.[a-zA-Z]{2,})/g;
-    return [...body.matchAll(regex)].map(m => m[1]);
+    const regex = /@([^\s]+)/g;
+    const tokens = [...body.matchAll(regex)].map(m => m[1]);
+    return tokens.map(token => {
+      // if the token is already an email, use it directly
+      if (token.includes('@')) return token;
+      // otherwise look up the name in allUsers and return the email
+      return this.allUsers.find(u => u.name === token)?.email ?? null;
+    }).filter(Boolean) as string[];
   }
 
   updateComment(threadId: string, comment: Comment) {
@@ -304,7 +312,7 @@ export class CommentsPanelComponent implements OnInit {
 
   getDisplayName(email: string): string {
     const user = this.allUsers.find(u => u.email === email);
-    return user?.name ?? user.email;
+    return user?.name ?? user?.email ?? email;
   }
 
   isEditingInThread(thread: Thread): boolean {
