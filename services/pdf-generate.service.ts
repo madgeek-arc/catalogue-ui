@@ -138,7 +138,7 @@ export class PdfGenerateService {
         } else {
           content.columns.push(new PdfImage('unchecked', 10, 10, ['mt_1']));
         }
-        content.columns.push(new Content(field.label.text,['ms_1']));
+        content.columns.push(new Content(field.typeInfo.properties['label'],['ms_1']));
         docDefinition.content.push(content);
       } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
         if (answerValues?.[0] && answerValues?.[0]?.trim() !== '') {
