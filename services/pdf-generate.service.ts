@@ -146,7 +146,7 @@ export class PdfGenerateService {
         } else {
           docDefinition.content.push(new PdfTable(new TableDefinition([[{text: ' ', margin: [0, 11, 0, 11]}]], ['*']), ['mt_1']));
         }
-      } else if (answerValues && field.typeInfo.type !== 'composite') {
+      } else if (field.typeInfo.type !== 'composite') {
 
         // 1. If it's an array with a single null, treat it as null
         if (answerValues instanceof Array && answerValues.length === 1 && answerValues[0] === null) {
