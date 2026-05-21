@@ -138,15 +138,15 @@ export class PdfGenerateService {
         } else {
           content.columns.push(new PdfImage('unchecked', 10, 10, ['mt_1']));
         }
-        content.columns.push(new Content(field.label.text,['ms_1']));
+        content.columns.push(new Content(field.typeInfo.properties['label'],['ms_1']));
         docDefinition.content.push(content);
       } else if (field.typeInfo.type === 'largeText' || field.typeInfo.type === 'richText') {
         if (answerValues?.[0] && answerValues?.[0]?.trim() !== '') {
           docDefinition.content.push(new PdfTable(new TableDefinition([[this.strip(answerValues[0])]], ['*']), ['mt_1']));
         } else {
-          docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [48]), ['mt_1']));
+          docDefinition.content.push(new PdfTable(new TableDefinition([[{text: ' ', margin: [0, 11, 0, 11]}]], ['*']), ['mt_1']));
         }
-      } else if (answerValues && field.typeInfo.type !== 'composite') {
+      } else if (field.typeInfo.type !== 'composite') {
 
         // 1. If it's an array with a single null, treat it as null
         if (answerValues instanceof Array && answerValues.length === 1 && answerValues[0] === null) {

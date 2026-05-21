@@ -8,6 +8,7 @@
       <div class="thread-wrapper uk-position-absolute uk-width-expand"
         [class.thread--focused]="thread.id === focusedThreadId"
         [style.top.px]="layoutMap.get(thread.id)?.top ?? 0"
+        [style.z-index]="showInputMap.get(thread.id) ? 100 : 0"
         (click)="onThreadClick(thread)">
         <div measureComment [threadId]="thread.id" (sizeChange)="onCommentSizeChange(thread.id, $event)"
              class="uk-card uk-card-default uk-card-small uk-animation-slide-top-medium comment-card film-card">
