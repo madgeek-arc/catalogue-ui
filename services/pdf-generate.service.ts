@@ -38,7 +38,7 @@ export class PdfGenerateService {
 
   documentDefinitionRecursion(model: Model, fields: Field[], payload, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
-      if (field.deprecated || field.kind === 'paused')
+      if (field.deprecated || field.kind === 'paused' || field.form?.display.visible === false)
         continue;
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
@@ -131,7 +131,7 @@ export class PdfGenerateService {
           docDefinition.content.push(content);
         }
       } else if (field.typeInfo.type === 'checkbox') {
-        docDefinition.content.pop();
+        if (field.label.text) docDefinition.content.pop();
         let content = new Columns(['mx_1']);
         if (answerValues?.[0]) {
           content.columns.push(new PdfImage('checked', 10, 10, ['mt_1']));
