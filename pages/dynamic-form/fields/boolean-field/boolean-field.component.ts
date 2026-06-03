@@ -21,11 +21,13 @@ export class BooleanFieldComponent extends BaseFieldComponent {
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   label?: string;
+  properties: CustomProperties = {};
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
-    if ((this.fieldData.typeInfo.properties as CustomProperties).hasOwnProperty('label'))
-      this.label = (this.fieldData.typeInfo.properties as CustomProperties).label;
+    this.properties = this.fieldData.typeInfo.properties as CustomProperties;
+    if (this.properties.hasOwnProperty('label'))
+      this.label = this.properties['label'] as string;
   }
 
   /** Bitsets--> **/

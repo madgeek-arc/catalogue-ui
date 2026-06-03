@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormArray, FormControl, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
-import { phoneRegEx, urlRegEx } from "../shared/validators/generic.validator";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { emailRegEx, phoneRegEx, urlRegEx } from "../shared/validators/generic.validator";
 import { Field, NumberProperties, PatternProperties, Required, Section } from '../domain/dynamic-form-model';
 
 type CleanOptions = {
@@ -10,12 +10,13 @@ type CleanOptions = {
   removeUndefined?: boolean; // optional extra
 };
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class FormControlService {
   constructor(public http: HttpClient) { }
 
   readonly urlRegEx = urlRegEx;
   readonly phoneValidationPattern = phoneRegEx;
+  readonly emailValidationPattern = emailRegEx;
 
   // base = environment.API_ENDPOINT;
 
@@ -37,9 +38,9 @@ export class FormControlService {
   toFormGroup(form: Section[], checkImmutable: boolean) {
     const group: any = {};
     form.forEach(groups => {
-      groups.fields.sort((a, b) => a.form.display?.order - b.form.display?.order)
+      groups.fields?.sort((a, b) => a.form.display?.order - b.form.display?.order)
       groups.required = new Required();
-      groups.fields.forEach(formField => {
+      groups.fields?.forEach(formField => {
         if (formField.deprecated)
           return;
 
@@ -79,7 +80,13 @@ export class FormControlService {
 
   createCompositeField(formField: Field) {
     const subGroup: any = {};
-    // console.log(formField);
+    // Un comment this to remove the paused fields from the form
+    // if (formField.kind === 'paused') {
+    //   formField.subFields = [];
+    //   console.log(formField);
+    // }
+    //   return new UntypedFormGroup({});
+
     formField.subFields?.sort((a, b) => a.form.display?.order - b.form.display?.order)
     formField.subFields?.forEach(subField => {
       if (subField.deprecated)
@@ -93,7 +100,7 @@ export class FormControlService {
         } else {
           subGroup[subField.name] = this.createCompositeField(subField);
         }
-      } else if (subField.typeInfo.multiplicity) { // add an array inside composite element
+      } else if (subField.typeInfo.multiplicity) { // add an array inside a composite element
         // subGroup[subField.name] = subField.form.mandatory ?
         //   new UntypedFormArray([new UntypedFormControl(null, Validators.required)])
         //   : new UntypedFormArray([new UntypedFormControl(null)]);
@@ -113,16 +120,18 @@ export class FormControlService {
   }
 
   createField (formField: Field): FormControl | UntypedFormGroup {
-    if (formField.typeInfo.type === 'url') {
-      return formField.form.mandatory ?
-        new FormControl<string | null>(null, [Validators.required, Validators.pattern(this.urlRegEx)])
-        : new FormControl<string | null>(null, Validators.pattern(this.urlRegEx));
-    } else if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
+    if (formField.typeInfo.type === 'composite' || formField.typeInfo.type === 'chooseOne') {
       return this.createCompositeField(formField);
-    } else if (formField.typeInfo.type === 'email') {
+    } else if (formField.typeInfo.type === 'url') {
+      let pattern = (formField.typeInfo.properties as PatternProperties).pattern ?? this.urlRegEx;
       return formField.form.mandatory ?
-        new FormControl<string | null>(null, Validators.compose([Validators.required, Validators.email]))
-        : new FormControl<string | null>(null, Validators.email);
+        new FormControl<string | null>(null, Validators.compose([Validators.required, Validators.pattern(pattern)]))
+        : new FormControl<string | null>(null, Validators.pattern(pattern));
+    } else if (formField.typeInfo.type === 'email') {
+      let pattern = (formField.typeInfo.properties as PatternProperties).pattern ?? this.emailValidationPattern;
+      return formField.form.mandatory ?
+        new FormControl<string | null>(null, Validators.compose([Validators.required, Validators.pattern(pattern)]))
+        : new FormControl<string | null>(null, Validators.pattern(pattern));
     } else if (formField.typeInfo.type === 'phone') {
       let pattern = (formField.typeInfo.properties as PatternProperties).pattern ?? this.phoneValidationPattern;
       return formField.form.mandatory ?
@@ -139,7 +148,7 @@ export class FormControlService {
         : new FormControl<string | null>(null);
     } else if (formField.typeInfo.type === 'checkbox' || formField.typeInfo.type === 'bool') {
       return formField.form.mandatory ?
-        new FormControl<boolean | null>(null, Validators.required) : new FormControl<boolean | null>(null);
+        new FormControl<boolean>(false, Validators.required) : new FormControl<boolean>(false);
     } else {
       return formField.form.mandatory ?
         new FormControl<string | null>(null, Validators.required) : new FormControl<string | null>(null);

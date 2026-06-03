@@ -1,13 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Field, HandleBitSet} from "../../../../domain/dynamic-form-model";
+import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import {
-  UntypedFormArray,
-  UntypedFormGroup,
+  AbstractControl,
+  FormArray,
+  FormGroup,
   FormGroupDirective,
-  FormArray, FormGroup, AbstractControl
+  UntypedFormArray,
+  UntypedFormGroup
 } from "@angular/forms";
-import {FormControlService} from "../../../../services/form-control.service";
-import { WebsocketService } from "../../../../../app/services/websocket.service";
+import { FormControlService } from "../../../../services/form-control.service";
+import { WebsocketService } from "../../../../services/websocket.service";
 
 interface PositionChange {
   oldIndex: number;
@@ -22,6 +24,8 @@ interface PositionChange {
 })
 
 export class CompositeFieldComponent implements OnInit {
+  private wsService = inject(WebsocketService);
+
   @Input() fieldData: Field;
   @Input() vocabularies: Map<string, object[]>;
   @Input() subVocabularies: Map<string, object[]> = null;
@@ -38,9 +42,7 @@ export class CompositeFieldComponent implements OnInit {
   hideField: boolean = null;
   inputId!: string;
 
-  constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService,
-              private wsService: WebsocketService) {
-  }
+  constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {}
 
   ngOnInit() {
     if (this.position !== null) {
@@ -171,9 +173,9 @@ export class CompositeFieldComponent implements OnInit {
 
   updateBitSetOfComposite(fieldData: Field, position: number) {
     if (fieldData.form.mandatory) {
-      let tmp = new HandleBitSet();
-      tmp.field = fieldData;
-      tmp.position = position;
+      let tmp: HandleBitSet = {field: fieldData, position: position};
+      // tmp.field = fieldData;
+      // tmp.position = position;
       this.handleBitSetsOfComposite.emit(tmp);
     }
   }

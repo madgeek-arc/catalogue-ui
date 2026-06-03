@@ -1,15 +1,20 @@
-import { Component, Input } from "@angular/core";
-import { Section } from "../../../../domain/dynamic-form-model";
+import { Component, inject } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { FormBuilderService } from "../../../../services/form-builder.service";
+import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
-    selector: 'app-section-settings',
-    templateUrl: './section-settings.component.html',
-    standalone: false
+  selector: 'app-section-settings',
+  templateUrl: './section-settings.component.html',
+  imports: [
+    CKEditorModule,
+    FormsModule
+  ]
 })
 
 export class SectionSettingsComponent {
-  @Input() section: Section | null = null;
+  protected fbService = inject(FormBuilderService);
 
   public editor = ClassicEditor;
 

@@ -1,0 +1,413 @@
+import { inject, Injectable, signal } from "@angular/core";
+import { Field, FieldType, Model, Section, SelectedSection } from "../domain/dynamic-form-model";
+import { IdGenerationService } from "./id-generation.service";
+import { cloneDeep } from "lodash";
+
+@Injectable({providedIn: 'root'})
+
+export class FormBuilderService {
+  private idService = inject(IdGenerationService);
+
+  // state
+  private _model = signal<Model | null>(null);
+  private _currentSection = signal<Section | null>(null);
+  private _currentSubsection = signal<Section | null>(null);
+  private _currentField = signal<Field | null>(null);
+  private _sideMenuSettingsType = signal<typeof SelectedSection.prototype.sideMenuSettingsType>('main');
+
+  // expose as readonly where appropriate
+  readonly model = this._model.asReadonly();
+  readonly currentSection = this._currentSection.asReadonly();
+  readonly currentSubsection = this._currentSubsection.asReadonly();
+  readonly currentField = this._currentField.asReadonly();
+  readonly sideMenuSettingsType = this._sideMenuSettingsType.asReadonly();
+
+  // Model options
+  setModel(model?: Model) {
+    this._model.set(model ?? new Model());
+    if (!model) {
+      this.addSection();
+    }
+    this.setCurrentSelection({chapter: null, section: null, field: null, sideMenuSettingsType: 'main'});
+    this.idService.findMaxId(this.model());
+  }
+
+  setModelId(id: string) {
+    this._model.update(model => {
+      if (model)
+        model.id = id;
+      return model;
+    });
+  }
+
+  setModelTitle(title: string) {
+    this._model.update(model => {
+      if (model)
+        model.name = title;
+      return model;
+    });
+  }
+
+  setModelDescription(description: string) {
+    this._model.update(model => {
+      if (model)
+        model.description = description;
+      return model;
+    });
+  }
+
+  setModelNotice(notice: string) {
+    this._model.update(model => {
+      if (model)
+        model.notice = notice;
+      return model;
+    });
+  }
+
+  setModelLocked(locked: boolean) {
+    this._model.update(model => {
+      if (model)
+        model.locked = locked;
+      return model;
+    });
+  }
+
+  setModelActive(active: boolean) {
+    this._model.update(model => {
+      if (model)
+        model.active = active;
+      return model;
+    });
+  }
+
+  // Set signals on user actions
+  setCurrentSelection(selection: SelectedSection) {
+    this._currentSection.set(selection.chapter);
+    this._currentSubsection.set(selection.section);
+    this._currentField.set(selection.field);
+    this._sideMenuSettingsType.set(selection.sideMenuSettingsType);
+  }
+
+  fieldSelection(field: Field) {
+    this._currentField.set(field);
+    this._sideMenuSettingsType.set('field');
+  }
+
+  setSideMenuSettingsType(type: typeof SelectedSection.prototype.sideMenuSettingsType) {
+    this._sideMenuSettingsType.set(type);
+  }
+
+  setCurrentSection(section: Section) {
+    this._currentSection.set(section);
+  }
+
+  setCurrentSubsection(section: Section) {
+    this._currentSubsection.set(section);
+  }
+
+  setCurrentField(field: Field) {
+    this._currentField.set(field);
+  }
+
+  // Section relevant action
+  setSectionName(name: string) {
+    this._currentSection.update(section => {
+      if (section)
+        section.name = name;
+      return section;
+    });
+  }
+
+  setSectionDescription(description: string) {
+    this._currentSection.update(section => {
+      if (section)
+        section.description = description;
+      return section;
+    });
+  }
+
+  addSection() {
+    const newChapter = new Section(this.idService.generateId().toString(),);
+    this._model.update(model => {
+      if (model)
+        model.sections.push(newChapter);
+      return model;
+    });
+
+    this.setCurrentSelection({chapter: newChapter, section: null, field: null, sideMenuSettingsType: 'chapter'});
+  }
+
+  deleteSection(index: number) {
+    this._model.update(model => {
+      if (model)
+        model.sections.splice(index, 1);
+      return model;
+    });
+
+    if (this._model()?.sections[index]) {
+      this.setCurrentSelection({chapter: this._model()?.sections[index] || null, section: null, field: null, sideMenuSettingsType: 'chapter'});
+      return;
+    } else if (this._model()?.sections[index-1]) {
+      this.setCurrentSelection({chapter: this._model()?.sections[index-1] || null, section: null, field: null, sideMenuSettingsType: 'chapter'});
+      return;
+    }
+    this.setCurrentSelection({chapter: null, section: null, field: null, sideMenuSettingsType: 'main'});
+  }
+
+  // Subsection relevant actions
+  setSubSectionName(name: string) {
+    this._currentSubsection.update(subsection => {
+      if (subsection)
+        subsection.name = name;
+      return subsection;
+    });
+  }
+
+  setSubSectionDescription(description: string) {
+    this._currentSubsection.update(subsection => {
+      if (subsection)
+        subsection.description = description;
+      return subsection;
+    });
+  }
+
+  addSubSection(index: number) {
+    const newSection = new Section(this.idService.generateId().toString());
+    this._model.update(model => {
+      if (model?.sections[index].subSections === null)
+        model.sections[index].subSections = [];
+
+      model?.sections[index].subSections.push(newSection);
+      return model;
+    });
+    this.setCurrentSubsection(newSection);
+    this.setSideMenuSettingsType('section');
+  }
+
+  deleteSubSection(position: number, index: number) {
+    this._model.update(model => {
+      if (model)
+        model.sections[position].subSections?.splice(index, 1);
+      return model;
+    });
+
+    if (this._model()?.sections[position].subSections?.[index]) {
+      this.setCurrentSelection({
+        chapter: this._model()?.sections[position] || null,
+        section: this._model()?.sections[position].subSections?.[index] || null,
+        field: null,
+        sideMenuSettingsType: 'section'
+      });
+      return;
+    } else if (this._model()?.sections[position].subSections?.[index-1]) {
+      this.setCurrentSelection({
+        chapter: this._model()?.sections[position] || null,
+        section: this._model()?.sections[position].subSections?.[index-1] || null,
+        field: null,
+        sideMenuSettingsType: 'section'
+      });
+      return;
+    }
+    this.setCurrentSelection({chapter: this._model()?.sections[position] || null, section: null, field: null, sideMenuSettingsType: 'chapter'});
+
+  }
+
+  // Field relevant actions
+  setFieldType(type: FieldType) {
+    this._currentField.update(field => {
+      if (field)
+        field.typeInfo.type = type;
+      return field;
+    });
+  }
+
+  setFieldPlaceholder(placeholder: string) {
+    this._currentField.update(field => {
+      if (field)
+        field.form.placeholder = placeholder;
+      return field;
+    });
+    // this.updateReference();
+  }
+
+  setFieldLabel(text: string) {
+    this._currentField.update(field => {
+      if (field)
+        field.label.text = text;
+      return field;
+    });
+  }
+
+  addField(type: FieldType) {
+    let tmpField: Field = new Field(this.idService.generateId().toString(), type);
+    if (type === FieldType.checkbox) {
+      tmpField.typeInfo.type = FieldType.composite;
+      tmpField.typeInfo.properties = {
+        checkbox: true
+      }
+    }
+
+    this._currentSubsection.update( section => {
+      if (section?.fields === null)
+        section.fields = [];
+
+      section?.fields.push(tmpField);
+
+      return section;
+    });
+    this.setCurrentField(tmpField);
+    this.setSideMenuSettingsType('field');
+  }
+
+  deleteField(index: number, parentField?: Field) {
+    if (parentField) {
+      if (parentField.subFields) {
+        parentField.subFields.splice(index, 1);
+        // this.updateReference();
+      }
+      return;
+    }
+    this._currentSubsection.update(sec => {
+      if (sec?.fields) {
+        sec.fields.splice(index, 1);
+      }
+      return sec;
+    });
+    this._sideMenuSettingsType.set('section');
+  }
+
+  duplicateField(field: Field, parentField?: Field) {
+    const newField = cloneDeep(field);
+    newField.id = this.idService.generateId().toString();
+    newField.name = newField.id;
+    if (parentField) {
+      if (!parentField.subFields)
+        parentField.subFields = [];
+      parentField.subFields.push(newField);
+      // this.updateReference();
+      return;
+    }
+    this._currentSubsection.update(sec => {
+      if (sec) {
+        if (!sec.fields) sec.fields = [];
+        sec.fields.push(newField);
+      }
+      return sec;
+    });
+  }
+
+  move(from: number, to: number, parentField?: Field) {
+    if (parentField) {
+      if (parentField.subFields) {
+        if (from >= parentField.subFields.length || to >= parentField.subFields.length || from < 0 || to < 0) {
+          return;
+        }
+        parentField.subFields.splice(to, 0, parentField.subFields.splice(from, 1)[0]);
+        this.assignOrder(parentField.subFields);
+      }
+      return;
+    }
+    this._currentSubsection.update(sec => {
+      if (sec?.fields) {
+        if (from >= sec.fields.length || to >= sec.fields.length || from < 0 || to < 0) {
+          console.error('Invalid move position');
+          return sec;
+        }
+        sec.fields.splice(to, 0, sec.fields.splice(from, 1)[0]);
+        this.assignOrder(sec.fields);
+      }
+      return sec;
+    });
+  }
+
+  addFieldToComposite(type: FieldType, isOuterCompositeCheckboxCreation = false, checkboxLabel?: string | null) {
+    let tmpField: Field = new Field(this.idService.generateId().toString(), type);
+    if (isOuterCompositeCheckboxCreation) {
+      tmpField.typeInfo.type = FieldType.composite;
+      tmpField.typeInfo.properties = {
+        checkbox: true
+      }
+    }
+    if (type === FieldType.checkbox) {
+      tmpField.typeInfo.properties = {
+        label: checkboxLabel || ''
+      }
+    }
+
+    this._currentField.update( field => {
+      if (field?.subFields === null)
+        field.subFields = [];
+
+      field?.subFields.push(tmpField);
+      return field;
+    });
+    this.setCurrentField(tmpField);
+    this.setSideMenuSettingsType('field');
+  }
+
+  isFieldActive(field: Field): boolean {
+    const current = this._currentField();
+    if (!field || !current) return false;
+
+    const checkActive = (f: Field): boolean => {
+      if (f.id === current.id) return true;
+      if (f.subFields) {
+        for (const sub of f.subFields) {
+          if (checkActive(sub)) return true;
+        }
+      }
+      return false;
+    };
+
+    return checkActive(field);
+  }
+
+  getFieldsAtSameLevel(field: Field | null): Field[] {
+    if (!field) return [];
+    const model = this._model();
+    if (!model) return [];
+
+    let result: Field[] = [];
+
+    const searchSections = (sections: Section[]): boolean => {
+      for (const section of sections) {
+        if (section.fields?.some(f => f.id === field.id)) {
+          result = section.fields;
+          return true;
+        }
+        if (section.fields) {
+          for (const f of section.fields) {
+            if (searchFields(f)) return true;
+          }
+        }
+        if (section.subSections && searchSections(section.subSections)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    const searchFields = (f: Field): boolean => {
+      if (f.subFields?.some(sub => sub.id === field.id)) {
+        result = f.subFields;
+        return true;
+      }
+      if (f.subFields) {
+        for (const sub of f.subFields) {
+          if (searchFields(sub)) return true;
+        }
+      }
+      return false;
+    }
+
+    searchSections(model.sections);
+    return result.filter(f => f.id !== field.id);
+  }
+
+  assignOrder(fields: Field[]) {
+    fields.forEach((field, index) => {
+      field.form.display.order = index;
+    });
+  }
+
+}

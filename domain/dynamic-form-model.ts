@@ -1,11 +1,8 @@
 import BitSet from 'bitset';
-import jp from 'jsonpath';
-import { Utils } from "../shared/utils/utils";
 
 export class Required {
   topLevel: number;
   total: number;
-
 
   constructor() {
     this.topLevel = 0;
@@ -13,37 +10,37 @@ export class Required {
   }
 }
 
-export class Dependent {
-  id: number;
+export interface Dependent {
+  id: string;
   name: string;
-  value: string;
+  value: string | string[] | null;
 }
 
-export class TypeInfo {
-  vocabulary: string;
+export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string> {
+  vocabulary: string | null;
   type: FieldType;
   defaultValue: string;
   values: IdLabel[];
-  properties: TypeProperties;
+  properties: FieldTypePropertiesMap[T];
   multiplicity: boolean;
   prefill: DataRequest;
 
-
-  constructor(type: FieldType) {
-    if (type)
-      this.type = type;
-    else
-      this.type = FieldType.string;
+  constructor(type: FieldType = FieldType.string) {
+    this.type = type;
     this.values = [];
     this.vocabulary = null;
     this.multiplicity = false;
+    this.properties = this.createDefaultProperties(type);
+  }
+
+  private createDefaultProperties(type: FieldType): TypeProperties {
+    const PropertyClass = propertiesFactory[type];
+    return new PropertyClass();
   }
 }
 
 export class Form {
-  dependsOn: Dependent;
-  affects: Dependent[];
-  // vocabulary: string;
+  dependsOn: Dependent | null;
   group: string;
   description: StyledText;
   suggestion: StyledText;
@@ -54,8 +51,6 @@ export class Form {
 
   constructor() {
     this.dependsOn = null;
-    this.affects = null;
-    // this.vocabulary = null;
     this.group = '';
     this.description = new StyledText();
     this.suggestion = new StyledText();
@@ -67,38 +62,38 @@ export class Form {
 }
 
 export class Display {
-  hasBorder: boolean;
   order: number;
-  placement: string;
   visible: boolean;
-  cssClasses: string;
-  style: string;
+  hasBorder: boolean;
+  cssClasses: string | null;
+  style: string | null;
+  placement: string | null;
 
   constructor() {
     this.hasBorder = false;
     this.order = 0;
-    this.placement = '';
-    this.cssClasses = '';
-    this.style = '';
+    this.placement = null;
+    this.cssClasses = null;
+    this.style = null;
     this.visible = true;
   }
 }
 
 export class StyledText {
-  cssClasses: string;
-  style: string;
-  text: string;
+  cssClasses: string | null;
+  style: string | null;
+  text: string | null;
   showLess: boolean;
 
   constructor() {
-    this.cssClasses = '';
-    this.style = '';
-    this.text = '';
+    this.cssClasses = null;
+    this.style = null;
+    this.text = null;
     this.showLess = false;
   }
 }
 
-export class Field {
+export class Field<T extends FieldType = FieldType.string> {
   id: string;
   name: string;
   parentId: string;
@@ -106,16 +101,16 @@ export class Field {
   label: StyledText;
   accessPath: string;
   deprecated: boolean;
-  kind: string;
-  typeInfo: TypeInfo;
+  kind: string | null = null;
+  typeInfo: TypeInfo<T>;
   includedInSnippet: boolean;
   form: Form;
   display: Display;
   subFields: Field[];
 
-  constructor(id: string, type?: typeof TypeInfo.prototype.type) {
+  constructor(id: string, type?: FieldType) {
     this.id = id;
-    this.name = '';
+    this.name = id;
     this.parentId = '';
     this.parent = '';
     this.label = new StyledText();
@@ -130,17 +125,17 @@ export class Field {
 }
 
 export class Section {
-  id: string;
-  name: string;
-  description: string;
-  subType: string;
+  id: string | null;
+  name: string  | null;
+  description: string | null;
+  subType: string | null = null;
   order: number;
-  subSections: Section[];
-  fields: Field[];
-  required: Required;
+  subSections: Section[] | null;
+  fields: Field[] | null;
+  required: Required = new Required();
 
-  constructor() {
-    this.id = null;
+  constructor(id: string) {
+    this.id = id;
     this.name = null;
     this.description = null;
     this.subSections = null;
@@ -149,24 +144,31 @@ export class Section {
   }
 }
 
-export class GroupedFields {
-  id: string;
-  name: string;
-  description: string;
-  order: number;
-  fields: Field[];
-  required: Required;
-
-
-  constructor() {
-    this.id = '';
-    this.name = '';
-    this.description = '';
-    this.order = 0;
-    this.fields = [];
-    this.required = new Required();
-  }
+export class SelectedSection {
+  chapter: Section | null = null;
+  section: Section | null = null;
+  field: Field | null = null;
+  sideMenuSettingsType: 'main' | 'chapter' | 'section' | 'field' | 'fieldSelector' = 'main';
 }
+
+// export class GroupedFields {
+//   id: string;
+//   name: string;
+//   description: string;
+//   order: number;
+//   fields: Field[];
+//   required: Required;
+//
+//
+//   constructor() {
+//     this.id = '';
+//     this.name = '';
+//     this.description = '';
+//     this.order = 0;
+//     this.fields = [];
+//     this.required = new Required();
+//   }
+// }
 
 export class Model {
   id: string;
@@ -190,10 +192,11 @@ export class Model {
 
 
   constructor() {
+    this.id = '1';
     this.name = null;
     this.description = null;
     this.notice = null;
-    this.sections = [new Section()];
+    this.sections = [];
     this.configuration = new Configuration();
     this.locked = false;
     this.active = false;
@@ -201,22 +204,11 @@ export class Model {
     this.submissionCloseAt = null;
   }
 
-  get maxId(): number {
-    let maxId = 0;
-    const ids: string[] = jp.query(this, '$..sections..name');
-    ids.forEach(id => {
-      if (Utils.isNumeric(id) && (parseInt(id) > maxId))
-        maxId = parseInt(id);
-    });
-
-    return maxId;
-  }
-
 }
 
 export class Configuration {
-  prefillable: boolean;
-  importFrom: string[]
+  prefillable: boolean = false;
+  importFrom: string[] = []
 }
 
 export interface ImportSurveyData {
@@ -226,7 +218,7 @@ export interface ImportSurveyData {
   surveyId: string;
 }
 
-export class UiVocabulary {
+export interface UiVocabulary {
   id: string;
   name: string;
 }
@@ -236,7 +228,7 @@ export class Tab {
   order: number;
   requiredOnTab: number;
   remainingOnTab: number;
-  bitSet: BitSet;
+  bitSet: BitSet | undefined;
 
   constructor() {
     this.valid = false;
@@ -255,17 +247,17 @@ export class Tabs {
   requiredTotal: number;
 }
 
-export class HandleBitSet {
+export interface HandleBitSet {
   field: Field;
   position: number;
 }
 
-export class IdLabel {
+export interface IdLabel {
   id: string;
   label: string;
 }
 
-export class DataRequest {
+export interface DataRequest {
   request: Request;
   endpoint: string;
   params: { [index: string]: any };
@@ -273,59 +265,59 @@ export class DataRequest {
   expression: string;
 }
 
-export class Request {
+export interface Request {
   method: string;
   url: string;
   headers: { [index: string]: string[] };
   body: string;
 }
 
-export class RequiredFields {
+export interface RequiredFields {
   topLevel: number;
   total: number;
 }
 
-export class Series {
+export interface Series {
   name: string;
   referenceYear: string;
 }
 
-export interface TypeProperties {
+export class TypeProperties {
 }
 
-export interface CustomProperties extends TypeProperties {
-  [key: string]: string;
+export class CustomProperties extends TypeProperties {
+ [key: string]: string;
 }
 
-export interface DateProperties extends TypeProperties {
-  formatToString: boolean;
+export class DateProperties extends TypeProperties {
+  formatToString: boolean | null = null;
 }
 
-export interface NumberProperties extends TypeProperties {
-  min: number;
-  max: number;
-  decimals: number;
-  pattern: string;
+export class NumberProperties extends TypeProperties {
+  min: number | null = null;
+  max: number | null = null;
+  decimals: number | null = null;
+  pattern: string | null = null;
 }
 
-export interface PatternProperties extends TypeProperties {
-  pattern: string;
+export class PatternProperties extends TypeProperties {
+  pattern: string | null = null;
 }
 
-export interface TextProperties extends TypeProperties {
-  minLength: number;
-  maxLength: number;
+export class TextProperties extends TypeProperties {
+  minLength: number | null = null;
+  maxLength: number | null = null;
 }
 
-export interface UrlProperties extends TypeProperties {
-  strictValidation: boolean;
+export class UrlProperties extends TypeProperties { // Probably needed for backend, but not used in frontend
+  strictValidation: boolean | null = null;
 }
 
-export interface VocabularyProperties extends TypeProperties {
-  url: string;
-  idField: string;
-  labelField: string;
-  urlParams: UrlParameter[];
+export class VocabularyProperties extends TypeProperties {
+  url: string | null = null;
+  idField: string | null = null;
+  labelField: string | null = null;
+  urlParams: UrlParameter[] = [];
 }
 
 export interface UrlParameter {
@@ -352,3 +344,27 @@ export enum FieldType {
   scale = "scale",
   array = "array",
 }
+
+export type FieldTypePropertiesMap = {
+  [K in keyof typeof propertiesFactory]: InstanceType<(typeof propertiesFactory)[K]>;
+};
+
+const propertiesFactory: Record<FieldType, new () => TypeProperties> = {
+  [FieldType.string]: TextProperties,
+  [FieldType.url]: PatternProperties,
+  [FieldType.email]: PatternProperties,
+  [FieldType.phone]: PatternProperties,
+  [FieldType.largeText]: TextProperties,
+  [FieldType.richText]: TextProperties,
+  [FieldType.date]: DateProperties,
+  [FieldType.number]: NumberProperties,
+  [FieldType.vocabulary]: VocabularyProperties,
+  [FieldType.select]: TypeProperties,
+  [FieldType.radio]: TypeProperties,
+  [FieldType.checkbox]: CustomProperties,
+  [FieldType.bool]: CustomProperties,
+  [FieldType.scale]: CustomProperties,
+  [FieldType.composite]: CustomProperties,
+  [FieldType.chooseOne]: TypeProperties,
+  [FieldType.array]: TypeProperties,
+};

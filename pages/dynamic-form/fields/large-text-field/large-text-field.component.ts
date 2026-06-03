@@ -22,7 +22,7 @@ export class LargeTextFieldComponent extends BaseFieldComponent implements OnIni
 
   maxLength: number | null = null;
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
     this.maxLength = (this.fieldData.typeInfo.properties as TextProperties).maxLength;
   }

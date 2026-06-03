@@ -16,11 +16,10 @@ import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormGro
 import { Router } from "@angular/router";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
-import { Field, Model, Section, Tabs } from "../../domain/dynamic-form-model"
+import { Field, Model, Section } from "../../domain/dynamic-form-model"
 import { FormControlService } from "../../services/form-control.service";
 import { PdfGenerateService } from "../../services/pdf-generate.service";
-import { WebsocketService } from "../../../app/services/websocket.service";
-import { UserActivity } from "../../../app/domain/userInfo";
+import { WebsocketService } from "../../services/websocket.service";
 import { cloneDeep, isEqual } from "lodash";
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
 import * as UIkit from 'uikit';
@@ -38,34 +37,29 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   private wsComments = inject(CommentingWebsocketService);
 
   @Input() payload: any = null; // can't import the specific project class in the lib file
-  @Input() model: Model = null;
-  @Input() subType: string = null;
+  @Input() model!: Model;
+  @Input() subType: string | null = null;
   @Input() userId: string | null = null;
   @Input() enableWebsocket = false;
-  @Input() vocabulariesMap: Map<string, object[]> = null;
-  @Input() subVocabularies: Map<string, object[]> = null;
-  @Input() tabsHeader: string = null;
-  @Input() mandatoryFieldsText: string = null;
-  @Input() downloadPDF: boolean = false;
   @Input() enableCommenting: boolean = false;
-  @Input() stakeholderId: string | null = null;
+  @Input() downloadPDF: boolean = false;
+  @Input() mandatoryFieldsText: string = '';
+  @Input() tabsHeader: string = '';
   @Input() errorMessage = '';
   @Input() successMessage = '';
+  @Input() freeView: boolean = false;
 
   @Output() valid = new EventEmitter<boolean>();
   @Output() submitForm = new EventEmitter<UntypedFormGroup>();
 
   chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
-  currentChapter: Section = null;
-  chapterForSubmission: Section = null;
+  currentChapter: Section | null = null;
   sortedSurveyAnswers: Object = {};
-  bitset: Tabs = new Tabs;
   ready: boolean = false;
-  timeoutId: ReturnType<typeof setTimeout> = null;
+  timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   editMode: boolean = false;
   readonly: boolean = false;
-  freeView: boolean = false;
   validate: boolean = false;
 
   form = new FormGroup({});
@@ -95,7 +89,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.enableWebsocket) {
       this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: value => {
+        next: (value: any) => {
           // console.log(value);
           // console.log('User id: ' + this.wsService.userId);
           // console.log('Message id: ' + value.sessionId);
@@ -188,7 +182,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       this.editMode = true;
     }
 
-    if (changes.model) {
+    if (changes['model']) {
       this.ready = false;
 
       this.currentChapter = this.model.sections[0];
@@ -373,7 +367,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     if (this.readonly || this.freeView)
       return;
     if (this.chapterChangeMap.get(this.currentChapter.id)) {
-      this.chapterForSubmission = this.currentChapter;
       UIkit.modal('#unsaved-changes-modal').show();
     }
     this.currentChapter = chapter;

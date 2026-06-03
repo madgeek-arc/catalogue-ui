@@ -6,8 +6,8 @@
           <div class="uk-form-controls">
             @if (fieldData.typeInfo.type === 'composite') {
               <div>
-                <app-composite-field [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
-                                     [readonly]="readonly" [editMode]="editMode" [scrollContainer]="scrollContainer"
+                <app-composite-field [fieldData]="fieldData" [readonly]="readonly" [editMode]="editMode"
+                                     [scrollContainer]="scrollContainer"
                                      (hasChanges)="unsavedChangesPrompt()"
                                      (handleBitSets)="handleBitsetOfChildren($event)"
                                      (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)">
@@ -16,9 +16,9 @@
             }
             @if (fieldData.typeInfo.type === 'chooseOne') {
               <div>
-                <app-choose-one [fieldData]="fieldData" [subVocabularies]="subVocabularies" [vocabularies]="vocabularies"
+                <app-choose-one [fieldData]="fieldData" [editMode]="editMode"
                                 (hasChanges)="unsavedChangesPrompt()" (handleBitSets)="handleBitsetOfChildren($event)"
-                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)" [editMode]="editMode">
+                                (handleBitSetsOfComposite)="handleCompositeBitsetOfChildren($event)" >
                 </app-choose-one>
               </div>
             }

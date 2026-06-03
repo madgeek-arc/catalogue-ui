@@ -10,8 +10,6 @@ import { Field, HandleBitSet } from '../../../domain/dynamic-form-model';
 export class DynamicFormFieldsComponent {
   @Input() fieldData: Field;
   @Input() form: UntypedFormGroup;
-  @Input() vocabularies: Map<string, object[]>;
-  @Input() subVocabularies: Map<string, object[]> = null;
   @Input() editMode: boolean;
   @Input() readonly: boolean = null;
   @Input() scrollContainer: HTMLElement | null = null;
@@ -32,9 +30,9 @@ export class DynamicFormFieldsComponent {
 
   updateBitSetOfComposite(fieldData: Field, position: number) {
     if (fieldData.form.mandatory) {
-      let tmp = new HandleBitSet();
-      tmp.field = fieldData;
-      tmp.position = position;
+      let tmp: HandleBitSet = { field: fieldData, position: position};
+      // tmp.field = fieldData;
+      // tmp.position = position;
       this.handleBitSetsOfComposite.emit(tmp);
     }
   }

@@ -1,74 +1,71 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Field, Section } from "../../../domain/dynamic-form-model";
-import { SelectedSection } from "../form-builder.component";
+import { Component, computed, inject } from "@angular/core";
+import { Field, Section, SelectedSection } from "../../../domain/dynamic-form-model";
+import { FormBuilderService } from "../../../services/form-builder.service";
 
 @Component({
-    selector: 'app-side-menu',
-    templateUrl: './side-menu.component.html',
-    standalone: false
+  selector: 'app-side-menu',
+  templateUrl: './side-menu.component.html',
+  imports: []
 })
 
 export class SideMenuComponent {
+  protected fbService = inject(FormBuilderService);
 
-  @Input() chapterModel: Section[];
-  @Output() userSelection = new EventEmitter<SelectedSection>();
+  highlightedId = computed(() => {
+    const currentField = this.fbService.currentField();
+    if (currentField) {
+      const subsection = this.fbService.currentSubsection();
+      if (subsection?.fields) {
+        for (const field of subsection.fields) {
+          if (this.containsField(field, currentField.id)) {
+            return field.id;
+          }
+        }
+      }
+      return currentField.id;
+    }
+    return this.fbService.currentSubsection()?.id
+      ?? this.fbService.currentSection()?.id
+      ?? null;
+  });
 
+  // Recursively checks if a field is contained in a subsection
+  private containsField(field: Field, targetId: string): boolean {
+    if (field.id === targetId) return true;
+    if (field.subFields) {
+      return field.subFields.some(f => this.containsField(f, targetId));
+    }
+    return false;
+  }
 
   pushChapter() {
-    this.chapterModel.push(new Section());
-
-    this.emitSelection(this.chapterModel[this.chapterModel.length-1], null, null, 'chapter');
+    this.fbService.addSection();
   }
 
   deleteChapter(position: number) {
-    this.chapterModel.splice(position, 1);
+    this.fbService.deleteSection(position);
+  }
 
-    if (this.chapterModel[position]) {
-      this.emitSelection(this.chapterModel[position], null, null, 'chapter');
-      return;
-    } else if (this.chapterModel[position-1]) {
-      this.emitSelection(this.chapterModel[position-1], null, null, 'chapter');
-      return;
+  addSubSection(position: number) {
+    this.fbService.addSubSection(position);
+  }
+
+  deleteSubSection(position: number, index: number) {
+    this.fbService.deleteSubSection(position, index);
+  }
+
+  emitSelection(chapter: Section | null, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
+    this.fbService.setCurrentSelection({chapter: chapter, section: section, field, sideMenuSettingsType: type})
+  }
+
+  unwrapOuterParagraph(html: string | null): string {
+    if (!html) {
+      return 'Untitled question';
     }
 
-    this.emitSelection(null, null, null, 'main');
-  }
-
-  addSection(position: number) {
-    if (this.chapterModel[position].subSections === null)
-      this.chapterModel[position].subSections = [];
-
-    this.chapterModel[position].subSections.push(new Section());
-
-    this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[this.chapterModel[position].subSections.length-1], null, 'section');
-  }
-
-  deleteSection(position: number, index: number) {
-    this.chapterModel[position].subSections.splice(index, 1);
-
-    if (this.chapterModel[position].subSections[index]) {
-      this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[index], null, 'section');
-      return;
-    } else if (this.chapterModel[position].subSections[index-1]) {
-      this.emitSelection(this.chapterModel[position], this.chapterModel[position].subSections[index-1], null, 'section');
-      return;
-    }
-
-    this.emitSelection(this.chapterModel[position], null, null, 'chapter');
-    return;
-  }
-
-  // addField(positionI: string | number, positionJ: string | number) {
-  //   if (this.chapterModel[positionI].subSections[positionJ].fields === null)
-  //     this.chapterModel[positionI].subSections[positionJ].fields = [];
-  //
-  //   this.chapterModel[positionI].subSections[positionJ].fields.push(new Field());
-  //
-  //   this.emitSelection(this.chapterModel[positionI], this.chapterModel[positionI].subSections[positionJ], this.chapterModel[positionI].subSections[positionJ].fields[this.chapterModel[positionI].subSections[positionJ].fields.length-1], 'field');
-  // }
-
-  emitSelection(chapter: Section, section: Section | null, field: Field | null, type: typeof SelectedSection.prototype.sideMenuSettingsType) {
-    this.userSelection.emit({chapter: chapter, section: section, field, sideMenuSettingsType: type});
+    return html
+      .replace(/^<p[^>]*>/i, '')   // remove first opening <p ...>
+      .replace(/<\/p>\s*$/i, '');  // remove last closing </p>
   }
 
 }

@@ -1,90 +1,175 @@
-import { AfterViewInit, Component } from "@angular/core";
-import { Field, Model, Section } from "../../domain/dynamic-form-model";
-import { FormGroup } from "@angular/forms";
-import { FormControlService } from "../../services/form-control.service";
-import { WebsocketService } from "../../../app/services/websocket.service";
-import { cloneDeep } from 'lodash';
-import * as UIkit from 'uikit';
-import { IdGenerationService } from "../../services/id-generation.service";
-
-export class SelectedSection {
-  chapter: Section | null = null;
-  section: Section | null = null;
-  field: Field | null = null;
-  sideMenuSettingsType: 'main' | 'chapter' | 'section' | 'field' | 'fieldSelector' = 'main';
-}
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild
+} from "@angular/core";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { JsonPipe, NgClass } from "@angular/common";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { filter, map, switchMap, tap } from "rxjs/operators";
+import { Field, Model } from "../../domain/dynamic-form-model";
+import { DynamicCatalogueService } from "../../services/dynamic-catalogue.service";
+import { FormBuilderService } from "../../services/form-builder.service";
+import { FileDownloadService } from "../../services/file-download.service";
+import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
+import { FieldTemplatesComponent } from "./field-templates/field-templates.component";
+import { SideMenuComponent } from "./side-menu/side-menu.component";
+import { MainInfoComponent } from "./main-info/main-info.component";
+import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
+import UIkit from "uikit";
+import { WebsocketService } from "../../services/websocket.service";
+import UIkitModalElement = UIkit.UIkitModalElement;
 
 @Component({
-    selector: 'app-form-builder',
-    templateUrl: 'form-builder.component.html',
-    styleUrls: ['form-builder.component.scss'],
-    providers: [FormControlService, WebsocketService],
-    standalone: false
+  selector: 'app-form-builder',
+  templateUrl: 'form-builder.component.html',
+  styleUrls: ['form-builder.component.less'],
+  providers: [WebsocketService],
+  imports: [
+    NgClass,
+    FormsModule,
+    SideMenuComponent,
+    MainInfoComponent,
+    FieldTemplatesComponent,
+    SettingsSideMenuComponent,
+    RouterLink,
+    JsonPipe,
+    DynamicFormModule
+  ]
 })
 
-export class FormBuilderComponent implements AfterViewInit {
+export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
+  private destroyRef = inject(DestroyRef)
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private catalogueService = inject(DynamicCatalogueService);
+  private fileDownloadService = inject(FileDownloadService);
+  protected fbService = inject(FormBuilderService);
 
-  model: Model = new Model();
-  chapter: Section | null = null;
-  currentSection: Section | null = null;
-  currentField: Field | null = null;
-  sideMenuSettingsType: typeof SelectedSection.prototype.sideMenuSettingsType = 'main';
+  @ViewChild('modalPreview') formPreviewModalElement!: ElementRef;
+  @ViewChild('modalJson') jsonModalElement!: ElementRef;
 
-  constructor(private idService: IdGenerationService) {}
+  loading = signal(false);
+  error = signal<string | null>(null);
 
-  ngAfterViewInit() {
-    UIkit.modal('#fb-modal-full').show();
-    this.idService.findMaxId(this.model);
+  editMode = false;
+  jsonModal!: UIkitModalElement;
+  formPreviewModal!: UIkitModalElement;
+  showPreview = signal(false);
+
+  ngAfterViewInit(): void {
+    const element = this.formPreviewModalElement.nativeElement;
+
+    // Create UIkit modal instances
+    this.formPreviewModal = UIkit.modal(element);
+    this.jsonModal = UIkit.modal(this.jsonModalElement.nativeElement);
+
+    element.addEventListener('beforeshow', this.onBeforeShow);
+    element.addEventListener('hidden', this.onHidden);
   }
 
-  setCurrentSection(selection: SelectedSection) {
-    this.chapter = this.currentSection = this.currentField = null;
-
-    this.chapter = selection.chapter;
-    if (selection.section) {
-      this.currentSection = selection.section;
+  ngOnInit() {
+    if (this.route.snapshot.routeConfig?.path === 'fb/new-form') {
+      this.fbService.setModel();
+      this.editMode = false;
+    } else {
+      this.editMode = true;
+      if (!this.fbService.model()) {
+        this.route.params.pipe(
+          map(params => params['id']),
+          filter(Boolean),
+          tap(() => this.loading.set(true)),
+          switchMap((id: string) => this.catalogueService.getFormModel(id)),
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
+          next: (model) => {
+            this.initModel(model);
+            this.loading.set(false);
+          },
+          error: (err) => {
+            this.error.set('Failed to load model: ' + err.message + '');
+            this.loading.set(false);
+          }
+        });
+      }
     }
-    if (selection.field) {
-      this.currentField = selection.field;
+
+
+  }
+
+  ngOnDestroy(): void {
+    const formModal = this.formPreviewModalElement?.nativeElement;
+    if (formModal) {
+      formModal.removeEventListener('beforeshow', this.onBeforeShow);
+      formModal.removeEventListener('hidden', this.onHidden);
+    }
+    if (this.formPreviewModal) {
+      try {
+        this.formPreviewModal.hide();
+        this.formPreviewModal.$destroy(true); // also removes the element from the DOM.
+      } catch {}
     }
 
-    this.sideMenuSettingsType = selection.sideMenuSettingsType;
-
-  }
-
-  fieldSelection(field: Field): void {
-    this.currentField = field;
-    this.sideMenuSettingsType = 'field'
-  }
-
-  /** Field manipulation **/
-  deleteField(position: number): void {
-    this.currentSection.fields.splice(position, 1);
-    this.sideMenuSettingsType = 'section';
-  }
-
-  duplicateField(field: Field): void {
-    this.currentSection.fields.push(cloneDeep(field));
-    // this.currentField = this.section.fields[this.section.fields.length - 1];
-  }
-
-  move(from: number, to: number): void {
-    console.log('from: %d - to: %d',from, to);
-    if (from >= this.currentSection.fields.length || to >= this.currentSection.fields.length || from < 0 || to < 0) {
-      console.error('Invalid move position');
-      return;
+    if (this.jsonModal) {
+      try {
+        this.jsonModal.hide();
+        this.jsonModal.$destroy(true); // also removes the element from the DOM.
+      } catch {}
     }
-    this.currentSection.fields.splice(to, 0, this.currentSection.fields.splice(from, 1)[0]);
-
-    console.log(this.currentSection.fields);
   }
 
-  /** Other **/
-  updateReference(): void {
-    for (let i = 0; i < this.currentSection.fields.length; i++) {
-      this.currentSection.fields[i] = {...this.currentSection.fields[i]};
+  initModel(model: Model) {
+    this.fbService.setModel(model);
+  }
+
+  saveModel() {
+    if (!this.fbService.model()) return;
+    this.catalogueService.postFormModel(this.fbService.model(), this.editMode).subscribe({
+      next: () => {
+        this.router.navigate(['/fb']).then();
+      },
+      error: (err) => {
+        this.error.set('Failed to save model: ' + err.message + '');
+      }
+    });
+  }
+
+  fieldSelection(field: Field) { this.fbService.fieldSelection(field); }
+
+  deleteField(i: number, parentField?: Field) { this.fbService.deleteField(i, parentField); }
+
+  duplicateField(f: Field, parentField?: Field) { this.fbService.duplicateField(f, parentField); }
+
+  move(a: number, b: number, parentField?: Field) { this.fbService.move(a, b, parentField); }
+
+  // Modal
+  hideModal(id: string) {
+    let el = document.getElementById(id);
+    if (el)
+      UIkit.modal(el).hide();
+  }
+
+  onBeforeShow = (event: any) => {
+    if (event.target === this.formPreviewModalElement.nativeElement) {
+      this.showPreview.set(true);
     }
-    // this.section.fields
-    console.log(this.currentSection);
+  };
+
+  onHidden = (event: any) => {
+    if (event.target === this.formPreviewModalElement.nativeElement) {
+      this.showPreview.set(false);
+    }
+  };
+
+  // Other
+  downloadJson() {
+    this.fileDownloadService.downloadJson(this.fbService.model());
   }
 }

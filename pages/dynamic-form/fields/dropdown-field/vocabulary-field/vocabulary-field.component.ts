@@ -26,7 +26,7 @@ export class VocabularyFieldComponent extends BaseFieldComponent {
   voc: object[] = [];
   properties?: VocabularyProperties;
 
-  ngOnInit() {
+  override ngOnInit() {
     this.properties = this.fieldData.typeInfo.properties as VocabularyProperties;
 
     if (this.position !== null) {

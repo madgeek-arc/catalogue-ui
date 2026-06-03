@@ -30,7 +30,7 @@ export class DateFieldComponent extends BaseFieldComponent implements OnInit {
 
   selectedDate: Date;
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
     this.formControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value: string | number | null) => {
       this.selectedDate = this.parseLocalDate(value);

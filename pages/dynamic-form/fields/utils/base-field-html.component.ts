@@ -38,10 +38,10 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
   protected commentingService = inject(CommentingWebsocketService);
 
   @Input() form!: UntypedFormGroup;
-  @Input() fieldData: Field;
-  @Input() editMode: boolean;
+  @Input() fieldData!: Field;
+  @Input() editMode: boolean | undefined;
   @Input() readonly = false;
-  @Input() hideField: boolean;
+  @Input() hideField: boolean | undefined;
   @Input() scrollContainer: HTMLElement | null = null;
   @Input() inputId?: string;
 
@@ -49,7 +49,7 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
   label: string = '';
   comment: string = '';
-  position?: string;
+  position: string | null = null;
   hasComment: boolean = false;
   commentFocused: boolean = false;
 

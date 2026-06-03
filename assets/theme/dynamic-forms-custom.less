@@ -82,6 +82,15 @@ a.remove-element {
   min-height: 150px;
 }
 
+// adjust z-index and positioning for ng-select clear elements
+// enable pointer events to prevent overlap issues with dropdown arrow
+ng-select .ng-clear-wrapper,
+ng-select .ng-clear {
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+}
+
 /* ========================
           Loaders
  ========================== */

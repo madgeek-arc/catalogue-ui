@@ -21,17 +21,19 @@ export class CheckboxFieldComponent extends BaseFieldComponent {
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   label?: string;
+  properties: CustomProperties = {};
 
-  ngOnInit() {
+  override ngOnInit() {
     super.ngOnInit();
-    if ((this.fieldData.typeInfo.properties as CustomProperties).hasOwnProperty('label'))
-      this.label = (this.fieldData.typeInfo.properties as CustomProperties).label;
+    this.properties = this.fieldData.typeInfo.properties as CustomProperties;
+    if (this.properties.hasOwnProperty('label'))
+      this.label = this.properties['label'] as string;
   }
 
   /** Bitsets--> **/
 
   updateBitSet(fieldData: Field) {
-    this.timeOut(200).then(() => { // Needed for radio buttons strange behaviour
+    this.timeOut(200).then(() => { // Needed for radio buttons strange behavior
       if (fieldData.form.mandatory) {
         this.handleBitSets.emit(fieldData);
       }

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from "@angular/core";
+import { Component, inject, Input, OnChanges, SimpleChanges } from "@angular/core";
 import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
 import {Field, Model, Section} from "../../../../domain/dynamic-form-model";
 import {FormControlService} from "../../../../services/form-control.service";
@@ -11,6 +11,8 @@ import {FormControlService} from "../../../../services/form-control.service";
 })
 
 export class CompareSurveysComponent implements OnChanges{
+
+  private fb = inject(UntypedFormBuilder);
 
   @Input() payloadA: any = null;
   @Input() payloadB: any = null;
@@ -27,7 +29,7 @@ export class CompareSurveysComponent implements OnChanges{
   formA = this.fb.group({});
   formB = this.fb.group({});
 
-  constructor(private formControlService: FormControlService, private fb: UntypedFormBuilder,) {
+  constructor(private formControlService: FormControlService) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
