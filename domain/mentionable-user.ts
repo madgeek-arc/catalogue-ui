@@ -11,6 +11,7 @@ export interface MentionableUser {
   useFactory: () => new DefaultMentionableUsersProvider()
 })
 export abstract class MentionableUsersProvider {
+  contextId: string | null = null;
   abstract getUsers(contextId: string): Observable<MentionableUser[]>;
 }
 
