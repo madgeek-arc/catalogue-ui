@@ -26,6 +26,7 @@ import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
 import UIkit from "uikit";
 import { WebsocketService } from "../../services/websocket.service";
 import UIkitModalElement = UIkit.UIkitModalElement;
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-form-builder',
@@ -76,20 +77,27 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.route.snapshot.routeConfig?.path === 'fb/new-form') {
-      this.fbService.setModel();
-      this.editMode = false;
-    } else {
-      this.editMode = true;
+    // if (this.route.snapshot.routeConfig?.path === 'fb/new-form') {
+    //   this.fbService.setModel();
+    //   this.editMode = false;
+    // } else {
+
       if (!this.fbService.model()) {
-        this.route.params.pipe(
-          map(params => params['id']),
-          filter(Boolean),
+        this.route.paramMap.pipe(
+          map(params => params.get('id')),
+          // filter(Boolean),
           tap(() => this.loading.set(true)),
-          switchMap((id: string) => this.catalogueService.getFormModel(id)),
+          switchMap((id: string) => {
+            if (!id) {
+              return of(undefined);
+            }
+            this.editMode = true;
+            return this.catalogueService.getFormModel(id)
+          }),
           takeUntilDestroyed(this.destroyRef)
         ).subscribe({
           next: (model) => {
+            console.log(model);
             this.initModel(model);
             this.loading.set(false);
           },
@@ -99,7 +107,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         });
       }
-    }
+    // }
 
 
   }
