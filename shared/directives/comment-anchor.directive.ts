@@ -55,10 +55,9 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
     const scrollTop = (container === document.documentElement || container === document.body) ? window.scrollY : (container as HTMLElement).scrollTop;
     const relativeTop = rect.top - containerRect.top + (container === document.documentElement || container === document.body ? 0 : scrollTop);
 
-    if (this.arrayPosition != null) {
-      let pos = Number.parseInt(this.arrayPosition);
-      this.anchorService.updatePosition(this.anchorId, relativeTop, pos);
-    }
+    const pos = this.arrayPosition != null ? Number.parseInt(this.arrayPosition) : 0;
+    this.anchorService.updatePosition(this.anchorId, relativeTop, pos);
+
   }
 
   ngOnDestroy() {

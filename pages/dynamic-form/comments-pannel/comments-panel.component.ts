@@ -50,7 +50,6 @@ export class CommentsPanelComponent implements OnInit {
   @Input() scrollContainer?: HTMLElement; // form scroll container (passed from parent)
   @Input() subSection?: Section;
   @Input() userId: string | null = null;
-  @Input() stakeholderId: string | null = null;
 
   @Output() commentCount = new EventEmitter<SubSectionComments>();
 
@@ -67,6 +66,7 @@ export class CommentsPanelComponent implements OnInit {
   // Comment message
   showInputMap = new Map<string, boolean>();
   inputMessage = '';
+  private mentionTokenMap = new Map<string, string>();
 
   // layout state
   topOffset = 0; // number of pixels added as top spacer when some items go negative
@@ -117,8 +117,9 @@ export class CommentsPanelComponent implements OnInit {
         this.recomputeLayout(pos, heights);
       });
 
-    if (this.stakeholderId) {
-      this.mentionableUsersProvider.getUsers(this.stakeholderId)
+    const contextId = this.mentionableUsersProvider.contextId;
+    if (contextId) {
+      this.mentionableUsersProvider.getUsers(contextId)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: users => {
@@ -210,7 +211,8 @@ export class CommentsPanelComponent implements OnInit {
   selectMention(user: MentionableUser, threadId: string) {
     if (!user.email) return;
     const atIndex = this.inputMessage.lastIndexOf('@');
-    const display = user.name ?? user.email;
+    const display = (user.name ?? user.email).replace(/\s+/g, '_');
+    this.mentionTokenMap.set(display, user.email);
     this.inputMessage = this.inputMessage.slice(0, atIndex) + '@' + display + ' ';
     this.showMentionDropdown = false;
     this.filteredUsers = [];
@@ -244,7 +246,8 @@ export class CommentsPanelComponent implements OnInit {
   selectMentionForThread(user: MentionableUser) {
     if (!user.email) return;
     const atIndex = this.createThreadComment.body.lastIndexOf('@');
-    const display = user.name ?? user.email;
+    const display = (user.name ?? user.email).replace(/\s+/g, '_');
+    this.mentionTokenMap.set(display, user.email);
     this.createThreadComment.body =
       this.createThreadComment.body.slice(0, atIndex) + '@' + display + ' ';
     this.showMentionDropdown = false;
@@ -266,10 +269,10 @@ export class CommentsPanelComponent implements OnInit {
     const regex = /@([^\s]+)/g;
     const tokens = [...body.matchAll(regex)].map(m => m[1]);
     return tokens.map(token => {
-      // if the token is already an email, use it directly
       if (token.includes('@')) return token;
-      // otherwise look up the name in allUsers and return the email
-      return this.allUsers.find(u => u.name === token)?.email ?? null;
+      return this.mentionTokenMap.get(token)
+        ?? this.allUsers.find(u => u.name === token)?.email
+        ?? null;
     }).filter(Boolean) as string[];
   }
 
