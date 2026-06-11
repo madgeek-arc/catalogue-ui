@@ -27,7 +27,7 @@ import * as UIkit from 'uikit';
 @Component({
     selector: 'app-survey',
     templateUrl: 'survey.component.html',
-    providers: [FormControlService, PdfGenerateService, CommentingWebsocketService],
+    providers: [FormControlService, PdfGenerateService, CommentingWebsocketService, WebsocketService],
     standalone: false
 })
 

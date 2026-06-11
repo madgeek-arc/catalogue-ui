@@ -6,6 +6,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
   selector: 'app-section-settings',
+  standalone: true,
   templateUrl: './section-settings.component.html',
   imports: [
     CKEditorModule,

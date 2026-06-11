@@ -31,6 +31,7 @@ type SubSectionComments = {
 
 @Component({
   selector: 'app-comments-panel',
+  standalone: true,
   templateUrl: './comments-panel.component.html',
   styleUrls: ['./comments-panel.component.less'],
   imports: [

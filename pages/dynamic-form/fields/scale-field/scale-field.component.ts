@@ -7,6 +7,7 @@ import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-scale-field',
+  standalone: true,
   templateUrl: 'scale-field.component.html',
   styleUrls: ['scale-field.component.less'],
   imports: [

@@ -7,6 +7,7 @@ import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-select-field',
+  standalone: true,
   templateUrl: './select-field.component.html',
   imports: [
     BaseFieldHtmlComponent,

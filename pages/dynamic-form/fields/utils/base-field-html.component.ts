@@ -22,6 +22,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-base-field-html',
+  standalone: true,
   templateUrl: './base-field-html.component.html',
   imports: [
     ReactiveFormsModule,

@@ -18,9 +18,9 @@ interface PositionChange {
 }
 
 @Component({
-    selector: 'app-composite-field',
-    templateUrl: './composite-field.component.html',
-    standalone: false
+  selector: 'app-composite-field',
+  templateUrl: './composite-field.component.html',
+  standalone: false
 })
 
 export class CompositeFieldComponent implements OnInit {

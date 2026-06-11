@@ -8,6 +8,7 @@ import { MainSettingsComponent } from "./main-settings/main-settings.component";
 
 @Component({
   selector: 'app-settings-side-menu',
+  standalone: true,
   templateUrl: './settings-side-menu.component.html',
   imports: [
     ChapterSettingsComponent,

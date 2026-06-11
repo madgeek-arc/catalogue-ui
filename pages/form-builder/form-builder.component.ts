@@ -32,6 +32,7 @@ import UIkitModalElement = UIkit.UIkitModalElement;
 
 @Component({
   selector: 'app-form-builder',
+  standalone: true,
   templateUrl: 'form-builder.component.html',
   styleUrls: ['form-builder.component.less'],
   providers: [WebsocketService],

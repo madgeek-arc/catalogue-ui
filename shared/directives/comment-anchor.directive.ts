@@ -4,7 +4,8 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 import { CommentAnchorService } from "../../services/comment-anchor.service";
 
 @Directive({
-  selector: '[commentAnchor]'
+  selector: '[commentAnchor]',
+  standalone: true,
 })
 
 export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
