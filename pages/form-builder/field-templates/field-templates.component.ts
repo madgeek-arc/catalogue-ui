@@ -15,6 +15,7 @@ import UIkit from "uikit";
 
 @Component(({
   selector: 'app-field-templates',
+  standalone: true,
   templateUrl: './field-templates.component.html',
   styleUrl: '../form-builder.component.less',
   imports: [
