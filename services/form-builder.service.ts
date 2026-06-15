@@ -327,8 +327,7 @@ export class FormBuilderService {
       tmpField.typeInfo.properties = {
         checkbox: true
       }
-    }
-    if (type === FieldType.checkbox) {
+    } else if (type === FieldType.checkbox) {
       tmpField.typeInfo.properties = {
         label: checkboxLabel || ''
       }
@@ -360,6 +359,14 @@ export class FormBuilderService {
     };
 
     return checkActive(field);
+  }
+
+  clear() {
+    this._model.set(null);
+    this._currentSection.set(null);
+    this._currentSubsection.set(null);
+    this._currentField.set(null);
+    this._sideMenuSettingsType.set('main');
   }
 
   getFieldsAtSameLevel(field: Field | null): Field[] {
