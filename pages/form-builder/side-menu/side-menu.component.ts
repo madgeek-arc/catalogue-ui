@@ -61,7 +61,7 @@ export class SideMenuComponent {
 
   unwrapOuterParagraph(html: string | null): string {
     if (!html) {
-      return 'Untitled question';
+      return 'Untitled field';
     }
 
     return html
