@@ -110,7 +110,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
             this.loading.set(false);
           },
           error: (err) => {
-            this.error.set('Failed to load model: ' + err.message + '');
+            // this.error.set('Failed to load model: ' + err.message + '');
             this.loading.set(false);
           },
         });
