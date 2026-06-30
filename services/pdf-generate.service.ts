@@ -39,7 +39,7 @@ export class PdfGenerateService {
 
   documentDefinitionRecursion(model: Model, fields: Field[], payload: any, form: FormGroup, docDefinition: DocDefinition, description: string, descriptionAtEnd?: DocDefinition) {
     for (const field of fields) {
-      if (field.deprecated || field.kind === 'paused' || field.form?.display.visible === false)
+      if (field.deprecated || field.form?.display.visible === false)
         continue;
       if (field.label.text)
         docDefinition.content.push(new Content(field.label.text, ['mx_3']));
@@ -175,7 +175,7 @@ export class PdfGenerateService {
         else {
           docDefinition.content.push(new PdfTable(new TableDefinition([['']],['*'], [16]), ['mt_1']));
         }
-      } else if (field.kind === 'external' && field.typeInfo.type === 'composite') {
+      } else if ((field.kind === 'external' && field.typeInfo.type === 'composite') || field.kind === 'paused') {
         docDefinition.content.push(new PdfTable(new TableDefinition([[{text: field.form.description, color: 'gray'}]],['*']), ['mt_1']));
         continue;
       }
