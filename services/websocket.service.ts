@@ -28,7 +28,7 @@ interface Action {
   index?: number;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root'})
 export class WebsocketService {
   private xsrf = inject(HttpXsrfTokenExtractor);
   private environment = inject(APP_ENV);
