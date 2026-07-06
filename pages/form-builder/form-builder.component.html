@@ -178,7 +178,7 @@
     <div class="uk-section-default uk-section uk-section-xsmall">
       <div class="uk-container uk-container-expand">
         @if (showPreview()) {
-          <app-survey [model]="fbService.model()" [freeView]="true">
+          <app-survey [model]="fbService.model()" [freeView]="true" [enableWebsocket]="false" [enableCommenting]="false">
             <div class="uk-grid form-top-section">
               <h5 class="uk-width-1-1 uk-margin-bottom">{{ fbService.model()?.name }}</h5>
               <p class="uk-margin-bottom" [innerHTML]="fbService.model()?.notice"></p>
