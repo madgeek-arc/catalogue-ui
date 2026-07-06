@@ -2,6 +2,7 @@ import { Directive, ElementRef, Input, AfterViewInit, OnDestroy, NgZone } from '
 import { fromEvent, Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 import { CommentAnchorService } from "../../services/comment-anchor.service";
+import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
 
 @Directive({
   selector: '[commentAnchor]'
@@ -17,10 +18,14 @@ export class CommentAnchorDirective implements AfterViewInit, OnDestroy {
   constructor(
     private el: ElementRef<HTMLElement>,
     private anchorService: CommentAnchorService,
+    private commentingService: CommentingWebsocketService,
     private ngZone: NgZone
   ) {}
 
   ngAfterViewInit() {
+    if (!this.commentingService.hasCommenting())
+      return;
+
     this.ngZone.runOutsideAngular(() => {
       // Recalculate on resize and scroll (of the window)
       fromEvent(window, 'resize')

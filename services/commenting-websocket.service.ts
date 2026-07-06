@@ -3,10 +3,26 @@ import { HttpClient, HttpParams, HttpXsrfTokenExtractor } from "@angular/common/
 import { Comment, CreateThread, Thread } from "../domain/comment.model";
 import { BehaviorSubject, Subject } from "rxjs";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { APP_ENV } from "../config/app-env.token";
+import { APP_ENV, WsTopicsConfig } from "../config/app-env.token";
+import { formatTopic } from '../shared/utils/ws-topics.util';
+import { loadWebsocketScripts } from '../shared/utils/script-loader.util';
 
 declare var SockJS: any;
 declare var Stomp: any;
+
+const DEFAULT_TYPE = 'survey_answer';
+
+const DEFAULT_TOPICS: Required<Pick<WsTopicsConfig,
+  'comments' | 'commentsDelete' | 'commentsSend' | 'commentsSendDelete' |
+  'commentsSendMessages' | 'commentsSendMessageUpdate' | 'commentsSendMessageDelete'>> = {
+  comments: '/topic/comments/{type}/{id}',
+  commentsDelete: '/topic/comments/{type}/{id}/delete',
+  commentsSend: '/app/comments/{type}/{id}',
+  commentsSendDelete: '/app/comments/{type}/{id}/{threadId}/delete',
+  commentsSendMessages: '/app/comments/{type}/{id}/{threadId}/messages',
+  commentsSendMessageUpdate: '/app/comments/{type}/{id}/{threadId}/messages/{messageId}',
+  commentsSendMessageDelete: '/app/comments/{type}/{id}/{threadId}/messages/{messageId}/delete',
+};
 
 interface IMessage {
   command: string;
@@ -30,6 +46,8 @@ export class CommentingWebsocketService {
 
   private readonly base = this.environment.API_ENDPOINT;
   private readonly url = this.environment.WS_ENDPOINT;
+  private readonly topics = { ...DEFAULT_TOPICS, ...this.environment.WS_TOPICS };
+  private readonly type = DEFAULT_TYPE;
   private surveyAnswerId: string | null = null;
   threadSubject: BehaviorSubject<Thread[]> = new BehaviorSubject<Thread[]>([]);
   focusedField: Subject<string> = new Subject();
@@ -39,13 +57,13 @@ export class CommentingWebsocketService {
   count = 0;
 
   initializeWebSocketConnection(sa_id: string | null = null) {
-    const ws = new SockJS(this.url);
     const that = this;
     this.surveyAnswerId = sa_id;
 
     this.getSAComments();
 
-    this.stompClient = new Promise((resolve, reject) => {
+    this.stompClient = loadWebsocketScripts().then(() => new Promise((resolve, reject) => {
+      const ws = new SockJS(that.url);
       let stomp = Stomp.over(ws);
       stomp.debug = null;
       stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function () {
@@ -53,7 +71,7 @@ export class CommentingWebsocketService {
           if (stomp.connected) {
             clearInterval(timer);
             that.count = 0;
-            stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}`, (message: IMessage) => {
+            stomp.subscribe(formatTopic(that.topics.comments, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
               console.log(message);
               if (message.body)
                 that.upsertThread(JSON.parse(message.body))
@@ -62,7 +80,7 @@ export class CommentingWebsocketService {
               // }
             });
 
-            stomp.subscribe(`/topic/comments/survey_answer/${that.surveyAnswerId}/delete`, (message: IMessage) => {
+            stomp.subscribe(formatTopic(that.topics.commentsDelete, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
               if (message.body)
                 that.threadDeleted(JSON.parse(message.body))
             })
@@ -78,7 +96,7 @@ export class CommentingWebsocketService {
         }, timeout);
         console.log('STOMP: Reconnecting...'+ that.count);
       });
-    });
+    }));
   }
 
   temporaryThreadAdd(fieldId: string) {
@@ -126,23 +144,23 @@ export class CommentingWebsocketService {
         mentions: mentions
       }
     }
-    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}`, {}, JSON.stringify(thread)));
+    this.stompClient?.then(client => client.send(formatTopic(this.topics.commentsSend, {type: this.type, id: this.surveyAnswerId ?? ''}), {}, JSON.stringify(thread)));
   }
 
   deleteThread(threadId: string) {
-    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/delete`, {}));
+    this.stompClient?.then(client => client.send(formatTopic(this.topics.commentsSendDelete, {type: this.type, id: this.surveyAnswerId ?? '', threadId}), {}));
   }
 
   addMessage(threadId: string, message: Comment) {
-    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages`, {}, JSON.stringify(message)));
+    this.stompClient?.then(client => client.send(formatTopic(this.topics.commentsSendMessages, {type: this.type, id: this.surveyAnswerId ?? '', threadId}), {}, JSON.stringify(message)));
   }
 
   updateMessage(threadId: string, messageId: string, message: Comment) {
-    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages/${messageId}`, {}, JSON.stringify(message)));
+    this.stompClient?.then(client => client.send(formatTopic(this.topics.commentsSendMessageUpdate, {type: this.type, id: this.surveyAnswerId ?? '', threadId, messageId}), {}, JSON.stringify(message)));
   }
 
   deleteMessage(threadId: string, messageId: string) {
-    this.stompClient?.then(client => client.send(`/app/comments/survey_answer/${this.surveyAnswerId}/${threadId}/messages/${messageId}/delete`, {}));
+    this.stompClient?.then(client => client.send(formatTopic(this.topics.commentsSendMessageDelete, {type: this.type, id: this.surveyAnswerId ?? '', threadId, messageId}), {}));
   }
 
   closeWs() {
