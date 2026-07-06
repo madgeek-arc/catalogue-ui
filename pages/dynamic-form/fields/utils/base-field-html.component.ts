@@ -58,6 +58,9 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
     this.commentingService.threadSubject.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
+        if (!this.commentingService.hasCommenting())
+          return;
+
         if (value.some((item) => item.fieldId === this.fieldData.id)) {
           this.hasComment = true;
           this.label = this.highlight();
@@ -71,6 +74,9 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
     this.commentingService.focusedField.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
+        if (!this.commentingService.hasCommenting())
+          return;
+
         if (value === this.fieldData.id) {
           this.label = this.strongHighlightToggle(true);
           this.commentFocused = true;
