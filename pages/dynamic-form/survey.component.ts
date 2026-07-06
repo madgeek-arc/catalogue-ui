@@ -173,6 +173,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     } else if (this.router.url.includes('/freeView')) {
       this.freeView = true;
       this.enableCommenting = false;
+      this.enableWebsocket = false;
       this.wsComments.setCommenting(false);
     } else if (this.router.url.includes('/validate')) {
       this.validate = true;
@@ -241,7 +242,9 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
                 console.log((this.getControl(change)?.value === undefined));
                 value = '#r3moveField!'
               }
-              this.wsService.WsEdit({field: change, value: value});
+              if (this.enableWebsocket) {
+                this.wsService.WsEdit({field: change, value: value});
+              }
             });
             // if (this.changedField) {
             //   console.log(this.changedField);
