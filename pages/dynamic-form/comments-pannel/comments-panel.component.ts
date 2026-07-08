@@ -68,7 +68,6 @@ export class CommentsPanelComponent implements OnInit {
   // Comment message
   showInputMap = new Map<string, boolean>();
   inputMessage = '';
-  private mentionTokenMap = new Map<string, string>();
 
   // layout state
   topOffset = 0; // number of pixels added as top spacer when some items go negative
@@ -213,9 +212,7 @@ export class CommentsPanelComponent implements OnInit {
   selectMention(user: MentionableUser, threadId: string) {
     if (!user.email) return;
     const atIndex = this.inputMessage.lastIndexOf('@');
-    const display = (user.name ?? user.email).replace(/\s+/g, '_');
-    this.mentionTokenMap.set(display, user.email);
-    this.inputMessage = this.inputMessage.slice(0, atIndex) + '@' + display + ' ';
+    this.inputMessage = this.inputMessage.slice(0, atIndex) + this.buildMentionToken(user) + ' ';
     this.showMentionDropdown = false;
     this.filteredUsers = [];
   }
@@ -248,12 +245,17 @@ export class CommentsPanelComponent implements OnInit {
   selectMentionForThread(user: MentionableUser) {
     if (!user.email) return;
     const atIndex = this.createThreadComment.body.lastIndexOf('@');
-    const display = (user.name ?? user.email).replace(/\s+/g, '_');
-    this.mentionTokenMap.set(display, user.email);
     this.createThreadComment.body =
-      this.createThreadComment.body.slice(0, atIndex) + '@' + display + ' ';
+      this.createThreadComment.body.slice(0, atIndex) + this.buildMentionToken(user) + ' ';
     this.showMentionDropdown = false;
     this.filteredUsers = [];
+  }
+
+  // Builds a self-describing mention token: @{Display Name}(unique.email@domain)
+  // The email travels inside the text so mentions resolve to the right user even
+  // when two users share the same display name.
+  private buildMentionToken(user: MentionableUser): string {
+    return `@{${user.name ?? user.email}}(${user.email})`;
   }
 
   sendComment(threadId: string) {
@@ -268,14 +270,11 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   private extractMentions(body: string): string[] {
-    const regex = /@([^\s]+)/g;
-    const tokens = [...body.matchAll(regex)].map(m => m[1]);
-    return tokens.map(token => {
-      if (token.includes('@')) return token;
-      return this.mentionTokenMap.get(token)
-        ?? this.allUsers.find(u => u.name === token)?.email
-        ?? null;
-    }).filter(Boolean) as string[];
+    // Emails are captured directly from inside the token's parentheses, so no
+    // name-based lookup is needed and same-name users never collide.
+    const regex = /@\{[^}]*\}\(([^)]+)\)/g;
+    const emails = [...body.matchAll(regex)].map(m => m[1].trim());
+    return [...new Set(emails)];
   }
 
   updateComment(threadId: string, comment: Comment) {
