@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, Input, ViewChild } from "@angular/core";
+import { Component, effect, ElementRef, inject, input, ViewChild } from "@angular/core";
 import { Field, FieldType, IdLabel, TextProperties } from "../../../domain/dynamic-form-model";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CommonModule } from "@angular/common";
@@ -15,6 +15,7 @@ import UIkit from "uikit";
 
 @Component(({
   selector: 'app-field-templates',
+  standalone: true,
   templateUrl: './field-templates.component.html',
   styleUrl: '../form-builder.component.less',
   imports: [
@@ -35,7 +36,7 @@ export class FieldTemplatesComponent {
 
   @ViewChild('labelInput') inputEl!: ElementRef<HTMLInputElement>;
 
-  @Input() field!: Field;
+  field =  input<Field>();
 
   public editor = ClassicEditor;
 
@@ -44,6 +45,30 @@ export class FieldTemplatesComponent {
   checkboxLabel: string | null = null;
 
   message: string | null = null;
+
+  constructor() {
+    effect(() => {
+      const id = this.fbService.currentField()?.id;
+
+      if (!id) {
+        return;
+      }
+
+      const element = document.getElementById(id);
+      console.log(id);
+      console.log(element);
+      if (element) {
+        setTimeout( () => {
+
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 0);
+      }
+
+    });
+  }
 
   appendAsterisk(content: string): string {
     const closingTag = '</p>';
@@ -55,7 +80,7 @@ export class FieldTemplatesComponent {
   }
 
   get textProperties(): TextProperties {
-    return this.field?.typeInfo.properties as TextProperties;
+    return this.field()?.typeInfo.properties as TextProperties;
   }
 
 
@@ -77,24 +102,24 @@ export class FieldTemplatesComponent {
       return;
     }
 
-    this.field.typeInfo.values.push(this.option);
-    this.field.typeInfo.values = [...this.field.typeInfo.values];
+    this.field().typeInfo.values.push(this.option);
+    this.field().typeInfo.values = [...this.field().typeInfo.values];
     this.option = {id: '', label: ''};
     this.inputEl.nativeElement.focus();
   }
 
   removeOption(index: number) {
-    this.field.typeInfo.values.splice(index, 1);
-    this.field.typeInfo.values = [...this.field.typeInfo.values];
+    this.field().typeInfo.values.splice(index, 1);
+    this.field().typeInfo.values = [...this.field().typeInfo.values];
   }
 
   move(fromIndex: number, toIndex: number) {
-    this.field.typeInfo.values.splice(toIndex, 0, this.field.typeInfo.values.splice(fromIndex, 1)[0]);
+    this.field().typeInfo.values.splice(toIndex, 0, this.field().typeInfo.values.splice(fromIndex, 1)[0]);
   }
 
   updateValue(index: number, event: string) {
-    this.field.typeInfo.values[index].label = event;
-    this.field.typeInfo.values[index].id = event;
+    this.field().typeInfo.values[index].label = event;
+    this.field().typeInfo.values[index].id = event;
   }
 
   /** Check box options crud **/
@@ -105,10 +130,10 @@ export class FieldTemplatesComponent {
   }
 
   deleteCheckbox(index: number) {
-    this.fbService.deleteField(index, this.field);
+    this.fbService.deleteField(index, this.field());
   }
 
   moveCheckbox(fromIndex: number, toIndex: number) {
-    this.fbService.move(fromIndex, toIndex, this.field);
+    this.fbService.move(fromIndex, toIndex, this.field());
   }
 }

@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-date-field',
+  standalone: true,
   templateUrl: 'date-field.component.html',
   imports: [
     MatDatepickerModule,

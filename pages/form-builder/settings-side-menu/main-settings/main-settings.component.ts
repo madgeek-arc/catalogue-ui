@@ -4,6 +4,7 @@ import { FormBuilderService } from "../../../../services/form-builder.service";
 
 @Component({
   selector: 'app-main-settings',
+  standalone: true,
   templateUrl: './main-settings.component.html',
   imports: [
     FormsModule

@@ -18,9 +18,9 @@ interface PositionChange {
 }
 
 @Component({
-    selector: 'app-composite-field',
-    templateUrl: './composite-field.component.html',
-    standalone: false
+  selector: 'app-composite-field',
+  templateUrl: './composite-field.component.html',
+  standalone: false
 })
 
 export class CompositeFieldComponent implements OnInit {
@@ -109,7 +109,7 @@ export class CompositeFieldComponent implements OnInit {
     let path = this.getPath(this.form.controls[i]).join('.');
     console.log(path);
     this.fieldAsFormArray().removeAt(i, {emitEvent: false});
-    if (this.form instanceof FormArray) {
+    if (this.editMode && this.form instanceof FormArray) {
       this.wsService.WsEdit({
         field: path,
         value: null,
@@ -121,7 +121,7 @@ export class CompositeFieldComponent implements OnInit {
   pushComposite(compositeField: Field) {
     // console.log(path);
     this.fieldAsFormArray().push(this.formService.createCompositeField(compositeField), {emitEvent: false});
-    if (this.form instanceof FormArray) {
+    if (this.editMode && this.form instanceof FormArray) {
       this.wsService.WsEdit({
         field: this.getPath(this.form.controls[this.fieldAsFormArray().length-1]).join('.'),
         value: this.form.controls[this.fieldAsFormArray().length-1].value,
@@ -146,11 +146,13 @@ export class CompositeFieldComponent implements OnInit {
     formArray.removeAt(oldIndex, {emitEvent: false});
     formArray.insert(newIndex, currentGroup, {emitEvent: false});
 
-    this.wsService.WsEdit({
-      field: path,
-      value: null,
-      action: {type: 'MOVE', index: newIndex}
-    });
+    if (this.editMode) {
+      this.wsService.WsEdit({
+        field: path,
+        value: null,
+        action: {type: 'MOVE', index: newIndex}
+      });
+    }
   }
 
   /** check form fields and tabs validity--> **/

@@ -20,7 +20,9 @@ interface PositionChange {
   element: HTMLElement;
 }
 
-@Directive()
+@Directive({
+  standalone: true
+})
 export abstract class BaseFieldComponent implements OnInit {
   protected destroyRef = inject(DestroyRef);
   protected rootFormGroup = inject(FormGroupDirective);
@@ -150,7 +152,7 @@ export abstract class BaseFieldComponent implements OnInit {
 
   push() {
     this.fieldAsFormArray().push(this.formControlService.createField(this.fieldData), {emitEvent: false});
-    if (this.formControl instanceof FormArray) {
+    if (this.editMode && this.formControl instanceof FormArray) {
       this.wsService.WsEdit({
         field: this.getPath(this.formControl.controls[this.fieldAsFormArray().length-1]).join('.'),
         value: this.formControl.controls[this.fieldAsFormArray().length-1].value,
@@ -166,7 +168,7 @@ export abstract class BaseFieldComponent implements OnInit {
       path = this.getPath(this.formControl.controls[i]).join('.');
 
     this.fieldAsFormArray().removeAt(i, {emitEvent: false});
-    if (this.formControl instanceof FormArray) {
+    if (this.editMode && this.formControl instanceof FormArray) {
       this.wsService.WsEdit({
         field: path,
         value: null,
@@ -193,11 +195,13 @@ export abstract class BaseFieldComponent implements OnInit {
     formArray.removeAt(oldIndex, {emitEvent: false});
     formArray.insert(newIndex, currentControl, {emitEvent: false})
 
-    this.wsService.WsEdit({
-      field: path,
-      value: null,
-      action: {type:'MOVE', index: newIndex}
-    });
+    if (this.editMode) {
+      this.wsService.WsEdit({
+        field: path,
+        value: null,
+        action: {type:'MOVE', index: newIndex}
+      });
+    }
   }
 
   /** check fields validity --> **/

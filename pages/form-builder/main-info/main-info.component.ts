@@ -7,6 +7,7 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 
 @Component({
   selector: 'app-main-info',
+  standalone: true,
   templateUrl: './main-info.component.html',
   imports: [
     CKEditorModule,

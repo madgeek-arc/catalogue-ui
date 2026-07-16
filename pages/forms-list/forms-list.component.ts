@@ -14,7 +14,8 @@ import { FormBuilderService } from "../../services/form-builder.service";
     DatePipe,
     RouterLink
   ],
-  templateUrl: './forms-list.component.html'
+  templateUrl: './forms-list.component.html',
+  standalone: true,
 })
 
 export class FormsListComponent implements OnInit {

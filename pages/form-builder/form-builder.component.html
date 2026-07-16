@@ -3,12 +3,14 @@
 
     <div class="uk-background-secondary uk-padding-small uk-padding-remove-vertical">
       <div class="uk-flex uk-flex-middle uk-flex-between">
-        <h2 class="uk-modal-title uk-margin-remove uk-text-white">{{ fbService.model()?.name?.trim() || 'Untitled survey' }}</h2>
+        <h2 class="uk-modal-title uk-margin-remove uk-text-white">{{ fbService.model()?.name?.trim() || 'Untitled' }}</h2>
         <div class="uk-margin-small">
           <button class="uk-button uk-button-primary" type="button" (click)="saveModel()">Save</button>
-          <a class="uk-button uk-button-secondary uk-margin-small-left" href="#modal-preview" data-uk-toggle>From preview</a>
+          <a class="uk-button uk-button-secondary uk-margin-small-left" href="#modal-preview" data-uk-toggle>Form preview</a>
           <a class="uk-button uk-button-secondary uk-margin-small-left" href="#modal-json" data-uk-toggle>Model json</a>
-          <a class="uk-button uk-button-secondary uk-margin-small-left" type="button" [routerLink]="'/fb'">Back</a>
+          @if (backDestination()) {
+            <a class="uk-button uk-button-secondary uk-margin-small-left" type="button" [routerLink]="backDestination()">Back</a>
+          }
         </div>
       </div>
     </div>
@@ -108,7 +110,7 @@
                       <!-- Set current field to null, because if the last selected field is composite the addition will happen inside the composite -->
                       <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
                          (click)="fbService.setCurrentField(null); fbService.setSideMenuSettingsType('fieldSelector')">
-                        Add Question <span class="material-icons">add</span>
+                        Add Field <span class="material-icons">add</span>
                       </a>
                     </div>
                   </div>
@@ -176,7 +178,7 @@
     <div class="uk-section-default uk-section uk-section-xsmall">
       <div class="uk-container uk-container-expand">
         @if (showPreview()) {
-          <app-survey [model]="fbService.model()" [freeView]="true">
+          <app-survey [model]="fbService.model()" [freeView]="true" [enableWebsocket]="false" [enableCommenting]="false">
             <div class="uk-grid form-top-section">
               <h5 class="uk-width-1-1 uk-margin-bottom">{{ fbService.model()?.name }}</h5>
               <p class="uk-margin-bottom" [innerHTML]="fbService.model()?.notice"></p>

@@ -4,6 +4,7 @@ import { FormBuilderService } from "../../../services/form-builder.service";
 
 @Component({
   selector: 'app-side-menu',
+  standalone: true,
   templateUrl: './side-menu.component.html',
   imports: []
 })
@@ -60,7 +61,7 @@ export class SideMenuComponent {
 
   unwrapOuterParagraph(html: string | null): string {
     if (!html) {
-      return 'Untitled question';
+      return 'Untitled field';
     }
 
     return html

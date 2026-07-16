@@ -9,6 +9,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 @Component({
   selector: 'app-field-settings',
+  standalone: true,
   templateUrl: './field-settings.component.html',
   imports: [
     FormsModule,

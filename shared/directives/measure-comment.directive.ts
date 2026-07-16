@@ -2,7 +2,8 @@ import { Directive, ElementRef, EventEmitter, Input, AfterViewInit, OnDestroy, O
 
 
 @Directive({
-  selector: '[measureComment]'
+  selector: '[measureComment]',
+  standalone: true,
 })
 export class MeasureCommentDirective implements AfterViewInit, OnDestroy {
   @Input() threadId!: string;

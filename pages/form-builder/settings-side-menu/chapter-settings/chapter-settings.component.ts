@@ -6,6 +6,7 @@ import { FormBuilderService } from "../../../../services/form-builder.service";
 
 @Component(({
   selector: 'app-chapter-settings',
+  standalone: true,
   templateUrl: './chapter-settings.component.html',
   imports: [
     CKEditorModule,
