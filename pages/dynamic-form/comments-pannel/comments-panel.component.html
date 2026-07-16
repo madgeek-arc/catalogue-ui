@@ -33,6 +33,7 @@
                     <div class="mention-dropdown uk-card uk-card-default uk-card-small">
                       @for (user of filteredUsers; track user.email) {
                         <div class="mention-option uk-padding-xsmall"
+                             [attr.uk-tooltip]="user.email"
                              (click)="selectMentionForThread(user)">
                           {{ user.name ?? user.email }}
                         </div>
@@ -74,7 +75,7 @@
                       </div>
 
                       @if (comment.id !== editingComment?.id) {
-                        <p class="uk-margin-remove-top comment-body">{{ comment.body }}</p>
+                        <p class="uk-margin-remove-top comment-body" [innerHTML]="comment.body | mentionHighlight"></p>
                       } @else {
                         <textarea id="text-area-{{comment.id}}" class="uk-textarea" [(ngModel)]="editingComment.body"
                                   [ngModelOptions]="{standalone: true}">

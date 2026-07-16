@@ -22,6 +22,7 @@ import { collectIdsRecursive } from "../../../shared/utils/utils";
 import { MeasureCommentDirective } from "../../../shared/directives/measure-comment.directive";
 import { Section } from "../../../domain/dynamic-form-model";
 import { MentionableUser, MentionableUsersProvider } from "../../../domain/mentionable-user";
+import { MentionHighlightPipe } from "../../../shared/pipes/mention-highlight.pipe";
 import UIkit from "uikit";
 
 type SubSectionComments = {
@@ -38,6 +39,7 @@ type SubSectionComments = {
     MeasureCommentDirective,
     FormsModule,
     NgClass,
+    MentionHighlightPipe,
   ]
 })
 
