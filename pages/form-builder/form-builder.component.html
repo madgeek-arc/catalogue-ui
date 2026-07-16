@@ -6,9 +6,11 @@
         <h2 class="uk-modal-title uk-margin-remove uk-text-white">{{ fbService.model()?.name?.trim() || 'Untitled survey' }}</h2>
         <div class="uk-margin-small">
           <button class="uk-button uk-button-primary" type="button" (click)="saveModel()">Save</button>
-          <a class="uk-button uk-button-secondary uk-margin-small-left" href="#modal-preview" data-uk-toggle>From preview</a>
+          <a class="uk-button uk-button-secondary uk-margin-small-left" href="#modal-preview" data-uk-toggle>Form preview</a>
           <a class="uk-button uk-button-secondary uk-margin-small-left" href="#modal-json" data-uk-toggle>Model json</a>
-          <a class="uk-button uk-button-secondary uk-margin-small-left" type="button" [routerLink]="'/fb'">Back</a>
+          @if (backDestination()) {
+            <a class="uk-button uk-button-secondary uk-margin-small-left" type="button" [routerLink]="backDestination()">Back</a>
+          }
         </div>
       </div>
     </div>
@@ -108,7 +110,7 @@
                       <!-- Set current field to null, because if the last selected field is composite the addition will happen inside the composite -->
                       <a class="uk-flex uk-flex-center uk-flex-middle uk-text-decoration-none uk-padding-small"
                          (click)="fbService.setCurrentField(null); fbService.setSideMenuSettingsType('fieldSelector')">
-                        Add Question <span class="material-icons">add</span>
+                        Add Field <span class="material-icons">add</span>
                       </a>
                     </div>
                   </div>

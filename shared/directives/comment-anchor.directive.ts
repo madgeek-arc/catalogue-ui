@@ -5,7 +5,8 @@ import { CommentAnchorService } from "../../services/comment-anchor.service";
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
 
 @Directive({
-  selector: '[commentAnchor]'
+  selector: '[commentAnchor]',
+  standalone: true,
 })
 
 export class CommentAnchorDirective implements AfterViewInit, OnDestroy {

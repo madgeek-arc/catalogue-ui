@@ -20,7 +20,9 @@ interface PositionChange {
   element: HTMLElement;
 }
 
-@Directive()
+@Directive({
+  standalone: true
+})
 export abstract class BaseFieldComponent implements OnInit {
   protected destroyRef = inject(DestroyRef);
   protected rootFormGroup = inject(FormGroupDirective);

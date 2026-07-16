@@ -10,6 +10,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-vocabulary-field',
+  standalone: true,
   templateUrl: './vocabulary-field.component.html',
   styleUrls: ['./vocabulary-field.component.less'],
   imports: [

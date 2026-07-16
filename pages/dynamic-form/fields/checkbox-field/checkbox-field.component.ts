@@ -7,6 +7,7 @@ import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynami
 
 @Component({
   selector: 'app-checkbox-field',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     NgClass,

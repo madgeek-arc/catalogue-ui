@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-large-text-field',
+  standalone: true,
   templateUrl: './large-text-field.component.html',
   imports: [
     BaseFieldHtmlComponent,

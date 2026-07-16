@@ -3,8 +3,9 @@ import { FieldType } from "../../../../domain/dynamic-form-model";
 import { FormBuilderService } from "../../../../services/form-builder.service";
 
 @Component({
-    selector: 'app-field-type-selections',
-    templateUrl: './field-type-selector.component.html',
+  selector: 'app-field-type-selections',
+  standalone: true,
+  templateUrl: './field-type-selector.component.html',
 })
 
 export class FieldTypeSelectorComponent {

@@ -107,10 +107,10 @@
                        [(ngModel)]="dependsOnField"
                        (change)="setDependsOn($event)">
               <ng-template ng-label-tmp let-item="item">
-                {{ (stripHtml(item.label.text) || 'Untitled question') +' (id: '+item.id+')' }}
+                {{ (stripHtml(item.label.text) || 'Untitled field') +' (id: '+item.id+')' }}
               </ng-template>
               <ng-template ng-option-tmp let-item="item">
-                {{ (stripHtml(item.label.text) || 'Untitled question') +' (id: '+item.id+')' }}
+                {{ (stripHtml(item.label.text) || 'Untitled field') +' (id: '+item.id+')' }}
               </ng-template>
             </ng-select>
           }

@@ -27,7 +27,7 @@ import * as UIkit from 'uikit';
 @Component({
     selector: 'app-survey',
     templateUrl: 'survey.component.html',
-    providers: [FormControlService, PdfGenerateService, CommentingWebsocketService],
+    providers: [FormControlService, PdfGenerateService, CommentingWebsocketService, WebsocketService],
     standalone: false
 })
 
@@ -67,6 +67,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   changedField: string[] = [];
 
   commentingInitialized = false;
+  websocketInitialized = false;
   commentsPerSection: Map<string, number> = new Map();
 
   constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
@@ -86,6 +87,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.initializeCommenting();
+    this.initializeWebsocket();
 
     if (this.enableWebsocket) {
       this.wsService.edit.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -167,6 +169,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     this.initializeCommenting();
+    this.initializeWebsocket();
 
     if (this.router.url.includes('/view')) {
       this.readonly = true;
@@ -270,6 +273,8 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     clearTimeout(this.timeoutId);
     this.wsComments.closeWs();
+    this.wsService.WsLeave('left');
+    this.wsService.closeWs();
   }
 
   initializeCommenting() {
@@ -278,6 +283,14 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
       // console.log('Starting websocket for comments')
       this.wsComments.initializeWebSocketConnection(this.payload.id);
       this.commentingInitialized = true;
+    }
+  }
+
+  initializeWebsocket() {
+    if (this.enableWebsocket && this.payload?.id && !this.websocketInitialized) {
+      this.wsService.initializeWebSocketConnection(this.payload.id, this.subType ?? 'survey_answer');
+      this.wsService.WsJoin('joined');
+      this.websocketInitialized = true;
     }
   }
 

@@ -7,6 +7,7 @@ import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-boolean-field',
+  standalone: true,
   templateUrl: './boolean-field.component.html',
   imports: [
     ReactiveFormsModule,

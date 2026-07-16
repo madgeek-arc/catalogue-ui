@@ -4,31 +4,35 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  input,
   OnDestroy,
   OnInit,
+  output,
   signal,
   ViewChild
-} from "@angular/core";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { FormsModule } from "@angular/forms";
-import { JsonPipe, NgClass } from "@angular/common";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { filter, map, switchMap, tap } from "rxjs/operators";
-import { Field, Model } from "../../domain/dynamic-form-model";
-import { DynamicCatalogueService } from "../../services/dynamic-catalogue.service";
-import { FormBuilderService } from "../../services/form-builder.service";
-import { FileDownloadService } from "../../services/file-download.service";
-import { SettingsSideMenuComponent } from "./settings-side-menu/settings-side-menu.component";
-import { FieldTemplatesComponent } from "./field-templates/field-templates.component";
-import { SideMenuComponent } from "./side-menu/side-menu.component";
-import { MainInfoComponent } from "./main-info/main-info.component";
-import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
-import UIkit from "uikit";
-import { WebsocketService } from "../../services/websocket.service";
+} from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { JsonPipe, NgClass } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { Field, Model } from '../../domain/dynamic-form-model';
+import { DynamicCatalogueService } from '../../services/dynamic-catalogue.service';
+import { FormBuilderService } from '../../services/form-builder.service';
+import { FileDownloadService } from '../../services/file-download.service';
+import { SettingsSideMenuComponent } from './settings-side-menu/settings-side-menu.component';
+import { FieldTemplatesComponent } from './field-templates/field-templates.component';
+import { SideMenuComponent } from './side-menu/side-menu.component';
+import { MainInfoComponent } from './main-info/main-info.component';
+import { DynamicFormModule } from '../dynamic-form/dynamic-form.module';
+import { WebsocketService } from '../../services/websocket.service';
+import UIkit from 'uikit';
 import UIkitModalElement = UIkit.UIkitModalElement;
 
 @Component({
   selector: 'app-form-builder',
+  standalone: true,
   templateUrl: 'form-builder.component.html',
   styleUrls: ['form-builder.component.less'],
   providers: [WebsocketService],
@@ -41,12 +45,11 @@ import UIkitModalElement = UIkit.UIkitModalElement;
     SettingsSideMenuComponent,
     RouterLink,
     JsonPipe,
-    DynamicFormModule
-  ]
+    DynamicFormModule,
+  ],
 })
-
 export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
-  private destroyRef = inject(DestroyRef)
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private catalogueService = inject(DynamicCatalogueService);
@@ -55,6 +58,10 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('modalPreview') formPreviewModalElement!: ElementRef;
   @ViewChild('modalJson') jsonModalElement!: ElementRef;
+
+  customActions = input<boolean>(false);
+  backDestination = input<string | null>(null);
+  saveAction = output<Model>();
 
   loading = signal(false);
   error = signal<string | null>(null);
@@ -76,32 +83,39 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.route.snapshot.routeConfig?.path === 'fb/new-form') {
-      this.fbService.setModel();
-      this.editMode = false;
-    } else {
-      this.editMode = true;
-      if (!this.fbService.model()) {
-        this.route.params.pipe(
-          map(params => params['id']),
-          filter(Boolean),
+    // if (this.route.snapshot.routeConfig?.path === 'fb/new-form') {
+    //   this.fbService.setModel();
+    //   this.editMode = false;
+    // } else {
+
+    if (!this.fbService.model()) {
+      this.route.paramMap
+        .pipe(
+          map((params) => params.get('id')),
+          // filter(Boolean),
           tap(() => this.loading.set(true)),
-          switchMap((id: string) => this.catalogueService.getFormModel(id)),
-          takeUntilDestroyed(this.destroyRef)
-        ).subscribe({
+          switchMap((id: string) => {
+            if (!id) {
+              return of(undefined);
+            }
+            this.editMode = true;
+            return this.catalogueService.getFormModel(id);
+          }),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe({
           next: (model) => {
+            console.log(model);
             this.initModel(model);
             this.loading.set(false);
           },
           error: (err) => {
-            this.error.set('Failed to load model: ' + err.message + '');
+            // this.error.set('Failed to load model: ' + err.message + '');
             this.loading.set(false);
-          }
+          },
         });
-      }
     }
-
-
+    // }
   }
 
   ngOnDestroy(): void {
@@ -131,29 +145,39 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saveModel() {
     if (!this.fbService.model()) return;
-    this.catalogueService.postFormModel(this.fbService.model(), this.editMode).subscribe({
-      next: () => {
-        this.router.navigate(['/fb']).then();
-      },
-      error: (err) => {
-        this.error.set('Failed to save model: ' + err.message + '');
-      }
-    });
+
+    if (this.customActions) this.saveAction.emit(this.fbService.model());
+    else
+      this.catalogueService.saveModel(this.fbService.model(), this.editMode).subscribe({
+        next: () => {
+          this.router.navigate(['/fb']).then();
+        },
+        error: (err) => {
+          this.error.set('Failed to save model: ' + err.message + '');
+        },
+      });
   }
 
-  fieldSelection(field: Field) { this.fbService.fieldSelection(field); }
+  fieldSelection(field: Field) {
+    this.fbService.fieldSelection(field);
+  }
 
-  deleteField(i: number, parentField?: Field) { this.fbService.deleteField(i, parentField); }
+  deleteField(i: number, parentField?: Field) {
+    this.fbService.deleteField(i, parentField);
+  }
 
-  duplicateField(f: Field, parentField?: Field) { this.fbService.duplicateField(f, parentField); }
+  duplicateField(f: Field, parentField?: Field) {
+    this.fbService.duplicateField(f, parentField);
+  }
 
-  move(a: number, b: number, parentField?: Field) { this.fbService.move(a, b, parentField); }
+  move(a: number, b: number, parentField?: Field) {
+    this.fbService.move(a, b, parentField);
+  }
 
   // Modal
   hideModal(id: string) {
     let el = document.getElementById(id);
-    if (el)
-      UIkit.modal(el).hide();
+    if (el) UIkit.modal(el).hide();
   }
 
   onBeforeShow = (event: any) => {
