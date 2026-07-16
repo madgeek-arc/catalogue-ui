@@ -13,7 +13,8 @@ declare var Stomp: any;
 const DEFAULT_TYPE = 'survey_answer';
 
 const DEFAULT_TOPICS: Required<Pick<WsTopicsConfig,
-  'comments' | 'commentsDelete' | 'commentsSend' | 'commentsSendDelete' | 'commentsSendMessages' | 'commentsSendMessageUpdate' | 'commentsSendMessageDelete'>> = {
+  'comments' | 'commentsDelete' | 'commentsSend' | 'commentsSendDelete' |
+  'commentsSendMessages' | 'commentsSendMessageUpdate' | 'commentsSendMessageDelete'>> = {
   comments: '/topic/comments/{type}/{id}',
   commentsDelete: '/topic/comments/{type}/{id}/delete',
   commentsSend: '/app/comments/{type}/{id}',
@@ -62,7 +63,7 @@ export class CommentingWebsocketService {
     this.getSAComments();
 
     this.stompClient = loadWebsocketScripts().then(() => new Promise((resolve, reject) => {
-      const ws = new SockJS(this.url);
+      const ws = new SockJS(that.url);
       let stomp = Stomp.over(ws);
       stomp.debug = null;
       stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function () {

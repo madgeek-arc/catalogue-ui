@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core';
 
 export interface WsTopicsConfig {
-  activeUsers?: string;                // default '/topic/active-users/{type}/{id}'
+  activeUsers?: string;                 // default '/topic/active-users/{type}/{id}'
   edit?: string;                        // default '/topic/edit/{type}/{id}'
   leave?: string;                       // default '/app/leave/{type}/{id}'
   join?: string;                        // default '/app/join/{type}/{id}'

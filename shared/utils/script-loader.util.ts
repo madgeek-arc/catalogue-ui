@@ -21,6 +21,10 @@ function loadScript(src: string): Promise<void> {
 }
 
 export function loadWebsocketScripts(): Promise<void> {
+  if (typeof (window as any).SockJS !== 'undefined' && typeof (window as any).Stomp !== 'undefined') {
+    return Promise.resolve();
+  }
+
   return Promise.all([
     loadScript('assets/js/sockjs.min.js'),
     loadScript('assets/js/stomp.min.js'),

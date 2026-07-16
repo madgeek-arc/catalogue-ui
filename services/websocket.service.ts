@@ -67,7 +67,9 @@ export class WebsocketService {
     this.type = resourceType;
 
     this.stompClient = loadWebsocketScripts().then(() => new Promise((resolve, reject) => {
-      that.ws = new SockJS(that.URL, undefined, {withCredentials: true});
+      if (!that.ws) {
+        that.ws = new SockJS(that.URL, undefined, {withCredentials: true});
+      }
       let stomp = Stomp.over(that.ws);
 
       stomp.debug = null;
@@ -84,7 +86,7 @@ export class WebsocketService {
                 // console.log(that.activeUsers);
               }
             });
-            stomp.subscribe(formatTopic(that.topics.edit, {type: resourceType, id: that.surveyAnswerId ?? ''}), (message) => {
+            stomp.subscribe(formatTopic(that.topics.edit, {type: resourceType ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
               if (message.body) {
                 console.log('edit event, with body: ' + message.body);
                 that.edit.next(JSON.parse(message.body));
