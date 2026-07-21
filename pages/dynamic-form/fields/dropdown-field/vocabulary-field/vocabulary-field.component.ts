@@ -1,9 +1,8 @@
-import { Component, inject } from "@angular/core";
+import { Component } from "@angular/core";
 import { BaseFieldComponent } from "../../utils/base-field.component";
 import {ReactiveFormsModule, UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import { BaseFieldHtmlComponent } from "../../utils/base-field-html.component";
 import { NgSelectComponent } from "@ng-select/ng-select";
-import { VocabularyService } from "../../../../../services/vocabulary.service";
 import { VocabularyProperties } from "../../../../../domain/dynamic-form-model";
 import { NgClass } from "@angular/common";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
@@ -22,8 +21,6 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 })
 
 export class VocabularyFieldComponent extends BaseFieldComponent {
-  private vocabularyService = inject(VocabularyService);
-
   voc: object[] = [];
   properties?: VocabularyProperties;
 

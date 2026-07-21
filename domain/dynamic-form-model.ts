@@ -16,6 +16,12 @@ export interface Dependent {
   value: string | string[] | null;
 }
 
+export interface AutofillFrom {
+  field: string;
+  vocabularyUrl: string;
+  sourceProperty: string;
+}
+
 export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string> {
   vocabulary: string | null;
   type: FieldType;
@@ -41,6 +47,7 @@ export class TypeInfo<T extends keyof FieldTypePropertiesMap = FieldType.string>
 
 export class Form {
   dependsOn: Dependent | null;
+  autofillFrom: AutofillFrom | null;
   group: string;
   description: StyledText;
   suggestion: StyledText;
@@ -51,6 +58,7 @@ export class Form {
 
   constructor() {
     this.dependsOn = null;
+    this.autofillFrom = null;
     this.group = '';
     this.description = new StyledText();
     this.suggestion = new StyledText();

@@ -9,9 +9,10 @@ import {
   UntypedFormGroup
 } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Field } from "../../../../domain/dynamic-form-model";
+import { AutofillFrom, Field } from "../../../../domain/dynamic-form-model";
 import { WebsocketService } from "../../../../services/websocket.service";
 import { FormControlService } from "../../../../services/form-control.service";
+import { VocabularyService } from "../../../../services/vocabulary.service";
 import { cloneDeep, isEqual } from 'lodash';
 
 interface PositionChange {
@@ -29,6 +30,7 @@ export abstract class BaseFieldComponent implements OnInit {
 
   private formControlService = inject(FormControlService);
   private wsService = inject(WebsocketService);
+  protected vocabularyService = inject(VocabularyService);
 
   @Input() fieldData: Field;
   @Input() editMode: boolean;
@@ -67,6 +69,39 @@ export abstract class BaseFieldComponent implements OnInit {
         error => {console.error(error)}
       );
     }
+
+    if (this.fieldData.form.autofillFrom) {
+      const autofill = this.fieldData.form.autofillFrom;
+      const sourceControl = this.form.get(autofill.field);
+
+      if (sourceControl) {
+        sourceControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
+          selectedId => this.applyAutofill(autofill, selectedId),
+          error => {console.error(error)}
+        );
+      }
+    }
+  }
+
+  private applyAutofill(autofill: AutofillFrom, selectedId: string | null): void {
+    if (!selectedId) {
+      return;
+    }
+
+    this.vocabularyService.getVoc(autofill.vocabularyUrl).subscribe({
+      next: (entries) => {
+        const match: any = entries.find((entry: any) => entry.id === selectedId);
+        const value = match ? this.resolvePath(match, autofill.sourceProperty) : undefined;
+        if (value !== undefined) {
+          this.formControl.patchValue(value);
+        }
+      },
+      error: (err) => {console.error(err)}
+    });
+  }
+
+  private resolvePath(obj: any, path: string): any {
+    return path.split('.').reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);
   }
 
   /** Field focus -------------------------------------------------------------------------------------------------> **/
