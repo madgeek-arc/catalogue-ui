@@ -1,0 +1,193 @@
+/* ============================================================================
+   Form Builder — visual refresh
+   Re-skins UIkit's own classes to match the design mockup. No new component
+   classes are introduced; every rule below targets a UIkit class that is
+   already used in the templates. ::ng-deep is required because this file is
+   also attached to the child components rendered inside <app-form-builder>
+   (side menu, field templates, settings panels) which don't ship their own
+   stylesheets.
+   ========================================================================== */
+
+:host {
+  --fb-primary:        #0c8a8a;
+  --fb-primary-strong: #0a6f6f;
+  --fb-primary-bright:  #16a6a6;
+  --fb-primary-tint:   #e7f3f3;
+  --fb-primary-tint-2: #f3fafa;
+
+  --fb-ink:     #161a1d;
+  --fb-ink-2:   #222a2f;
+  --fb-text:    #3a444a;
+  --fb-text-2:  #5a656b;
+  --fb-muted:   #647079;
+  --fb-muted-2: #8a949a;
+  --fb-faint:   #a4adb2;
+
+  --fb-line:    #e6e9ec;
+  --fb-line-2:  #eef1f3;
+  --fb-line-3:  #d8dee1;
+
+  --fb-bg:       #f1f4f5;
+  --fb-surface:  #ffffff;
+  --fb-surface-2:#fafbfc;
+  --fb-surface-3:#f7f9fa;
+
+  --fb-danger:      #c0492f;
+  --fb-danger-tint: #fdf1ef;
+
+  --fb-radius-sm: 7px;
+  --fb-radius:    10px;
+  --fb-radius-md: 12px;
+  --fb-radius-lg: 14px;
+  --fb-radius-pill: 999px;
+
+  --fb-shadow-sm: 0 1px 2px rgba(20,40,40,.04);
+  --fb-shadow:    0 3px 12px rgba(20,40,40,.06);
+  --fb-shadow-md: 0 6px 24px rgba(20,40,40,.06);
+
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--fb-text);
+}
+
+/* -------------------------------------------------------------------- */
+/* Layout shell                                                          */
+/* -------------------------------------------------------------------- */
+::ng-deep app-form-builder {
+
+  .fb-header {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 58px; padding: 0 22px; background: var(--fb-surface);
+    border-bottom: 1px solid var(--fb-line); flex: 0 0 auto;
+  }
+  .fb-crumb { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--fb-muted-2); font-weight: 600; min-width: 0; }
+  .fb-crumb-current { color: var(--fb-ink); font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fb-saved { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--fb-muted-2); font-weight: 600; margin-right: 6px; }
+
+  .fb-meta {
+    display: flex; align-items: center; gap: 14px; padding: 12px 26px;
+    background: var(--fb-surface); border-bottom: 1px solid var(--fb-line-2); flex: 0 0 auto;
+  }
+  .fb-meta-icon {
+    display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+    border-radius: 9px; background: linear-gradient(135deg, var(--fb-primary), var(--fb-primary-bright));
+    color: #fff; flex: 0 0 auto;
+  }
+  .fb-meta-title { margin: 0; font-size: 15.5px; font-weight: 800; letter-spacing: -.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 560px; }
+  .fb-meta-sub { font-size: 12px; color: var(--fb-muted-2); font-weight: 600; margin-top: 2px; }
+
+  .fb-tabs {
+    display: flex; align-items: stretch; gap: 2px; padding: 0 18px; background: var(--fb-surface);
+    border-bottom: 1px solid var(--fb-line); flex: 0 0 auto; overflow-x: auto;
+  }
+  .fb-tab {
+    display: flex; align-items: center; gap: 8px; padding: 13px 15px; cursor: pointer;
+    font-size: 13.5px; font-weight: 700; color: var(--fb-muted); border-bottom: 2.5px solid transparent;
+    flex: 0 0 auto; white-space: nowrap;
+  }
+  .fb-tab-badge {
+    display: flex; align-items: center; justify-content: center; width: 20px; height: 20px;
+    border-radius: 6px; font-size: 11px; font-weight: 800; flex: 0 0 auto;
+    background: var(--fb-line-2); color: var(--fb-muted-2);
+  }
+  .fb-tab-count { font-size: 11px; font-weight: 700; color: var(--fb-faint); }
+  .fb-tab.fb-tab--active {
+    color: var(--fb-primary-strong); border-bottom-color: var(--fb-primary);
+  }
+  .fb-tab.fb-tab--active .fb-tab-badge { background: var(--fb-primary); color: #fff; }
+  .fb-tab.fb-tab--active .fb-tab-count { color: var(--fb-primary-bright); }
+  .fb-tab-add { color: var(--fb-primary-strong); }
+
+  .fb-body { flex: 1 1 auto; min-height: 0; display: flex; }
+  .fb-sub-col { width: 232px; flex: 0 0 auto; background: var(--fb-surface); border-right: 1px solid var(--fb-line); overflow-y: auto; padding: 18px 14px; }
+  .fb-sub-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--fb-faint); margin: 0 6px 10px; }
+  .fb-sub-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 10px 12px; border-radius: var(--fb-radius); cursor: pointer; margin-bottom: 2px;
+    font-size: 13px; font-weight: 700; color: var(--fb-text);
+  }
+  .fb-sub-item:hover { background: var(--fb-surface-3); }
+  .fb-sub-item--active { background: var(--fb-primary-tint); color: var(--fb-primary-strong); }
+  .fb-sub-count { font-size: 11px; font-weight: 700; color: var(--fb-faint); }
+  .fb-sub-item--active .fb-sub-count { color: var(--fb-primary-bright); }
+
+  .fb-content-col { flex: 1 1 0; min-width: 0; overflow-y: auto; background: var(--fb-bg); padding: 22px 26px; }
+  .fb-settings-col { width: 310px; flex: 0 0 auto; background: var(--fb-surface); border-left: 1px solid var(--fb-line); overflow-y: auto; padding: 18px; }
+}
+
+/* -------------------------------------------------------------------- */
+/* UIkit component overrides                                             */
+/* -------------------------------------------------------------------- */
+::ng-deep app-form-builder {
+
+  /* Buttons */
+  .uk-button {
+    font-family: inherit; font-weight: 700; border-radius: var(--fb-radius);
+    text-transform: none; font-size: 13px; padding: 0 14px; height: 34px;
+  }
+  .uk-button-primary {
+    background: var(--fb-primary); box-shadow: 0 2px 8px rgba(12,138,138,.28);
+  }
+  .uk-button-primary:hover { background: #0b7d7d; }
+  .uk-button-secondary, .uk-button-default {
+    background: var(--fb-surface); color: var(--fb-text); border: 1px solid var(--fb-line-3);
+  }
+  .uk-button-secondary:hover, .uk-button-default:hover { background: var(--fb-surface-3); }
+  .uk-button-danger { background: var(--fb-danger); }
+
+  /* Cards (field / option / add-field cards) */
+  .uk-card.card-simple {
+    background: var(--fb-surface); border: 1px solid var(--fb-line);
+    border-radius: var(--fb-radius-lg); box-shadow: var(--fb-shadow-sm);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .uk-card.card-simple.highlight-field {
+    border-color: var(--fb-primary); box-shadow: 0 0 0 3px rgba(12,138,138,.12);
+  }
+  .uk-card.card-simple .uk-card-title { font-size: 13px; }
+  .uk-border-rounded.border-dashed {
+    border: 1.5px dashed var(--fb-line-3); border-radius: var(--fb-radius-lg);
+    color: var(--fb-muted); font-weight: 700; font-size: 13.5px;
+  }
+  .uk-border-rounded.border-dashed:hover { border-color: var(--fb-primary); color: var(--fb-primary-strong); background: var(--fb-primary-tint-2); }
+
+  /* Inputs */
+  .uk-input, .uk-select, .uk-textarea {
+    border-radius: var(--fb-radius-sm); border: 1px solid var(--fb-line-3);
+    font-size: 13.5px; color: var(--fb-text); background: var(--fb-surface);
+  }
+  .uk-input:focus, .uk-select:focus, .uk-textarea:focus {
+    border-color: var(--fb-primary); box-shadow: 0 0 0 3px rgba(12,138,138,.12);
+  }
+  .uk-form-label { font-size: 12px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; color: var(--fb-muted-2); }
+
+  /* Checkboxes -> switches for boolean toggles inside settings panel */
+  .fb-settings-col .uk-checkbox {
+    -webkit-appearance: none; appearance: none; width: 34px; height: 20px;
+    border-radius: var(--fb-radius-pill); background: var(--fb-line-3); border: none;
+    position: relative; cursor: pointer; vertical-align: middle; flex: 0 0 auto;
+  }
+  .fb-settings-col .uk-checkbox::after {
+    content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+    border-radius: 50%; background: #fff; transition: transform .15s ease;
+  }
+  .fb-settings-col .uk-checkbox:checked { background: var(--fb-primary); }
+  .fb-settings-col .uk-checkbox:checked::after { transform: translateX(14px); }
+  .fb-settings-col .uk-checkbox-label { font-size: 13px; font-weight: 700; color: var(--fb-text); }
+
+  /* Accordion -> settings section groups */
+  .uk-accordion-title {
+    font-size: 11px !important; font-weight: 800 !important; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--fb-faint) !important; padding: 10px 0;
+  }
+  .uk-accordion-content { padding-top: 4px; }
+
+  /* Tables (option rows) */
+  .uk-table th { font-size: 10.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--fb-faint); border-bottom: none; padding-bottom: 6px; }
+  .uk-table td { border-top: none; padding: 4px 6px; }
+
+  /* Badges / pills */
+  .uk-badge { border-radius: var(--fb-radius-pill); font-weight: 800; }
+
+  h5, h6 { color: var(--fb-ink); font-weight: 800; }
+}

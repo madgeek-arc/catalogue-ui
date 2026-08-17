@@ -11,6 +11,15 @@ import { FormBuilderService } from "../../../services/form-builder.service";
 
 export class SideMenuComponent {
   protected fbService = inject(FormBuilderService);
+  protected String = String;
+
+  chapterIndex = computed(() => {
+    const chapter = this.fbService.currentSection();
+    const sections = this.fbService.model()?.sections;
+    if (!chapter || !sections) return 0;
+    const idx = sections.findIndex(s => s.id === chapter.id);
+    return idx === -1 ? 0 : idx;
+  });
 
   highlightedId = computed(() => {
     const currentField = this.fbService.currentField();

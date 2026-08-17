@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  computed,
   DestroyRef,
   ElementRef,
   inject,
@@ -11,9 +12,9 @@ import {
   signal,
   ViewChild
 } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { JsonPipe, NgClass } from '@angular/common';
+import { JsonPipe, Location, NgClass, NgStyle } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -38,12 +39,12 @@ import UIkitModalElement = UIkit.UIkitModalElement;
   providers: [WebsocketService],
   imports: [
     NgClass,
+    NgStyle,
     FormsModule,
     SideMenuComponent,
     MainInfoComponent,
     FieldTemplatesComponent,
     SettingsSideMenuComponent,
-    RouterLink,
     JsonPipe,
     DynamicFormModule,
   ],
@@ -51,6 +52,7 @@ import UIkitModalElement = UIkit.UIkitModalElement;
 export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private location = inject(Location);
   private route = inject(ActivatedRoute);
   private catalogueService = inject(DynamicCatalogueService);
   private fileDownloadService = inject(FileDownloadService);
@@ -65,6 +67,16 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loading = signal(false);
   error = signal<string | null>(null);
+
+  // Counts shown in the survey meta bar
+  sectionsCount = computed(() => this.fbService.model()?.sections?.length ?? 0);
+  subsectionsCount = computed(() =>
+    (this.fbService.model()?.sections ?? []).reduce((sum, s) => sum + (s.subSections?.length ?? 0), 0)
+  );
+  fieldsCount = computed(() =>
+    (this.fbService.model()?.sections ?? []).reduce((sum, s) =>
+      sum + (s.subSections ?? []).reduce((sSum, sub) => sSum + (sub.fields?.length ?? 0), 0), 0)
+  );
 
   editMode = false;
   jsonModal!: UIkitModalElement;
@@ -156,6 +168,31 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
           this.error.set('Failed to save model: ' + err.message + '');
         },
       });
+  }
+
+  // "General settings": jump back to landing view of fb (no chapter/subsection/field selected), along with the settings right panel
+  showGeneralSettings() {
+    this.fbService.setCurrentSelection({chapter: null, section: null, field: null, sideMenuSettingsType: 'main'});
+  }
+
+  goBack() {
+    const dest = this.backDestination();
+    if (dest) {
+      this.router.navigateByUrl(dest);
+    } else {
+      this.location.back();
+    }
+  }
+
+  // Selecting a top tab (chapter): jump straight into its first subsection when it has one, otherwise fall back to the chapter settings view.
+  selectChapter(chapter: any) {
+    const firstSub = chapter?.subSections?.[0] ?? null;
+    this.fbService.setCurrentSelection({
+      chapter,
+      section: firstSub,
+      field: null,
+      sideMenuSettingsType: firstSub ? 'section' : 'chapter',
+    });
   }
 
   fieldSelection(field: Field) {
