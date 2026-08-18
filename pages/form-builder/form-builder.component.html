@@ -20,16 +20,13 @@
         <span class="fb-crumb-current">{{ fbService.model()?.name?.trim() || 'Untitled' }}</span>
       </div>
       <div class="uk-flex uk-flex-middle">
-        <span class="fb-saved">
-          <span class="material-icons" style="font-size: 15px; color: #23a35a;">check_circle</span>
-          Saved
-        </span>
+<!--        <span class="fb-unsaved"><i>Unsaved changes</i></span>-->
         <a class="uk-button uk-button-default uk-button-small uk-margin-small-right" href="#modal-preview" data-uk-toggle>
           <span class="material-icons" style="font-size: 16px; vertical-align: middle;">visibility</span> Preview
         </a>
         <a class="uk-button uk-button-default uk-button-small uk-margin-small-right" href="#modal-json" data-uk-toggle>Model json</a>
         <button class="uk-button uk-button-primary uk-button-small" type="button" (click)="saveModel()">
-          <span class="material-icons" style="font-size: 16px; vertical-align: middle;">check</span> Publish
+          <span class="material-icons" style="font-size: 16px; vertical-align: middle;">check</span> Save
         </button>
       </div>
     </header>
@@ -44,8 +41,8 @@
           <h2 class="fb-meta-title">{{ fbService.model()?.name?.trim() || 'Untitled' }}</h2>
           <span class="uk-badge"
                 [ngStyle]="fbService.model()?.active
-                  ? {background: '#eaf7ee', color: '#1c7a43'}
-                  : {background: '#f7f9fa', color: '#8a949a'}">
+                  ? {background: '#1c7a43', color: '#eaf7ee'}
+                  : {background: '#8a949a', color: '#f7f9fa'}">
             {{ fbService.model()?.active ? 'Active' : 'Inactive' }}
           </span>
         </div>
