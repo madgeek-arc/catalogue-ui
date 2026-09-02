@@ -17,7 +17,7 @@ import UIkit from "uikit";
   selector: 'app-field-templates',
   standalone: true,
   templateUrl: './field-templates.component.html',
-  styleUrl: '../form-builder.component.less',
+  styleUrl: '../../../assets/theme/form-builder.component.less',
   imports: [
     CommonModule,
     CKEditorModule,

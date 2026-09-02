@@ -1,0 +1,120 @@
+/* ============================================================================
+   Form Builder — layout shell
+   Component-unique layout (header, meta bar, tabs, side columns) — anything
+   with no UIkit equivalent. Generic UIkit re-skinning (buttons, cards,
+   inputs, accordion, table, badges) lives in the host project's theme, see
+   src/assets/css/form-builder.less, so it inherits whatever
+   theme the host app applies instead of being hardcoded here.
+
+   Colors below are exposed as CSS custom properties (--fb-*) rather than
+   LESS variables on purpose: this file ships inside a submodule reused by
+   several host projects, each with its own LESS theme, and a LESS variable
+   can only ever resolve to one fixed value at compile time. A host project
+   can retheme this component by declaring the same --fb-* names anywhere
+   above <app-form-builder> in its own global CSS (see how observatory's
+   form-builder.less sets them from its own theme variables); the literal
+   values below are only the fallback used when a host hasn't done that.
+   They are intentionally NOT assigned on :host — doing so would give this
+   component's own declaration higher specificity than a host's override, so
+   the host's value would never apply. Reading them via var(--x, fallback)
+   at each use site avoids that trap.
+
+   Fallback values below are derived from UIkit's own default colors, not
+   observatory branding, so an unthemed host still gets a neutral UIkit look.
+
+   ::ng-deep is required because this file is also attached to the child
+   components rendered inside <app-form-builder> (side menu, field templates,
+   settings panels) which don't ship their own stylesheets.
+   ========================================================================== */
+
+@fb-radius: 10px;
+
+// UIkit defaults used as fallback source (see node_modules/uikit/src/less/components/variables.less)
+@uikit-color:            #666;
+@uikit-emphasis-color:   #333;
+@uikit-muted-color:      #999;
+@uikit-primary:          #1e87f0;
+@uikit-background:       #fff;
+@uikit-muted-background: #f8f8f8;
+@uikit-border:           #e5e5e5;
+
+// Derived tiers UIkit has no dedicated token for
+@uikit-muted-dark:    darken(@uikit-muted-color, 15%);
+@uikit-muted-faint:   lighten(@uikit-muted-color, 10%);
+@uikit-primary-strong: darken(@uikit-primary, 12%);
+@uikit-primary-bright: lighten(@uikit-primary, 10%);
+@uikit-primary-tint:  mix(@uikit-primary, #fff, 12%);
+@uikit-line-2:        lighten(@uikit-border, 4%);
+@uikit-surface-3:     @uikit-muted-background;
+@uikit-bg:            darken(@uikit-muted-background, 3%);
+
+:host {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--fb-text, @uikit-color);
+}
+
+/* -------------------------------------------------------------------- */
+/* Layout shell                                                          */
+/* -------------------------------------------------------------------- */
+::ng-deep app-form-builder {
+
+  .fb-header {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 58px; padding: 0 22px; background: var(--fb-surface, @uikit-background);
+    border-bottom: 1px solid var(--fb-line, @uikit-border); flex: 0 0 auto;
+  }
+  .fb-crumb { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--fb-muted-2, @uikit-muted-color); font-weight: 600; min-width: 0; }
+  .fb-crumb-current { color: var(--fb-ink, @uikit-emphasis-color); font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  //.fb-unsaved { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--fb-muted-2, @uikit-muted-color); font-weight: 600; margin-right: 6px; }
+
+  .fb-meta {
+    display: flex; align-items: center; gap: 14px; padding: 12px 26px;
+    background: var(--fb-surface, @uikit-background); border-bottom: 1px solid var(--fb-line-2, @uikit-line-2); flex: 0 0 auto;
+  }
+  .fb-meta-icon {
+    display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+    border-radius: 9px; background: linear-gradient(135deg, var(--fb-primary, @uikit-primary), var(--fb-primary-bright, @uikit-primary-bright));
+    color: #fff; flex: 0 0 auto;
+  }
+  .fb-meta-title { margin: 0; font-size: 15.5px; font-weight: 800; letter-spacing: -.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 560px; }
+  .fb-meta-sub { font-size: 12px; color: var(--fb-muted-2, @uikit-muted-color); font-weight: 600; margin-top: 2px; }
+
+  .fb-tabs {
+    display: flex; align-items: stretch; gap: 2px; padding: 0 18px; background: var(--fb-surface, @uikit-background);
+    border-bottom: 1px solid var(--fb-line, @uikit-border); flex: 0 0 auto; overflow-x: auto;
+  }
+  .fb-tab {
+    display: flex; align-items: center; gap: 8px; padding: 13px 15px; cursor: pointer;
+    font-size: 13.5px; font-weight: 700; color: var(--fb-muted, @uikit-muted-dark); border-bottom: 2.5px solid transparent;
+    flex: 0 0 auto; white-space: nowrap;
+  }
+  .fb-tab-badge {
+    display: flex; align-items: center; justify-content: center; width: 20px; height: 20px;
+    border-radius: 6px; font-size: 11px; font-weight: 800; flex: 0 0 auto;
+    background: var(--fb-line-2, @uikit-line-2); color: var(--fb-muted-2, @uikit-muted-color);
+  }
+  .fb-tab-count { font-size: 11px; font-weight: 700; color: var(--fb-faint, @uikit-muted-faint); }
+  .fb-tab.fb-tab--active {
+    color: var(--fb-primary-strong, @uikit-primary-strong); border-bottom-color: var(--fb-primary, @uikit-primary);
+  }
+  .fb-tab.fb-tab--active .fb-tab-badge { background: var(--fb-primary, @uikit-primary); color: #fff; }
+  .fb-tab.fb-tab--active .fb-tab-count { color: var(--fb-primary-bright, @uikit-primary-bright); }
+  .fb-tab-add { color: var(--fb-primary-strong, @uikit-primary-strong); }
+
+  .fb-body { flex: 1 1 auto; min-height: 0; display: flex; }
+  .fb-sub-col { width: 232px; flex: 0 0 auto; background: var(--fb-surface, @uikit-background); border-right: 1px solid var(--fb-line, @uikit-border); overflow-y: auto; padding: 18px 14px; }
+  .fb-sub-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--fb-faint, @uikit-muted-faint); margin: 0 6px 10px; }
+  .fb-sub-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 10px 12px; border-radius: @fb-radius; cursor: pointer; margin-bottom: 2px;
+    font-size: 13px; font-weight: 700; color: var(--fb-text, @uikit-color);
+  }
+  .fb-sub-item:hover { background: var(--fb-surface-3, @uikit-surface-3); }
+  .fb-sub-item--active { background: var(--fb-primary-tint, @uikit-primary-tint); color: var(--fb-primary-strong, @uikit-primary-strong); }
+  .fb-sub-count { font-size: 11px; font-weight: 700; color: var(--fb-faint, @uikit-muted-faint); }
+  .fb-sub-item--active .fb-sub-count { color: var(--fb-primary-bright, @uikit-primary-bright); }
+
+  .fb-content-col { flex: 1 1 0; min-width: 0; overflow-y: auto; background: var(--fb-bg, @uikit-bg); padding: 22px 26px; }
+  .fb-settings-col { width: 310px; flex: 0 0 auto; background: var(--fb-surface, @uikit-background); border-left: 1px solid var(--fb-line, @uikit-border); overflow-y: auto; padding: 18px; }
+}
