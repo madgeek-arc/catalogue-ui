@@ -1,16 +1,21 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  ElementRef,
   EventEmitter,
   HostListener,
   inject,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges
+  signal,
+  SimpleChanges,
+  ViewChild
 } from "@angular/core";
 import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -27,14 +32,40 @@ import * as UIkit from 'uikit';
 @Component({
     selector: 'app-survey',
     templateUrl: 'survey.component.html',
+    styleUrls: ['../../assets/theme/form-builder.component.less'],
     providers: [FormControlService, PdfGenerateService, CommentingWebsocketService, WebsocketService],
     standalone: false
 })
 
-export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
+export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   protected destroyRef = inject(DestroyRef);
   private wsComments = inject(CommentingWebsocketService);
+  private ngZone = inject(NgZone);
+  protected String = String;
+
+  // Height of the sticky title/tabs/save-bar header, measured so the sidebar
+  // (in ChapterComponent) can start its own sticky offset right below it
+  // instead of overlapping it — the header's height varies with content
+  // (description length, tab wrapping), so this can't be a fixed constant.
+  @ViewChild('stickyHeader') stickyHeaderRef!: ElementRef<HTMLElement>;
+  protected stickyHeaderHeight = signal(20);
+  private stickyHeaderResizeObserver?: ResizeObserver;
+
+  // Counts shown in the header's meta row, matching FormBuilderComponent's
+  // own sectionsCount/subsectionsCount/fieldsCount — plain getters (not
+  // computed signals) since `model` here is a regular @Input(), not a
+  // signal input; Angular re-evaluates these on every change detection pass.
+  protected get sectionsCount(): number {
+    return this.model?.sections?.length ?? 0;
+  }
+  protected get subsectionsCount(): number {
+    return (this.model?.sections ?? []).reduce((sum, s) => sum + (s.subSections?.length ?? 0), 0);
+  }
+  protected get fieldsCount(): number {
+    return (this.model?.sections ?? []).reduce((sum, s) =>
+      sum + (s.subSections ?? []).reduce((sSum, sub) => sSum + (sub.fields?.length ?? 0), 0), 0);
+  }
 
   @Input() payload: any = null; // can't import the specific project class in the lib file
   @Input() model!: Model;
@@ -270,11 +301,30 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  ngAfterViewInit() {
+    if (typeof ResizeObserver !== 'undefined' && this.stickyHeaderRef?.nativeElement) {
+      this.stickyHeaderResizeObserver = new ResizeObserver(() => {
+        // entries[0].contentRect excludes the element's own padding by
+        // definition (it's the content box). #stickyHeader has real padding
+        // (20px top), so contentRect.height under-reports its true rendered
+        // height — the sidebar's sticky offset came up short by exactly that
+        // padding, letting the header overlap the sidebar's first item.
+        // getBoundingClientRect() gives the actual border-box height instead.
+        const height = this.stickyHeaderRef?.nativeElement?.getBoundingClientRect().height;
+        if (height) {
+          this.ngZone.run(() => this.stickyHeaderHeight.set(height));
+        }
+      });
+      this.stickyHeaderResizeObserver.observe(this.stickyHeaderRef.nativeElement);
+    }
+  }
+
   ngOnDestroy() {
     clearTimeout(this.timeoutId);
     this.wsComments.closeWs();
     this.wsService.WsLeave('left');
     this.wsService.closeWs();
+    this.stickyHeaderResizeObserver?.disconnect();
   }
 
   initializeCommenting() {

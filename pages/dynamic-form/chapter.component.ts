@@ -28,6 +28,13 @@ export class ChapterComponent implements OnChanges {
   @Input() userId: string | null = null;
   @Input() chapter: Section = null;
   @Input() fields: Section[] = null;
+  @Input() chapterIndex: number = 0;
+  @Input() sectionsCount: number = 1;
+  // Height (px) of SurveyComponent's sticky header, so the sidebar's own
+  // sticky offset sits right below it instead of overlapping it.
+  @Input() stickyTopOffset: number = 20;
+
+  protected String = String;
 
   @Output() chapterHasChanges = new EventEmitter<string[]>();
   @Output() totalComments = new EventEmitter<SectionComments>();

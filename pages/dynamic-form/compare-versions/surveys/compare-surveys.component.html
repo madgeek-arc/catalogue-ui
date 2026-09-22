@@ -2,7 +2,7 @@
 <!--Chapter Selection-->
 @if (ready && model) {
   <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
-    <ul class="chapter-tabs uk-tab" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
+    <ul class="uk-subnav uk-subnav-pill-alt" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
       @for (section of model.sections; track section) {
         <li class="">
           @if ((!section.subType || section.subType===subType)) {
@@ -26,7 +26,8 @@
           <app-chapter-compare [formA]="getFormGroup(formA, i)" [formB]="getFormGroup(formB, i)" [tabsHeader]="tabsHeader"
             [entryA]="entryA" [entryB]="entryB" [fields]="model.sections[i].subSections"
             [chapter]="model.sections[i]" [vocabularies]="vocabulariesMap"
-            [subVocabularies]="subVocabularies">
+            [subVocabularies]="subVocabularies"
+            [chapterIndex]="i" [sectionsCount]="model.sections.length">
           </app-chapter-compare>
         </li>
       }

@@ -1,39 +1,63 @@
-<ng-content select=".form-top-section"></ng-content>
-
-@if (downloadPDF) {
-  <div class="uk-flex uk-flex-right">
-    <button class="uk-button uk-button-secondary" (click)="generatePDF()"
-      data-uk-tooltip="title:Unsaved changes will not be displayed to pdf; pos: bottom">Download as pdf
-    </button>
-  </div>
-}
-
-<!--Chapter Selection-->
-@if (model && ready) {
-  <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
-    <ul class="chapter-tabs uk-tab" data-uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
-      @for (section of model.sections; track section) {
-        <li class="">
-          @if ((!section.subType || section.subType===subType)) {
-            <a (click)="showUnsavedChangesPrompt(section)">{{section.name}}
-              @if (chapterChangeMap.get(section.id)) {
-                <span class="material-icons md-10 uk-margin-small-left">circle</span>
-              }
-              @if (commentsPerSection.get(section.id)) {
-                <span class="uk-flex uk-flex-middle">
-                  {{ commentsPerSection.get(section.id) }}
-                  <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
-                </span>
-              }
-            </a>
-          }
-        </li>
+<div #stickyHeader style="position: sticky; top: 0; z-index: 30; background: #fff; padding: 20px 24px 0;">
+  <!-- Zone 1: back + title (left) / active-user avatars, validate,
+       download-as-pdf, save (right) -->
+  <div class="uk-flex uk-flex-middle uk-flex-between">
+    <div class="uk-flex uk-flex-middle" style="gap: 6px; min-width: 0;">
+      <ng-content select=".form-top-section"></ng-content>
+    </div>
+    <div class="uk-flex uk-flex-middle" style="gap: 8px; flex: 0 0 auto;">
+      <ng-content select=".form-actions-section"></ng-content>
+      @if (downloadPDF) {
+        <button class="uk-button uk-button-secondary" (click)="generatePDF()"
+          data-uk-tooltip="title:Unsaved changes will not be displayed to pdf; pos: bottom">Download as pdf
+        </button>
       }
-    </ul>
+      <ng-content select=".form-action-bar"></ng-content>
+    </div>
   </div>
-}
 
-<ng-content select=".form-action-bar"></ng-content>
+  <!-- Zone 2: description (left) / section, subsection, field counts (right) -->
+  @if (model) {
+    <div class="uk-flex uk-flex-middle uk-flex-between" style="margin-top: 8px;">
+      <div style="min-width: 0;">
+        <ng-content select=".form-notice-section"></ng-content>
+      </div>
+      <div class="uk-text-meta" style="flex: 0 0 auto; white-space: nowrap; margin-left: 12px;">
+        {{ sectionsCount }} sections &middot; {{ subsectionsCount }} subsections &middot; {{ fieldsCount }} fields
+      </div>
+    </div>
+  }
+
+  <!--Chapter Selection-->
+  @if (model && ready) {
+    <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
+      <ul class="uk-tab" data-uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
+        @for (section of model.sections; track section; let i = $index) {
+          <li class="">
+            @if ((!section.subType || section.subType===subType)) {
+              <a (click)="showUnsavedChangesPrompt(section)">
+                <span class="uk-badge">{{ String.fromCharCode(65 + i) }}</span>
+                {{section.name}}
+                @if (section.subSections?.length) {
+                  <span class="uk-text-meta">{{ section.subSections.length }}</span>
+                }
+                @if (chapterChangeMap.get(section.id)) {
+                  <span class="material-icons md-10 uk-margin-small-left">circle</span>
+                }
+                @if (commentsPerSection.get(section.id)) {
+                  <span class="uk-flex uk-flex-middle">
+                    {{ commentsPerSection.get(section.id) }}
+                    <span class="material-symbols-outlined" style="font-size: 18px">chat</span>
+                  </span>
+                }
+              </a>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>
 
 @if (errorMessage) {
   <pre id="errorAlert" class="uk-alert uk-alert-danger" data-uk-alert="duration: 500" style="border-width: 0">
@@ -56,6 +80,8 @@
           <app-chapter [form]="getFormGroup(i)" [readonly]="readonly" [validate]="validate"
                        [chapter]="model.sections[i]" [tabsHeader]="tabsHeader"
                        [fields]="model.sections[i].subSections ?? model.sections"
+                       [chapterIndex]="i" [sectionsCount]="model.sections.length"
+                       [stickyTopOffset]="stickyHeaderHeight()"
                        [mandatoryFieldsText]="mandatoryFieldsText"
                        [editMode]=editMode [enableCommenting]="enableCommenting" [userId]="userId"
                        (totalComments)="setCommentCount($event.sectionId, $event.comments)"

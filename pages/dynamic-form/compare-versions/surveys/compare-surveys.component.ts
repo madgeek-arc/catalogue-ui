@@ -6,6 +6,7 @@ import {FormControlService} from "../../../../services/form-control.service";
 @Component({
     selector: 'app-compare-surveys',
     templateUrl: 'compare-surveys.component.html',
+    styleUrls: ['../../../../assets/theme/form-builder.component.less'],
     providers: [FormControlService],
     standalone: false
 })

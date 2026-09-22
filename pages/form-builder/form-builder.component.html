@@ -64,7 +64,7 @@
       @for (chapter of fbService.model()?.sections; track chapter.id; let i = $index) {
         <div class="fb-tab" [class.fb-tab--active]="fbService.currentSection()?.id === chapter.id"
              (click)="selectChapter(chapter)">
-          <span class="fb-tab-badge">{{ i + 1 }}</span>
+          <span class="fb-tab-badge">{{ String.fromCharCode(65 + i) }}</span>
           <span>{{ chapter.name?.trim() || 'Untitled chapter' }}</span>
           <span class="fb-tab-count">{{ chapter.subSections?.length ?? 0 }}</span>
           @if (fbService.currentSection()?.id === chapter.id) {
@@ -206,8 +206,8 @@
       </div>
     </div>
 
-    <div class="uk-section-default uk-section uk-section-xsmall">
-      <div class="uk-container uk-container-expand">
+    <div class="uk-section-default">
+      <div>
         @if (showPreview()) {
           <app-survey [model]="fbService.model()" [freeView]="true" [enableWebsocket]="false" [enableCommenting]="false">
             <div class="uk-grid form-top-section">

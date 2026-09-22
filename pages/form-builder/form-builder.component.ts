@@ -65,6 +65,8 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   backDestination = input<string | null>(null);
   saveAction = output<Model>();
 
+  protected String = String;
+
   loading = signal(false);
   error = signal<string | null>(null);
 
