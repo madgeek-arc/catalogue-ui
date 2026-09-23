@@ -8,9 +8,10 @@ import { loadWebsocketScripts } from '../shared/utils/script-loader.util';
 declare var SockJS;
 declare var Stomp;
 
-const DEFAULT_TOPICS: Required<Pick<WsTopicsConfig, 'activeUsers' | 'edit' | 'leave' | 'join' | 'focus' | 'editSend'>> = {
+const DEFAULT_TOPICS: Required<Pick<WsTopicsConfig, 'activeUsers' | 'edit' | 'editDenied' | 'leave' | 'join' | 'focus' | 'editSend'>> = {
   activeUsers: '/topic/active-users/{type}/{id}',
   edit: '/topic/edit/{type}/{id}',
+  editDenied: '/user/topic/edit/{type}/{id}',
   leave: '/app/leave/{type}/{id}',
   join: '/app/join/{type}/{id}',
   focus: '/app/focus/{type}/{id}/{field}',
@@ -56,6 +57,7 @@ export class WebsocketService {
 
   activeUsers: BehaviorSubject<UserActivity[]> = new BehaviorSubject<UserActivity[]>(null);
   edit: Subject<Revision> = new Subject<Revision>();
+  editDenied: Subject<string> = new Subject<string>();
 
   count = 0;
 
@@ -91,6 +93,11 @@ export class WebsocketService {
                 console.log('edit event, with body: ' + message.body);
                 that.edit.next(JSON.parse(message.body));
                 // console.log(that.edit);
+              }
+            });
+            stomp.subscribe(formatTopic(that.topics.editDenied, {type: resourceType ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
+              if (message.body) {
+                that.editDenied.next(message.body);
               }
             });
             resolve(stomp);

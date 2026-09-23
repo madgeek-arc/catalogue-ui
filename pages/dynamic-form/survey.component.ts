@@ -164,6 +164,13 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       });
+
+      this.wsService.editDenied.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (message: string) => {
+          UIkit.notification({ message: message || 'You no longer have permission to edit this.', status: 'danger', pos: 'top-center', timeout: 5000 });
+          this.router.navigateByUrl(this.router.url + '/view');
+        }
+      });
     }
   }
 
