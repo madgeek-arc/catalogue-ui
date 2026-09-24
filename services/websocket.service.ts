@@ -76,33 +76,28 @@ export class WebsocketService {
 
       stomp.debug = null;
       stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function (frame) {
-        const timer = setInterval(() => {
-          if (stomp.connected) {
-            clearInterval(timer);
-            that.count = 0;
-            stomp.subscribe(formatTopic(that.topics.activeUsers, {type: that.type ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
-              if (message.body) {
-                // console.log(message.headers['message-id']);
-                that.userSessionId = message.headers['message-id'].split('-')[0];
-                that.activeUsers.next(JSON.parse(message.body));
-                // console.log(that.activeUsers);
-              }
-            });
-            stomp.subscribe(formatTopic(that.topics.edit, {type: resourceType ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
-              if (message.body) {
-                console.log('edit event, with body: ' + message.body);
-                that.edit.next(JSON.parse(message.body));
-                // console.log(that.edit);
-              }
-            });
-            stomp.subscribe(formatTopic(that.topics.editDenied, {type: resourceType ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
-              if (message.body) {
-                that.editDenied.next(message.body);
-              }
-            });
-            resolve(stomp);
+        that.count = 0;
+        stomp.subscribe(formatTopic(that.topics.activeUsers, {type: that.type ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
+          if (message.body) {
+            // console.log(message.headers['message-id']);
+            that.userSessionId = message.headers['message-id'].split('-')[0];
+            that.activeUsers.next(JSON.parse(message.body));
+            // console.log(that.activeUsers);
           }
-        }, 1000);
+        });
+        stomp.subscribe(formatTopic(that.topics.edit, {type: resourceType ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
+          if (message.body) {
+            console.log('edit event, with body: ' + message.body);
+            that.edit.next(JSON.parse(message.body));
+            // console.log(that.edit);
+          }
+        });
+        stomp.subscribe(formatTopic(that.topics.editDenied, {type: resourceType ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
+          if (message.body) {
+            that.editDenied.next(message.body);
+          }
+        });
+        resolve(stomp);
       }, function (error) {
         let timeout = 1000;
         that.count > 20 ? timeout = 10000 : that.count++ ;
@@ -116,8 +111,13 @@ export class WebsocketService {
 
     this.stompClient.then(client => client.ws.onclose = (event) => {
       this.activeUsers.next(null);
-      if (!this.dropConnection)
-        this.initializeWebSocketConnection(that.surveyAnswerId, that.type);
+      if (this.dropConnection) return;
+      let timeout = 1000;
+      that.count > 20 ? timeout = 10000 : that.count++ ;
+      setTimeout( () => {
+        that.initializeWebSocketConnection(that.surveyAnswerId, that.type);
+      }, timeout);
+      console.log('STOMP: Reconnecting...'+ that.count);
     });
   };
 

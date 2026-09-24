@@ -49,6 +49,7 @@ export class CommentingWebsocketService {
   private readonly topics = { ...DEFAULT_TOPICS, ...this.environment.WS_TOPICS };
   private readonly type = DEFAULT_TYPE;
   private surveyAnswerId: string | null = null;
+  private dropConnection = false;
   threadSubject: BehaviorSubject<Thread[]> = new BehaviorSubject<Thread[]>([]);
   focusedField: Subject<string> = new Subject();
 
@@ -58,6 +59,7 @@ export class CommentingWebsocketService {
 
   initializeWebSocketConnection(sa_id: string | null = null) {
     const that = this;
+    this.dropConnection = false;
     this.surveyAnswerId = sa_id;
 
     this.getSAComments();
@@ -67,27 +69,23 @@ export class CommentingWebsocketService {
       let stomp = Stomp.over(ws);
       stomp.debug = null;
       stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function () {
-        const timer = setInterval(() => {
-          if (stomp.connected) {
-            clearInterval(timer);
-            that.count = 0;
-            stomp.subscribe(formatTopic(that.topics.comments, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
-              console.log(message);
-              if (message.body)
-                that.upsertThread(JSON.parse(message.body))
-              // if (message.body) {
-              //   console.log('ws event, with body: ' + message.body);
-              // }
-            });
+        that.count = 0;
+        stomp.subscribe(formatTopic(that.topics.comments, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
+          console.log(message);
+          if (message.body)
+            that.upsertThread(JSON.parse(message.body))
+          // if (message.body) {
+          //   console.log('ws event, with body: ' + message.body);
+          // }
+        });
 
-            stomp.subscribe(formatTopic(that.topics.commentsDelete, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
-              if (message.body)
-                that.threadDeleted(JSON.parse(message.body))
-            })
-            resolve(stomp);
-          }
-        }, 1000);
+        stomp.subscribe(formatTopic(that.topics.commentsDelete, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
+          if (message.body)
+            that.threadDeleted(JSON.parse(message.body))
+        })
+        resolve(stomp);
       }, function () {
+        if (that.dropConnection) return;
         let timeout = 1000;
         that.count > 20 ? timeout = 10_000 : that.count++ ;
         setTimeout( () => {
@@ -164,6 +162,7 @@ export class CommentingWebsocketService {
   }
 
   closeWs() {
+    this.dropConnection = true;
     this.stompClient?.then(client => client.ws.close());
   }
 
