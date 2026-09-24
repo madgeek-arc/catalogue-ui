@@ -69,9 +69,9 @@ export class WebsocketService {
     this.type = resourceType;
 
     this.stompClient = loadWebsocketScripts().then(() => new Promise((resolve, reject) => {
-      if (!that.ws) {
-        that.ws = new SockJS(that.URL, undefined, {withCredentials: true});
-      }
+      // A fresh SockJS instance is required on every attempt: once the underlying transport
+      // closes, it can never re-open, so reusing it here would make later reconnects hang silently.
+      that.ws = new SockJS(that.URL, undefined, {withCredentials: true});
       let stomp = Stomp.over(that.ws);
 
       stomp.debug = null;
@@ -100,7 +100,8 @@ export class WebsocketService {
         resolve(stomp);
       }, function (error) {
         let timeout = 1000;
-        that.count > 20 ? timeout = 10000 : that.count++ ;
+        // Retry every second for ~2 minutes before backing off to a 10s cadence.
+        that.count > 120 ? timeout = 10000 : that.count++ ;
         setTimeout( () => {
           // stomp.close();
           that.initializeWebSocketConnection(that.surveyAnswerId, that.type)
@@ -113,7 +114,8 @@ export class WebsocketService {
       this.activeUsers.next(null);
       if (this.dropConnection) return;
       let timeout = 1000;
-      that.count > 20 ? timeout = 10000 : that.count++ ;
+      // Retry every second for ~2 minutes before backing off to a 10s cadence.
+      that.count > 120 ? timeout = 10000 : that.count++ ;
       setTimeout( () => {
         that.initializeWebSocketConnection(that.surveyAnswerId, that.type);
       }, timeout);

@@ -87,7 +87,8 @@ export class CommentingWebsocketService {
       }, function () {
         if (that.dropConnection) return;
         let timeout = 1000;
-        that.count > 20 ? timeout = 10_000 : that.count++ ;
+        // Retry every second for ~2 minutes before backing off to a 10s cadence.
+        that.count > 120 ? timeout = 10_000 : that.count++ ;
         setTimeout( () => {
           // stomp.close();
           that.initializeWebSocketConnection(that.surveyAnswerId);
