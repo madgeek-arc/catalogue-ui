@@ -70,6 +70,7 @@ export class CommentingWebsocketService {
       stomp.debug = null;
       stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function () {
         that.count = 0;
+        console.log('[comments] STOMP: Connected');
         stomp.subscribe(formatTopic(that.topics.comments, {type: that.type, id: that.surveyAnswerId ?? ''}), (message: IMessage) => {
           console.log(message);
           if (message.body)
@@ -93,7 +94,7 @@ export class CommentingWebsocketService {
           // stomp.close();
           that.initializeWebSocketConnection(that.surveyAnswerId);
         }, timeout);
-        console.log('STOMP: Reconnecting...'+ that.count);
+        console.log('[comments] STOMP: Reconnecting...'+ that.count);
       });
     }));
   }

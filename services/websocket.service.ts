@@ -54,6 +54,8 @@ export class WebsocketService {
   private userSessionId: string | null = null;
   private ws: any;
   private stompClient: Promise<typeof Stomp>;
+  // Remembered so it can be resent automatically on every reconnect, not just the first connect.
+  private lastJoinAction: string | null = null;
 
   activeUsers: BehaviorSubject<UserActivity[]> = new BehaviorSubject<UserActivity[]>(null);
   edit: Subject<Revision> = new Subject<Revision>();
@@ -77,6 +79,7 @@ export class WebsocketService {
       stomp.debug = null;
       stomp.connect({ 'X-XSRF-TOKEN': this.xsrf.getToken() }, function (frame) {
         that.count = 0;
+        console.log('[active-users] STOMP: Connected');
         stomp.subscribe(formatTopic(that.topics.activeUsers, {type: that.type ?? '', id: that.surveyAnswerId ?? ''}), (message) => {
           if (message.body) {
             // console.log(message.headers['message-id']);
@@ -97,8 +100,15 @@ export class WebsocketService {
             that.editDenied.next(message.body);
           }
         });
+        // Re-announce join on every (re)connect, not just the first one: the broker doesn't
+        // replay the last active-users snapshot to a fresh subscription, so without this a
+        // reconnected session never receives another broadcast until someone else joins/leaves.
+        if (that.lastJoinAction) {
+          stomp.send(formatTopic(that.topics.join, {type: that.type ?? '', id: that.surveyAnswerId ?? ''}), {}, that.lastJoinAction);
+        }
         resolve(stomp);
       }, function (error) {
+        if (that.dropConnection) return;
         let timeout = 1000;
         // Retry every second for ~2 minutes before backing off to a 10s cadence.
         that.count > 120 ? timeout = 10000 : that.count++ ;
@@ -106,7 +116,7 @@ export class WebsocketService {
           // stomp.close();
           that.initializeWebSocketConnection(that.surveyAnswerId, that.type)
         }, timeout);
-        console.log('STOMP: Reconnecting...'+ that.count);
+        console.log('[active-users] STOMP: Reconnecting...'+ that.count);
       });
     }));
 
@@ -119,7 +129,7 @@ export class WebsocketService {
       setTimeout( () => {
         that.initializeWebSocketConnection(that.surveyAnswerId, that.type);
       }, timeout);
-      console.log('STOMP: Reconnecting...'+ that.count);
+      console.log('[active-users] STOMP: Reconnecting...'+ that.count);
     });
   };
 
@@ -128,6 +138,7 @@ export class WebsocketService {
   }
 
   WsJoin(action: string) {
+    this.lastJoinAction = action;
     this.stompClient?.then(client => client.send(formatTopic(this.topics.join, {type: this.type ?? '', id: this.surveyAnswerId ?? ''}), {}, action));
   }
 
