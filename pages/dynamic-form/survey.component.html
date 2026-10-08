@@ -31,7 +31,7 @@
   <!--Chapter Selection-->
   @if (model && ready) {
     <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
-      <ul class="uk-tab" data-uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
+      <ul class="uk-tab" style="margin-bottom: 0;" data-uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
         @for (section of model.sections; track section; let i = $index) {
           <li class="">
             @if ((!section.subType || section.subType===subType)) {

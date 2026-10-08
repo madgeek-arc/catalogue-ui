@@ -1,36 +1,31 @@
 @if (ready) {
-  <div class="uk-section-default" style="min-height: 325px">
-    <div class="uk-container uk-container-expand" style="padding-left: 24px; padding-right: 24px;">
-      @if (chapter) {
-        <div class="uk-margin-top chapter-description">
-          <p [innerHtml]="chapter.description"></p>
+  <div style="min-height: 325px; background: var(--fb-bg, #f1f4f5);">
+    @if (chapter?.description) {
+      <div class="uk-margin-top chapter-description" style="padding: 0 24px;">
+        <p [innerHtml]="chapter.description"></p>
+      </div>
+    }
+    <div>
+      @if (bitset.requiredTotal !== 0 && mandatoryFieldsText) {
+        <div class="requiredFields" style="padding: 0 24px;">
+          {{mandatoryFieldsText}}
         </div>
       }
-      <div class="uk-margin-medium-bottom">
-        <div class="uk-grid">
-          <!-- MIDDLE -->
-          <div class="uk-width-expand@m uk-margin-top">
-            <div>
-              @if (bitset.requiredTotal !== 0 && mandatoryFieldsText) {
-                <div class="requiredFields">
-                  {{mandatoryFieldsText}}
-                </div>
-              }
-              <div id="serviceForm">
-                @if (errorMessage) {
-                  <div class="uk-alert uk-alert-danger">
-                    <p>{{errorMessage}}</p>
-                  </div>
-                }
-                @if (showLoader) {
-                  <div class="whiteFilm">
-                    <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
-                  </div>
-                }
-                <div class="uk-grid uk-grid-small" data-uk-grid>
-                  <div class="uk-width-1-6" style="background: var(--fb-surface, #fff); border-radius: 6px; padding: 18px 14px;"
-                       [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
-                   <div style="position: sticky;" [ngStyle]="{'top.px': stickyTopOffset}">
+      <div id="serviceForm">
+        @if (errorMessage) {
+          <div class="uk-alert uk-alert-danger" style="margin-left: 24px; margin-right: 24px;">
+            <p>{{errorMessage}}</p>
+          </div>
+        }
+        @if (showLoader) {
+          <div class="whiteFilm">
+            <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
+          </div>
+        }
+        <div style="display: flex;">
+          <div style="width: 232px; flex: 0 0 auto; background: var(--fb-surface, #fff); border-right: 1px solid var(--fb-line, #e6e9ec); padding: 0 14px 18px;"
+               [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
+           <div style="position: sticky; padding-top: 18px;" [ngStyle]="{'top.px': stickyTopOffset}">
                     @if (tabsHeader) {
                       <div class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
                     }
@@ -104,7 +99,7 @@
                    </div>
                   </div>
                   @if (form && ready) {
-                    <div [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-5-6'">
+                    <div style="flex: 1 1 0; min-width: 0; padding: 22px 26px;">
                       <form [formGroup]="form">
                         <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
                           @for (group of fields; track group.id) {
@@ -150,10 +145,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
 }
 @if (!ready) {
   <div class="whiteFilm">
