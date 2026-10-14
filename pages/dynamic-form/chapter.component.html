@@ -1,45 +1,47 @@
 @if (ready) {
-  <div class="uk-section-default uk-section uk-section-xsmall uk-padding-remove-bottom" style="min-height: 325px">
-    <div class="uk-container uk-container-expand">
-      @if (chapter) {
-        <div class="uk-margin-top chapter-description">
-          <p [innerHtml]="chapter.description"></p>
+  <div style="min-height: 325px; background: var(--fb-bg, #f1f4f5);">
+    @if (chapter?.description) {
+      <div class="uk-margin-top chapter-description" style="padding: 0 24px;">
+        <p [innerHtml]="chapter.description"></p>
+      </div>
+    }
+    <div>
+      @if (bitset.requiredTotal !== 0 && mandatoryFieldsText) {
+        <div class="requiredFields" style="padding: 0 24px;">
+          {{mandatoryFieldsText}}
         </div>
       }
-      <div class="uk-margin-medium-bottom">
-        <div class="uk-grid">
-          <!-- MIDDLE -->
-          <div class="uk-width-expand@m uk-margin-top">
-            <div>
-              @if (bitset.requiredTotal !== 0 && mandatoryFieldsText) {
-                <div class="requiredFields">
-                  {{mandatoryFieldsText}}
-                </div>
-              }
-              <div id="serviceForm">
-                @if (errorMessage) {
-                  <div class="uk-alert uk-alert-danger">
-                    <p>{{errorMessage}}</p>
-                  </div>
-                }
-                @if (showLoader) {
-                  <div class="whiteFilm">
-                    <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
-                  </div>
-                }
-                <div class="uk-grid-small" data-uk-grid>
-                  <div class="uk-width-1-6" [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
+      <div id="serviceForm">
+        @if (errorMessage) {
+          <div class="uk-alert uk-alert-danger" style="margin-left: 24px; margin-right: 24px;">
+            <p>{{errorMessage}}</p>
+          </div>
+        }
+        @if (showLoader) {
+          <div class="whiteFilm">
+            <i class="fa fa-spinner fa-spin fa-5x uk-position-center loader" aria-hidden="true"></i>
+          </div>
+        }
+        <div style="display: flex;">
+          <div style="width: 232px; flex: 0 0 auto; background: var(--fb-surface, #fff); border-right: 1px solid var(--fb-line, #e6e9ec); padding: 0 14px 18px;"
+               [ngStyle]="{'display': fields?.length === 1 ? 'none' : 'block'}">
+           <div style="position: sticky; padding-top: 18px;" [ngStyle]="{'top.px': stickyTopOffset}">
                     @if (tabsHeader) {
                       <div class="tabsTitle uk-margin-bottom">{{tabsHeader}}</div>
                     }
-                    <ul id="{{chapter.name}}" class="uk-tab uk-tab-left form-tabs"
+                    <ul id="{{chapter.name}}" class="uk-tab uk-tab-left"
                       [attr.uk-switcher]="'connect: #side-tab-'+chapter.id">
                       @for (tab of fields; track tab; let i = $index) {
                         <li (click)="setTabIndex(i)">
                           <a id="{{chapter.id}}-tab{{i}}" href="#" class="remove-text-decoration"
                              [ngClass]="{'form-error': bitset.tabs.get(tab.id).valid}">
                             <div class="uk-width-expand uk-flex uk-flex-between">
-                              <div>{{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}</div>
+                              <div>
+                                @if (sectionsCount > 1) {
+                                  <span class="uk-text-muted">{{ String.fromCharCode(65 + chapterIndex) }}{{ i + 1 }}</span>
+                                }
+                                {{tab.name + (tab.required.topLevel > 0 ? ' *' : '')}}
+                              </div>
                               @if (commentsPerSubSection.get(tab.id)) {
                                 <div class="uk-flex uk-flex-middle" data-uk-tooltip="title: Active comments">
                                   {{ commentsPerSubSection.get(tab.id) }}
@@ -94,18 +96,25 @@
                         </div>
                       </div>
                     }
+                   </div>
                   </div>
                   @if (form && ready) {
-                    <div [ngClass]="fields.length === 1 ? 'uk-width-1-1' : 'uk-width-5-6'">
+                    <div style="flex: 1 1 0; min-width: 0; padding: 22px 26px;">
                       <form [formGroup]="form">
                         <ul id="side-tab-{{chapter.id}}" class="uk-switcher">
                           @for (group of fields; track group.id) {
                             <li data-uk-grid>
                               <div #scrollContainer
                                    [ngClass]="(!enableCommenting || commentsPerSubSection.get(group.id) === 0) ? 'uk-width-1-1' : 'uk-width-3-4'">
+                                <div class="uk-card card-simple uk-padding-small uk-margin-bottom">
+                                  <h6 class="uk-margin-remove-bottom">{{ group.name ?? 'Untitled Section' }}
+                                    <span class="uk-text-muted uk-text-small">{{ group.fields?.length ?? 0 }} fields</span>
+                                  </h6>
+                                  <p [innerHTML]="group.description" class="uk-text-light uk-margin-remove-top"></p>
+                                </div>
                                 @for (fieldsData of group.fields; track fieldsData.id) {
                                   @if (!fieldsData.deprecated) {
-                                    <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom': fieldsData.form.display?.visible}">
+                                    <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom uk-animation-scale-up': fieldsData.form.display?.visible}">
                                       <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                                  [scrollContainer]="scrollContainer"
                                                  [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">
@@ -136,10 +145,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
 }
 @if (!ready) {
   <div class="whiteFilm">

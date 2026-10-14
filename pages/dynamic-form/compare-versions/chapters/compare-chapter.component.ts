@@ -20,6 +20,10 @@ export class CompareChapterComponent implements OnChanges {
   @Input() fields: Section[] = null;
   @Input() vocabularies: Map<string, object[]> = null;
   @Input() subVocabularies: Map<string, object[]> = null;
+  @Input() chapterIndex: number = 0;
+  @Input() sectionsCount: number = 1;
+
+  protected String = String;
 
   ready = false;
 
