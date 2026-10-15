@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { FormsModule } from "@angular/forms";
-import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { DynamicFormModule } from "../dynamic-form/dynamic-form.module";
 import {
   CatalogueUiReusableComponentsModule
@@ -16,7 +15,6 @@ import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module
     CommonModule,
     NgSelectModule,
     FormsModule,
-    CKEditorModule,
     DynamicFormModule,
     CatalogueUiReusableComponentsModule,
     CatalogueUiSharedModule,

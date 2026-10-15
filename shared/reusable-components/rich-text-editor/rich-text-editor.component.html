@@ -1,0 +1,107 @@
+@if (editable()) {
+  <div class="rte__toolbar" role="toolbar" aria-label="Text formatting" (mousedown)="onToolbarMouseDown($event)">
+    <select class="uk-select uk-form-small rte__heading" aria-label="Text style"
+            (change)="setHeading($any($event.target).value)">
+      @for (option of headingOptions; track option.level) {
+        <option [value]="option.level" [selected]="state.heading === option.level">{{ option.label }}</option>
+      }
+      @if (state.heading === 1 || state.heading === 5 || state.heading === 6) {
+        <option [value]="state.heading" selected>Heading (h{{ state.heading }})</option>
+      }
+    </select>
+
+    <span class="rte__separator"></span>
+
+    <button type="button" class="rte__btn" [class.rte__btn--active]="state.bold" [attr.aria-pressed]="state.bold"
+            title="Bold (Ctrl+B)" aria-label="Bold" (click)="toggleBold()">
+      <span class="material-icons">format_bold</span>
+    </button>
+    <button type="button" class="rte__btn" [class.rte__btn--active]="state.italic" [attr.aria-pressed]="state.italic"
+            title="Italic (Ctrl+I)" aria-label="Italic" (click)="toggleItalic()">
+      <span class="material-icons">format_italic</span>
+    </button>
+    <button type="button" class="rte__btn" [class.rte__btn--active]="state.link || linkBarOpen"
+            [attr.aria-pressed]="state.link" title="Link (Ctrl+K)" aria-label="Link" (click)="openLinkBar()">
+      <span class="material-icons">link</span>
+    </button>
+
+    <span class="rte__separator"></span>
+
+    <button type="button" class="rte__btn" [class.rte__btn--active]="state.bulletList"
+            [attr.aria-pressed]="state.bulletList" title="Bulleted list" aria-label="Bulleted list"
+            (click)="toggleBulletList()">
+      <span class="material-icons">format_list_bulleted</span>
+    </button>
+    <button type="button" class="rte__btn" [class.rte__btn--active]="state.orderedList"
+            [attr.aria-pressed]="state.orderedList" title="Numbered list" aria-label="Numbered list"
+            (click)="toggleOrderedList()">
+      <span class="material-icons">format_list_numbered</span>
+    </button>
+
+    <span class="rte__separator"></span>
+
+    <button type="button" class="rte__btn" [disabled]="!state.canOutdent" title="Decrease indent"
+            aria-label="Decrease indent" (click)="outdent()">
+      <span class="material-icons">format_indent_decrease</span>
+    </button>
+    <button type="button" class="rte__btn" [disabled]="!state.canIndent" title="Increase indent"
+            aria-label="Increase indent" (click)="indent()">
+      <span class="material-icons">format_indent_increase</span>
+    </button>
+
+    <span class="rte__separator"></span>
+
+    <button type="button" class="rte__btn" [class.rte__btn--active]="state.blockquote"
+            [attr.aria-pressed]="state.blockquote" title="Block quote" aria-label="Block quote"
+            (click)="toggleBlockquote()">
+      <span class="material-icons">format_quote</span>
+    </button>
+    <button type="button" class="rte__btn" title="Insert table" aria-label="Insert table" (click)="insertTable()">
+      <span class="material-icons">grid_on</span>
+    </button>
+
+    <span class="rte__separator"></span>
+
+    <button type="button" class="rte__btn" [disabled]="!state.canUndo" title="Undo (Ctrl+Z)" aria-label="Undo"
+            (click)="undo()">
+      <span class="material-icons">undo</span>
+    </button>
+    <button type="button" class="rte__btn" [disabled]="!state.canRedo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo"
+            (click)="redo()">
+      <span class="material-icons">redo</span>
+    </button>
+  </div>
+
+  @if (state.inTable) {
+    <div class="rte__toolbar rte__toolbar--table" role="toolbar" aria-label="Table" (mousedown)="onToolbarMouseDown($event)">
+      <span class="rte__label">Table</span>
+      <button type="button" class="rte__btn rte__btn--text" (click)="addRow()">Add row</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="deleteRow()">Delete row</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="addColumn()">Add column</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="deleteColumn()">Delete column</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="mergeOrSplitCells()">Merge / split cells</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="deleteTable()">Delete table</button>
+    </div>
+  }
+
+  @if (linkBarOpen) {
+    <div class="rte__toolbar rte__toolbar--link" (mousedown)="onToolbarMouseDown($event)">
+      <input #linkInput class="uk-input uk-form-small rte__link-input" type="text" placeholder="https://example.org"
+             aria-label="Link address" [value]="linkUrl" (input)="linkUrl = $any($event.target).value"
+             (keydown.enter)="$event.preventDefault(); applyLink()" (keydown.escape)="closeLinkBar()">
+      <button type="button" class="rte__btn rte__btn--text" (click)="applyLink()">Apply</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="removeLink()">Remove link</button>
+      <button type="button" class="rte__btn rte__btn--text" (click)="closeLinkBar()">Cancel</button>
+      @if (linkError) {
+        <span class="rte__error" role="alert">{{ linkError }}</span>
+      }
+    </div>
+  }
+}
+
+<div class="rte__surface">
+  <div #content class="rte__content"></div>
+  @if (state.empty && placeholder()) {
+    <div class="rte__placeholder" aria-hidden="true">{{ placeholder() }}</div>
+  }
+</div>
