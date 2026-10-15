@@ -18,7 +18,7 @@ import {
   CatalogueUiReusableComponentsModule
 } from "../../shared/reusable-components/catalogue-ui-reusable-components.module";
 import { RichTextFieldComponent } from "./fields/rich-text-field/rich-text-field.component";
-import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
+import { RichTextEditorComponent } from "../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
 import { ChooseOneComponent } from "./fields/choose-one-composite/choose-one.component";
 import { CatalogueUiSharedModule } from "../../shared/catalogue-ui-shared.module";
 import { ScaleFieldComponent } from "./fields/scale-field/scale-field.component";
@@ -47,7 +47,7 @@ import { SelectFieldComponent } from "./fields/dropdown-field/select-field/selec
     ReactiveFormsModule,
     NgSelectModule,
     CatalogueUiReusableComponentsModule,
-    CKEditorModule,
+    RichTextEditorComponent,
     CatalogueUiSharedModule,
     SafeUrlPipe,
     BaseFieldHtmlComponent,

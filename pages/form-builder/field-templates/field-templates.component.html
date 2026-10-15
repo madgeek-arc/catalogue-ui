@@ -151,10 +151,7 @@
   }
   @else if (fieldType === 'richText') {
     <div class="uk-margin-medium-top uk-animation-scale-up uk-disabled">
-      <!-- This loop is needed to reinitialize ckeditor, because config is only read at initialization -->
-      @for (placeholder of [field().form.placeholder ?? '']; track placeholder) {
-        <ckeditor [editor]="editor" [config]="{placeholder: placeholder}"></ckeditor>
-      }
+      <app-rich-text-editor [placeholder]="field().form.placeholder ?? ''" [readonly]="true"></app-rich-text-editor>
     </div>
   } @else if (fieldType === 'string' || fieldType === 'email' || fieldType === 'phone' || fieldType === 'url') {
     <input class="uk-input uk-animation-scale-up uk-disabled" [placeholder]="field().form.placeholder ?? ''">

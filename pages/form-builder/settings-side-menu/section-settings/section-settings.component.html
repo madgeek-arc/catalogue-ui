@@ -12,10 +12,10 @@
     <div for="sectionDescription" class="uk-margin-small-bottom uk-text-muted">Description *</div>
 <!--    <label for="sectionDescription" class="uk-form-label uk-margin-small-bottom">Description *</label>-->
     <div class="uk-form-controls">
-      <ckeditor id="sectionDescription" [editor]="editor" [ngModel]="fbService.currentSubsection()?.description"
+      <app-rich-text-editor id="sectionDescription" [ngModel]="fbService.currentSubsection()?.description"
                 (ngModelChange)="fbService.setSubSectionDescription($event)"
-                [config]="{placeholder: 'Give a short description for the section'}">
-      </ckeditor>
+                placeholder="Give a short description for the section">
+      </app-rich-text-editor>
     </div>
   </div>
 </section>

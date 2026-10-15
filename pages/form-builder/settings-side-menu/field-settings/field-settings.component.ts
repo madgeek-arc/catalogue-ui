@@ -1,11 +1,10 @@
 import { Component, computed, effect, inject, signal } from "@angular/core";
-import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { FormsModule } from "@angular/forms";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormBuilderService } from "../../../../services/form-builder.service";
 import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from "@ng-select/ng-select";
 import { stripHtml } from "../../../../shared/utils/utils";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { RichTextEditorComponent } from "../../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
 
 @Component({
   selector: 'app-field-settings',
@@ -13,7 +12,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
   templateUrl: './field-settings.component.html',
   imports: [
     FormsModule,
-    CKEditorModule,
+    RichTextEditorComponent,
     NgSelectComponent,
     NgLabelTemplateDirective,
     NgOptionTemplateDirective,
@@ -24,8 +23,6 @@ export class FieldSettingsComponent {
 
   protected fbService = inject(FormBuilderService);
   protected readonly stripHtml = stripHtml;
-
-  public editor = ClassicEditor;
 
   options = computed(() => {
     if (['string', 'largeText', 'richText', 'url', 'date', 'number'].includes(this.fbService.currentField()?.typeInfo.type as string))

@@ -46,9 +46,9 @@
         <div class="uk-margin">
           <label for="label" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
-            <ckeditor id="label" [editor]="editor" [ngModel]="fbService.currentField()?.label?.text"
-                      (ngModelChange)="fbService.setFieldLabel($event)" [config]="{placeholder: 'Field label'}">
-            </ckeditor>
+            <app-rich-text-editor id="label" [ngModel]="fbService.currentField()?.label?.text"
+                      (ngModelChange)="fbService.setFieldLabel($event)" placeholder="Field label">
+            </app-rich-text-editor>
           </div>
         </div>
         <div class="uk-margin">
@@ -67,10 +67,10 @@
         <div class="uk-margin">
           <label for="descriptionText" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
-            <ckeditor id="descriptionText" [editor]="editor"
+            <app-rich-text-editor id="descriptionText"
                       [(ngModel)]="fbService.currentField()!.form.description.text"
-                      [config]="{placeholder: 'Give a description for the field'}">
-            </ckeditor>
+                      placeholder="Give a description for the field">
+            </app-rich-text-editor>
           </div>
         </div>
         <div class="uk-margin uk-text-muted">
@@ -94,10 +94,10 @@
         <div class="uk-margin">
           <label for="suggestionText" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
-            <ckeditor id="suggestionText" [editor]="editor"
+            <app-rich-text-editor id="suggestionText"
                       [(ngModel)]="fbService.currentField()!.form.suggestion.text"
-                      [config]="{placeholder: 'Give a short suggestion for the field'}">
-            </ckeditor>
+                      placeholder="Give a short suggestion for the field">
+            </app-rich-text-editor>
           </div>
         </div>
         <div class="uk-margin">

@@ -1,8 +1,7 @@
 import { Component, effect, ElementRef, inject, input, ViewChild } from "@angular/core";
 import { Field, FieldType, IdLabel, TextProperties } from "../../../domain/dynamic-form-model";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CommonModule } from "@angular/common";
-import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
+import { RichTextEditorComponent } from "../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
 import {
   CatalogueUiReusableComponentsModule
 } from "../../../shared/reusable-components/catalogue-ui-reusable-components.module";
@@ -20,7 +19,7 @@ import UIkit from "uikit";
   styleUrl: '../../../assets/theme/form-builder.component.less',
   imports: [
     CommonModule,
-    CKEditorModule,
+    RichTextEditorComponent,
     CatalogueUiReusableComponentsModule,
     SafeUrlPipe,
     FormsModule,
@@ -37,8 +36,6 @@ export class FieldTemplatesComponent {
   @ViewChild('labelInput') inputEl!: ElementRef<HTMLInputElement>;
 
   field =  input<Field>();
-
-  public editor = ClassicEditor;
 
   sameLabelValue: boolean = true;
   option: IdLabel = {id: '', label: ''};
