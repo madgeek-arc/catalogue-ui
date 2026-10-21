@@ -1,8 +1,50 @@
-# catalogue
+# catalogue-ui
 
-## App Module Configuration
+Angular library of the EOSC Observatory frontend for **model-driven forms**: it renders a form from a JSON model,
+edits such models (form builder), supports live co-editing and field-level comments, exports a form to PDF, and
+provides the shared rich text editor.
 
-Add the following in `app.module.ts`:
+```
+Component:     catalogue-ui
+Type:          Frontend library (Angular source module, consumed as a Git submodule)
+Status:        Production (embedded in observatory-ui through survey-tool)
+Technology:    Angular 20 / TypeScript / RxJS, UIkit, ng-select, TipTap, pdfmake, lodash
+API:           Consumes the Observatory forms and comments API; exposes none
+Swagger:       n/a (library). The backend's Swagger UI is linked from its own repository: TODO(backend maintainers)
+Deployment:    Not independently deployable; compiled into the host application (see observatory-ui/docs/deployment.md)
+Documentation: /docs
+```
+
+## Role in the platform
+
+catalogue-ui is the lowest layer of the frontend stack:
+[observatory-ui](https://github.com/madgeek-arc/observatory-ui) (host application) →
+[survey-tool](https://github.com/madgeek-arc/survey-tool) (nests this repository at `catalogue-ui/`) → catalogue-ui.
+It has no routes, no authentication and no knowledge of surveys or stakeholders: the host supplies the environment
+(`APP_ENV`), the form model, the answer payload and, optionally, the list of users that can be @-mentioned.
+
+## Dependencies
+
+- Backend (via the host's `API_ENDPOINT` and `WS_ENDPOINT`): `/forms/models`, `/survey-answer-comments`, STOMP topics
+  for presence, live edits and comments.
+- Peer packages: Angular (core, common, forms, router, material), RxJS, UIkit, `@ng-select/ng-select`, `lodash`,
+  `bitset`, `pdfmake`, TipTap (see below).
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [docs/architecture.md](docs/architecture.md) | Modules, components, services, extension points |
+| [docs/configuration.md](docs/configuration.md) | What the host must provide: `APP_ENV`, assets, styles, packages |
+| [docs/integration.md](docs/integration.md) | Backend REST and STOMP contracts, host extension points, failure behaviour |
+| [docs/security.md](docs/security.md) | Rich text, HTML rendering, XSRF, trust assumptions |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
+
+Licence: Apache License 2.0, see [LICENSE](LICENSE). Maintainer/contact: TODO(maintainers).
+
+## Host app setup (summary)
+
+Full details are in [docs/configuration.md](docs/configuration.md). Add the following in `app.module.ts`:
 
 ```ts
 providers: [
