@@ -2,7 +2,7 @@
 
 catalogue-ui talks to the Observatory backend through the host's `APP_ENV` endpoints and exposes a small set of
 Angular extension points to the host. Endpoint paths, parameters and schemas are owned by the backend's Swagger/OpenAPI
-documentation (TODO(backend maintainers): link); this document lists what the library depends on.
+documentation; this document lists what the library depends on.
 
 ```mermaid
 flowchart LR

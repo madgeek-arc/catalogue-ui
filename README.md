@@ -10,7 +10,7 @@ Type:          Frontend library (Angular source module, consumed as a Git submod
 Status:        Production (embedded in observatory-ui through survey-tool)
 Technology:    Angular 20 / TypeScript / RxJS, UIkit, ng-select, TipTap, pdfmake, lodash
 API:           Consumes the Observatory forms and comments API; exposes none
-Swagger:       n/a (library). The backend's Swagger UI is linked from its own repository: TODO(backend maintainers)
+Swagger:       n/a (library)
 Deployment:    Not independently deployable; compiled into the host application (see observatory-ui/docs/deployment.md)
 Documentation: /docs
 ```
@@ -40,7 +40,8 @@ It has no routes, no authentication and no knowledge of surveys or stakeholders:
 | [docs/security.md](docs/security.md) | Rich text, HTML rendering, XSRF, trust assumptions |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
 
-Licence: Apache License 2.0, see [LICENSE](LICENSE). Maintainer/contact: TODO(maintainers).
+Licence: Apache License 2.0, see [LICENSE](LICENSE). The npm packages used by the host application keep their own
+licences; the host's production build lists them in `3rdpartylicenses.txt`.
 
 ## Host app setup (summary)
 
