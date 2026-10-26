@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
 import { BaseFieldComponent } from "../utils/base-field.component";
 import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -9,6 +9,7 @@ import { NgClass } from "@angular/common";
   selector: 'app-boolean-field',
   standalone: true,
   templateUrl: './boolean-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReactiveFormsModule,
     BaseFieldHtmlComponent,

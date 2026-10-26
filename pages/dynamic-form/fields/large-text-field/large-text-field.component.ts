@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet, TextProperties } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from "@angular/forms";
   selector: 'app-large-text-field',
   standalone: true,
   templateUrl: './large-text-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     BaseFieldHtmlComponent,
     NgClass,

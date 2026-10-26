@@ -10,7 +10,8 @@ import {
   OnInit,
   output,
   signal,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -37,6 +38,7 @@ import UIkitModalElement = UIkit.UIkitModalElement;
   templateUrl: 'form-builder.component.html',
   styleUrls: ['../../assets/theme/form-builder.component.less'],
   providers: [WebsocketService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     NgClass,
     NgStyle,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
@@ -10,6 +10,7 @@ import { NgClass } from "@angular/common";
   standalone: true,
   templateUrl: 'scale-field.component.html',
   styleUrls: ['scale-field.component.less'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     BaseFieldHtmlComponent,
     ReactiveFormsModule,

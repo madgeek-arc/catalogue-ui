@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, inject, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from "@angular/core";
 import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
 import {Field, Model, Section} from "../../../../domain/dynamic-form-model";
 import {FormControlService} from "../../../../services/form-control.service";
@@ -8,6 +8,7 @@ import {FormControlService} from "../../../../services/form-control.service";
     templateUrl: 'compare-surveys.component.html',
     styleUrls: ['../../../../assets/theme/form-builder.component.less'],
     providers: [FormControlService],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

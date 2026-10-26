@@ -8,7 +8,8 @@ import {
   NgZone,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from "@angular/forms";
 import { NgClass } from "@angular/common";
@@ -35,6 +36,7 @@ type SubSectionComments = {
   standalone: true,
   templateUrl: './comments-panel.component.html',
   styleUrls: ['./comments-panel.component.less'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MeasureCommentDirective,
     FormsModule,

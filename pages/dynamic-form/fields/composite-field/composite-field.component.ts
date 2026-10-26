@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import {
   AbstractControl,
@@ -20,6 +20,7 @@ interface PositionChange {
 @Component({
   selector: 'app-composite-field',
   templateUrl: './composite-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

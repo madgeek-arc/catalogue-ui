@@ -15,7 +15,8 @@ import {
   Output,
   signal,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { AbstractControl, FormArray, FormGroup, UntypedFormArray, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -34,6 +35,7 @@ import * as UIkit from 'uikit';
     templateUrl: 'survey.component.html',
     styleUrls: ['../../assets/theme/form-builder.component.less'],
     providers: [FormControlService, PdfGenerateService, CommentingWebsocketService],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

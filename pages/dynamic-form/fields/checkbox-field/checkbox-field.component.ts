@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgClass } from "@angular/common";
 import { BaseFieldComponent } from "../utils/base-field.component";
@@ -13,6 +13,7 @@ import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynami
     NgClass,
     BaseFieldHtmlComponent
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './checkbox-field.component.html'
 })
 

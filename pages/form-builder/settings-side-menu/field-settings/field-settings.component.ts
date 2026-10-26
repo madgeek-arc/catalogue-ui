@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from "@angular/core";
+import { Component, computed, effect, inject, signal, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormBuilderService } from "../../../../services/form-builder.service";
@@ -10,6 +10,7 @@ import { RichTextEditorComponent } from "../../../../shared/reusable-components/
   selector: 'app-field-settings',
   standalone: true,
   templateUrl: './field-settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     RichTextEditorComponent,

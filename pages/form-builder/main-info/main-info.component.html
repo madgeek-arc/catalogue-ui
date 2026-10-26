@@ -5,14 +5,14 @@
 <!--    <label for="sectionName" class="uk-form-label uk-margin-small-bottom">Title *</label>-->
     <div class="uk-form-controls">
       <input id="sectionName" class="uk-input" placeholder="Untitled Section"
-             [ngModel]="fbService.model()?.name" (ngModelChange)="fbService.setModelTitle($event)">
+             [ngModel]="$safeNavigationMigration(fbService.model()?.name)" (ngModelChange)="fbService.setModelTitle($event)">
     </div>
   </div>
   <div class="uk-margin">
     <h6 (click)="descriptionEditor.focus()" class="uk-margin-small-bottom uk-form-label">Description *</h6>
     <div class="uk-form-controls">
       <app-rich-text-editor #descriptionEditor
-                [ngModel]="fbService.model()?.description" (ngModelChange)="fbService.setModelDescription($event)"
+                [ngModel]="$safeNavigationMigration(fbService.model()?.description)" (ngModelChange)="fbService.setModelDescription($event)"
                 placeholder="A description about the form">
       </app-rich-text-editor>
     </div>
@@ -21,7 +21,7 @@
     <h6 (click)="noticeEditor.focus()" class="uk-margin-small-bottom uk-form-label">Notice </h6>
     <div class="uk-form-controls">
       <app-rich-text-editor #noticeEditor
-                [ngModel]="fbService.model()?.notice" (ngModelChange)="fbService.setModelNotice($event)"
+                [ngModel]="$safeNavigationMigration(fbService.model()?.notice)" (ngModelChange)="fbService.setModelNotice($event)"
                 placeholder="A small notice about the form">
       </app-rich-text-editor>
     </div>

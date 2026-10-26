@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { BaseFieldComponent } from "../../utils/base-field.component";
 import { BaseFieldHtmlComponent } from "../../utils/base-field-html.component";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -9,6 +9,7 @@ import { NgClass } from "@angular/common";
   selector: 'app-select-field',
   standalone: true,
   templateUrl: './select-field.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     BaseFieldHtmlComponent,
     ReactiveFormsModule,

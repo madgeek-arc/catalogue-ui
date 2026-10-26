@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControlService } from '../../services/form-control.service';
 import { UntypedFormArray } from '@angular/forms';
 import { Field, HandleBitSet, Section, Tab, Tabs } from '../../domain/dynamic-form-model';
@@ -13,6 +13,7 @@ type SectionComments = {
     selector: 'app-chapter',
     templateUrl: './chapter.component.html',
     providers: [FormControlService],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

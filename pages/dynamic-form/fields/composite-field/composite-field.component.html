@@ -12,7 +12,7 @@
             @for (control of fieldAsFormArray().controls; track control; let i = $index) {
               <div id="{{i}}" [attr.data-index]="i" class="uk-width-expand uk-grid">
                 <div [formGroupName]="i" class="uk-width-9-10 uk-margin-medium-left"
-                     [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+                     [ngClass]="{'uk-margin-bottom formGroupElement': $safeNavigationMigration(fieldData.form.display?.hasBorder)}">
                   @if (fieldAsFormArray().length > 1 && !readonly) {
                     <div class="uk-flex uk-flex-right">
                       <span class="uk-sortable-handle uk-text-center" data-uk-icon="icon: move"></span>
@@ -175,7 +175,7 @@
 <!--            }-->
         </div>
       } @else {
-        <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': fieldData.form.display?.hasBorder}">
+        <div class="uk-width-1-1 uk-display-inline-block" [ngClass]="{'uk-margin-bottom formGroupElement': $safeNavigationMigration(fieldData.form.display?.hasBorder)}">
           @for (control of fieldData?.subFields; track $index;) {
             <div>
               @if (!control.deprecated) {

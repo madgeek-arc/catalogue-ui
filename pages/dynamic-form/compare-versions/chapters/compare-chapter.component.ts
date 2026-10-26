@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy} from "@angular/core";
 import {UntypedFormGroup} from "@angular/forms";
 import {Section, Tab} from "../../../../domain/dynamic-form-model";
 import BitSet from "bitset";
@@ -6,6 +6,7 @@ import BitSet from "bitset";
 @Component({
     selector: 'app-chapter-compare',
     templateUrl: 'compare-chapter.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

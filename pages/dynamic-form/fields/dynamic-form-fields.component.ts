@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Field, HandleBitSet } from '../../../domain/dynamic-form-model';
 
 @Component({
   selector: 'app-field',
   templateUrl: './dynamic-form-fields.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DynamicFormFieldsComponent {

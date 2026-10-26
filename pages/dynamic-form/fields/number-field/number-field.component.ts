@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, FieldType, HandleBitSet, NumberProperties } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
     selector: 'app-number-field',
     templateUrl: './number-field.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 
