@@ -8,7 +8,7 @@ provides the shared rich text editor.
 Component:     catalogue-ui
 Type:          Frontend library (Angular source module, consumed as a Git submodule)
 Status:        Production (embedded in observatory-ui through survey-tool)
-Technology:    Angular 20 / TypeScript / RxJS, UIkit, ng-select, TipTap, pdfmake, lodash
+Technology:    Angular 22 / TypeScript / RxJS, UIkit, ng-select, TipTap, pdfmake, lodash
 API:           Consumes the Observatory forms and comments API; exposes none
 Swagger:       n/a (library)
 Deployment:    Not independently deployable; compiled into the host application (see observatory-ui/docs/deployment.md)
@@ -76,7 +76,7 @@ The TipTap packages must be installed at exactly the same version: each of them 
 `<app-rich-text-editor>` (`RichTextEditorComponent`) is a standalone component built on [TipTap](https://tiptap.dev)
 (MIT). It replaced CKEditor 5: no licence key and no "Powered by" logo. It works with `formControlName`, `formControl`
 and `ngModel`, and stores the same HTML shape CKEditor did, so existing content keeps working (see the differences
-below). Tested with Angular 20.
+below). Tested with Angular 22.
 
 ```html
 <app-rich-text-editor formControlName="body" placeholder="Write something"></app-rich-text-editor>
