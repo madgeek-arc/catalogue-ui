@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -7,6 +7,7 @@ import { RichTextEditorComponent } from './rich-text-editor.component';
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, RichTextEditorComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<app-rich-text-editor [formControl]="control" [placeholder]="placeholder" [readonly]="readonly">
   </app-rich-text-editor>`
 })
@@ -20,6 +21,7 @@ class HostComponent {
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, RichTextEditorComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<form [formGroup]="form">
     <div [formArrayName]="'answers'">
       @for (control of answers.controls; track control; let i = $index) {

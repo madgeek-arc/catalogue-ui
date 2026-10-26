@@ -7,7 +7,7 @@
         <div class="uk-accordion-content">
           <div class="uk-margin">
             <label for="fieldType" class="uk-text-muted uk-margin-small-bottom">Field type</label>
-            <select id="fieldType" type="select" class="uk-select" [ngModel]="fbService.currentField()?.typeInfo?.type"
+            <select id="fieldType" type="select" class="uk-select" [ngModel]="$safeNavigationMigration(fbService.currentField()?.typeInfo?.type)"
                     (ngModelChange)="fbService.setFieldType($event)">
               @for (option of options(); track option.value +''+ $index) {
                 <option value="{{option.value}}">{{option.label}}</option>
@@ -17,7 +17,7 @@
           @if (!['select', 'radio', 'checkbox'].includes(fbService.currentField()?.typeInfo?.type || '')) {
             <div class="uk-margin">
               <label for="placeholder" class="uk-text-muted uk-margin-small-bottom">Placeholder</label>
-              <input id="placeholder" type="text" class="uk-input" [ngModel]="fbService.currentField()?.form?.placeholder"
+              <input id="placeholder" type="text" class="uk-input" [ngModel]="$safeNavigationMigration(fbService.currentField()?.form?.placeholder)"
                      (ngModelChange)="fbService.setFieldPlaceholder($event)">
             </div>
           }
@@ -46,7 +46,7 @@
         <div class="uk-margin">
           <label for="label" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
-            <app-rich-text-editor id="label" [ngModel]="fbService.currentField()?.label?.text"
+            <app-rich-text-editor id="label" [ngModel]="$safeNavigationMigration(fbService.currentField()?.label?.text)"
                       (ngModelChange)="fbService.setFieldLabel($event)" placeholder="Field label">
             </app-rich-text-editor>
           </div>

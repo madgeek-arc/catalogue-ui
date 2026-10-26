@@ -70,7 +70,7 @@ writing; check the host's `package.json`.
 
 | Package | Used for |
 |---|---|
-| `@angular/core`, `common`, `forms`, `router`, `platform-browser` | Framework (Angular 20; the README states it is tested with Angular 20) |
+| `@angular/core`, `common`, `forms`, `router`, `platform-browser` | Framework (Angular 22; the README states it is tested with Angular 22) |
 | `@angular/material` (datepicker, core) | Date fields |
 | `rxjs` | Reactive state |
 | `uikit` | Styling, notifications, modals |

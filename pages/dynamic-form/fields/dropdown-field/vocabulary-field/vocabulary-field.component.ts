@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { BaseFieldComponent } from "../../utils/base-field.component";
 import {ReactiveFormsModule, UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import { BaseFieldHtmlComponent } from "../../utils/base-field-html.component";
@@ -13,6 +13,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
   standalone: true,
   templateUrl: './vocabulary-field.component.html',
   styleUrls: ['./vocabulary-field.component.less'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReactiveFormsModule,
     BaseFieldHtmlComponent,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { DateProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
 import { DatePipe, NgClass } from "@angular/common";
@@ -19,6 +19,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     ReactiveFormsModule,
     NgClass
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     provideNativeDateAdapter(),
   ],

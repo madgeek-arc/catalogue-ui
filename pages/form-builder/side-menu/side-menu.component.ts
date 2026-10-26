@@ -1,4 +1,4 @@
-import { Component, computed, inject } from "@angular/core";
+import { Component, computed, inject, ChangeDetectionStrategy } from "@angular/core";
 import { Field, Section, SelectedSection } from "../../../domain/dynamic-form-model";
 import { FormBuilderService } from "../../../services/form-builder.service";
 
@@ -6,6 +6,7 @@ import { FormBuilderService } from "../../../services/form-builder.service";
   selector: 'app-side-menu',
   standalone: true,
   templateUrl: './side-menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: []
 })
 

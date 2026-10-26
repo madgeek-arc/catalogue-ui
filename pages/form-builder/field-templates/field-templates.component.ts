@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, input, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, ViewChild } from "@angular/core";
 import { Field, FieldType, IdLabel, TextProperties } from "../../../domain/dynamic-form-model";
 import { CommonModule } from "@angular/common";
 import { RichTextEditorComponent } from "../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
@@ -14,6 +14,7 @@ import UIkit from "uikit";
 
 @Component(({
   selector: 'app-field-templates',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
   templateUrl: './field-templates.component.html',
   styleUrl: '../../../assets/theme/form-builder.component.less',

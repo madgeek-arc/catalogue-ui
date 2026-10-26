@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
     selector: 'app-rich-text-field',
     templateUrl: './rich-text-field.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

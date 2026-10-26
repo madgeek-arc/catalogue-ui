@@ -7,7 +7,8 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
@@ -24,6 +25,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   selector: 'app-base-field-html',
   standalone: true,
   templateUrl: './base-field-html.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ReactiveFormsModule,
     NgClass,

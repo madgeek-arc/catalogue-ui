@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { ChapterSettingsComponent } from "./chapter-settings/chapter-settings.component";
 import { SectionSettingsComponent } from "./section-settings/section-settings.component";
 import { FieldSettingsComponent } from "./field-settings/field-settings.component";
@@ -10,6 +10,7 @@ import { MainSettingsComponent } from "./main-settings/main-settings.component";
   selector: 'app-settings-side-menu',
   standalone: true,
   templateUrl: './settings-side-menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     ChapterSettingsComponent,
     SectionSettingsComponent,

@@ -2,7 +2,7 @@
   <div class="uk-margin-bottom" [id]="field().id" style="scroll-margin-top: 80px;">
     @if (field()?.label?.text) {
       <label [for]="field().name" class="uk-form-label {{field().label.cssClasses}}"  style="{{field().label.style}}"
-             [innerHTML]="field().form.mandatory ? appendAsterisk(field().label?.text) : field().label.text">
+             [innerHTML]="field().form.mandatory ? appendAsterisk($safeNavigationMigration(field().label?.text)) : field().label.text">
       </label>
     }
   </div>

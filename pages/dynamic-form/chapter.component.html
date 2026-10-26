@@ -114,7 +114,7 @@
                                 </div>
                                 @for (fieldsData of group.fields; track fieldsData.id) {
                                   @if (!fieldsData.deprecated) {
-                                    <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom uk-animation-scale-up': fieldsData.form.display?.visible}">
+                                    <div [ngClass]="{'uk-card uk-card-body uk-card-default uk-margin-medium-bottom uk-animation-scale-up': $safeNavigationMigration(fieldsData.form.display?.visible)}">
                                       <app-field [editMode]="editMode" [fieldData]="fieldsData" [form]="form"
                                                  [scrollContainer]="scrollContainer"
                                                  [readonly]="readonly" (hasChanges)="unsavedChangesPrompt($event)">

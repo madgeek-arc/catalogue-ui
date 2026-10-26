@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
 
 @Component({
     selector: 'app-string-url-email-field',
     templateUrl: './string-field.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

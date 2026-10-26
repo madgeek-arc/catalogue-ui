@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, DestroyRef, inject, OnInit, signal, ChangeDetectionStrategy } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { takeUntilDestroyed, toObservable } from "@angular/core/rxjs-interop";
@@ -15,6 +15,7 @@ import { FormBuilderService } from "../../services/form-builder.service";
     RouterLink
   ],
   templateUrl: './forms-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 
