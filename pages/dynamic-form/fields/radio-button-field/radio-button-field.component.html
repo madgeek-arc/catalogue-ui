@@ -6,18 +6,20 @@
       @if (fieldData.typeInfo.multiplicity) {
 
       } @else {
-        @for (value of fieldData.typeInfo.values; track value; let i = $index) {
-          <div class="uk-margin-small-top">
-            <input class="uk-radio uk-margin-small-right " type="radio" onchange="this.setAttribute('value', this.value)"
-                   [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value.id" [id]="inputId+'['+i+']'"
-                   (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
-                   (focusin)="focus()" (focusout)="focusOut(true)"
-                   [ngClass]="{'uk-form-danger': checkFormValidity()}">
-            <label [for]="inputId+'['+i+']'" class="uk-form-label">
-              <span class="uk-radio-label">{{ value.label }}</span>
-            </label>
-          </div>
-        }
+        <div [id]="inputId">
+          @for (value of fieldData.typeInfo.values; track value; let i = $index) {
+            <div class="uk-margin-small-top">
+              <input class="uk-radio uk-margin-small-right " type="radio" onchange="this.setAttribute('value', this.value)"
+                     [formControlName]="fieldData.name" [name]="fieldData.name" [value]="value.id" [id]="inputId+'['+i+']'"
+                     (input)="updateBitSet(fieldData); unsavedChangesPrompt()"
+                     (focusin)="focus()" (focusout)="focusOut(true)"
+                     [ngClass]="{'uk-form-danger': checkFormValidity()}">
+              <label [for]="inputId+'['+i+']'" class="uk-form-label">
+                <span class="uk-radio-label">{{ value.label }}</span>
+              </label>
+            </div>
+          }
+        </div>
 
         @if (formControl.value !== null) {
           <div class="uk-flex uk-flex-right uk-margin-small-top">

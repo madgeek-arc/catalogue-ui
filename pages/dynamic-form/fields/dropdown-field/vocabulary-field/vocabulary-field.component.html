@@ -10,9 +10,9 @@
           @for (input of fieldAsFormArray().controls; track input; let i = $index) {
             <div class="uk-margin-bottom uk-flex uk-flex-middle">
               <ng-select class="uk-width-9-10" [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
-                         [id]="inputId" [formControlName]="i" [items]="voc"
+                         [id]="inputId+'.['+i+']'" [formControlName]="i" [items]="voc"
                          [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
-                         (change)="unsavedChangesPrompt()">
+                         (change)="unsavedChangesPrompt()" (focus)="focus(i)" (blur)="focusOut(true, i)">
               </ng-select>
               @if (fieldAsFormArray().length > 1 && editMode) {
                 <a class="remove-element uk-padding-small uk-animation-slide-top-small"
@@ -27,7 +27,7 @@
         <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
                    [id]="inputId" [formControlName]="fieldData.name" [items]="voc"
                    [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
-                   (change)="unsavedChangesPrompt()">
+                   (change)="unsavedChangesPrompt()" (focus)="focus()" (blur)="focusOut(true)">
         </ng-select>
       }
     </div>

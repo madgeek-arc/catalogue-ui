@@ -7,7 +7,7 @@
                  [id]="inputId" [formControlName]="fieldData.name" [items]="fieldData.typeInfo.values"
                  [placeholder]="fieldData.form.placeholder ?? ''"
                  [multiple]="fieldData.typeInfo.multiplicity"
-                 (change)="unsavedChangesPrompt()"
+                 (change)="unsavedChangesPrompt()" (focus)="focus()" (blur)="focusOut(true)"
                  bindLabel="label" bindValue="id" clearAllText="Clear">
       </ng-select>
     </div>

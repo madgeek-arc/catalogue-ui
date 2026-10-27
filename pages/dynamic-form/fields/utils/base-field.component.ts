@@ -100,6 +100,15 @@ export abstract class BaseFieldComponent implements OnInit {
     } else
       this.wsService.WsEdit({field: this.getPath(this.formControl).join('.'), value: this.formControl.value});
   }
+
+  // For fields made of several focusable parts (editor + toolbar, date input + calendar): moving focus between
+  // the parts is not a real focus out, so the other users keep seeing the field as active.
+  containerFocusOut(event: FocusEvent, skip: boolean, position?: number) {
+    if ((event.currentTarget as HTMLElement).contains(event.relatedTarget as Node | null))
+      return;
+
+    this.focusOut(skip, position);
+  }
   /** <------------------------------------------------------------------------------------------------- Field focus **/
 
   /** Form control path -------------------------------------------------------------------------------------------> **/

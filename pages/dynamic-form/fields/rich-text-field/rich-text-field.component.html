@@ -13,6 +13,7 @@
                 <app-rich-text-editor [id]="inputId+'.['+i+']'" [formControlName]="i" class="uk-width-9-10 uk-animation-scale-up"
                           [placeholder]="fieldData.form.placeholder"
                           (ngModelChange)="updateBitSet(fieldData)"
+                          (focusin)="focus(i)" (focusout)="containerFocusOut($event, true, i)"
                           [ngClass]="{'uk-form-danger': checkFormValidity()}">
                 </app-rich-text-editor>
                 @if (formArrayControls.length > 1 && !readonly) {
@@ -34,6 +35,7 @@
         <div class="uk-margin-medium-top uk-width-9-10">
           <app-rich-text-editor [id]="inputId" [formControlName]="fieldData.name"
             (ngModelChange)="updateBitSet(fieldData)" [placeholder]="fieldData.form.placeholder"
+            (focusin)="focus()" (focusout)="containerFocusOut($event, true)"
             [ngClass]="{'uk-form-danger': checkFormValidity()}">
           </app-rich-text-editor>
         </div>
