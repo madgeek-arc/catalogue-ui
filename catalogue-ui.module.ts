@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { DynamicFormModule } from "./pages/dynamic-form/dynamic-form.module";
-import { CatalogueUiReusableComponentsModule } from "./shared/reusable-components/catalogue-ui-reusable-components.module";
 
 /**
  * Compatibility wrapper for hosts that still import NgModules: it exports the form renderer. The components are
@@ -8,7 +7,6 @@ import { CatalogueUiReusableComponentsModule } from "./shared/reusable-component
  */
 @NgModule({
   imports: [
-    CatalogueUiReusableComponentsModule,
     DynamicFormModule
   ],
   exports: [
