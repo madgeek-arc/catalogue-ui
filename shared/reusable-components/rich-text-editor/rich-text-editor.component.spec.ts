@@ -66,14 +66,14 @@ describe('RichTextEditorComponent', () => {
     control.setValue('<p>x</p>');
     fixture.detectChanges();
     expect(editor.getText()).toBe('x');
-    expect(control.dirty).toBeFalse();
+    expect(control.dirty).toBe(false);
   });
 
   it('emits normalised HTML and marks the control dirty on user edits', () => {
     const { control, editor } = setup();
     editor.commands.insertContent('typed');
     expect(control.value).toBe('<p>typed</p>');
-    expect(control.dirty).toBeTrue();
+    expect(control.dirty).toBe(true);
   });
 
   it('writes italics as <i>, like CKEditor did', () => {
@@ -98,11 +98,11 @@ describe('RichTextEditorComponent', () => {
     const { control, editor } = setup();
     control.addValidators(Validators.required);
     control.updateValueAndValidity();
-    expect(control.valid).toBeFalse();
+    expect(control.valid).toBe(false);
     editor.commands.insertContent('now filled');
-    expect(control.valid).toBeTrue();
+    expect(control.valid).toBe(true);
     editor.commands.clearContent(true);
-    expect(control.valid).toBeFalse();
+    expect(control.valid).toBe(false);
   });
 
   it('clears the editor when null is written, without marking the control dirty', () => {
@@ -110,7 +110,7 @@ describe('RichTextEditorComponent', () => {
     control.setValue(null);
     fixture.detectChanges();
     expect(editor.getText()).toBe('');
-    expect(control.dirty).toBeFalse();
+    expect(control.dirty).toBe(false);
     expect(el.querySelector('.rte__placeholder')).toBeTruthy();
   });
 
@@ -138,11 +138,11 @@ describe('RichTextEditorComponent', () => {
     expect(el.querySelector('.rte__toolbar')).toBeTruthy();
     control.disable();
     fixture.detectChanges();
-    expect(editor.isEditable).toBeFalse();
+    expect(editor.isEditable).toBe(false);
     expect(el.querySelector('.rte__toolbar')).toBeNull();
     control.enable();
     fixture.detectChanges();
-    expect(editor.isEditable).toBeTrue();
+    expect(editor.isEditable).toBe(true);
     expect(el.querySelector('.rte__toolbar')).toBeTruthy();
   });
 
@@ -152,14 +152,14 @@ describe('RichTextEditorComponent', () => {
     fixture.detectChanges();
     control.enable();
     fixture.detectChanges();
-    expect(control.dirty).toBeFalse();
+    expect(control.dirty).toBe(false);
   });
 
   it('supports the readonly input', () => {
     const { fixture, host, editor, el } = setup('<p>a</p>');
     host.readonly = true;
     fixture.detectChanges();
-    expect(editor.isEditable).toBeFalse();
+    expect(editor.isEditable).toBe(false);
     expect(el.classList).toContain('rte--readonly');
     expect(el.querySelector('.rte__toolbar')).toBeNull();
   });
@@ -176,9 +176,9 @@ describe('RichTextEditorComponent', () => {
   it('marks the control as touched when focus leaves the editor, but not when it moves inside it', () => {
     const { control, el } = setup();
     el.dispatchEvent(new FocusEvent('focusout', { relatedTarget: el.querySelector('select'), bubbles: true }));
-    expect(control.touched).toBeFalse();
+    expect(control.touched).toBe(false);
     el.dispatchEvent(new FocusEvent('focusout', { relatedTarget: null, bubbles: true }));
-    expect(control.touched).toBeTrue();
+    expect(control.touched).toBe(true);
   });
 
   it('applies bold from the toolbar', () => {
@@ -206,7 +206,7 @@ describe('RichTextEditorComponent', () => {
     rte.applyLink();
     fixture.detectChanges();
     expect(control.value).toBe('<p>site</p>');
-    expect(control.dirty).toBeFalse();
+    expect(control.dirty).toBe(false);
     expect(rte.linkError).toContain('Only http');
     expect(el.querySelector('.rte__error')).toBeTruthy();
   });
@@ -237,7 +237,7 @@ describe('RichTextEditorComponent', () => {
   it('destroys the editor with the component', () => {
     const { fixture, editor } = setup('<p>a</p>');
     fixture.destroy();
-    expect(editor.isDestroyed).toBeTrue();
+    expect(editor.isDestroyed).toBe(true);
   });
 });
 
@@ -263,8 +263,8 @@ describe('RichTextEditorComponent in a FormArray (repeatable rich text field)', 
     (editors()[1].componentInstance as RichTextEditorComponent).tiptap!.commands.insertContent('!');
     expect(answers.at(0).value).toBe('<p>one</p>');
     expect(answers.at(1).value).toBe('<p>!two</p>');
-    expect(answers.at(0).dirty).toBeFalse();
-    expect(answers.at(1).dirty).toBeTrue();
+    expect(answers.at(0).dirty).toBe(false);
+    expect(answers.at(1).dirty).toBe(true);
   });
 
   it('adds an editor for a new entry without disturbing the others', () => {
@@ -313,10 +313,10 @@ describe('RichTextEditorComponent in a FormArray (repeatable rich text field)', 
     const { answers, editors } = arraySetup();
     answers.at(0).addValidators(Validators.required);
     answers.at(0).updateValueAndValidity();
-    expect(answers.at(0).valid).toBeTrue();
+    expect(answers.at(0).valid).toBe(true);
     (editors()[0].componentInstance as RichTextEditorComponent).tiptap!.commands.clearContent(true);
     expect(answers.at(0).value).toBe('');
-    expect(answers.at(0).valid).toBeFalse();
-    expect(answers.at(1).valid).toBeTrue();
+    expect(answers.at(0).valid).toBe(false);
+    expect(answers.at(1).valid).toBe(true);
   });
 });

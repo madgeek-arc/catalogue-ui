@@ -15,7 +15,7 @@ describe('canonicalize (test helper)', () => {
       ['media embeds', '<p>a</p><figure class="media"><oembed url="https://x"></oembed></figure>', '<p>a</p>']
     ];
     for (const [name, a, b] of same) {
-      it(name, () => expect(canonicalize(a)).withContext(`${canonicalize(a)}  vs  ${canonicalize(b)}`).toBe(canonicalize(b)));
+      it(name, () => expect(canonicalize(a), `${canonicalize(a)}  vs  ${canonicalize(b)}`).toBe(canonicalize(b)));
     }
   });
 

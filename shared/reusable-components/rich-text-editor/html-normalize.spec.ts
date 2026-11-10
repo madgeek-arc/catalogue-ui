@@ -3,7 +3,7 @@ import { normalizeHtml } from './html-normalize';
 describe('normalizeHtml', () => {
   it('returns an empty string for empty input, whitespace and paragraphs without content', () => {
     for (const html of [null, undefined, '', '   ', '<p></p>', '<p><br></p>', '<p>&nbsp;</p>', '<p></p><p> </p>']) {
-      expect(normalizeHtml(html)).withContext(String(html)).toBe('');
+      expect(normalizeHtml(html), String(html)).toBe('');
     }
   });
 
@@ -52,7 +52,7 @@ describe('normalizeHtml', () => {
   it('treats a table as content even when every cell is empty', () => {
     const out = normalizeHtml('<table><tbody><tr><td><p></p></td></tr></tbody></table><p></p>');
     expect(out).toContain('<table');
-    expect(out.endsWith('</table>')).toBeTrue();
+    expect(out.endsWith('</table>')).toBe(true);
   });
 
   it('treats an image or a rule as content', () => {

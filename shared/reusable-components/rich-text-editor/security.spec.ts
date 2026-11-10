@@ -16,10 +16,10 @@ describe('hostile content', () => {
   for (const hostile of HOSTILE_INPUTS) {
     it(`is neutralised: ${hostile.slice(0, 70)}`, () => {
       const out = roundTrip(hostile);
-      expect(out).withContext(out).not.toMatch(/<(script|iframe|svg|style|object|embed|form|input|math)\b/i);
-      expect(out).withContext(out).not.toMatch(/\son\w+\s*=/i);
-      expect(out).withContext(out).not.toMatch(/javascript:|vbscript:|data:text\/html/i);
-      expect(out).withContext(out).not.toMatch(/\sstyle\s*=/i);
+      expect(out, out).not.toMatch(/<(script|iframe|svg|style|object|embed|form|input|math)\b/i);
+      expect(out, out).not.toMatch(/\son\w+\s*=/i);
+      expect(out, out).not.toMatch(/javascript:|vbscript:|data:text\/html/i);
+      expect(out, out).not.toMatch(/\sstyle\s*=/i);
       expect((window as any).__xss).toBeUndefined();
     });
   }
@@ -35,23 +35,23 @@ describe('isAllowedHref', () => {
     'vbscript:msgbox(1)', 'file:///etc/passwd', 'ftp://example.org', '', '   ', null, undefined];
 
   for (const href of allowed) {
-    it(`allows ${JSON.stringify(href)}`, () => expect(isAllowedHref(href)).toBeTrue());
+    it(`allows ${JSON.stringify(href)}`, () => expect(isAllowedHref(href)).toBe(true));
   }
   for (const href of rejected) {
-    it(`rejects ${JSON.stringify(href)}`, () => expect(isAllowedHref(href)).toBeFalse());
+    it(`rejects ${JSON.stringify(href)}`, () => expect(isAllowedHref(href)).toBe(false));
   }
 });
 
 describe('isAllowedImageSrc', () => {
   it('allows http(s), relative URLs and base64 raster images', () => {
     for (const src of ['https://example.org/a.png', 'http://example.org/a.png', '/assets/a.png', 'a.png', 'data:image/png;base64,AAAA', 'data:image/jpeg;base64,AAAA']) {
-      expect(isAllowedImageSrc(src)).withContext(src).toBeTrue();
+      expect(isAllowedImageSrc(src), src).toBe(true);
     }
   });
 
   it('rejects scripts, html, svg data and empty sources', () => {
     for (const src of ['javascript:alert(1)', 'data:text/html;base64,AAAA', 'data:image/svg+xml;base64,AAAA', 'vbscript:x', '', null, undefined]) {
-      expect(isAllowedImageSrc(src)).withContext(String(src)).toBeFalse();
+      expect(isAllowedImageSrc(src), String(src)).toBe(false);
     }
   });
 });
