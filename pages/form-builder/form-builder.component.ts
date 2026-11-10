@@ -27,7 +27,7 @@ import { SettingsSideMenuComponent } from './settings-side-menu/settings-side-me
 import { FieldTemplatesComponent } from './field-templates/field-templates.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { MainInfoComponent } from './main-info/main-info.component';
-import { DynamicFormModule } from '../dynamic-form/dynamic-form.module';
+import { SurveyComponent } from '../dynamic-form/survey.component';
 import { WebsocketService } from '../../services/websocket.service';
 import UIkit from 'uikit';
 import UIkitModalElement = UIkit.UIkitModalElement;
@@ -48,7 +48,7 @@ import UIkitModalElement = UIkit.UIkitModalElement;
     FieldTemplatesComponent,
     SettingsSideMenuComponent,
     JsonPipe,
-    DynamicFormModule,
+    SurveyComponent,
   ],
 })
 export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {

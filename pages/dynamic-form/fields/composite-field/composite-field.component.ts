@@ -1,15 +1,32 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
+import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import {
   AbstractControl,
   FormArray,
   FormGroup,
   FormGroupDirective,
+  FormsModule,
+  ReactiveFormsModule,
   UntypedFormArray,
   UntypedFormGroup
 } from "@angular/forms";
 import { FormControlService } from "../../../../services/form-control.service";
 import { WebsocketService } from "../../../../services/websocket.service";
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { SortableDirective } from "../../../../shared/directives/sortable.directive";
+import { NgClass } from "@angular/common";
+import { ChooseOneComponent } from "../choose-one-composite/choose-one.component";
+import { SelectFieldComponent } from "../dropdown-field/select-field/select-field.component";
+import { VocabularyFieldComponent } from "../dropdown-field/vocabulary-field/vocabulary-field.component";
+import { StringFieldComponent } from "../string-field/string-field.component";
+import { NumberFieldComponent } from "../number-field/number-field.component";
+import { BooleanFieldComponent } from "../boolean-field/boolean-field.component";
+import { CheckboxFieldComponent } from "../checkbox-field/checkbox-field.component";
+import { LargeTextFieldComponent } from "../large-text-field/large-text-field.component";
+import { RadioButtonFieldComponent } from "../radio-button-field/radio-button-field.component";
+import { RichTextFieldComponent } from "../rich-text-field/rich-text-field.component";
+import { DateFieldComponent } from "../date-field/date-field.component";
+import { ScaleFieldComponent } from "../scale-field/scale-field.component";
 
 interface PositionChange {
   oldIndex: number;
@@ -18,10 +35,28 @@ interface PositionChange {
 }
 
 @Component({
-  selector: 'app-composite-field',
-  templateUrl: './composite-field.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'app-composite-field',
+    templateUrl: './composite-field.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        BaseFieldHtmlComponent,
+        SortableDirective,
+        NgClass,
+        forwardRef(() => ChooseOneComponent),
+        SelectFieldComponent,
+        VocabularyFieldComponent,
+        StringFieldComponent,
+        NumberFieldComponent,
+        BooleanFieldComponent,
+        CheckboxFieldComponent,
+        LargeTextFieldComponent,
+        RadioButtonFieldComponent,
+        RichTextFieldComponent,
+        DateFieldComponent,
+        ScaleFieldComponent
+    ]
 })
 
 export class CompositeFieldComponent implements OnInit {

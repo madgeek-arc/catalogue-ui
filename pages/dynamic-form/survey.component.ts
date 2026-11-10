@@ -29,6 +29,8 @@ import { WebsocketService } from "../../services/websocket.service";
 import { cloneDeep, isEqual } from "lodash";
 import { CommentingWebsocketService } from "../../services/commenting-websocket.service";
 import * as UIkit from 'uikit';
+import { NgClass } from "@angular/common";
+import { ChapterComponent } from "./chapter.component";
 
 @Component({
     selector: 'app-survey',
@@ -36,7 +38,7 @@ import * as UIkit from 'uikit';
     styleUrls: ['../../assets/theme/form-builder.component.less'],
     providers: [FormControlService, PdfGenerateService, CommentingWebsocketService],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgClass, ChapterComponent]
 })
 
 export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {

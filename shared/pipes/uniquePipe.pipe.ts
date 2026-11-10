@@ -2,8 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import {uniqBy} from "lodash";
 
 @Pipe({
-    name: 'unique', pure: false,
-    standalone: false
+    name: 'unique', pure: false
 })
 
 export class UniquePipe implements PipeTransform {

@@ -45,7 +45,7 @@ licences; the host's production build lists them in `3rdpartylicenses.txt`.
 
 ## Host app setup (summary)
 
-Full details are in [docs/configuration.md](docs/configuration.md). Add the following in `app.module.ts`:
+Full details are in [docs/configuration.md](docs/configuration.md). Add the following to the application providers (`app.config.ts`, or the `providers` of the root module):
 
 ```ts
 providers: [

@@ -1,12 +1,15 @@
 import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, FieldType, HandleBitSet, NumberProperties } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { NgClass } from "@angular/common";
 
 @Component({
     selector: 'app-number-field',
     templateUrl: './number-field.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass]
 })
 
 export class NumberFieldComponent extends BaseFieldComponent implements OnInit {

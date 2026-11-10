@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReadMoreComponent, ReadMoreTextComponent } from './read-more.component';
 import {
@@ -6,8 +5,12 @@ import {
   withRequestsMadeViaParent
 } from "@angular/common/http";
 
+/**
+ * Compatibility wrapper for hosts that still import NgModules. The components are standalone, new code imports them
+ * directly.
+ */
 @NgModule({
-  declarations: [
+  imports: [
     ReadMoreComponent,
     ReadMoreTextComponent,
   ],
@@ -15,7 +18,6 @@ import {
     ReadMoreComponent,
     ReadMoreTextComponent,
   ],
-  imports: [CommonModule],
   providers: [provideHttpClient(withRequestsMadeViaParent())]
 })
 

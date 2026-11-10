@@ -20,9 +20,9 @@ catalogue-ui turns a JSON **form model** into an interactive form and provides t
 
 | Area | Location | Notes |
 |---|---|---|
-| Library entry module | `catalogue-ui.module.ts` | Exports `DynamicFormModule`; imports `FormBuilderModule` and the reusable components |
+| Compatibility modules | `catalogue-ui.module.ts`, `pages/dynamic-form/dynamic-form.module.ts`, `compare.module.ts`, `shared/catalogue-ui-shared.module.ts`, `shared/reusable-components/catalogue-ui-reusable-components.module.ts` | Thin NgModule wrappers that import and export the standalone components, pipe and directive, for hosts that still use modules. New code imports the standalone pieces directly. `catalogue-ui.module.spec.ts` guards them |
 | Form renderer | `pages/dynamic-form` | `SurveyComponent` (`app-survey`), `ChapterComponent`, `DynamicFormFieldsComponent` and one component per field kind in `fields/` |
-| Version comparison | `pages/dynamic-form/compare-versions` | `CompareModule` with `app-compare-surveys` and `app-chapter-compare` |
+| Version comparison | `pages/dynamic-form/compare-versions` | `CompareSurveysComponent` (`app-compare-surveys`) and `CompareChapterComponent` (`app-chapter-compare`) |
 | Comments | `pages/dynamic-form/comments-pannel` | `CommentsPanelComponent` (`app-comments-panel`), anchors and mention highlighting |
 | Form builder | `pages/form-builder` | `FormBuilderComponent` (`app-form-builder`) with main-info, side menus and field templates |
 | Model list | `pages/forms-list` | `FormsListComponent`, lists models with paging and search |

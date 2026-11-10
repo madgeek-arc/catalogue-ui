@@ -10,10 +10,7 @@ interface PositionChange {
   element: HTMLElement;
 }
 
-@Directive({
-    selector: '[appSortable]',
-    standalone: false
-})
+@Directive({ selector: '[appSortable]' })
 export class SortableDirective implements AfterViewInit {
   @Output() positionChanged = new EventEmitter<PositionChange>();
 

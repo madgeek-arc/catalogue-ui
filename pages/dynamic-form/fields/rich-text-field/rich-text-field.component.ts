@@ -1,12 +1,17 @@
 import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { NgClass } from "@angular/common";
+import { SortableDirective } from "../../../../shared/directives/sortable.directive";
+import { RichTextEditorComponent } from "../../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
 
 @Component({
     selector: 'app-rich-text-field',
     templateUrl: './rich-text-field.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass, SortableDirective, RichTextEditorComponent]
 })
 
 export class RichTextFieldComponent extends BaseFieldComponent implements OnInit, OnChanges {

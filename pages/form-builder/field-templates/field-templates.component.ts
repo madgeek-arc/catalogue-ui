@@ -3,8 +3,8 @@ import { Field, FieldType, IdLabel, TextProperties } from "../../../domain/dynam
 import { CommonModule } from "@angular/common";
 import { RichTextEditorComponent } from "../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
 import {
-  CatalogueUiReusableComponentsModule
-} from "../../../shared/reusable-components/catalogue-ui-reusable-components.module";
+  ReadMoreTextComponent
+} from "../../../shared/reusable-components/read-more.component";
 import { SafeUrlPipe } from "../../../shared/pipes/safeUrlPipe";
 import { FormBuilderService } from "../../../services/form-builder.service";
 import { FormsModule } from "@angular/forms";
@@ -21,7 +21,7 @@ import UIkit from "uikit";
   imports: [
     CommonModule,
     RichTextEditorComponent,
-    CatalogueUiReusableComponentsModule,
+    ReadMoreTextComponent,
     SafeUrlPipe,
     FormsModule,
     MatCalendar,

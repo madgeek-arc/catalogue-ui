@@ -14,8 +14,7 @@ import { AfterContentInit, AfterViewInit, Component, ElementRef, Input, OnChange
     }
     `,
     styles: [`div.collapsed {overflow: hidden;}`],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 
 export class ReadMoreComponent implements AfterContentInit {
@@ -53,8 +52,7 @@ export class ReadMoreComponent implements AfterContentInit {
     }
     `,
     styles: [`div.collapsed {overflow: hidden;}`],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 
 export class ReadMoreTextComponent extends ReadMoreComponent implements OnChanges, AfterViewInit {

@@ -7,7 +7,7 @@ application, so "configuration" means **what the host must provide**. The refere
 ## 1. The `APP_ENV` provider (required)
 
 ```ts
-// app.module.ts of the host
+// app.config.ts of the host (or the providers of its root module)
 import { APP_ENV } from './catalogue-ui/config/app-env.token';
 providers: [{ provide: APP_ENV, useValue: environment }]
 ```

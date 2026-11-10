@@ -1,13 +1,15 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy} from "@angular/core";
-import {UntypedFormGroup} from "@angular/forms";
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {Section, Tab} from "../../../../domain/dynamic-form-model";
 import BitSet from "bitset";
+import { NgStyle, NgClass, DatePipe } from "@angular/common";
+import { DynamicFormFieldsComponent } from "../../fields/dynamic-form-fields.component";
 
 @Component({
     selector: 'app-chapter-compare',
     templateUrl: 'compare-chapter.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgStyle, NgClass, FormsModule, ReactiveFormsModule, DynamicFormFieldsComponent, DatePipe]
 })
 
 export class CompareChapterComponent implements OnChanges {

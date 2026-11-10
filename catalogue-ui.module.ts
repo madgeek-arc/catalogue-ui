@@ -1,23 +1,16 @@
 import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DynamicFormModule } from "./pages/dynamic-form/dynamic-form.module";
 import { CatalogueUiReusableComponentsModule } from "./shared/reusable-components/catalogue-ui-reusable-components.module";
-import { CommonModule } from "@angular/common";
-import { RouterModule } from "@angular/router";
-import { FormBuilderModule } from "./pages/form-builder/form-builder.module";
 
+/**
+ * Compatibility wrapper for hosts that still import NgModules: it exports the form renderer. The components are
+ * standalone, new code imports them directly.
+ */
 @NgModule({
-  declarations: [],
   imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
     CatalogueUiReusableComponentsModule,
-    DynamicFormModule,
-    FormBuilderModule
+    DynamicFormModule
   ],
-  providers: [],
   exports: [
     DynamicFormModule
   ]

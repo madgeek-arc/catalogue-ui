@@ -1,12 +1,39 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Field, HandleBitSet } from '../../../domain/dynamic-form-model';
+import { CompositeFieldComponent } from './composite-field/composite-field.component';
+import { ChooseOneComponent } from './choose-one-composite/choose-one.component';
+import { StringFieldComponent } from './string-field/string-field.component';
+import { NumberFieldComponent } from './number-field/number-field.component';
+import { BooleanFieldComponent } from './boolean-field/boolean-field.component';
+import { SelectFieldComponent } from './dropdown-field/select-field/select-field.component';
+import { VocabularyFieldComponent } from './dropdown-field/vocabulary-field/vocabulary-field.component';
+import { LargeTextFieldComponent } from './large-text-field/large-text-field.component';
+import { RadioButtonFieldComponent } from './radio-button-field/radio-button-field.component';
+import { RichTextFieldComponent } from './rich-text-field/rich-text-field.component';
+import { DateFieldComponent } from './date-field/date-field.component';
+import { ScaleFieldComponent } from './scale-field/scale-field.component';
 
 @Component({
-  selector: 'app-field',
-  templateUrl: './dynamic-form-fields.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false
+    selector: 'app-field',
+    templateUrl: './dynamic-form-fields.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      CompositeFieldComponent,
+      ChooseOneComponent,
+      StringFieldComponent,
+      NumberFieldComponent,
+      BooleanFieldComponent,
+      SelectFieldComponent,
+      VocabularyFieldComponent,
+      LargeTextFieldComponent,
+      RadioButtonFieldComponent,
+      RichTextFieldComponent,
+      DateFieldComponent,
+      ScaleFieldComponent
+  ]
 })
 export class DynamicFormFieldsComponent {
   @Input() fieldData: Field;

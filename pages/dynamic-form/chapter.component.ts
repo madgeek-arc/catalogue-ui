@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControlService } from '../../services/form-control.service';
-import { UntypedFormArray } from '@angular/forms';
+import { UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Field, HandleBitSet, Section, Tab, Tabs } from '../../domain/dynamic-form-model';
 import BitSet from "bitset";
+import { NgStyle, NgClass } from '@angular/common';
+import { DynamicFormFieldsComponent } from './fields/dynamic-form-fields.component';
+import { CommentsPanelComponent } from './comments-pannel/comments-panel.component';
 
 type SectionComments = {
   sectionId: string;
@@ -14,7 +17,14 @@ type SectionComments = {
     templateUrl: './chapter.component.html',
     providers: [FormControlService],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [
+        NgStyle,
+        NgClass,
+        FormsModule,
+        ReactiveFormsModule,
+        DynamicFormFieldsComponent,
+        CommentsPanelComponent
+    ]
 })
 
 export class ChapterComponent implements OnChanges {

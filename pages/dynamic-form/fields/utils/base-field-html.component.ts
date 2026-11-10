@@ -15,8 +15,8 @@ import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/for
 import { NgClass } from "@angular/common";
 import { SafeUrlPipe } from "../../../../shared/pipes/safeUrlPipe";
 import {
-  CatalogueUiReusableComponentsModule
-} from "../../../../shared/reusable-components/catalogue-ui-reusable-components.module";
+  ReadMoreTextComponent
+} from "../../../../shared/reusable-components/read-more.component";
 import { CommentAnchorDirective } from "../../../../shared/directives/comment-anchor.directive";
 import { CommentingWebsocketService } from "../../../../services/commenting-websocket.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -31,7 +31,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     NgClass,
     SafeUrlPipe,
     CommentAnchorDirective,
-    CatalogueUiReusableComponentsModule,
+    ReadMoreTextComponent,
     FormsModule
   ]
 })

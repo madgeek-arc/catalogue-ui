@@ -1,12 +1,16 @@
 import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { BaseFieldComponent } from "../utils/base-field.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BaseFieldHtmlComponent } from "../utils/base-field-html.component";
+import { NgClass } from "@angular/common";
+import { SortableDirective } from "../../../../shared/directives/sortable.directive";
 
 @Component({
     selector: 'app-string-url-email-field',
     templateUrl: './string-field.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass, SortableDirective]
 })
 
 export class StringFieldComponent extends BaseFieldComponent {
