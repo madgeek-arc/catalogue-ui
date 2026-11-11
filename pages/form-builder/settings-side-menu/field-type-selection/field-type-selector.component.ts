@@ -5,7 +5,7 @@ import { FormBuilderService } from "../../../../services/form-builder.service";
 @Component({
   selector: 'app-field-type-selections',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './field-type-selector.component.html',
 })
 

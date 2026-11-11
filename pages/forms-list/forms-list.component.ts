@@ -15,7 +15,7 @@ import { FormBuilderService } from "../../services/form-builder.service";
     RouterLink
   ],
   templateUrl: './forms-list.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 
