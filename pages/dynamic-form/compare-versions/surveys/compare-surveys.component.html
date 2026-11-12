@@ -1,22 +1,36 @@
 
-<!--Chapter Selection-->
-@if (ready && model) {
-  <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}">
-    <ul class="uk-subnav uk-subnav-pill-alt" uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
-      @for (section of model.sections; track section) {
-        <li class="">
-          @if ((!section.subType || section.subType===subType)) {
-            <a>{{section.name}}
-              <!--        <span *ngIf="chapterChangeMap.get(section.id)" class="material-icons md-10 uk-margin-small-left">circle</span>-->
-            </a>
-          }
-        </li>
-      }
-    </ul>
+<div style="position: sticky; top: 0; z-index: 30; background: #fff; padding: 20px 24px 0;">
+  <!-- Zone 1: back + title (left) / restore-version button (right) -->
+  <div class="uk-flex uk-flex-middle uk-flex-between">
+    <div class="uk-flex uk-flex-middle" style="gap: 6px; min-width: 0;">
+      <ng-content select=".form-top-section"></ng-content>
+    </div>
+    <div class="uk-flex uk-flex-middle" style="gap: 8px; flex: 0 0 auto;">
+      <ng-content select=".form-actions-section"></ng-content>
+    </div>
   </div>
-}
 
-<div class="titleAndActionsBar uk-flex uk-flex-right" style="min-height: 40px"></div>
+  <!--Chapter Selection-->
+  @if (ready && model) {
+    <div [ngClass]="{'uk-hidden': (model.sections.length === 1 || !model.sections[0].subSections)}" style="margin-top: 8px;">
+      <ul class="uk-tab" style="margin-bottom: 0;" data-uk-tab="connect: #top-navigation-tabs; animation: uk-animation-fade">
+        @for (section of model.sections; track section; let i = $index) {
+          <li class="">
+            @if ((!section.subType || section.subType===subType)) {
+              <a>
+                <span class="uk-badge">{{ String.fromCharCode(65 + i) }}</span>
+                {{section.name}}
+                @if (section.subSections?.length) {
+                  <span class="uk-text-meta">{{ section.subSections.length }}</span>
+                }
+              </a>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>
 
 @if (ready && model) {
   <div>

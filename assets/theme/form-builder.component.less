@@ -296,9 +296,29 @@
   }
 }
 
-// app-compare-surveys renders <app-chapter-compare> as a child; its own top
-// nav already uses UIkit's .uk-subnav-pill-alt untouched, so only the
-// sub-section sidebar mixin applies here.
+// app-compare-surveys renders <app-chapter-compare> as a child. Its top nav
+// now uses the same uk-tab markup as app-survey (compare-surveys.component.html),
+// so both mixins are needed, same as app-survey above.
 ::ng-deep app-compare-surveys {
+  .dynamic-form-tabs-theme();
   .dynamic-form-tab-left-theme();
+
+  // Same title treatment as app-survey's .form-top-section (projected by
+  // history.component.html) — see the longer explanation above app-survey's
+  // copy of these rules.
+  .form-top-section {
+    font-size: 15.5px;
+    font-weight: 800;
+    margin: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .form-top-section .survey-title-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
 }
