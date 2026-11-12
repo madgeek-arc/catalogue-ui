@@ -23,7 +23,11 @@
         <ng-content select=".form-notice-section"></ng-content>
       </div>
       <div class="uk-text-meta" style="flex: 0 0 auto; white-space: nowrap; margin-left: 12px;">
-        {{ sectionsCount }} sections &middot; {{ subsectionsCount }} subsections &middot; {{ fieldsCount }} fields
+        @if (sectionsCount > 1) {
+          {{ sectionsCount }} sections &middot;
+        }
+        {{ subsectionsCount }} {{ subsectionsCount === 1 ? 'subsection' : 'subsections' }} &middot;
+        {{ fieldsCount }} {{ fieldsCount === 1 ? 'field' : 'fields' }}
       </div>
     </div>
   }

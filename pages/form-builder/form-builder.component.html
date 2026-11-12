@@ -47,7 +47,11 @@
           </span>
         </div>
         <div class="fb-meta-sub">
-          {{ sectionsCount() }} sections · {{ subsectionsCount() }} subsections · {{ fieldsCount() }} fields
+          @if (sectionsCount() > 1) {
+            {{ sectionsCount() }} sections ·
+          }
+          {{ subsectionsCount() }} {{ subsectionsCount() === 1 ? 'subsection' : 'subsections' }} ·
+          {{ fieldsCount() }} {{ fieldsCount() === 1 ? 'field' : 'fields' }}
           @if (fbService.model()?.submissionStartAt || fbService.model()?.submissionCloseAt) {
             · {{ fbService.model()?.submissionStartAt }} → {{ fbService.model()?.submissionCloseAt }}
           }
