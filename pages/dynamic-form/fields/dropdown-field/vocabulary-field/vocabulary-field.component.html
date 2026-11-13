@@ -1,7 +1,7 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" [scrollContainer]="scrollContainer" [inputId]="inputId"
+                       [hideField]="hideField()" [scrollContainer]="scrollContainer" [inputId]="inputId"
                        (emitPush)="push()">
 
     <div [ngClass]="{'uk-disabled': readonly}">
@@ -10,7 +10,7 @@
           @for (input of fieldAsFormArray().controls; track input; let i = $index) {
             <div class="uk-margin-bottom uk-flex uk-flex-middle">
               <ng-select class="uk-width-9-10" [ngClass]="{'uk-form-danger': checkFormArrayValidity(i)}"
-                         [id]="inputId+'.['+i+']'" [formControlName]="i" [items]="voc"
+                         [id]="inputId+'.['+i+']'" [formControlName]="i" [items]="voc()"
                          [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
                          (change)="unsavedChangesPrompt()" (focus)="focus(i)" (blur)="focusOut(true, i)">
               </ng-select>
@@ -25,7 +25,7 @@
         </div>
       } @else {
         <ng-select class="uk-width-9-10 uk-margin-small" [ngClass]="{'uk-form-danger': checkFormValidity()}"
-                   [id]="inputId" [formControlName]="fieldData.name" [items]="voc"
+                   [id]="inputId" [formControlName]="fieldData.name" [items]="voc()"
                    [bindLabel]="properties.labelField" [bindValue]="properties.idField" clearAllText="Clear"
                    (change)="unsavedChangesPrompt()" (focus)="focus()" (blur)="focusOut(true)">
         </ng-select>

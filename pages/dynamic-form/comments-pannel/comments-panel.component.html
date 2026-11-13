@@ -1,13 +1,13 @@
 <div #panel class="uk-position-relative comments-panel">
 
   <!-- top spacer to create scrollable negative area when needed -->
-  <div class="top-spacer" [style.height.px]="topOffset"></div>
+  <div class="top-spacer" [style.height.px]="topOffset()"></div>
 
-  @if (observablesReady) {
-    @for (thread of sectionThreads; track thread.id) {
+  @if (observablesReady()) {
+    @for (thread of sectionThreads(); track thread.id) {
       <div class="thread-wrapper uk-position-absolute uk-width-expand"
         [class.thread--focused]="thread.id === focusedThreadId"
-        [style.top.px]="layoutMap.get(thread.id)?.top ?? 0"
+        [style.top.px]="layoutMap().get(thread.id)?.top ?? 0"
         [style.z-index]="showInputMap.get(thread.id) ? 100 : 0"
         (click)="onThreadClick(thread)">
         <div measureComment [threadId]="thread.id" (sizeChange)="onCommentSizeChange(thread.id, $event)"

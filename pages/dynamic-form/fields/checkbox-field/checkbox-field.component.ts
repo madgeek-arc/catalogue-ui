@@ -13,7 +13,7 @@ import { CustomProperties, Field, HandleBitSet } from "../../../../domain/dynami
     NgClass,
     BaseFieldHtmlComponent
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './checkbox-field.component.html'
 })
 

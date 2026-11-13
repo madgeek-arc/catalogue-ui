@@ -9,7 +9,8 @@ import {
   OnInit,
   Output,
   ViewChild,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  signal
 } from '@angular/core';
 import { FormsModule } from "@angular/forms";
 import { NgClass } from "@angular/common";
@@ -36,7 +37,7 @@ type SubSectionComments = {
   standalone: true,
   templateUrl: './comments-panel.component.html',
   styleUrls: ['./comments-panel.component.less'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MeasureCommentDirective,
     FormsModule,
@@ -64,8 +65,8 @@ export class CommentsPanelComponent implements OnInit {
   // Observables from service
   positions$!: Observable<Map<string, number>>;
   heights$!: Observable<Map<string, number>>;
-  sectionThreads: Thread[] = [];
-  observablesReady = false;
+  sectionThreads = signal<Thread[]>([]);
+  observablesReady = signal(false);
   gap = 8; // px between stacked comments
 
   // Comment message
@@ -73,8 +74,8 @@ export class CommentsPanelComponent implements OnInit {
   inputMessage = '';
 
   // layout state
-  topOffset = 0; // number of pixels added as top spacer when some items go negative
-  layoutMap = new Map<string, { top: number }>();
+  topOffset = signal(0); // number of pixels added as top spacer when some items go negative
+  layoutMap = signal(new Map<string, { top: number }>());
   focusedThreadId?: string;
 
   // keep last values for immediate recompute/scroll
@@ -83,7 +84,7 @@ export class CommentsPanelComponent implements OnInit {
 
   editingComment?: Comment;
   createThreadComment: Comment = new Comment();
-  allUsers: MentionableUser[] = [];
+  allUsers = signal<MentionableUser[]>([]);
   mentionableUsers: MentionableUser[] = [];
   showMentionDropdown: boolean = false;
   mentionFilter: string = '';
@@ -101,10 +102,10 @@ export class CommentsPanelComponent implements OnInit {
     this.commentingService.threadSubject.pipe(debounceTime(30), takeUntilDestroyed(this.destroyRef)).subscribe({
       next: value => {
         // filter threads relevant to this subsection
-        this.sectionThreads = value.filter((t: Thread) => ids.includes(t.fieldId));
+        this.sectionThreads.set(value.filter((t: Thread) => ids.includes(t.fieldId)));
         // console.log('Got the comments for this subsection: ', this.subSection.id)
         // this.observablesReady = true;
-        this.commentCount.emit({subSectionId: this.subSection.id, comments: this.sectionThreads.length});
+        this.commentCount.emit({subSectionId: this.subSection.id, comments: this.sectionThreads().length});
         // this.threadsChanged$.next();
         this.recomputeLayout(this.lastPositions, this.lastHeights); // Recompute when the thread list changes
       }
@@ -117,7 +118,7 @@ export class CommentsPanelComponent implements OnInit {
         // store last
         this.lastPositions = new Map(pos);
         this.lastHeights = new Map(heights);
-        this.observablesReady = true;
+        this.observablesReady.set(true);
         this.recomputeLayout(pos, heights);
       });
 
@@ -127,7 +128,7 @@ export class CommentsPanelComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: users => {
-            this.allUsers = users;
+            this.allUsers.set(users);
             this.mentionableUsers = users.filter(user => user.email !== this.userId);
           },
           error: (err) => console.error('Failed to fetch mentionable users', err)
@@ -148,7 +149,7 @@ export class CommentsPanelComponent implements OnInit {
   private syncScroll() {
     const panelEl = this.panelRef?.nativeElement;
     if (!panelEl) return;
-    const target = this.topOffset + this.getFormScrollTop();
+    const target = this.topOffset() + this.getFormScrollTop();
     if (Math.abs(panelEl.scrollTop - target) > 1) {
       this.ngZone.run(() => {
         panelEl.scrollTop = target;
@@ -318,7 +319,7 @@ export class CommentsPanelComponent implements OnInit {
   }
 
   getDisplayName(email: string): string {
-    const user = this.allUsers.find(u => u.email === email);
+    const user = this.allUsers().find(u => u.email === email);
     return user?.name ?? user?.email ?? email;
   }
 
@@ -394,7 +395,7 @@ export class CommentsPanelComponent implements OnInit {
 
       // 1) group threads by field (keep order of threads as in this.sectionThreads)
       const groupsMap = new Map<string, FieldGroup>();
-      for (const thread of this.sectionThreads) {
+      for (const thread of this.sectionThreads()) {
         const h = Math.round(heights.get(thread.id) ?? 80);
         const fieldId = thread.fieldId;
         if (!groupsMap.has(fieldId)) {
@@ -436,7 +437,7 @@ export class CommentsPanelComponent implements OnInit {
 
       // 5) if focusedThreadId exists, align the focused thread to its anchor and pull/push neighbor groups
       if (this.focusedThreadId) {
-        const focusedThread = this.sectionThreads.find(t => t.id === this.focusedThreadId);
+        const focusedThread = this.sectionThreads().find(t => t.id === this.focusedThreadId);
         if (focusedThread) {
           const focusedGroupIdx = groups.findIndex(g => g.fieldId === focusedThread.fieldId);
           if (focusedGroupIdx !== -1) {
@@ -508,8 +509,8 @@ export class CommentsPanelComponent implements OnInit {
 
       // 7) write back to Angular zone: new layoutMap + topOffset value
       this.ngZone.run(() => {
-        this.topOffset = shift;
-        this.layoutMap = adjustedMap;
+        this.topOffset.set(shift);
+        this.layoutMap.set(adjustedMap);
       });
     });
   }
@@ -519,7 +520,7 @@ export class CommentsPanelComponent implements OnInit {
     const panelEl = this.panelRef?.nativeElement;
     if (!panelEl) return;
 
-    const layout = this.layoutMap.get(threadId);
+    const layout = this.layoutMap().get(threadId);
     if (layout) {
       // In focus mode, we want the focused thread to align with its anchor field.
       // Based on our recomputeLayout (absolute positions):
@@ -527,13 +528,13 @@ export class CommentsPanelComponent implements OnInit {
       // focusedThread.adjustedTop = anchorTop + topOffset
       // To align visually: adjustedTop - panel.scrollTop = anchorTop - form.scrollTop
       // => panel.scrollTop = topOffset + form.scrollTop
-      const targetScrollTop = this.topOffset + this.getFormScrollTop();
+      const targetScrollTop = this.topOffset() + this.getFormScrollTop();
       panelEl.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
     }
 
     // Also, scroll the form scroll container so the field input is visible and roughly aligned.
     if (this.scrollContainer && this.lastPositions && this.lastPositions.size > 0) {
-      const thread = this.sectionThreads.find(t => t.id === threadId);
+      const thread = this.sectionThreads().find(t => t.id === threadId);
       if (!thread) return;
       const fieldTop = this.lastPositions.get(thread.fieldId) ?? 0;
 

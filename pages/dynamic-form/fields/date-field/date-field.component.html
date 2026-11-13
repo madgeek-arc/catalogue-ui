@@ -1,7 +1,7 @@
 <ng-container [formGroup]="form">
 
   <app-base-field-html [form]="form" [fieldData]="fieldData" [editMode]="editMode" [readonly]="readonly"
-                       [hideField]="hideField" [inputId]="inputId" (emitPush)="push()">
+                       [hideField]="hideField()" [inputId]="inputId" (emitPush)="push()">
 
     <div [ngClass]="{'uk-disabled': readonly}" (focusin)="focus()" (focusout)="containerFocusOut($event, true)">
       @if (fieldData.typeInfo.multiplicity) {
@@ -38,7 +38,7 @@
           </div>
         </div>
         <div class="uk-dropdown" data-uk-dropdown="mode: click; flip: false ; shift: false" (click)="$event.stopPropagation()">
-          <mat-calendar [selected]="selectedDate" [startAt]="selectedDate" (selectedChange)="dateChanged($event)">
+          <mat-calendar [selected]="selectedDate()" [startAt]="selectedDate()" (selectedChange)="dateChanged($event)">
           </mat-calendar>
         </div>
       }

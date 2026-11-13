@@ -14,6 +14,7 @@ import {
   OnInit,
   Output,
   signal,
+  model,
   SimpleChanges,
   ViewChild,
   ChangeDetectionStrategy
@@ -37,7 +38,7 @@ import { ChapterComponent } from "./chapter.component";
     templateUrl: 'survey.component.html',
     styleUrls: ['../../assets/theme/form-builder.component.less'],
     providers: [FormControlService, PdfGenerateService, CommentingWebsocketService],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgClass, ChapterComponent]
 })
 
@@ -46,6 +47,11 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
   protected destroyRef = inject(DestroyRef);
   private wsComments = inject(CommentingWebsocketService);
   private ngZone = inject(NgZone);
+  private formControlService = inject(FormControlService);
+  private pdfService = inject(PdfGenerateService);
+  private router = inject(Router);
+  private wsService = inject(WebsocketService);
+  private cd = inject(ChangeDetectorRef);
   protected String = String;
 
   // Height of the sticky title/tabs/save-bar header, measured so the sidebar
@@ -80,14 +86,15 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
   @Input() downloadPDF: boolean = false;
   @Input() mandatoryFieldsText: string = '';
   @Input() tabsHeader: string = '';
-  @Input() errorMessage = '';
-  @Input() successMessage = '';
+  // Set by the parent, and cleared here after an alert closes.
+  errorMessage = model('');
+  successMessage = model('');
   @Input() freeView: boolean = false;
 
   @Output() valid = new EventEmitter<boolean>();
   @Output() submitForm = new EventEmitter<UntypedFormGroup>();
 
-  chapterChangeMap: Map<string,boolean> = new Map<string, boolean>();
+  chapterChangeMap = signal(new Map<string, boolean>());
   currentChapter: Section | null = null;
   sortedSurveyAnswers: Object = {};
   ready: boolean = false;
@@ -103,11 +110,6 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
 
   commentingInitialized = false;
   commentsPerSection: Map<string, number> = new Map();
-
-  constructor(private formControlService: FormControlService, private pdfService: PdfGenerateService,
-              private router: Router, private wsService: WebsocketService,
-              private cd: ChangeDetectorRef) {
-  }
 
   @HostListener('document:focus', ['$event'])
   onFocus(event: FocusEvent): void {
@@ -141,7 +143,9 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
               return;
             console.log('Remove at position ' + position);
             // console.log(ctrl.parent as FormArray);
-            (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
+            const parentArray = ctrl.parent as FormArray;
+            parentArray.removeAt(+position, {emitEvent: false});
+            this.notifyArrayChanged(parentArray);
             this.previousValue = cloneDeep(this.form.value);
             return;
           }
@@ -153,6 +157,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
               path.pop();
               ctrl = this.getControl(path.join('.'));
               (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+              this.notifyArrayChanged(ctrl as FormArray);
               this.previousValue = cloneDeep(this.form.value);
             }
             return;
@@ -168,6 +173,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
             (ctrl.parent as FormArray).removeAt(+position, {emitEvent: false});
             console.log('Insert at position ' + +value.action.index);
             (ctrl.parent as FormArray).insert(+value.action.index, movedCtrl, {emitEvent: false});
+            this.notifyArrayChanged(ctrl.parent as FormArray);
             this.previousValue = cloneDeep(this.form.value);
             return;
           }
@@ -192,6 +198,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
               path.pop();
               ctrl = this.getControl(path.join('.'));
               (ctrl as FormArray).push(this.formControlService.createField(field), {emitEvent: false});
+              this.notifyArrayChanged(ctrl as FormArray);
               this.previousValue = cloneDeep(this.form.value);
             }
           }
@@ -233,7 +240,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
       for (const section of this.model.sections) {
         for (const surveyAnswer in this.payload?.answer) {
           if (section.id === this.payload.answer[surveyAnswer]?.chapterId) {
-            this.chapterChangeMap.set(section.id, false);
+            this.chapterChangeMap.update(map => new Map(map).set(section.id, false));
             this.sortedSurveyAnswers[section.id] = this.payload.answer[surveyAnswer].answer;
             break;
           }
@@ -305,6 +312,9 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
         UIkit.modal('#validation-modal').show();
       }
       this.ready = true;
+      // detectChanges() above already checked this view and cleared its dirty flag, so mark it again or the
+      // final state (ready, a validated answer's readonly) would not render.
+      this.cd.markForCheck();
 
     }
   }
@@ -344,6 +354,12 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
 
   setCommentCount(sectionId: string, count: number) {
     this.commentsPerSection.set(sectionId, count);
+  }
+
+  // Other users' adds, removes and moves change a FormArray without events (emitEvent: false). The OnPush fields
+  // refresh on their control's events, so emit one on that array only (onlySelf keeps the form's valueChanges quiet).
+  private notifyArrayChanged(array: FormArray) {
+    array.updateValueAndValidity({onlySelf: true});
   }
 
   /** Find if any field has changes and get value --> **/
@@ -395,10 +411,10 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
   /** <-- Find if any field has and get value **/
 
   validateForm() {
-    for (const chapterChangeMapElement of this.chapterChangeMap) {
+    for (const chapterChangeMapElement of this.chapterChangeMap()) {
       if (chapterChangeMapElement[1]) {
         UIkit.modal('#validation-modal').hide();
-        this.errorMessage = 'There are unsaved changes, please submit all changes first and then validate.';
+        this.errorMessage.set('There are unsaved changes, please submit all changes first and then validate.');
         return;
       }
     }
@@ -419,7 +435,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
           // console.log(keyElement + ': '+ this.form.get(key+'.'+keyElement).valid);
         // }
       }
-      this.errorMessage = 'There are missing fields at chapters ' + str;
+      this.errorMessage.set('There are missing fields at chapters ' + str);
     }
   }
 
@@ -430,7 +446,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
   showUnsavedChangesPrompt(chapter: Section) {
     if (this.readonly || this.freeView)
       return;
-    if (this.chapterChangeMap.get(this.currentChapter.id)) {
+    if (this.chapterChangeMap().get(this.currentChapter.id)) {
       UIkit.modal('#unsaved-changes-modal').show();
     }
     this.currentChapter = chapter;
@@ -446,16 +462,18 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
 
   setChapterChangesMap(chapterId: string[]) {
     if (chapterId[1] === null) {
-      this.chapterChangeMap.set(chapterId[0], true);
+      this.chapterChangeMap.update(map => new Map(map).set(chapterId[0], true));
     } else {
-      this.chapterChangeMap.set(chapterId[0], false);
+      this.chapterChangeMap.update(map => new Map(map).set(chapterId[0], false));
     }
   }
 
   clearChapterChangesMap() {
-    for (const key of this.chapterChangeMap.keys()) {
-      this.chapterChangeMap.set(key, false);
+    const cleared = new Map<string, boolean>();
+    for (const key of this.chapterChangeMap().keys()) {
+      cleared.set(key, false);
     }
+    this.chapterChangeMap.set(cleared);
   }
 
   /** create additional fields for arrays if needed --> **/
@@ -563,7 +581,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
   closeError() {
     UIkit.alert('#errorAlert').close();
     setTimeout(() => {
-      this.errorMessage = '';
+      this.errorMessage.set('');
     }, 550);
   }
 
@@ -572,7 +590,7 @@ export class SurveyComponent implements OnInit, OnChanges, OnDestroy, AfterViewI
       UIkit.alert('#successAlert').close();
     }, 4000);
     setTimeout(() => {
-      this.successMessage = '';
+      this.successMessage.set('');
     }, 4550);
   }
 

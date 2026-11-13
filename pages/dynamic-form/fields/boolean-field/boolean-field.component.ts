@@ -9,7 +9,7 @@ import { NgClass } from "@angular/common";
   selector: 'app-boolean-field',
   standalone: true,
   templateUrl: './boolean-field.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     BaseFieldHtmlComponent,

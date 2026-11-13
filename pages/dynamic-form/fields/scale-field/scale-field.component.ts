@@ -10,7 +10,7 @@ import { NgClass } from "@angular/common";
   standalone: true,
   templateUrl: 'scale-field.component.html',
   styleUrls: ['scale-field.component.less'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BaseFieldHtmlComponent,
     ReactiveFormsModule,

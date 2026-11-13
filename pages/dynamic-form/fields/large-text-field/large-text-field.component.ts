@@ -9,7 +9,7 @@ import { ReactiveFormsModule } from "@angular/forms";
   selector: 'app-large-text-field',
   standalone: true,
   templateUrl: './large-text-field.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BaseFieldHtmlComponent,
     NgClass,

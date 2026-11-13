@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy, signal } from "@angular/core";
 import { BaseFieldComponent } from "../../utils/base-field.component";
 import {ReactiveFormsModule, UntypedFormControl, UntypedFormGroup} from "@angular/forms";
 import { BaseFieldHtmlComponent } from "../../utils/base-field-html.component";
@@ -13,7 +13,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
   standalone: true,
   templateUrl: './vocabulary-field.component.html',
   styleUrls: ['./vocabulary-field.component.less'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     BaseFieldHtmlComponent,
@@ -25,7 +25,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 export class VocabularyFieldComponent extends BaseFieldComponent {
   private vocabularyService = inject(VocabularyService);
 
-  voc: object[] = [];
+  voc = signal<object[]>([]);
   properties?: VocabularyProperties;
 
   override ngOnInit() {
@@ -39,6 +39,7 @@ export class VocabularyFieldComponent extends BaseFieldComponent {
     // console.log(this.form);
     this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
     this.inputId = this.getPath(this.formControl).join('.');
+    this.watchControl();
 
     if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
@@ -82,7 +83,7 @@ export class VocabularyFieldComponent extends BaseFieldComponent {
   getVocabulary(url: string) {
     this.vocabularyService.getVoc(url).subscribe({
       next: (voc) => {
-        this.voc = voc;
+        this.voc.set(voc);
       },
       error: (err) => {
         console.error(err);
@@ -91,7 +92,7 @@ export class VocabularyFieldComponent extends BaseFieldComponent {
   }
 
   enableDisableVocabularyField(value: string, resetValue: boolean = true) {
-    this.voc = [];
+    this.voc.set([]);
 
     if (this.fieldData.form.dependsOn.value) {
       if (value === this.fieldData.form.dependsOn.value) {

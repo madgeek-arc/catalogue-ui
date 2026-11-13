@@ -9,7 +9,7 @@ import { SortableDirective } from "../../../../shared/directives/sortable.direct
 @Component({
     selector: 'app-string-url-email-field',
     templateUrl: './string-field.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass, SortableDirective]
 })
 

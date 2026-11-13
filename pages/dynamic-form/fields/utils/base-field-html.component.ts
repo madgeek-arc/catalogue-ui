@@ -8,7 +8,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  signal
 } from "@angular/core";
 import { Field } from "../../../../domain/dynamic-form-model";
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from "@angular/forms";
@@ -25,7 +26,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   selector: 'app-base-field-html',
   standalone: true,
   templateUrl: './base-field-html.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     NgClass,
@@ -50,7 +51,7 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
   @Output() emitPush: EventEmitter<void> = new EventEmitter();
 
-  label: string = '';
+  label = signal('');
   comment: string = '';
   position: string | null = null;
   hasComment: boolean = false;
@@ -65,11 +66,11 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
         if (value.some((item) => item.fieldId === this.fieldData.id)) {
           this.hasComment = true;
-          this.label = this.highlight();
+          this.label.set(this.highlight());
         } else {
           this.hasComment = false;
-          if (this.label)
-            this.label = this.removeHighlight();
+          if (this.label())
+            this.label.set(this.removeHighlight());
         }
       }
     });
@@ -80,10 +81,10 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
           return;
 
         if (value === this.fieldData.id) {
-          this.label = this.strongHighlightToggle(true);
+          this.label.set(this.strongHighlightToggle(true));
           this.commentFocused = true;
         } else {
-          this.label = this.strongHighlightToggle(false);
+          this.label.set(this.strongHighlightToggle(false));
           this.commentFocused = false;
         }
       }
@@ -98,9 +99,9 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
 
     if (changes['fieldData']) {
       if (this.fieldData.form.mandatory)
-        this.label = this.appendAsterisk(this.fieldData.label.text);
+        this.label.set(this.appendAsterisk(this.fieldData.label.text));
       else
-        this.label = this.fieldData.label.text;
+        this.label.set(this.fieldData.label.text);
     }
   }
 
@@ -114,36 +115,36 @@ export class BaseFieldHtmlComponent implements OnInit, OnChanges {
   }
 
   removeHighlight() {
-    if (this.label.includes('label-highlight-strong')) {
-      return this.label.replace(/<span class="label-highlight-strong">(.*?)<\/span>/g, '$1');
-    } else if (this.label.includes('label-highlight')) {
-      return this.label.replace(/<span class="label-highlight">(.*?)<\/span>/g, '$1');
+    if (this.label().includes('label-highlight-strong')) {
+      return this.label().replace(/<span class="label-highlight-strong">(.*?)<\/span>/g, '$1');
+    } else if (this.label().includes('label-highlight')) {
+      return this.label().replace(/<span class="label-highlight">(.*?)<\/span>/g, '$1');
     }
-    return this.label;
+    return this.label();
   }
 
   highlight() {
-    if (this.label.includes('label-highlight'))
-      return this.label;
+    if (this.label().includes('label-highlight'))
+      return this.label();
 
     const openingTag = '<p>';
     const closingTag = '</p>';
-    if (this.label.trim().startsWith(openingTag)) {
-      let tmp = this.label.replace(openingTag, `${openingTag}<span class="label-highlight">`);
+    if (this.label().trim().startsWith(openingTag)) {
+      let tmp = this.label().replace(openingTag, `${openingTag}<span class="label-highlight">`);
       return tmp.replace(closingTag, `</span>${closingTag}`);
     } else {
-      return `<span class="label-highlight">${this.label}</span>`;
+      return `<span class="label-highlight">${this.label()}</span>`;
     }
   }
 
   strongHighlightToggle(strong: boolean) {
     if (strong) {
       if (this.commentFocused)
-        return this.label;
+        return this.label();
 
-      return this.label.replace('label-highlight', 'label-highlight-strong');
+      return this.label().replace('label-highlight', 'label-highlight-strong');
     } else
-      return this.label?.replace('label-highlight-strong', 'label-highlight');
+      return this.label()?.replace('label-highlight-strong', 'label-highlight');
   }
 
   push() {

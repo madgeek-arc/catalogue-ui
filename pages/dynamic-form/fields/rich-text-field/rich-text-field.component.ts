@@ -10,7 +10,7 @@ import { RichTextEditorComponent } from "../../../../shared/reusable-components/
 @Component({
     selector: 'app-rich-text-field',
     templateUrl: './rich-text-field.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass, SortableDirective, RichTextEditorComponent]
 })
 

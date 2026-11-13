@@ -41,7 +41,7 @@
                 @if (section.subSections?.length) {
                   <span class="uk-text-meta">{{ section.subSections.length }}</span>
                 }
-                @if (chapterChangeMap.get(section.id)) {
+                @if (chapterChangeMap().get(section.id)) {
                   <span class="material-icons md-10 uk-margin-small-left">circle</span>
                 }
                 @if (commentsPerSection.get(section.id)) {
@@ -59,16 +59,16 @@
   }
 </div>
 
-@if (errorMessage) {
+@if (errorMessage()) {
   <pre id="errorAlert" class="uk-alert uk-alert-danger" data-uk-alert="duration: 500" style="border-width: 0">
     <a (click)="closeError()" class="uk-alert-close" data-uk-close></a>
-    {{ errorMessage }}
+    {{ errorMessage() }}
   </pre>
 }
 
-@if (successMessage) {
+@if (successMessage()) {
   <div id="successAlert" class="uk-alert uk-alert-success" data-uk-alert="duration: 500">
-    <p>{{ successMessage }}</p>
+    <p>{{ successMessage() }}</p>
   </div>
 }
 
