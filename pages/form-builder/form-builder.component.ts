@@ -169,7 +169,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   saveModel() {
     if (!this.fbService.model()) return;
 
-    if (this.customActions) this.saveAction.emit(this.fbService.model());
+    if (this.customActions()) this.saveAction.emit(this.fbService.model());
     else
       this.catalogueService.saveModel(this.fbService.model(), this.editMode).subscribe({
         next: () => {

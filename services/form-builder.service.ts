@@ -36,7 +36,8 @@ export class FormBuilderService {
 
   // Model options
   setModel(model?: Model) {
-    this._model.set(model ?? new Model());
+    // A new form has no id until it is saved: the backend assigns one unless the user sets one in General settings.
+    this._model.set(model ?? Object.assign(new Model(), {id: ''}));
     if (!model) {
       this.addSection();
     }
