@@ -6,7 +6,7 @@ import {
   ReadMoreTextComponent
 } from "../../../shared/reusable-components/read-more.component";
 import { SafeUrlPipe } from "../../../shared/pipes/safeUrlPipe";
-import { FormBuilderService } from "../../../services/form-builder.service";
+import { FormBuilderService, refreshOnBuilderEdits } from "../../../services/form-builder.service";
 import { FormsModule } from "@angular/forms";
 import { MatCalendar } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
@@ -14,7 +14,7 @@ import UIkit from "uikit";
 
 @Component(({
   selector: 'app-field-templates',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   templateUrl: './field-templates.component.html',
   styleUrl: '../../../assets/theme/form-builder.component.less',
@@ -45,6 +45,7 @@ export class FieldTemplatesComponent {
   message: string | null = null;
 
   constructor() {
+    refreshOnBuilderEdits();
     effect(() => {
       const id = this.fbService.currentField()?.id;
 

@@ -10,7 +10,7 @@ import { MainSettingsComponent } from "./main-settings/main-settings.component";
   selector: 'app-settings-side-menu',
   standalone: true,
   templateUrl: './settings-side-menu.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ChapterSettingsComponent,
     SectionSettingsComponent,
