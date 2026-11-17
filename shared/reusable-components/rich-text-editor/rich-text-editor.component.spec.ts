@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -7,21 +8,21 @@ import { RichTextEditorComponent } from './rich-text-editor.component';
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, RichTextEditorComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
-  template: `<app-rich-text-editor [formControl]="control" [placeholder]="placeholder" [readonly]="readonly">
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<app-rich-text-editor [formControl]="control" [placeholder]="placeholder()" [readonly]="readonly()">
   </app-rich-text-editor>`
 })
 class HostComponent {
   control = new FormControl<string | null>('');
-  placeholder = 'Write something';
-  readonly = false;
+  placeholder = signal('Write something');
+  readonly = signal(false);
 }
 
 /** Same template pattern as the dynamic form's rich text field with multiplicity (FormArray, [formControlName]="i"). */
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, RichTextEditorComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<form [formGroup]="form">
     <div [formArrayName]="'answers'">
       @for (control of answers.controls; track control; let i = $index) {
@@ -33,6 +34,12 @@ class HostComponent {
 class ArrayHostComponent {
   answers = new FormArray<FormControl<string | null>>([new FormControl('<p>one</p>'), new FormControl('<p>two</p>')]);
   form = new FormGroup({ answers: this.answers });
+
+  constructor() {
+    // Entries are added and removed outside the template, so re-render on form events like the dynamic form's fields do
+    const cdr = inject(ChangeDetectorRef);
+    this.form.events.pipe(takeUntilDestroyed()).subscribe(() => cdr.markForCheck());
+  }
 }
 
 function setup(initial: string | null = '') {
@@ -157,7 +164,7 @@ describe('RichTextEditorComponent', () => {
 
   it('supports the readonly input', () => {
     const { fixture, host, editor, el } = setup('<p>a</p>');
-    host.readonly = true;
+    host.readonly.set(true);
     fixture.detectChanges();
     expect(editor.isEditable).toBe(false);
     expect(el.classList).toContain('rte--readonly');
@@ -166,7 +173,7 @@ describe('RichTextEditorComponent', () => {
 
   it('follows changes of the placeholder text and hides it once there is content', () => {
     const { fixture, host, editor, el } = setup();
-    host.placeholder = 'Other text';
+    host.placeholder.set('Other text');
     fixture.detectChanges();
     expect(el.querySelector('.rte__placeholder')?.textContent).toContain('Other text');
     editor.commands.insertContent('x');
