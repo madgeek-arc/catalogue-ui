@@ -104,4 +104,5 @@ None inside the library. Requests rely on the host's session cookie and XSRF con
   packages, styles and assets listed in [configuration.md](configuration.md).
 - The library is the only layer of the stack that does not import from the host application (it uses `APP_ENV`).
 - TipTap replaced CKEditor 5 (a breaking change of the next major version) so that no GPL component is shipped.
-- Components are being moved to signal inputs and standalone declarations; both styles coexist.
+- All components are standalone and use OnPush change detection. Moving to signal inputs is not finished: some
+  components still use `@Input()`/`@Output()`, so both styles coexist.
