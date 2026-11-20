@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, inject, Input, OnInit, Output } from "@angular/core";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { FormGroupDirective, UntypedFormArray, UntypedFormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FormControlService } from "../../../../services/form-control.service";
+import { WebsocketService } from "../../../../services/websocket.service";
+import { controlPath } from "../utils/control-path";
 import { NgClass } from "@angular/common";
 import { ReadMoreTextComponent } from "../../../../shared/reusable-components/read-more.component";
 import { CompositeFieldComponent } from "../composite-field/composite-field.component";
@@ -31,6 +33,8 @@ export class ChooseOneComponent implements OnInit {
   @Output() hasChanges = new EventEmitter<boolean>();
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
+
+  private wsService = inject(WebsocketService);
 
   form: UntypedFormGroup = new UntypedFormGroup({});
   hideField: boolean | null = null;
@@ -81,7 +85,15 @@ export class ChooseOneComponent implements OnInit {
   }
 
   remove(i: number) {
-    this.fieldAsFormArray().removeAt(i);
+    const path = controlPath(this.fieldAsFormArray().at(i));
+    this.fieldAsFormArray().removeAt(i, {emitEvent: false});
+    if (this.editMode) {
+      this.wsService.WsEdit({
+        field: path,
+        value: null,
+        action: {type: 'DELETE', index: i}
+      });
+    }
   }
 
   pushComposite(compositeField: Field) {
