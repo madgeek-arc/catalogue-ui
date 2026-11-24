@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { FormBuilderService } from "../../../../services/form-builder.service";
+import { FormBuilderService, refreshOnBuilderEdits } from "../../../../services/form-builder.service";
 import { RichTextEditorComponent } from "../../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
 
 @Component(({
   selector: 'app-chapter-settings',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   templateUrl: './chapter-settings.component.html',
   imports: [
@@ -16,4 +16,8 @@ import { RichTextEditorComponent } from "../../../../shared/reusable-components/
 
 export class ChapterSettingsComponent {
   protected fbService = inject(FormBuilderService);
+
+  constructor() {
+    refreshOnBuilderEdits();
+  }
 }

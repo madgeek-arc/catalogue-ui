@@ -8,7 +8,7 @@ import { NgClass } from "@angular/common";
 @Component({
     selector: 'app-number-field',
     templateUrl: './number-field.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass]
 })
 

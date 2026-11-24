@@ -17,7 +17,7 @@ import { ScaleFieldComponent } from './scale-field/scale-field.component';
 @Component({
     selector: 'app-field',
     templateUrl: './dynamic-form-fields.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
       FormsModule,
       ReactiveFormsModule,

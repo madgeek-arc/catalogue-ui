@@ -8,7 +8,7 @@ import { NgClass } from "@angular/common";
 @Component({
     selector: 'app-radio-button-field',
     templateUrl: './radio-button-field.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, ReactiveFormsModule, BaseFieldHtmlComponent, NgClass]
 })
 

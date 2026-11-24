@@ -10,13 +10,14 @@ import { CompareChapterComponent } from "../chapters/compare-chapter.component";
     templateUrl: 'compare-surveys.component.html',
     styleUrls: ['../../../../assets/theme/form-builder.component.less'],
     providers: [FormControlService],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgClass, CompareChapterComponent]
 })
 
 export class CompareSurveysComponent implements OnChanges{
 
   private fb = inject(UntypedFormBuilder);
+  private formControlService = inject(FormControlService);
 
   protected String = String;
 
@@ -34,9 +35,6 @@ export class CompareSurveysComponent implements OnChanges{
 
   formA = this.fb.group({});
   formB = this.fb.group({});
-
-  constructor(private formControlService: FormControlService) {
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.model && this.payloadA?.answer) {

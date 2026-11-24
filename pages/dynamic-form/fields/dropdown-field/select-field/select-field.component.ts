@@ -9,7 +9,7 @@ import { NgClass } from "@angular/common";
   selector: 'app-select-field',
   standalone: true,
   templateUrl: './select-field.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BaseFieldHtmlComponent,
     ReactiveFormsModule,

@@ -1,17 +1,21 @@
 import { Component, computed, inject, ChangeDetectionStrategy } from "@angular/core";
 import { Field, Section, SelectedSection } from "../../../domain/dynamic-form-model";
-import { FormBuilderService } from "../../../services/form-builder.service";
+import { FormBuilderService, refreshOnBuilderEdits } from "../../../services/form-builder.service";
 
 @Component({
   selector: 'app-side-menu',
   standalone: true,
   templateUrl: './side-menu.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: []
 })
 
 export class SideMenuComponent {
   protected fbService = inject(FormBuilderService);
+
+  constructor() {
+    refreshOnBuilderEdits();
+  }
   protected String = String;
 
   chapterIndex = computed(() => {

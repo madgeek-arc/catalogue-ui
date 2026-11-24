@@ -9,7 +9,7 @@
       <!--    {{ fieldData.id }}-->
       <div class="uk-flex-middle" data-uk-grid>
         <label class="uk-form-label uk-width-expand" [ngClass]="[fieldData.label.cssClasses || '']"
-               style="{{fieldData.label.style}}" [for]="inputId" [innerHTML]="label">
+               style="{{fieldData.label.style}}" [for]="inputId" [innerHTML]="label()">
         </label>
 
         @if (commentingService.hasCommenting()) {

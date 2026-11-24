@@ -1,4 +1,5 @@
-import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectorRef, Component, DestroyRef, EventEmitter, forwardRef, inject, Input, OnInit, Output, ChangeDetectionStrategy, signal } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import {
   AbstractControl,
@@ -37,7 +38,7 @@ interface PositionChange {
 @Component({
     selector: 'app-composite-field',
     templateUrl: './composite-field.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         FormsModule,
         ReactiveFormsModule,
@@ -61,6 +62,10 @@ interface PositionChange {
 
 export class CompositeFieldComponent implements OnInit {
   private wsService = inject(WebsocketService);
+  private rootFormGroup = inject(FormGroupDirective);
+  private formService = inject(FormControlService);
+  private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   @Input() fieldData: Field;
   @Input() vocabularies: Map<string, object[]>;
@@ -75,10 +80,8 @@ export class CompositeFieldComponent implements OnInit {
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
   form: UntypedFormGroup;
-  hideField: boolean = null;
+  hideField = signal<boolean | null>(null);
   inputId!: string;
-
-  constructor(private rootFormGroup: FormGroupDirective, private formService: FormControlService) {}
 
   ngOnInit() {
     if (this.position !== null) {
@@ -89,6 +92,9 @@ export class CompositeFieldComponent implements OnInit {
 
     // console.log(this.form);
     this.inputId = this.getPath(this.form).join('.');
+    // The template reads the group's state (validity, dirty, array length), which also changes from outside this
+    // component: validation, the read-only disable, other users' edits. Refresh on every event of the group.
+    this.form.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.cdr.markForCheck());
     if(this.fieldData.form.dependsOn) { // specific changes for composite field, maybe revise it
       this.enableDisableField(this.rootFormGroup.form.get(this.fieldData.form.dependsOn.name).value);
 
@@ -239,13 +245,13 @@ export class CompositeFieldComponent implements OnInit {
     // console.log(value);
     if (value === 'Applicable' || value === 'Yes') {
       this.form.enable();
-      this.hideField = false;
+      this.hideField.set(false);
       this.fieldData.form.display.visible = true;
 
     } else {
       this.form.disable();
       this.form.reset();
-      this.hideField = true;
+      this.hideField.set(true);
       this.fieldData.form.display.visible = false;
       // maybe add this if the remaining empty fields are a problem
       // (this.formControl as unknown as FormArray).clear();

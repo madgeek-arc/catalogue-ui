@@ -34,7 +34,8 @@ export class DynamicCatalogueService {
     if (editMode) {
       return this.http.put(this.baseUrl + `/forms/models/${model?.id}`, model);
     } else {
-      return this.http.post(this.baseUrl + '/forms/models', model);
+      // Leave an empty id out so the backend assigns one.
+      return this.http.post(this.baseUrl + '/forms/models', model?.id ? model : {...model, id: undefined});
     }
   }
 }

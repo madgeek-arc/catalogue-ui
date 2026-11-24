@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, signal } from "@angular/core";
 import { DateProperties, Field, HandleBitSet } from "../../../../domain/dynamic-form-model";
 import { ReactiveFormsModule } from "@angular/forms";
 import { DatePipe, NgClass } from "@angular/common";
@@ -19,7 +19,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     ReactiveFormsModule,
     NgClass
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     provideNativeDateAdapter(),
   ],
@@ -30,15 +30,15 @@ export class DateFieldComponent extends BaseFieldComponent implements OnInit {
   @Output() handleBitSets = new EventEmitter<Field>();
   @Output() handleBitSetsOfComposite = new EventEmitter<HandleBitSet>();
 
-  selectedDate: Date;
+  selectedDate = signal<Date | null>(null);
 
   override ngOnInit() {
     super.ngOnInit();
     this.formControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value: string | number | null) => {
-      this.selectedDate = this.parseLocalDate(value);
+      this.selectedDate.set(this.parseLocalDate(value));
     });
     // If formControl initially has a Date, normalize it too
-    this.selectedDate = this.parseLocalDate(this.formControl.getRawValue());
+    this.selectedDate.set(this.parseLocalDate(this.formControl.getRawValue()));
   }
 
   dateChanged(event: Date) {

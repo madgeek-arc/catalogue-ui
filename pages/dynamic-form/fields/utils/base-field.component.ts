@@ -1,4 +1,4 @@
-import { DestroyRef, Directive, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, DestroyRef, Directive, EventEmitter, inject, Input, OnInit, Output, signal } from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -26,6 +26,7 @@ interface PositionChange {
 export abstract class BaseFieldComponent implements OnInit {
   protected destroyRef = inject(DestroyRef);
   protected rootFormGroup = inject(FormGroupDirective);
+  private cdr = inject(ChangeDetectorRef);
 
   private formControlService = inject(FormControlService);
   private wsService = inject(WebsocketService);
@@ -42,7 +43,7 @@ export abstract class BaseFieldComponent implements OnInit {
   form!: UntypedFormGroup;
   previousValue!: any;
   inputId!: string;
-  hideField: boolean = null;
+  hideField = signal<boolean | null>(null);
 
   focused = false;
 
@@ -55,6 +56,7 @@ export abstract class BaseFieldComponent implements OnInit {
     // console.log(this.form);
     this.formControl = this.form.get(this.fieldData.name) as UntypedFormControl;
     this.inputId = this.getPath(this.formControl).join('.');
+    this.watchControl();
 
     if (this.fieldData.form.dependsOn) {
       // console.log(this.fieldData.form.dependsOn);
@@ -67,6 +69,12 @@ export abstract class BaseFieldComponent implements OnInit {
         error => {console.error(error)}
       );
     }
+  }
+
+  // The template reads the control's state (validity, touched, value, array length). That state also changes from
+  // outside this field: validation, the read-only disable, other users' edits. Refresh on every control event.
+  protected watchControl() {
+    this.formControl?.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.cdr.markForCheck());
   }
 
   /** Field focus -------------------------------------------------------------------------------------------------> **/
@@ -237,11 +245,11 @@ export abstract class BaseFieldComponent implements OnInit {
     if (enableValue === null ) { // Enable for any value functionality
       if (value !== null && value !== undefined && value.toString().trim() !== '') {
         this.formControl.enable();
-        this.hideField = false;
+        this.hideField.set(false);
       } else {
         this.formControl.disable();
         this.formControl.reset();
-        this.hideField = true;
+        this.hideField.set(true);
       }
       return;
     }
@@ -250,19 +258,19 @@ export abstract class BaseFieldComponent implements OnInit {
       const index = enableValue.findIndex((v: string | number) => v == value)
       if (index >= 0) {
         this.formControl.enable();
-        this.hideField = false;
+        this.hideField.set(false);
       } else {
         this.formControl.disable();
         this.formControl.reset();
-        this.hideField = true;
+        this.hideField.set(true);
       }
     } else if (value?.toString() == enableValue) {
       this.formControl.enable();
-      this.hideField = false;
+      this.hideField.set(false);
     } else {
       this.formControl.disable();
       this.formControl.reset();
-      this.hideField = true;
+      this.hideField.set(true);
       // maybe add this if the remaining empty fields are a problem
       // (this.formControl as unknown as FormArray).clear();
     }

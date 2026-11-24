@@ -8,7 +8,7 @@ import { DynamicFormFieldsComponent } from "../../fields/dynamic-form-fields.com
 @Component({
     selector: 'app-chapter-compare',
     templateUrl: 'compare-chapter.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgStyle, NgClass, FormsModule, ReactiveFormsModule, DynamicFormFieldsComponent, DatePipe]
 })
 

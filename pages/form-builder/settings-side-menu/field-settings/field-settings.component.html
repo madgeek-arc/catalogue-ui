@@ -68,7 +68,7 @@
           <label for="descriptionText" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
             <app-rich-text-editor id="descriptionText"
-                      [(ngModel)]="fbService.currentField()!.form.description.text"
+                      [(ngModel)]="fbService.currentField()!.form.description.text" (ngModelChange)="fbService.markEdited()"
                       placeholder="Give a description for the field">
             </app-rich-text-editor>
           </div>
@@ -95,7 +95,7 @@
           <label for="suggestionText" class="uk-text-muted uk-margin-small-bottom">Text</label>
           <div class="uk-form-controls">
             <app-rich-text-editor id="suggestionText"
-                      [(ngModel)]="fbService.currentField()!.form.suggestion.text"
+                      [(ngModel)]="fbService.currentField()!.form.suggestion.text" (ngModelChange)="fbService.markEdited()"
                       placeholder="Give a short suggestion for the field">
             </app-rich-text-editor>
           </div>

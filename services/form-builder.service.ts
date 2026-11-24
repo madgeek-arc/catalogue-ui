@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { ChangeDetectorRef, effect, inject, Injectable, signal } from "@angular/core";
 import { Field, FieldType, Model, Section, SelectedSection } from "../domain/dynamic-form-model";
 import { IdGenerationService } from "./id-generation.service";
 import { cloneDeep } from "lodash";
@@ -22,9 +22,22 @@ export class FormBuilderService {
   readonly currentField = this._currentField.asReadonly();
   readonly sideMenuSettingsType = this._sideMenuSettingsType.asReadonly();
 
+  // The builder edits the model tree in place (the update() calls above return the same objects, and the field
+  // settings bind [(ngModel)] straight to nested properties), so the signals do not notify on edits. This counter
+  // does: every editing method below bumps it, the form builder bumps it on every input, change, click and keyup
+  // inside it (for the direct ngModel writes), and each builder component re-renders when it changes (see
+  // refreshOnBuilderEdits).
+  private _revision = signal(0);
+  readonly revision = this._revision.asReadonly();
+
+  markEdited() {
+    this._revision.update(n => n + 1);
+  }
+
   // Model options
   setModel(model?: Model) {
-    this._model.set(model ?? new Model());
+    // A new form has no id until it is saved: the backend assigns one unless the user sets one in General settings.
+    this._model.set(model ?? Object.assign(new Model(), {id: ''}));
     if (!model) {
       this.addSection();
     }
@@ -33,6 +46,7 @@ export class FormBuilderService {
   }
 
   setModelId(id: string) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.id = id;
@@ -41,6 +55,7 @@ export class FormBuilderService {
   }
 
   setModelTitle(title: string) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.name = title;
@@ -49,6 +64,7 @@ export class FormBuilderService {
   }
 
   setModelDescription(description: string) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.description = description;
@@ -57,6 +73,7 @@ export class FormBuilderService {
   }
 
   setModelNotice(notice: string) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.notice = notice;
@@ -65,6 +82,7 @@ export class FormBuilderService {
   }
 
   setModelLocked(locked: boolean) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.locked = locked;
@@ -73,6 +91,7 @@ export class FormBuilderService {
   }
 
   setModelActive(active: boolean) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.active = active;
@@ -111,6 +130,7 @@ export class FormBuilderService {
 
   // Section relevant action
   setSectionName(name: string) {
+    this.markEdited();
     this._currentSection.update(section => {
       if (section)
         section.name = name;
@@ -119,6 +139,7 @@ export class FormBuilderService {
   }
 
   setSectionDescription(description: string) {
+    this.markEdited();
     this._currentSection.update(section => {
       if (section)
         section.description = description;
@@ -127,6 +148,7 @@ export class FormBuilderService {
   }
 
   addSection() {
+    this.markEdited();
     const newChapter = new Section(this.idService.generateId().toString(),);
     this._model.update(model => {
       if (model)
@@ -138,6 +160,7 @@ export class FormBuilderService {
   }
 
   deleteSection(index: number) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.sections.splice(index, 1);
@@ -156,6 +179,7 @@ export class FormBuilderService {
 
   // Subsection relevant actions
   setSubSectionName(name: string) {
+    this.markEdited();
     this._currentSubsection.update(subsection => {
       if (subsection)
         subsection.name = name;
@@ -164,6 +188,7 @@ export class FormBuilderService {
   }
 
   setSubSectionDescription(description: string) {
+    this.markEdited();
     this._currentSubsection.update(subsection => {
       if (subsection)
         subsection.description = description;
@@ -172,6 +197,7 @@ export class FormBuilderService {
   }
 
   addSubSection(index: number) {
+    this.markEdited();
     const newSection = new Section(this.idService.generateId().toString());
     this._model.update(model => {
       if (model?.sections[index].subSections === null)
@@ -185,6 +211,7 @@ export class FormBuilderService {
   }
 
   deleteSubSection(position: number, index: number) {
+    this.markEdited();
     this._model.update(model => {
       if (model)
         model.sections[position].subSections?.splice(index, 1);
@@ -214,6 +241,7 @@ export class FormBuilderService {
 
   // Field relevant actions
   setFieldType(type: FieldType) {
+    this.markEdited();
     this._currentField.update(field => {
       if (field)
         field.typeInfo.type = type;
@@ -222,6 +250,7 @@ export class FormBuilderService {
   }
 
   setFieldPlaceholder(placeholder: string) {
+    this.markEdited();
     this._currentField.update(field => {
       if (field)
         field.form.placeholder = placeholder;
@@ -231,6 +260,7 @@ export class FormBuilderService {
   }
 
   setFieldLabel(text: string) {
+    this.markEdited();
     this._currentField.update(field => {
       if (field)
         field.label.text = text;
@@ -239,6 +269,7 @@ export class FormBuilderService {
   }
 
   addField(type: FieldType) {
+    this.markEdited();
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
     if (type === FieldType.checkbox) {
       tmpField.typeInfo.type = FieldType.composite;
@@ -260,6 +291,7 @@ export class FormBuilderService {
   }
 
   deleteField(index: number, parentField?: Field) {
+    this.markEdited();
     if (parentField) {
       if (parentField.subFields) {
         parentField.subFields.splice(index, 1);
@@ -277,6 +309,7 @@ export class FormBuilderService {
   }
 
   duplicateField(field: Field, parentField?: Field) {
+    this.markEdited();
     const newField = cloneDeep(field);
     newField.id = this.idService.generateId().toString();
     newField.name = newField.id;
@@ -297,6 +330,7 @@ export class FormBuilderService {
   }
 
   move(from: number, to: number, parentField?: Field) {
+    this.markEdited();
     if (parentField) {
       if (parentField.subFields) {
         if (from >= parentField.subFields.length || to >= parentField.subFields.length || from < 0 || to < 0) {
@@ -321,6 +355,7 @@ export class FormBuilderService {
   }
 
   addFieldToComposite(type: FieldType, isOuterCompositeCheckboxCreation = false, checkboxLabel?: string | null) {
+    this.markEdited();
     let tmpField: Field = new Field(this.idService.generateId().toString(), type);
     if (isOuterCompositeCheckboxCreation) {
       tmpField.typeInfo.type = FieldType.composite;
@@ -417,4 +452,14 @@ export class FormBuilderService {
     });
   }
 
+}
+
+/** Re-render the calling OnPush builder component after any edit to the builder's model. Call in an injection context. */
+export function refreshOnBuilderEdits() {
+  const fbService = inject(FormBuilderService);
+  const cdr = inject(ChangeDetectorRef);
+  effect(() => {
+    fbService.revision();
+    cdr.markForCheck();
+  });
 }

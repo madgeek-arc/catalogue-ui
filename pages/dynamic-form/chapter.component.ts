@@ -16,7 +16,7 @@ type SectionComments = {
     selector: 'app-chapter',
     templateUrl: './chapter.component.html',
     providers: [FormControlService],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         NgStyle,
         NgClass,

@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, signal, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Field } from "../../../../domain/dynamic-form-model";
-import { FormBuilderService } from "../../../../services/form-builder.service";
+import { FormBuilderService, refreshOnBuilderEdits } from "../../../../services/form-builder.service";
 import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from "@ng-select/ng-select";
 import { stripHtml } from "../../../../shared/utils/utils";
 import { RichTextEditorComponent } from "../../../../shared/reusable-components/rich-text-editor/rich-text-editor.component";
@@ -10,7 +10,7 @@ import { RichTextEditorComponent } from "../../../../shared/reusable-components/
   selector: 'app-field-settings',
   standalone: true,
   templateUrl: './field-settings.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     RichTextEditorComponent,
@@ -23,6 +23,10 @@ import { RichTextEditorComponent } from "../../../../shared/reusable-components/
 export class FieldSettingsComponent {
 
   protected fbService = inject(FormBuilderService);
+
+  constructor() {
+    refreshOnBuilderEdits();
+  }
   protected readonly stripHtml = stripHtml;
 
   options = computed(() => {

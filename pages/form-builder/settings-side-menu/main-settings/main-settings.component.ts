@@ -1,12 +1,12 @@
 import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { FormBuilderService } from "../../../../services/form-builder.service";
+import { FormBuilderService, refreshOnBuilderEdits } from "../../../../services/form-builder.service";
 
 @Component({
   selector: 'app-main-settings',
   standalone: true,
   templateUrl: './main-settings.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule
   ]
@@ -14,4 +14,8 @@ import { FormBuilderService } from "../../../../services/form-builder.service";
 
 export class MainSettingsComponent {
   protected fbService = inject(FormBuilderService);
+
+  constructor() {
+    refreshOnBuilderEdits();
+  }
 }

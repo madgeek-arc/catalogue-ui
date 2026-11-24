@@ -38,7 +38,14 @@ import UIkitModalElement = UIkit.UIkitModalElement;
   templateUrl: 'form-builder.component.html',
   styleUrls: ['../../assets/theme/form-builder.component.less'],
   providers: [WebsocketService],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  // Every edit inside the builder starts with one of these events; see FormBuilderService.markEdited.
+  host: {
+    '(input)': 'fbService.markEdited()',
+    '(change)': 'fbService.markEdited()',
+    '(click)': 'fbService.markEdited()',
+    '(keyup)': 'fbService.markEdited()',
+  },
   imports: [
     NgClass,
     NgStyle,
@@ -162,7 +169,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit, OnDestroy {
   saveModel() {
     if (!this.fbService.model()) return;
 
-    if (this.customActions) this.saveAction.emit(this.fbService.model());
+    if (this.customActions()) this.saveAction.emit(this.fbService.model());
     else
       this.catalogueService.saveModel(this.fbService.model(), this.editMode).subscribe({
         next: () => {
