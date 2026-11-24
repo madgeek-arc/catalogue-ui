@@ -19,6 +19,8 @@ export class CompareSurveysComponent implements OnChanges{
   private fb = inject(UntypedFormBuilder);
   private formControlService = inject(FormControlService);
 
+  protected String = String;
+
   @Input() payloadA: any = null;
   @Input() payloadB: any = null;
   @Input() entryA: any = null;
